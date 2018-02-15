@@ -6,12 +6,12 @@ My nice and fast modules for i3.
 * ppi3 as i3 config preprocessor.
 * modern i3 python with modules:
 
--- i3ipc
--- shlex
--- subprocess
--- toml
--- typing
--- uuid
+- i3ipc
+- shlex
+- subprocess
+- toml
+- typing
+- uuid
 
 # What is it?
 
