@@ -27,5 +27,4 @@ autoreload.
 ppi3+i3 and modules on python. Also handles toml-configs updating.
 
 # Video Demonstration
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/U7eJMP0zvKc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+[![i3pluginsdemo](https://www.youtube.com/embed/U7eJMP0zvKc)](https://www.youtube.com/embed/U7eJMP0zvKc)
