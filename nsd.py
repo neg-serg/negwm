@@ -45,8 +45,6 @@ class ns(SingletonMixin, CfgMaster):
                 win.command('focus')
                 del self.transients[0]
             except:
-                pass
-            finally:
                 self.mark_all_tags(hide=False)
 
     def unfocus(self, tag: str) -> None:
