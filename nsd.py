@@ -76,6 +76,10 @@ class ns(SingletonMixin, CfgMaster):
                 visible_windows.append(w)
         return visible_windows
 
+    def check_dialog_win(self, w):
+        xprop = subprocess.check_output(['xprop', '-id', str(w)]).decode()
+        return not ('_NET_WM_WINDOW_TYPE_DIALOG' in xprop or '_NET_WM_STATE_MODAL' in xprop)
+
     def toggle(self, tag : str) -> None:
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
             try:
@@ -187,9 +191,9 @@ class ns(SingletonMixin, CfgMaster):
             self.i3.command('[con_id=__focused__] scratchpad show')
 
     def geom_restore(self, tag: str) -> None:
-        for j,win in enumerate(self.marked[tag]):
+        for idx,win in enumerate(self.marked[tag]):
             # delete previous mark
-            del self.marked[tag][j]
+            del self.marked[tag][idx]
 
             # then make a new mark and move scratchpad
             win_cmd="%(make_mark)s, move scratchpad, %(get_geom)s" % {
@@ -233,22 +237,21 @@ class ns(SingletonMixin, CfgMaster):
                             return True
 
     def mark_tag(self, i3, event) -> None:
-        con=event.container
+        win=event.container
         for tag in self.cfg:
             for factor in self.factors:
-                if self.match(con, factor, tag):
-                    xprop = subprocess.check_output(['xprop', '-id', str(con.window)]).decode()
-                    if not ('_NET_WM_WINDOW_TYPE_DIALOG' in xprop or '_NET_WM_STATE_MODAL' in xprop):
+                if self.match(win, factor, tag):
+                    if self.check_dialog_win(win.window):
                         # scratch_move
-                        con_cmd="%(make_mark)s, move scratchpad, %(get_geom)s" % {
+                        win_cmd="%(make_mark)s, move scratchpad, %(get_geom)s" % {
                             "make_mark": self.make_mark_str(tag),
                             "get_geom": self.nsgeom.get_geom(tag)
                         }
-                        con.command(con_cmd)
-                        self.marked[tag].append(con)
+                        win.command(win_cmd)
+                        self.marked[tag].append(win)
                         break
                     else:
-                        self.transients.append(con)
+                        self.transients.append(win)
 
     def unmark_tag(self, i3, event) -> None:
         for tag in self.cfg:
@@ -264,23 +267,22 @@ class ns(SingletonMixin, CfgMaster):
     def mark_all_tags(self, hide : bool=True) -> None:
         window_list = self.i3.get_tree().leaves()
         for tag in self.cfg:
-            for con in window_list:
+            for win in window_list:
                 for factor in self.factors:
-                    if self.match(con, factor, tag):
-                        xprop = subprocess.check_output(['xprop', '-id', str(con.window)]).decode()
-                        if not('_NET_WM_WINDOW_TYPE_DIALOG' in xprop or '_NET_WM_STATE_MODAL' in xprop):
+                    if self.match(win, factor, tag):
+                        if self.check_dialog_win(win.window):
                             # scratch move
                             hide_cmd=''
                             if hide:
                                 hide_cmd='[con_id=__focused__] scratchpad show'
-                            con_cmd="%(make_mark)s, move scratchpad, %(get_geom)s, %(hide_cmd)s" % \
+                            win_cmd="%(make_mark)s, move scratchpad, %(get_geom)s, %(hide_cmd)s" % \
                                 {
                                     "make_mark": self.make_mark_str(tag),
                                     "get_geom": self.nsgeom.get_geom(tag),
                                     "hide_cmd": hide_cmd
                                 }
-                            con.command(con_cmd)
-                            self.marked[tag].append(con)
+                            win.command(win_cmd)
+                            self.marked[tag].append(win)
                             break
                         else:
-                            self.transients.append(con)
+                            self.transients.append(win)
