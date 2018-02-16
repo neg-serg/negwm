@@ -35,7 +35,7 @@ class ns(SingletonMixin, CfgMaster):
         if not len(self.transients):
             [
                 win.command('move container to workspace current')
-                for _,win in enumerate(self.marked[tag])
+                for win in self.marked[tag]
             ]
             if hide:
                 self.unfocus_all_but_current(tag)
@@ -52,13 +52,13 @@ class ns(SingletonMixin, CfgMaster):
     def unfocus(self, tag: str) -> None:
         [
             win.command('move scratchpad')
-            for _,win in enumerate(self.marked[tag])
+            for win in self.marked[tag]
         ]
         self.restore_fullscreens()
 
     def unfocus_all_but_current(self, tag: str) -> None:
         focused = self.i3.get_tree().find_focused()
-        for _,win in enumerate(self.marked[tag]):
+        for win in self.marked[tag]:
             if win.id != focused.id:
                 win.command('move scratchpad')
             else:
@@ -78,7 +78,11 @@ class ns(SingletonMixin, CfgMaster):
 
     def check_dialog_win(self, w):
         xprop = subprocess.check_output(['xprop', '-id', str(w)]).decode()
-        return not ('_NET_WM_WINDOW_TYPE_DIALOG' in xprop or '_NET_WM_STATE_MODAL' in xprop)
+        return not (
+            '_NET_WM_WINDOW_TYPE_DIALOG' in xprop
+            or
+            '_NET_WM_STATE_MODAL' in xprop
+        )
 
     def toggle(self, tag : str) -> None:
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
@@ -88,15 +92,15 @@ class ns(SingletonMixin, CfgMaster):
             except:
                 pass
 
-        if self.visible(tag) > 0:
+        if self.visible_count(tag) > 0:
             self.unfocus(tag)
             return
 
         # We need to hide scratchpad it is visible, regardless it focused or not
         focused = self.i3.get_tree().find_focused()
 
-        for i in self.marked[tag]:
-            if focused.id == i.id:
+        for w in self.marked[tag]:
+            if focused.id == w.id:
                 self.unfocus(tag)
                 return
 
@@ -124,7 +128,7 @@ class ns(SingletonMixin, CfgMaster):
                 if w.window_class in subtag_classes_set and w.id == i.id:
                     self.i3.command('[con_id=%s] focus' % w.id)
 
-        for idx,i in enumerate(self.marked[tag]):
+        for _ in self.marked[tag]:
             focused=self.i3.get_tree().find_focused()
             if not focused.window_class in subtag_classes_set:
                 self.next_win()
@@ -152,7 +156,7 @@ class ns(SingletonMixin, CfgMaster):
         [win.command('fullscreen toggle') for win in self.fullscreen_list]
         self.fullscreen_list=[]
 
-    def visible(self, tag: str):
+    def visible_count(self, tag: str):
         visible_windows = self.find_visible_windows()
         vmarked = 0
         for w in visible_windows:
