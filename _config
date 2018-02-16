@@ -15,6 +15,12 @@ set $alt Mod1
 set $c   Control
 set $S   Shift
 
+set $i3 ${XDG_CONFIG_HOME}/i3
+
+set $circle exec ${XDG_CONFIG_HOME}/i3/send circle
+set $ns exec ${XDG_CONFIG_HOME}/i3/send ns
+set $flast exec ${XDG_CONFIG_HOME}/i3/send flast
+
 #---------------------------
 # ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀ #
 # ░█░░░█░█░█░░░█░█░█▀▄░▀▀█ #
@@ -109,8 +115,8 @@ for_window [class="^(Emacs|Atom)$"] move container to workspace $dev, workspace 
 for_window [class="Emacs" instance="emacs" title="Question"] floating enable
 for_window [class="(feh|qiv)"] floating enable
 for_window [class="Gimp"] move container to workspace $gimp, workspace $gimp, focus
-for_window [class="darktable"] move container to workspace $gimp, workspace $gimp, focus
 for_window [class="Gimp" window_role="^(gimp-file-{open,save}|gimp-message-dialog|gimp-image-new|gimp-toolbox-color-dialog)$"]  floating enable
+for_window [class="darktable"] move container to workspace $gimp, workspace $gimp, focus
 for_window [class="guncharmap"]  move container to workspace $doc
 for_window [class="(?i)dota.*"] floating enable, move container to workspace $wine, workspace $wine, focus
 for_window [class="^(inkscape|simple-scan)$"] move container to workspace $graph
@@ -173,7 +179,7 @@ bindsym $m4+minus mode ""
 bindsym $m4+h focus left
 bindsym $m4+l focus right
 #----------------------------------------------
-bindsym $m4+$c+c exec ~/.config/i3/send circle next sxiv
+bindsym $m4+$c+c $circle next sxiv
 bindsym $m4+$S+$c+BackSpace mode " "
 mode " " {
     bindsym $m4+$S+BackSpace mode "default"
@@ -185,15 +191,15 @@ bindsym --release $S+Print ~/bin/scripts/screenshot current
 bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
 bindsym $m4+$c+g exec ~/.config/i3/i3_switch_workspace
 #----------------------------------------------
-bindsym $m4+f exec ~/.config/i3/send ns toggle ncmpcpp
-bindsym $m4+e exec ~/.config/i3/send ns toggle im
-bindsym $m4+$S+p exec ~/.config/i3/send ns toggle volcontrol
-bindsym $m4+d exec ~/.config/i3/send ns toggle teardrop
-bindsym $m4+$S+d exec ~/.config/i3/send ns toggle console
-bindsym $m4+$S+e exec  ~/.config/i3/send ns toggle weechat
-bindsym $m4+3 exec ~/.config/i3/send ns next
-bindsym $m4+$c+$S+R exec ~/.config/i3/send ns geom_restore
-bindsym $m4+s exec ~/.config/i3/send ns hide_current
+bindsym $m4+f $ns toggle ncmpcpp
+bindsym $m4+e $ns toggle im
+bindsym $m4+$S+p $ns toggle volcontrol
+bindsym $m4+d $ns toggle teardrop
+bindsym $m4+$S+d $ns toggle console
+bindsym $m4+$S+e $ns toggle weechat
+bindsym $m4+3 $ns next
+bindsym $m4+$c+$S+R $ns geom_restore
+bindsym $m4+s $ns hide_current
 
 mode "" {
     #-------------------------------------------------------
@@ -201,17 +207,17 @@ mode "" {
     bindsym e mode "default", [urgent=latest] focus
     bindsym a mode "default", [window_type=dialog] scratchpad show
     bindsym {i,o,$S+O} mode "default", exec ~/bin/pls -{output,sink,vol}
-    bindsym $c+t mode "default", exec ~/.config/i3/send circle run web tor
-    bindsym $c+y mode "default", exec ~/.config/i3/send circle run web yandex
+    bindsym $c+t mode "default", $circle run web tor
+    bindsym $c+y mode "default", $circle run web yandex
 	bindsym $S+d floating toggle; $exit
 	bindsym $S+l exec ~/bin/scripts/lock/lock.sh && sleep 0.5s; $exit
 	bindsym $S+v exec ~/bin/qemu/vm_menu; $exit
     #-------------------------------------------------------
-    bindsym {$m4,$alt,}+s exec ~/.config/i3/send ns run im skype, mode "default"
-    bindsym {$m4+t,$alt+t,t} exec ~/.config/i3/send ns run im tel, mode "default"
-    bindsym m exec ~/.config/i3/send ns toggle mutt, mode "default"
-    bindsym w exec ~/.config/i3/send ns toggle webcam, mode "default"
-    bindsym $S+r exec ~/.config/i3/send ns toggle ranger, mode "default"
+    bindsym {$m4,$alt,}+s $ns run im skype, mode "default"
+    bindsym {$m4+t,$alt+t,t} $ns run im tel, mode "default"
+    bindsym m $ns toggle mutt, mode "default"
+    bindsym w $ns toggle webcam, mode "default"
+    bindsym $S+r $ns toggle ranger, mode "default"
     #-------------------------------------------------------
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
@@ -221,23 +227,23 @@ mode "pass " {
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
-bindsym $m4+{x,1} exec ~/.config/i3/send circle next {term,nwim}
-bindsym $m4+F{1,2} exec ~/.config/i3/send circle next jetbrains-{idea,clion}
-bindsym $m4+F3 exec ~/.config/i3/send circle next emacs
-bindsym $m4+$c+{v,e} exec ~/.config/i3/send circle next {vm,steam}
-bindsym $m4+{w,b,o} exec ~/.config/i3/send circle next {web,vid,doc}
-bindsym $m4+$S+o exec ~/.config/i3/send circle next obs
+bindsym $m4+{x,1} $circle next {term,nwim}
+bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
+bindsym $m4+F3 $circle next emacs
+bindsym $m4+$c+{v,e} $circle next {vm,steam}
+bindsym $m4+{w,b,o} $circle next {web,vid,doc}
+bindsym $m4+$S+o $circle next obs
 bindsym $alt+g exec rofi -sort -matching fuzzy -show window
 bindsym $m4+m exec ~/bin/scripts/rofi_xprop $(pfw)
 bindsym $m4+q fullscreen toggle
-bindsym $m4+grave exec ~/.config/i3/focus-next-visible.py
-bindsym $m4+$S+grave exec ~/.config/i3/focus-next-visible.py reverse
-bindsym $m4+$c+grave exec ~/.config/i3/i3-cmd.py
+bindsym $m4+grave exec $i3/focus-next-visible.py
+bindsym $m4+$S+grave exec $i3/focus-next-visible.py reverse
+bindsym $m4+$c+grave exec $i3/i3-cmd.py
 
 bindsym $m4+$c+q kill
 #-------------------------------------------------------
-bindsym $alt+Tab exec ~/.config/i3/send flast switch
-bindsym $m4+slash exec ~/.config/i3/send flast switch
+bindsym $alt+Tab $flast switch
+bindsym $m4+slash $flast switch
 #-------------------------------------------------------
 # resize window (you can also use the mouse for that)
 mode "" {
@@ -286,8 +292,8 @@ mode "gaps-inner" {
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
-exec_always ${XDG_CONFIG_HOME}/i3/listner.py 1>> ~/tmp/runner.log
-exec_always ${XDG_CONFIG_HOME}/i3/info_echo.py 2>> ~/tmp/info_echo.log
+exec_always $i3/listner.py 1>> ~/tmp/runner.log
+exec_always $i3/info_echo.py 2>> ~/tmp/info_echo.log
 exec ~/bin/term
 exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
