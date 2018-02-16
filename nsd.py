@@ -21,8 +21,8 @@ class ns(SingletonMixin, CfgMaster):
         self.nsgeom=geom.geom(self.cfg)
         self.marked={l:[] for l in self.cfg}
         self.i3 = i3ipc.Connection()
-        self.mark_all_tags(hide=True)
         self.transients=[]
+        self.mark_all_tags(hide=True)
 
         self.i3.on('window::new', self.mark_tag)
         self.i3.on('window::close', self.unmark_tag)
@@ -41,8 +41,7 @@ class ns(SingletonMixin, CfgMaster):
                 self.unfocus_all_but_current(tag)
         else:
             try:
-                win=self.transients[0]
-                win.command('focus')
+                self.transients[0].command('focus')
                 del self.transients[0]
             except:
                 self.mark_all_tags(hide=False)
