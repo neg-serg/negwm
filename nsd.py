@@ -79,6 +79,12 @@ class ns(SingletonMixin, CfgMaster):
             '_NET_WM_WINDOW_TYPE_DIALOG' in xprop
             or
             '_NET_WM_STATE_MODAL' in xprop
+            or
+            (
+                "_MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x2, 0x0, 0x0, 0x0, 0x0" in xprop
+                and
+                'WM_CLASS(STRING) = "skype", "Skype"' in xprop
+            )
         )
 
     def toggle(self, tag : str) -> None:
