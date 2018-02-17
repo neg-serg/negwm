@@ -26,18 +26,15 @@ signed int in_arr(const char *arg, const char * arr[], size_t len){
 }
 
 enum {
-    CMD_ITSELF = 0,
-    MOD_NAME = 1,
-    MOD_FUNC = 2,
-    MOD_ARG1 = 3,
-    MOD_ARG2 = 4,
-    MOD_ARG3 = 5,
+    CMD_ITSELF = 0
+    , MOD_NAME = 1
+    , MOD_FUNC = 2
 };
 
 enum {
-    CIRCLE = 0,
-    NS = 1,
-    FLAST = 2,
+    CIRCLE = 0
+    , NS = 1
+    , FLAST = 2
 };
 
 const char* docstr= \
@@ -51,6 +48,7 @@ const char* docstr= \
     "  send ns toggle <name>\n" \
     "  send ns run <name> <prog>\n" \
     "  send ns next\n" \
+    "  send ns dialog\n" \
     "  send ns reload\n" \
     "  send ns geom_restore\n" \
     "  send ns hide_current\n" \
@@ -92,6 +90,7 @@ Args ArgMap[] = {
         { "reload", 0 },
         { "geom_restore", 0 },
         { "hide_current", 0 },
+        { "dialog", 0 },
         { NULL, 0 },
     },
     [FLAST] = {
