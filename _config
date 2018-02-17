@@ -147,12 +147,10 @@ for_window [instance="^(wim|nwim)$"] move container to workspace $dev, workspace
 for_window $sclient move container to workspace $steam, workspace $steam, focus
 for_window $steam_games move container to workspace $steam, workspace $steam, fullscreen enable, focus
 for_window $steam_all mark steam_all, move container to workspace $steam, workspace $steam, focus
-for_window [title="^Compress.*"] floating enable
-for_window [title="^(Preferences)$"] floating enable
 for_window [title="^(screenkey|Debconf|control-center|Pavucontrol|B2[Gg])$"] floating enable
 for_window [class="wpg"] floating enable, move absolute position 1210 626, resize set 700 500, focus
 
-for_window [class="^(telegram-desktop|Skype|Skype Preview|Telegram-desktop|ViberPC|TelegramDesktop|finch|VK)$"] move scratchpad, move absolute position 1372 127, resize set 528 1029
+for_window [class="^(telegram-desktop|Skype|Telegram-desktop|ViberPC|TelegramDesktop|finch|VK)$"] move scratchpad, move absolute position 1372 127, resize set 528 1029
 for_window [class="mpd-pad2"]    move scratchpad, move absolute position 400 400, resize set 1200 600
 for_window [instance="mutt"]     move scratchpad, move absolute position 293 0,   resize set 1250 700
 for_window [class="ranger"]      move scratchpad, move absolute position 170 18,  resize set 1132 760
@@ -161,11 +159,14 @@ for_window [class="youtube-get"] move scratchpad, move absolute position 247 13,
 for_window [class="_weechat_"]   move scratchpad, move absolute position 112 33,  resize set 1736 1091
 for_window [instance="webcam"]   floating enable, move container to workspace current, move scratchpad, move absolute position center, resize set 1280 720, focus
 
-for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] floating enable, move absolute position 180 20, resize set 1556 620, focus
-for_window [window_type="dialog"] floating disable, floating enable, move absolute position 180 20, resize set 1556 620, focus
-for_window [window_type="menu"] floating disable, floating enable, move absolute position 180 20, resize set 1556 620, focus
-for_window [window_type="utility"] floating disable, floating enable, move absolute position 180 20, resize set 1556 620, focus
-for_window [window_type="toolbar"] floating disable, floating enable, move absolute position 180 20, resize set 1556 620, focus
+for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
+for_window [window_type="dialog"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
+for_window [window_type="menu"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
+for_window [window_type="utility"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
+for_window [window_type="toolbar"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
+for_window [class="Places"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
+# for_window [title="^Compress.*"] floating enable
+# for_window [title="^(Preferences)$"] floating enable
 
 #---------------------------------------------
 # ░█░█░█▀▀░█░█░█▀▄░▀█▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀░█▀▀
@@ -205,7 +206,7 @@ mode "" {
     #-------------------------------------------------------
     bindsym c mode "pass "
     bindsym e mode "default", [urgent=latest] focus
-    bindsym a mode "default", [window_type=dialog] scratchpad show
+    bindsym a mode "default" $ns dialog
     bindsym {i,o,$S+O} mode "default", exec ~/bin/pls -{output,sink,vol}
     bindsym $c+t mode "default", $circle run web tor
     bindsym $c+y mode "default", $circle run web yandex

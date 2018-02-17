@@ -74,18 +74,20 @@ class ns(SingletonMixin, CfgMaster):
         return visible_windows
 
     def check_dialog_win(self, w):
-        xprop = subprocess.check_output(['xprop', '-id', str(w)]).decode()
+        if w.window_instance == "Places" or w.window_role == "GtkFileChooserDialog":
+            return False
+        xprop = subprocess.check_output(['xprop', '-id', str(w.window)]).decode()
         return not (
             '_NET_WM_WINDOW_TYPE_DIALOG' in xprop
             or
             '_NET_WM_STATE_MODAL' in xprop
-            or
-            (
-                "_MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x2, 0x0, 0x0, 0x0, 0x0" in xprop
-                and
-                'WM_CLASS(STRING) = "skype", "Skype"' in xprop
-            )
         )
+
+    def dialog_toggle(self):
+        window_list = self.i3.get_tree().leaves()
+        for win in window_list:
+            if not self.check_dialog_win(win):
+                win.command('move container to workspace current, show scratchpad')
 
     def toggle(self, tag : str) -> None:
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
@@ -223,11 +225,9 @@ class ns(SingletonMixin, CfgMaster):
             "geom_restore": self.geom_restore_current,
             "run": self.run_subtag,
             "reload": self.reload_config,
+            "dialog": self.dialog_toggle,
         }
-        try:
-            switch_[args[0]](*args[1:])
-        except:
-            pass
+        switch_[args[0]](*args[1:])
 
     def match(self, win, factor, tag):
         if factor == "class":
@@ -248,7 +248,7 @@ class ns(SingletonMixin, CfgMaster):
         for tag in self.cfg:
             for factor in self.factors:
                 if self.match(win, factor, tag):
-                    if self.check_dialog_win(win.window):
+                    if self.check_dialog_win(win):
                         # scratch_move
                         win_cmd="%(make_mark)s, move scratchpad, %(get_geom)s" % {
                             "make_mark": self.make_mark_str(tag),
@@ -259,6 +259,7 @@ class ns(SingletonMixin, CfgMaster):
                         break
                     else:
                         self.transients.append(win)
+        self.dialog_toggle()
 
     def unmark_tag(self, i3, event) -> None:
         for tag in self.cfg:
@@ -277,7 +278,7 @@ class ns(SingletonMixin, CfgMaster):
             for win in window_list:
                 for factor in self.factors:
                     if self.match(win, factor, tag):
-                        if self.check_dialog_win(win.window):
+                        if self.check_dialog_win(win):
                             # scratch move
                             hide_cmd=''
                             if hide:
@@ -293,3 +294,4 @@ class ns(SingletonMixin, CfgMaster):
                             break
                         else:
                             self.transients.append(win)
+        self.dialog_toggle()
