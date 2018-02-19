@@ -297,4 +297,3 @@ class ns(SingletonMixin, CfgMaster):
                             break
                         else:
                             self.transients.append(win)
-        self.dialog_toggle()
