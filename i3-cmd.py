@@ -7,16 +7,21 @@ import sys
 
 def rofi_args(prompt=">>"):
     return [
-        'rofi', '-show', '-dmenu', '-columns', '10', '-lines', '2',  '-p', prompt
+        'rofi', '-show', '-dmenu', '-columns', '14', '-lines', '2',  '-disable-history', '-p', prompt,
+        '-case-sensitive=false', '-matching', 'fuzzy', '-theme-str', '* { font: "Iosevka Term Medium 14"; }',
+        '-theme-str', '#window { width:1900; y-offset: -32; location: south; anchor: south; }',
     ]
 
 def i3_cmds():
     try:
-        return [t.replace("'",'') for t in re.split('\s*,\s*',json.loads(
+        lst=[t.replace("'",'') for t in re.split('\s*,\s*', json.loads(
                     subprocess.check_output(['i3-msg', 'sssssnake'], stderr=subprocess.DEVNULL)
                 )[0]['error']
             )[2:]
         ]
+        lst.remove('nop')
+        lst.sort()
+        return lst
     except:
         return ""
 
@@ -45,7 +50,7 @@ def main():
     if not cmd:
         sys.exit(0) # nothing to do
 
-    debug      = True
+    debug      = False
     ok         = False
     notify_msg = ""
 
