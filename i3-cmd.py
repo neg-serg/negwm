@@ -3,15 +3,14 @@ import i3ipc
 import json
 import re
 import subprocess
-from sys import exit
-from os.path import basename
+import sys
 
-prompt=">>"
-rofi_args = [
-    'rofi', '-show', '-dmenu', '-columns', '10', '-lines', '2',  '-p', prompt
-]
+def rofi_args(prompt=">>"):
+    return [
+        'rofi', '-show', '-dmenu', '-columns', '10', '-lines', '2',  '-p', prompt
+    ]
 
-def get_cmds():
+def i3_cmds():
     try:
         return [t.replace("'",'') for t in re.split('\s*,\s*',json.loads(
                     subprocess.check_output(['i3-msg', 'sssssnake'], stderr=subprocess.DEVNULL)
@@ -21,11 +20,11 @@ def get_cmds():
     except:
         return ""
 
-def get_args(cmd):
+def i3_cmd_args(cmd):
     try:
         return [t.replace("'",'') for t in
             re.split('\s*,\s*',json.loads(
-                    subprocess.check_output(['i3-msg', cmd, 'ssssnake'], stderr=subprocess.DEVNULL)
+                    subprocess.check_output(['i3-msg', cmd], stderr=subprocess.DEVNULL)
                 )[0]['error']
             )[1:]
         ]
@@ -38,31 +37,39 @@ def main():
     cmd = ''
 
     try:
-        cmd = subprocess.check_output(rofi_args,
-            input=bytes('\n'.join(get_cmds()), 'UTF-8')).decode('UTF-8').strip()
+        cmd = subprocess.check_output(rofi_args(),
+            input=bytes('\n'.join(i3_cmds()), 'UTF-8')).decode('UTF-8').strip()
     except CalledProcessError as e:
-        exit(e.returncode)
+        sys.exit(e.returncode)
 
     if not cmd:
-        exit(0) # nothing to do
+        sys.exit(0) # nothing to do
 
-    cmd_success = False
-    notify_msg=""
+    debug      = True
+    ok         = False
+    notify_msg = ""
 
-    while not (cmd_success or get_args(cmd) == ['<end>'] or get_args(cmd) == []):
-        print("evaluated cmd=[{}]".format(cmd))
+    args=i3_cmd_args(cmd)
+    prev_args=""
+    while not (ok or args == ['<end>'] or args == []):
+        if debug:
+            print("evaluated cmd=[{}] args=[{}]".format(cmd,i3_cmd_args(cmd)))
         result = i3.command(cmd)
-        cmd_success = True
+        ok = True
         if not result[0]['success']:
-            cmd_success = False
+            ok = False
             notify_msg=['notify-send', 'i3-cmd error', result[0]['error']]
             try:
-                cmd += ' ' + subprocess.check_output(rofi_args,
-                    input=bytes('\n'.join(get_args(cmd)), 'UTF-8')).decode('UTF-8').strip()
+                args = i3_cmd_args(cmd)
+                if args == prev_args:
+                    break
+                cmd += ' ' + subprocess.check_output(rofi_args(">> " + cmd),
+                    input=bytes('\n'.join(args), 'UTF-8')).decode('UTF-8').strip()
+                prev_args = args
             except CalledProcessError as e:
-                exit(e.returncode)
+                sys.exit(e.returncode)
 
-    if not cmd_success:
+    if not ok:
         subprocess.Popen(notify_msg)
 
 main()
