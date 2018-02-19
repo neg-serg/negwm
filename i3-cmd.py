@@ -12,19 +12,23 @@ rofi_args = [
 ]
 
 def get_cmds():
-    line=re.split('\s*,\s*',json.loads(
-            subprocess.check_output(['i3-msg', 'sssssnake'], stderr=subprocess.DEVNULL)
-        )[0]['error']
-    )[2:]
-    return [t.replace("'",'') for t in line]
+    try:
+        return [t.replace("'",'') for t in re.split('\s*,\s*',json.loads(
+                    subprocess.check_output(['i3-msg', 'sssssnake'], stderr=subprocess.DEVNULL)
+                )[0]['error']
+            )[2:]
+        ]
+    except:
+        return ""
 
 def get_args(cmd):
     try:
-        line=re.split('\s*,\s*',json.loads(
-                subprocess.check_output(['i3-msg', cmd, 'ssssnake'], stderr=subprocess.DEVNULL)
-            )[0]['error']
-        )[1:]
-        return [t.replace("'",'') for t in line]
+        return [t.replace("'",'') for t in
+            re.split('\s*,\s*',json.loads(
+                    subprocess.check_output(['i3-msg', cmd, 'ssssnake'], stderr=subprocess.DEVNULL)
+                )[0]['error']
+            )[1:]
+        ]
     except:
         return ""
 
