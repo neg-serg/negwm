@@ -239,7 +239,7 @@ bindsym $m4+m exec ~/bin/scripts/rofi_xprop $(pfw)
 bindsym $m4+q fullscreen toggle
 bindsym $m4+grave exec $i3/focus-next-visible.py
 bindsym $m4+$S+grave exec $i3/focus-next-visible.py reverse
-bindsym $m4+$c+grave exec $i3/i3-cmd.py
+bindsym $m4+$c+grave exec $i3/cmd.py
 
 bindsym $m4+$c+q kill
 #-------------------------------------------------------
