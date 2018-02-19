@@ -21,7 +21,7 @@ class currws():
 def listen(cws):
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    conn.bind(('0.0.0.0', 5555))
+    conn.bind(('0.0.0.0', 31888))
     conn.listen(10)
     while True:
         try:
