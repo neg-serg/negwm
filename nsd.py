@@ -227,7 +227,10 @@ class ns(SingletonMixin, CfgMaster):
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,
         }
-        switch_[args[0]](*args[1:])
+        try:
+            switch_[args[0]](*args[1:])
+        except:
+            pass
 
     def match(self, win, factor, tag):
         if factor == "class":
