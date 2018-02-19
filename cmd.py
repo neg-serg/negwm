@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import i3ipc
 import json
 import re
 import subprocess
@@ -17,12 +16,20 @@ class i3menu(SingletonMixin):
 
     def i3_cmds(self):
         try:
+            p=subprocess.Popen(
+                ['i3-msg', 'sssssnake'],
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
+            )
+
             lst=[t.replace("'",'') for t in re.split('\s*,\s*', json.loads(
-                        subprocess.check_output(['i3-msg', 'sssssnake'], stderr=subprocess.DEVNULL)
-                    )[0]['error']
-                )[2:]
-            ]
+                p.communicate()[0]
+            )[0]['error'])[2:]]
+
+            p.wait()
+
             lst.remove('nop')
+            lst.append('splitv')
+            lst.append('splith')
             lst.sort()
             return lst
         except:
@@ -30,23 +37,37 @@ class i3menu(SingletonMixin):
 
     def i3_cmd_args(self, cmd):
         try:
-            return [t.replace("'",'') for t in
+            p=subprocess.Popen(
+                ['i3-msg', cmd],
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
+            )
+            ret=[t.replace("'",'') for t in
                 re.split('\s*,\s*',json.loads(
-                        subprocess.check_output(['i3-msg', cmd], stderr=subprocess.DEVNULL)
+                        p.communicate()[0]
                     )[0]['error']
                 )[1:]
             ]
+            p.wait()
+            return ret
         except:
-            return ""
+            return None
 
     def main(self):
-        i3 = i3ipc.Connection()
         # set default menu args for supported menus
         cmd = ''
 
         try:
-            cmd = subprocess.check_output(self.rofi_args(),
-                input=bytes('\n'.join(self.i3_cmds()), 'UTF-8')).decode('UTF-8').strip()
+            p=subprocess.Popen(
+                self.rofi_args(),
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE
+            )
+            p.stdin.write(bytes('\n'.join(self.i3_cmds()), 'UTF-8'))
+            p_com=p.communicate()[0]
+            p.wait()
+            if p_com is not None:
+                cmd = p_com.decode('UTF-8').strip()
+            p.stdin.close()
         except subprocess.CalledProcessError as e:
             sys.exit(e.returncode)
 
@@ -57,23 +78,33 @@ class i3menu(SingletonMixin):
         ok         = False
         notify_msg = ""
 
-        args=self.i3_cmd_args(cmd)
-        prev_args=""
+        args=None
+        prev_args=None
         while not (ok or args == ['<end>'] or args == []):
             if debug:
                 print("evaluated cmd=[{}] args=[{}]".format(cmd, self.i3_cmd_args(cmd)))
-            result = i3.command(cmd)
+            p=subprocess.Popen( ("i3-msg " +  cmd).split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+            r = json.loads(p.communicate()[0].decode('UTF-8').strip())
+            result = r[0]['success']
+            p.wait()
             ok = True
-            if not result[0]['success']:
+            if not result:
                 ok = False
-                notify_msg=['notify-send', 'i3-cmd error', result[0]['error']]
+                notify_msg=['notify-send', 'i3-cmd error', r[0]['error']]
                 try:
                     args = self.i3_cmd_args(cmd)
                     if args == prev_args:
-                        break
-                    cmd += ' ' + subprocess.check_output(self.rofi_args(">> " + cmd),
-                        input=bytes('\n'.join(args), 'UTF-8')).decode('UTF-8').strip()
+                        sys.exit(0)
+                    p=subprocess.Popen(
+                        self.rofi_args(">> " + cmd),
+                        stdin=subprocess.PIPE,
+                        stdout=subprocess.PIPE
+                    )
+                    p.stdin.write(bytes('\n'.join(args), 'UTF-8'))
+                    cmd += ' ' + p.communicate()[0].decode('UTF-8').strip()
                     prev_args = args
+                    p.stdin.close()
+                    p.wait()
                 except subprocess.CalledProcessError as e:
                     sys.exit(e.returncode)
 
