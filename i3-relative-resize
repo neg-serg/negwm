@@ -1,0 +1,62 @@
+#!/usr/bin/python
+
+# resizes a window by direction based on a relative edge.
+# does not work well for windows not in a corner.
+#
+# usage:
+# 	i3-relative-resize up|down|left|right [amount]
+
+import sys
+import i3ipc
+
+# get key from input
+if len(sys.argv) < 2:
+	sys.exit(-1)
+key = sys.argv[1].lower()
+
+# (optionally) get amount from input
+if len(sys.argv) == 3:
+	amount = sys.argv[2]
+else:
+	amount = '10 px or 10 ppt'
+
+# open a connection with i3
+i3 = i3ipc.Connection()
+
+# get window and workspace
+window = i3.get_tree().find_focused()
+workspace = window.workspace()
+
+# get width + height of workspace
+width = workspace.rect.width
+height = workspace.rect.height
+
+# get distance from left edge of workspace to the center of the window
+x = window.rect.x + (window.rect.width / 2)
+
+# get distance from top edge of workspace to the center of the window
+y = (window.rect.y - workspace.rect.y) + (window.rect.height / 2)
+
+# resize based on key and closest edge
+if key == 'up':
+	if y > height / 2:
+		i3.command('resize grow up %s' % amount)
+	else:
+		i3.command('resize shrink down %s' % amount)
+elif key == 'down':
+	if y > height / 2:
+		i3.command('resize shrink up %s' % amount)
+	else:
+		i3.command('resize grow down %s' % amount)
+elif key == 'left':
+	if x > width / 2:
+		i3.command('resize grow left %s' % amount)
+	else:
+		i3.command('resize shrink right %s' % amount)
+elif key == 'right':
+	if x > width / 2:
+		i3.command('resize shrink left %s' % amount)
+	else:
+		i3.command('resize grow right %s' % amount)
+else:
+	sys.exit(-1)
