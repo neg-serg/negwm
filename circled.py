@@ -12,7 +12,7 @@ class circle(SingletonMixin, CfgMaster):
         self.tagged={}
         self.counters={}
         self.restore_fullscreen=[]
-        self.factors=["class", "instance", "class_r", "instance_r"]
+        self.factors=["class", "instance", "class_r", "instance_r", "role_r", "name_r"]
         self.interactive=True
         self.repeats=0
         self.winlist=[]
@@ -173,6 +173,22 @@ class circle(SingletonMixin, CfgMaster):
                 if inst_by_regex:
                     for inst_regex in inst_by_regex:
                         if win.window_instance == inst_regex.window_instance:
+                            return True
+        elif factor == "role_r":
+            regexes=self.cfg.get(tag,{}).get(factor, {})
+            for reg in regexes:
+                role_by_regex=self.winlist.find_by_role(reg)
+                if role_by_regex:
+                    for role_regex in role_by_regex:
+                        if win.window_role == role_regex.window_role:
+                            return True
+        elif factor == "name_r":
+            regexes=self.cfg.get(tag,{}).get(factor, {})
+            for reg in regexes:
+                name_by_regex=self.winlist.find_named(reg)
+                if name_by_regex:
+                    for name_regex in name_by_regex:
+                        if win.name == name_regex.name:
                             return True
 
     def find_acceptable_windows(self, tag, wlist):
