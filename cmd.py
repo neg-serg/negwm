@@ -9,8 +9,13 @@ from singleton_mixin import *
 class i3menu(SingletonMixin):
     def rofi_args(self, prompt=">>"):
         return [
-            'rofi', '-show', '-dmenu', '-columns', '14', '-lines', '2',  '-disable-history', '-p', prompt,
-            '-case-sensitive=false', '-matching', 'fuzzy', '-theme-str', '* { font: "Iosevka Term Medium 14"; }',
+            'rofi', '-show', '-dmenu',
+            '-columns', '16', '-lines', '2',
+            '-disable-history',
+            '-p', prompt,
+            '-case-sensitive=false',
+            '-matching', 'fuzzy',
+            '-theme-str', '* { font: "Iosevka Term Medium 14"; }',
             '-theme-str', '#window { width:1900; y-offset: -32; location: south; anchor: south; }',
         ]
 
