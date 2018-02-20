@@ -15,7 +15,7 @@ from cfg_master import *
 class ns(SingletonMixin, CfgMaster):
     def __init__(self) -> None:
         self.fullscreen_list=[]
-        self.factors=["class", "instance", "class_r"]
+        self.factors=["class", "instance", "class_r", "instance_r"]
         self.cfg={}
         self.load_config("ns")
         self.nsgeom=geom.geom(self.cfg)
@@ -244,6 +244,14 @@ class ns(SingletonMixin, CfgMaster):
                 if cls_by_regex:
                     for class_regex in cls_by_regex:
                         if win.window_class == class_regex.window_class:
+                            return True
+        elif factor == "instance_r":
+            regexes=self.cfg.get(tag,{}).get(factor, {})
+            for reg in regexes:
+                inst_by_regex=self.i3.get_tree().find_instanced(reg)
+                if inst_by_regex:
+                    for inst_regex in inst_by_regex:
+                        if win.window_instance == inst_regex.window_instance:
                             return True
 
     def mark_tag(self, i3, event) -> None:
