@@ -14,6 +14,7 @@ from cfg_master import *
 
 class ns(SingletonMixin, CfgMaster):
     def __init__(self) -> None:
+        self.winlist=None
         self.fullscreen_list=[]
         self.factors=["class", "instance", "class_r", "instance_r", "name_r", "role_r"]
         self.cfg={}
@@ -84,8 +85,8 @@ class ns(SingletonMixin, CfgMaster):
         )
 
     def dialog_toggle(self):
-        window_list = self.i3.get_tree().leaves()
-        for win in window_list:
+        wlist = self.i3.get_tree().leaves()
+        for win in wlist:
             if not self.check_dialog_win(win):
                 win.command('move container to workspace current, show scratchpad')
 
@@ -240,7 +241,7 @@ class ns(SingletonMixin, CfgMaster):
         elif factor == "class_r":
             regexes=self.cfg.get(tag,{}).get(factor, {})
             for reg in regexes:
-                cls_by_regex=self.i3.get_tree().find_classed(reg)
+                cls_by_regex=self.winlist.find_classed(reg)
                 if cls_by_regex:
                     for class_regex in cls_by_regex:
                         if win.window_class == class_regex.window_class:
@@ -248,7 +249,7 @@ class ns(SingletonMixin, CfgMaster):
         elif factor == "instance_r":
             regexes=self.cfg.get(tag,{}).get(factor, {})
             for reg in regexes:
-                inst_by_regex=self.i3.get_tree().find_instanced(reg)
+                inst_by_regex=self.winlist.find_instanced(reg)
                 if inst_by_regex:
                     for inst_regex in inst_by_regex:
                         if win.window_instance == inst_regex.window_instance:
@@ -256,7 +257,7 @@ class ns(SingletonMixin, CfgMaster):
         elif factor == "role_r":
             regexes=self.cfg.get(tag,{}).get(factor, {})
             for reg in regexes:
-                role_by_regex=self.i3.get_tree().find_by_role(reg)
+                role_by_regex=self.winlist.find_by_role(reg)
                 if role_by_regex:
                     for role_regex in role_by_regex:
                         if win.window_role == role_regex.window_role:
@@ -264,7 +265,7 @@ class ns(SingletonMixin, CfgMaster):
         elif factor == "name_r":
             regexes=self.cfg.get(tag,{}).get(factor, {})
             for reg in regexes:
-                name_by_regex=self.i3.get_tree().find_named(reg)
+                name_by_regex=self.winlist.find_named(reg)
                 if name_by_regex:
                     for name_regex in name_by_regex:
                         if win.name == name_regex.name:
@@ -287,6 +288,7 @@ class ns(SingletonMixin, CfgMaster):
                     else:
                         self.transients.append(win)
         self.dialog_toggle()
+        self.winlist=self.i3.get_tree()
 
     def unmark_tag(self, i3, event) -> None:
         for tag in self.cfg:
@@ -300,9 +302,10 @@ class ns(SingletonMixin, CfgMaster):
                     break
 
     def mark_all_tags(self, hide : bool=True) -> None:
-        window_list = self.i3.get_tree().leaves()
+        self.winlist = self.i3.get_tree()
+        leaves=self.winlist.leaves()
         for tag in self.cfg:
-            for win in window_list:
+            for win in leaves:
                 for factor in self.factors:
                     if self.match(win, factor, tag):
                         if self.check_dialog_win(win):
@@ -321,3 +324,4 @@ class ns(SingletonMixin, CfgMaster):
                             break
                         else:
                             self.transients.append(win)
+        self.winlist = self.i3.get_tree()
