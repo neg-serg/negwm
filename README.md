@@ -4,7 +4,7 @@ My nice and fast modules for i3.
 
 * i3ipc
 * ppi3 as i3 config preprocessor.
-* modern i3 python with modules:
+* modern python3(stackless python3 is preferred) with modules:
 
 - i3ipc
 - shlex
@@ -12,6 +12,10 @@ My nice and fast modules for i3.
 - toml
 - typing
 - uuid
+
+I recommend you to use stackless python for better performance. Nuitka / pypy
+/ cython are not the best choise here: native python3 performance looks
+better on my machine. For example you can check it with pycallgraph.
 
 # What is it?
 
