@@ -9,6 +9,7 @@ import geom
 from i3gen import *
 from typing import Callable, List
 
+from singleton import *
 from cfg_master import *
 
 class ns(CfgMaster):

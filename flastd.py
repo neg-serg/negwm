@@ -2,6 +2,7 @@ import i3ipc
 import os
 from subprocess import check_output
 from i3gen import *
+from singleton import *
 
 class flast():
     __metaclass__ = Singleton

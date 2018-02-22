@@ -3,9 +3,10 @@ import json
 import re
 import subprocess
 import sys
+from singleton import *
 
-
-class i3menu(SingletonMixin):
+class i3menu():
+    __metaclass__ = Singleton
     def rofi_args(self, prompt=">>"):
         return [
             'rofi', '-show', '-dmenu',
@@ -116,5 +117,5 @@ class i3menu(SingletonMixin):
             subprocess.Popen(notify_msg)
 
 if __name__ == '__main__':
-    menu = i3menu()()
+    menu = i3menu()
     menu.main()

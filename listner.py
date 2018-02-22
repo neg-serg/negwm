@@ -19,6 +19,7 @@ import subprocess
 import shlex
 import toml
 from i3gen import *
+from singleton import *
 
 class Listner():
     def __init__(self):

@@ -1,22 +1,7 @@
 import os
-from threading import Thread, Lock
+from threading import Thread
 from collections import deque
-
-class Singleton(object):
-    __singleton_lock = Lock()
-    __singleton_instance = None
-
-    @classmethod
-    def __call__(cls, *args, **kwargs):
-        if cls.instance is None:
-            cls.instance = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls.instance
-
-        if not cls.__singleton_instance:
-            with cls.__singleton_lock:
-                if not cls.__singleton_instance:
-                    cls.__singleton_instance = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls.__singleton_instance
+from singleton import *
 
 class daemon_manager():
     __metaclass__ = Singleton
