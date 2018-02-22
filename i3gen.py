@@ -1,19 +1,36 @@
 import os
-from singleton_mixin import *
-from threading import Thread
+from threading import Thread, Lock
 from collections import deque
 
-class daemon_manager(SingletonMixin):
+class Singleton(object):
+    __singleton_lock = Lock()
+    __singleton_instance = None
+
+    @classmethod
+    def __call__(cls, *args, **kwargs):
+        if cls.instance is None:
+            cls.instance = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls.instance
+
+        if not cls.__singleton_instance:
+            with cls.__singleton_lock:
+                if not cls.__singleton_instance:
+                    cls.__singleton_instance = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls.__singleton_instance
+
+class daemon_manager():
+    __metaclass__ = Singleton
     def __init__(self):
         self.daemons={}
 
     def add_daemon(self, name):
-        d=daemon_i3.instance()
+        d=daemon_i3()
         if d not in self.daemons.keys():
             self.daemons[name]=d
             self.daemons[name].bind_fifo(name)
 
-class daemon_i3(SingletonMixin):
+class daemon_i3():
+    __metaclass__ = Singleton
     def __init__(self):
         self.d = deque()
         self.fifos={}

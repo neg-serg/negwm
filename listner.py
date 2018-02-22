@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ i3 listner script
 Usage:
-    runner.py
+    listner.py
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -63,8 +63,8 @@ class Listner():
         for mod in self.mods.keys():
             cm=self.mods[mod]
             i3mod=importlib.import_module("%s" % mod + "d")
-            cm["instance"]=getattr(i3mod, mod).instance()
-            cm["manager"]=daemon_manager.instance()
+            cm["instance"]=getattr(i3mod, mod)()
+            cm["manager"]=daemon_manager()
             cm["manager"].add_daemon(mod)
             Thread(target=cm["manager"].daemons[mod].mainloop, args=(cm["instance"], mod,), daemon=True).start()
 

@@ -4,10 +4,10 @@ import os
 import toml
 from i3gen import *
 
-from singleton_mixin import *
 from cfg_master import *
 
-class circle(SingletonMixin, CfgMaster):
+class circle(CfgMaster):
+    __metaclass__ = Singleton
     def __init__(self):
         self.tagged={}
         self.counters={}

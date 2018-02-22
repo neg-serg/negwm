@@ -1,10 +1,10 @@
 import i3ipc
 import os
 from subprocess import check_output
-from singleton_mixin import *
 from i3gen import *
 
-class flast(SingletonMixin):
+class flast():
+    __metaclass__ = Singleton
     def __init__(self):
         self.i3 = i3ipc.Connection()
         self.window_list = self.i3.get_tree().leaves()

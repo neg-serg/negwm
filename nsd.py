@@ -9,10 +9,10 @@ import geom
 from i3gen import *
 from typing import Callable, List
 
-from singleton_mixin import *
 from cfg_master import *
 
-class ns(SingletonMixin, CfgMaster):
+class ns(CfgMaster):
+    __metaclass__ = Singleton
     def __init__(self) -> None:
         self.winlist=None
         self.fullscreen_list=[]

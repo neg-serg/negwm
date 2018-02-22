@@ -3,7 +3,6 @@
 from argparse import ArgumentParser
 from subprocess import call
 import i3ipc
-from singleton_mixin import *
 
 class FullscreenNoDPMS(SingletonMixin):
     def __init__():
