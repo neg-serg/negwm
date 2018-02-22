@@ -9,6 +9,7 @@ from cfg_master import *
 class circle(CfgMaster):
     __metaclass__ = Singleton
     def __init__(self):
+        self.load_config("circle")
         self.tagged={}
         self.counters={}
         self.restore_fullscreen=[]
@@ -18,8 +19,6 @@ class circle(CfgMaster):
         self.winlist=[]
         self.subtag_info={}
         self.need_handle_fullscreen=True
-
-        self.load_config("circle")
 
         for tag in self.cfg:
             self.tagged[tag]=[]
