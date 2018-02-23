@@ -17,7 +17,7 @@ import inotify.adapters
 import atexit
 import subprocess
 import shlex
-import toml
+import cgitb
 from i3gen import *
 from singleton import *
 
@@ -59,6 +59,7 @@ class Listner():
         Thread(target=self.watch, args=(self.i3_path, '_config', self.i3_config_event), daemon=True).start()
 
     def dump_configs(self):
+        import toml
         try:
             for mod in self.mods.keys():
                 m=self.mods[mod]
@@ -130,5 +131,6 @@ class Listner():
         self.return_to_i3main()
 
 if __name__ == '__main__':
+    cgitb.enable()
     listner = Listner()
     listner.main()
