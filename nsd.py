@@ -90,6 +90,11 @@ class ns(CfgMaster):
             if not self.check_dialog_win(win):
                 win.command('move container to workspace current, show scratchpad')
 
+    def toggle_fs(self, win):
+        if win.fullscreen_mode:
+            win.command('fullscreen toggle')
+            self.fullscreen_list.append(win)
+
     def toggle(self, tag : str) -> None:
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
             try:
@@ -110,18 +115,13 @@ class ns(CfgMaster):
                 self.unfocus(tag)
                 return
 
-        if focused.fullscreen_mode:
-            focused.command('fullscreen toggle')
-            self.fullscreen_list.append(focused)
-
+        self.toggle_fs(focused)
         self.focus(tag)
 
     def focus_sub_tag(self, tag: str, subtag_classes_set):
         focused=self.i3.get_tree().find_focused()
 
-        if focused.fullscreen_mode:
-            focused.command('fullscreen toggle')
-            self.fullscreen_list.append(focused)
+        self.toggle_fs(focused)
 
         if focused.window_class in subtag_classes_set:
             return
