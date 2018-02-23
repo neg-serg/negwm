@@ -31,7 +31,7 @@ class flast():
             if wid not in set(w.id for w in self.i3.get_tree().leaves()):
                 self.window_list.remove(wid)
             else:
-                self.i3.command('[con_id=%s] focus' % wid)
+                self.i3.command(f'[con_id={wid}] focus')
                 return
 
     def on_window_focus(self, i3, event):

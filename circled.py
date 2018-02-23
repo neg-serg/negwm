@@ -91,7 +91,7 @@ class circle(CfgMaster):
                 for id in self.restore_fullscreen:
                     if id == now_focused:
                         self.need_handle_fullscreen=False
-                        self.i3.command('[con_id=%s] fullscreen enable' % now_focused)
+                        self.i3.command(f'[con_id={now_focused}] fullscreen enable')
 
             self.need_handle_fullscreen=True
 

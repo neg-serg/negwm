@@ -30,7 +30,7 @@ class ns(CfgMaster):
 
     def make_mark_str(self, tag: str) -> str:
         uuid_str = str(str(uuid.uuid4().fields[-1]))
-        return 'mark {}'.format("%(tag)s-%(uuid_str)s" % {"tag":tag, "uuid_str":uuid_str})
+        return f'mark {tag}-{uuid_str}'
 
     def focus(self, tag: str, hide=True) -> None:
         if not len(self.transients):
@@ -94,7 +94,7 @@ class ns(CfgMaster):
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
             try:
                 prog_str=re.sub("~", os.path.realpath(os.path.expandvars("$HOME")), self.cfg[tag]["prog"])
-                self.i3.command('exec {}'.format(prog_str))
+                self.i3.command(f'exec {prog_str}')
             except:
                 pass
 
@@ -132,7 +132,7 @@ class ns(CfgMaster):
         for w in visible_windows:
             for i in self.marked[tag]:
                 if w.window_class in subtag_classes_set and w.id == i.id:
-                    self.i3.command('[con_id=%s] focus' % w.id)
+                    self.i3.command(f'[con_id={w.id}] focus')
 
         for _ in self.marked[tag]:
             focused=self.i3.get_tree().find_focused()
@@ -150,7 +150,7 @@ class ns(CfgMaster):
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
                         self.cfg[tag].get("prog_dict",{}).get(app,{}).get("prog",{})
                     )
-                    self.i3.command('exec {}'.format(prog_str))
+                    self.i3.command(f'exec {prog_str}')
                 except:
                     pass
             else:
@@ -206,10 +206,7 @@ class ns(CfgMaster):
             del self.marked[tag][idx]
 
             # then make a new mark and move scratchpad
-            win_cmd="%(make_mark)s, move scratchpad, %(get_geom)s" % {
-                "make_mark": self.make_mark_str(tag),
-                "get_geom": self.nsgeom.get_geom(tag)
-            }
+            win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
             win.command(win_cmd)
             self.marked[tag].append(win)
 
@@ -278,10 +275,7 @@ class ns(CfgMaster):
                 if self.match(win, factor, tag):
                     if self.check_dialog_win(win):
                         # scratch_move
-                        win_cmd="%(make_mark)s, move scratchpad, %(get_geom)s" % {
-                            "make_mark": self.make_mark_str(tag),
-                            "get_geom": self.nsgeom.get_geom(tag)
-                        }
+                        win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
                         break
@@ -313,12 +307,7 @@ class ns(CfgMaster):
                             hide_cmd=''
                             if hide:
                                 hide_cmd='[con_id=__focused__] scratchpad show'
-                            win_cmd="%(make_mark)s, move scratchpad, %(get_geom)s, %(hide_cmd)s" % \
-                                {
-                                    "make_mark": self.make_mark_str(tag),
-                                    "get_geom": self.nsgeom.get_geom(tag),
-                                    "hide_cmd": hide_cmd
-                                }
+                            win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                             win.command(win_cmd)
                             self.marked[tag].append(win)
                             break
