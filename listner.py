@@ -30,8 +30,11 @@ class Listner():
         xdg_config_path=os.environ.get("XDG_CONFIG_HOME", "/home/" + user_name + "/.config/")
         self.i3_path=xdg_config_path+"/i3/"
 
-    def watch(self, watch_dir, file_path, ev, watched_inotify_event="IN_MODIFY"):
-        watch_dir=watch_dir.encode()
+    def watch(self, watch_dir, file_path, ev, watched_inotify_event="IN_MODIFY", stackless=True):
+        if stackless:
+            watch_dir=watch_dir
+        else:
+            watch_dir=watch_dir.encode()
         i=inotify.adapters.Inotify()
         i.add_watch(watch_dir)
 
@@ -39,8 +42,12 @@ class Listner():
             for event in i.event_gen():
                 if event is not None:
                     (header, type_names, watch_path, filename) = event
-                    if filename.decode() == file_path and watched_inotify_event in type_names:
-                        ev.set()
+                    if stackless:
+                        if filename == file_path and watched_inotify_event in type_names:
+                            ev.set()
+                    else:
+                        if filename.decode() == file_path and watched_inotify_event in type_names:
+                            ev.set()
         finally:
             i.remove_watch(watch_dir)
 
