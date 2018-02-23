@@ -8,12 +8,16 @@ from cfg_master import *
 
 class circle(CfgMaster):
     __metaclass__ = Singleton
+
     def __init__(self):
-        self.load_config()
+        CfgMaster.__init__(self)
         self.tagged={}
         self.counters={}
         self.restore_fullscreen=[]
-        self.factors=["class", "instance", "class_r", "instance_r", "role_r", "name_r"]
+        self.factors=[
+            "class", "instance",
+            "class_r", "instance_r", "role_r", "name_r"
+        ]
         self.interactive=True
         self.repeats=0
         self.winlist=[]

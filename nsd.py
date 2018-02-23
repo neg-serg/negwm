@@ -14,11 +14,15 @@ from cfg_master import *
 
 class ns(CfgMaster):
     __metaclass__ = Singleton
+
     def __init__(self) -> None:
-        self.load_config()
+        CfgMaster.__init__(self)
         self.winlist=None
         self.fullscreen_list=[]
-        self.factors=["class", "instance", "class_r", "instance_r", "name_r", "role_r"]
+        self.factors=[
+            "class", "instance",
+            "class_r", "instance_r", "name_r", "role_r"
+        ]
         self.nsgeom=geom.geom(self.cfg)
         self.marked={l:[] for l in self.cfg}
         self.i3 = i3ipc.Connection()
