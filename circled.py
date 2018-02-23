@@ -3,7 +3,6 @@ import re
 import os
 import toml
 from i3gen import *
-
 from cfg_master import *
 
 class circle(CfgMaster):
