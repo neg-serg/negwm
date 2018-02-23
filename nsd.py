@@ -285,9 +285,10 @@ class ns(CfgMaster):
         self.winlist=self.i3.get_tree()
 
     def unmark_tag(self, i3, event) -> None:
+        win_ev=event.container
         for tag in self.cfg:
             for _,win in enumerate(self.marked[tag]):
-                if win.id == event.container.id:
+                if win.id == win_ev.id:
                     del self.marked[tag][_]
                     self.focus(tag)
                     for tr in self.transients:
