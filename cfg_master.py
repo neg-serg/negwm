@@ -26,7 +26,8 @@ class CfgMaster():
                             if kk == "includes":
                                 self.cfg[i][j][k][kk]=set(self.cfg[i][j][k][sys.intern(kk)])
 
-    def load_config(self, mod):
+    def load_config(self):
+        mod=self.__class__.__name__
         user_name=os.environ.get("USER", "neg")
         xdg_config_path=os.environ.get("XDG_CONFIG_HOME", "/home/" + user_name + "/.config/")
         self.i3_path=xdg_config_path+"/i3/"

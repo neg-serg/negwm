@@ -9,7 +9,7 @@ from cfg_master import *
 class circle(CfgMaster):
     __metaclass__ = Singleton
     def __init__(self):
-        self.load_config("circle")
+        self.load_config()
         self.tagged={}
         self.counters={}
         self.restore_fullscreen=[]
