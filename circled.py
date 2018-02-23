@@ -10,7 +10,7 @@ class circle(CfgMaster):
     __metaclass__ = Singleton
 
     def __init__(self):
-        CfgMaster.__init__(self)
+        super().__init__()
         self.tagged={}
         self.counters={}
         self.restore_fullscreen=[]

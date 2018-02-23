@@ -16,7 +16,7 @@ class ns(CfgMaster):
     __metaclass__ = Singleton
 
     def __init__(self) -> None:
-        CfgMaster.__init__(self)
+        super().__init__()
         self.winlist=None
         self.fullscreen_list=[]
         self.factors=[
