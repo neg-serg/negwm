@@ -3,7 +3,6 @@ import uuid
 import re
 import os
 import shlex
-import toml
 import subprocess
 import geom
 from i3gen import *
@@ -217,6 +216,28 @@ class ns(CfgMaster):
     def geom_restore_current(self) -> None:
         self.apply_to_current_tag(self.geom_restore)
 
+    def geom_dump(self, tag: str) -> None:
+        focused = self.i3.get_tree().find_focused()
+        for idx,win in enumerate(self.marked[tag]):
+            if win.id == focused.id:
+                self.cfg[tag]["geom"]=f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                self.dump_config()
+                break
+
+    def geom_save(self, tag: str) -> None:
+        focused = self.i3.get_tree().find_focused()
+        for idx,win in enumerate(self.marked[tag]):
+            if win.id == focused.id:
+                self.cfg[tag]["geom"]=f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                self.nsgeom=geom.geom(self.cfg)
+                break
+
+    def geom_dump_current(self):
+        self.apply_to_current_tag(self.geom_dump)
+
+    def geom_save_current(self):
+        self.apply_to_current_tag(self.geom_save)
+
     def switch(self, args : List) -> None:
         switch_ = {
             "show": self.focus,
@@ -225,6 +246,8 @@ class ns(CfgMaster):
             "toggle": self.toggle,
             "hide_current": self.hide_current,
             "geom_restore": self.geom_restore_current,
+            "geom_dump": self.geom_dump_current,
+            "geom_save": self.geom_save_current,
             "run": self.run_subtag,
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,

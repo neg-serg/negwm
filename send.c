@@ -51,6 +51,8 @@ const char* docstr= \
     "  send ns dialog\n" \
     "  send ns reload\n" \
     "  send ns geom_restore\n" \
+    "  send ns geom_save\n" \
+    "  send ns geom_dump\n" \
     "  send ns hide_current\n" \
     "  send flast switch\n" \
     "  send flast reload\n" \
@@ -89,6 +91,8 @@ Args ArgMap[] = {
         { "next", 0 },
         { "reload", 0 },
         { "geom_restore", 0 },
+        { "geom_dump", 0 },
+        { "geom_save", 0 },
         { "hide_current", 0 },
         { "dialog", 0 },
         { NULL, 0 },
