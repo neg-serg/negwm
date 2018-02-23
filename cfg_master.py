@@ -10,11 +10,12 @@ class CfgMaster(object):
     def reload_config(self):
         prev_conf=self.cfg
         try:
-            self.load_config(self.mod)
+            self.load_config()
             self.__init__()
-            print("config_reloaded")
+            print(f"[{self.mod}] config reloaded")
         except:
-            print("config reload failed")
+            print(f"[{self.mod}] config reload failed")
+            traceback.print_exc(file=sys.stdout)
             self.cfg=prev_conf
             self.__init__()
 
