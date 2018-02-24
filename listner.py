@@ -131,6 +131,6 @@ class Listner():
         self.return_to_i3main()
 
 if __name__ == '__main__':
-    cgitb.enable()
+    cgitb.enable(format='text')
     listner = Listner()
     listner.main()
