@@ -260,16 +260,14 @@ class ns(CfgMaster, Matcher):
     def mark_tag(self, i3, event) -> None:
         win=event.container
         for tag in self.cfg:
-            for factor in self.factors:
-                if self.match(win, factor, tag):
-                    if self.check_dialog_win(win):
-                        # scratch_move
-                        win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
-                        win.command(win_cmd)
-                        self.marked[tag].append(win)
-                        break
-                    else:
-                        self.transients.append(win)
+            if self.match(win, tag):
+                if self.check_dialog_win(win):
+                    # scratch_move
+                    win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
+                    win.command(win_cmd)
+                    self.marked[tag].append(win)
+                else:
+                    self.transients.append(win)
         self.dialog_toggle()
         self.winlist=self.i3.get_tree()
 
@@ -290,17 +288,15 @@ class ns(CfgMaster, Matcher):
         leaves=self.winlist.leaves()
         for tag in self.cfg:
             for win in leaves:
-                for factor in self.factors:
-                    if self.match(win, factor, tag):
-                        if self.check_dialog_win(win):
-                            # scratch move
-                            hide_cmd=''
-                            if hide:
-                                hide_cmd='[con_id=__focused__] scratchpad show'
-                            win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}, {hide_cmd}"
-                            win.command(win_cmd)
-                            self.marked[tag].append(win)
-                            break
-                        else:
-                            self.transients.append(win)
+                if self.match(win, tag):
+                    if self.check_dialog_win(win):
+                        # scratch move
+                        hide_cmd=''
+                        if hide:
+                            hide_cmd='[con_id=__focused__] scratchpad show'
+                        win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}, {hide_cmd}"
+                        win.command(win_cmd)
+                        self.marked[tag].append(win)
+                    else:
+                        self.transients.append(win)
         self.winlist = self.i3.get_tree()

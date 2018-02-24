@@ -157,10 +157,8 @@ class circle(CfgMaster, Matcher):
 
     def find_acceptable_windows(self, tag, wlist):
         for win in wlist:
-            for factor in self.factors:
-                if self.match(win, factor, tag):
-                    self.tagged[tag].append(win)
-                    break
+            if self.match(win, tag):
+                self.tagged[tag].append(win)
 
     def tag_windows(self):
         self.winlist=self.i3.get_tree()
@@ -189,18 +187,16 @@ class circle(CfgMaster, Matcher):
     def del_wins(self, i3, event):
         win = event.container
         for tag in self.cfg:
-            for factor in self.factors:
-                if self.match(win, factor, tag):
-                    try:
-                        if self.tagged[tag] is not None:
-                            for win in self.tagged[tag]:
-                                if win.id in self.restore_fullscreen:
-                                    self.restore_fullscreen.remove(win.id)
-                        del self.tagged[tag]
-                    except KeyError:
-                        self.tag_windows()
-                        self.del_wins(i3, event)
-                    break
+            if self.match(win, tag):
+                try:
+                    if self.tagged[tag] is not None:
+                        for win in self.tagged[tag]:
+                            if win.id in self.restore_fullscreen:
+                                self.restore_fullscreen.remove(win.id)
+                    del self.tagged[tag]
+                except KeyError:
+                    self.tag_windows()
+                    self.del_wins(i3, event)
         self.winlist=self.i3.get_tree()
 
     def set_curr_win(self, i3, event):
