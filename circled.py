@@ -146,10 +146,7 @@ class circle(CfgMaster, Matcher):
             "run": self.go_next,
             "reload": self.reload_config,
         }
-        try:
-            switch_[args[0]](*args[1:])
-        except:
-            pass
+        switch_[args[0]](*args[1:])
 
     def find_acceptable_windows(self, tag, wlist):
         for win in wlist:
