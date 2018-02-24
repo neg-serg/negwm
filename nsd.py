@@ -5,6 +5,8 @@ import os
 import shlex
 import subprocess
 import geom
+import time
+from threading import Thread
 from i3gen import *
 from typing import Callable, List
 
@@ -225,8 +227,23 @@ class ns(CfgMaster, Matcher):
         for idx,win in enumerate(self.marked[tag]):
             if win.id == focused.id:
                 self.cfg[tag]["geom"]=f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
-                self.nsgeom=geom.geom(self.cfg)
+                if win.rect.x != focused.rect.x \
+                or win.rect.y != focused.rect.y \
+                or win.rect.width != focused.rect.width \
+                or win.rect.height != focused.rect.height:
+                    self.nsgeom=geom.geom(self.cfg)
+                    win.rect.x=focused.rect.x
+                    win.rect.y=focused.rect.y
+                    win.rect.width=focused.rect.width
+                    win.rect.height=focused.rect.height
                 break
+
+    def auto_update_geom(self):
+        def auto_update_geom_payload(sleep=0.5):
+            while True:
+                self.geom_save_current()
+                time.sleep(sleep)
+        Thread(target=auto_update_geom_payload, daemon=True).start()
 
     def geom_dump_current(self):
         self.apply_to_current_tag(self.geom_dump)
@@ -248,10 +265,7 @@ class ns(CfgMaster, Matcher):
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,
         }
-        try:
-            switch_[args[0]](*args[1:])
-        except:
-            pass
+        switch_[args[0]](*args[1:])
 
     def mark_tag(self, i3, event) -> None:
         win=event.container
