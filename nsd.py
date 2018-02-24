@@ -49,6 +49,7 @@ class ns(CfgMaster, Matcher):
                 self.mark_all_tags(hide=False)
 
     def unfocus(self, tag: str) -> None:
+        self.geom_save(tag)
         [
             win.command('move scratchpad')
             for win in self.marked[tag]
