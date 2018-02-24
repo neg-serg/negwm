@@ -3,8 +3,7 @@ import socket
 import i3ipc
 from threading import Thread, Event
 
-class BreakoutException(Exception):
-    pass
+class BreakoutException(Exception): pass
 
 class currws():
     def __init__(self):
