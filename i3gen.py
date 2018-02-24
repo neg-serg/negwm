@@ -1,4 +1,5 @@
 import os
+import traceback
 from threading import Thread
 from collections import deque
 from singleton import *
@@ -93,7 +94,7 @@ class daemon_i3():
             if oe.errno != errno.EEXIST:
                 raise
 
-    def fifo_listner(self, singleton, name):
+    def fifo_listner(self, mod, name):
         with open(self.fifos[name]) as fifo:
             while True:
                 data = fifo.read()
@@ -101,7 +102,10 @@ class daemon_i3():
                     break
                 eval_str=data.split('\n', 1)[0]
                 args=list(filter(lambda x: x != '', eval_str.split(' ')))
-                singleton.switch(args)
+                try:
+                    mod.switch(args)
+                except:
+                    print(traceback.format_exc())
 
     def worker(self):
         while True:
@@ -109,7 +113,7 @@ class daemon_i3():
                 raise SystemExit()
             self.d.get()
 
-    def mainloop(self, singleton, name):
+    def mainloop(self, mod, name):
         while True:
-            self.d.append(self.fifo_listner(singleton, name))
+            self.d.append(self.fifo_listner(mod, name))
             Thread(target=self.worker).start()
