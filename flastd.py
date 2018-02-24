@@ -17,11 +17,10 @@ class flast():
         self.__init__()
 
     def switch(self, args):
-        switch_ = {
+        {
             "switch": self.alt_tab,
             "reload": self.reload_config,
-        }
-        switch_[args[0]](*args[1:])
+        }[args[0]](*args[1:])
 
     def alt_tab(self):
         for wid in self.window_list[1:]:

@@ -141,12 +141,11 @@ class circle(CfgMaster, Matcher):
             self.go_next(tag)
 
     def switch(self, args):
-        switch_ = {
+        {
             "next": self.go_next,
             "run": self.go_next,
             "reload": self.reload_config,
-        }
-        switch_[args[0]](*args[1:])
+        }[args[0]](*args[1:])
 
     def find_acceptable_windows(self, tag, wlist):
         for win in wlist:

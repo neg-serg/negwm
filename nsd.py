@@ -252,7 +252,7 @@ class ns(CfgMaster, Matcher):
         self.apply_to_current_tag(self.geom_save)
 
     def switch(self, args : List) -> None:
-        switch_ = {
+        {
             "show": self.focus,
             "hide": self.unfocus_all_but_current,
             "next": self.next_win,
@@ -264,8 +264,7 @@ class ns(CfgMaster, Matcher):
             "run": self.run_subtag,
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,
-        }
-        switch_[args[0]](*args[1:])
+        }[args[0]](*args[1:])
 
     def mark_tag(self, i3, event) -> None:
         win=event.container
