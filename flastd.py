@@ -21,10 +21,7 @@ class flast():
             "switch": self.alt_tab,
             "reload": self.reload_config,
         }
-        try:
-            switch_[args[0]](*args[1:])
-        except:
-            pass
+        switch_[args[0]](*args[1:])
 
     def alt_tab(self):
         for wid in self.window_list[1:]:
