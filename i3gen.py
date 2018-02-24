@@ -3,6 +3,42 @@ from threading import Thread
 from collections import deque
 from singleton import *
 
+class Matcher(object):
+    def match(self, win, factor, tag):
+        lst_by_factor=self.cfg.get(tag,{}).get(factor, {})
+        if factor == "class":
+            return win.window_class in lst_by_factor
+        elif factor == "instance":
+            return win.window_instance in lst_by_factor
+        elif factor == "class_r":
+            for reg in lst_by_factor:
+                cls_by_regex=self.winlist.find_classed(reg)
+                if cls_by_regex:
+                    for class_regex in cls_by_regex:
+                        if win.window_class == class_regex.window_class:
+                            return True
+        elif factor == "instance_r":
+            for reg in lst_by_factor:
+                inst_by_regex=self.winlist.find_instanced(reg)
+                if inst_by_regex:
+                    for inst_regex in inst_by_regex:
+                        if win.window_instance == inst_regex.window_instance:
+                            return True
+        elif factor == "role_r":
+            for reg in lst_by_factor:
+                role_by_regex=self.winlist.find_by_role(reg)
+                if role_by_regex:
+                    for role_regex in role_by_regex:
+                        if win.window_role == role_regex.window_role:
+                            return True
+        elif factor == "name_r":
+            for reg in lst_by_factor:
+                name_by_regex=self.winlist.find_named(reg)
+                if name_by_regex:
+                    for name_regex in name_by_regex:
+                        if win.name == name_regex.name:
+                            return True
+
 class daemon_manager():
     __metaclass__ = Singleton
     def __init__(self):

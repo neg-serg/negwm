@@ -5,7 +5,7 @@ import toml
 from i3gen import *
 from cfg_master import *
 
-class circle(CfgMaster):
+class circle(CfgMaster, Matcher):
     __metaclass__ = Singleton
 
     def __init__(self):
@@ -154,44 +154,6 @@ class circle(CfgMaster):
             switch_[args[0]](*args[1:])
         except:
             pass
-
-    def match(self, win, factor, tag):
-        if factor == "class":
-            return win.window_class in self.cfg.get(tag,{}).get(factor, {})
-        elif factor == "instance":
-            return win.window_instance in self.cfg.get(tag,{}).get(factor, {})
-        elif factor == "class_r":
-            regexes=self.cfg.get(tag,{}).get(factor, {})
-            for reg in regexes:
-                cls_by_regex=self.winlist.find_classed(reg)
-                if cls_by_regex:
-                    for class_regex in cls_by_regex:
-                        if win.window_class == class_regex.window_class:
-                            return True
-        elif factor == "instance_r":
-            regexes=self.cfg.get(tag,{}).get(factor, {})
-            for reg in regexes:
-                inst_by_regex=self.winlist.find_instanced(reg)
-                if inst_by_regex:
-                    for inst_regex in inst_by_regex:
-                        if win.window_instance == inst_regex.window_instance:
-                            return True
-        elif factor == "role_r":
-            regexes=self.cfg.get(tag,{}).get(factor, {})
-            for reg in regexes:
-                role_by_regex=self.winlist.find_by_role(reg)
-                if role_by_regex:
-                    for role_regex in role_by_regex:
-                        if win.window_role == role_regex.window_role:
-                            return True
-        elif factor == "name_r":
-            regexes=self.cfg.get(tag,{}).get(factor, {})
-            for reg in regexes:
-                name_by_regex=self.winlist.find_named(reg)
-                if name_by_regex:
-                    for name_regex in name_by_regex:
-                        if win.name == name_regex.name:
-                            return True
 
     def find_acceptable_windows(self, tag, wlist):
         for win in wlist:
