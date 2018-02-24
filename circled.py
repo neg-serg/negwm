@@ -13,10 +13,6 @@ class circle(CfgMaster, Matcher):
         self.tagged={}
         self.counters={}
         self.restore_fullscreen=[]
-        self.factors=[
-            "class", "instance",
-            "class_r", "instance_r", "role_r", "name_r"
-        ]
         self.interactive=True
         self.repeats=0
         self.winlist=[]
@@ -174,14 +170,12 @@ class circle(CfgMaster, Matcher):
     def add_wins(self, i3, event):
         win = event.container
         for tag in self.cfg:
-            for factor in self.factors:
-                if win.window_class in self.cfg.get(tag,{}).get((factor),{}):
-                    try:
-                        self.tagged[tag].append(win)
-                    except KeyError:
-                        self.tag_windows()
-                        self.add_wins(i3, event)
-                    break
+            if self.match(win,tag):
+                try:
+                    self.tagged[tag].append(win)
+                except KeyError:
+                    self.tag_windows()
+                    self.add_wins(i3, event)
         self.winlist=self.i3.get_tree()
 
     def del_wins(self, i3, event):
