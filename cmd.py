@@ -3,7 +3,7 @@ import json
 import re
 import subprocess
 import sys
-from singleton import *
+from lib.singleton import *
 
 class i3menu():
     __metaclass__ = Singleton
