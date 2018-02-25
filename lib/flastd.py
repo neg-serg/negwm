@@ -1,8 +1,8 @@
 import i3ipc
 import os
 from subprocess import check_output
-from modlib import *
-from singleton import *
+from lib.modlib import *
+from lib.singleton import *
 
 class flast():
     __metaclass__ = Singleton

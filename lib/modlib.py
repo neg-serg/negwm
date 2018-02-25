@@ -3,7 +3,7 @@ import traceback
 import subprocess
 from threading import Thread
 from collections import deque
-from singleton import *
+from lib.singleton import *
 
 def notify_msg(s, prefix=">>"):
     notify_msg=['notify-send', prefix, s]

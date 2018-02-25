@@ -18,8 +18,8 @@ import atexit
 import subprocess
 import shlex
 import cgitb
-from modlib import *
-from singleton import *
+from lib.modlib import *
+from lib.singleton import *
 
 class Listner():
     def __init__(self):

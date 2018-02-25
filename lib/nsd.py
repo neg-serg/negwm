@@ -4,14 +4,14 @@ import re
 import os
 import shlex
 import subprocess
-import geom
 import time
 from threading import Thread
-from modlib import *
 from typing import Callable, List
 
-from singleton import *
-from cfg_master import *
+import lib.geom as geom
+from lib.modlib import *
+from lib.singleton import *
+from lib.cfg_master import *
 
 class ns(CfgMaster, Matcher):
     __metaclass__ = Singleton

@@ -2,8 +2,8 @@ import i3ipc
 import re
 import os
 import toml
-from modlib import *
-from cfg_master import *
+from lib.modlib import *
+from lib.cfg_master import *
 
 class circle(CfgMaster, Matcher):
     __metaclass__ = Singleton
