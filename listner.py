@@ -71,7 +71,7 @@ class Listner():
     def load_modules(self):
         for mod in self.mods.keys():
             cm=self.mods[mod]
-            i3mod=importlib.import_module("%s" % mod + "d")
+            i3mod=importlib.import_module("lib." + mod + "d")
             cm["instance"]=getattr(i3mod, mod)()
             cm["manager"]=daemon_manager()
             cm["manager"].add_daemon(mod)
