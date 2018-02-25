@@ -53,7 +53,7 @@ class Listner():
 
     def i3_module_inotify(self):
         for mod in self.mods.keys():
-            Thread(target=self.watch, args=(self.i3_path, mod + '.cfg', self.i3_module_event), daemon=True).start()
+            Thread(target=self.watch, args=(self.i3_path + "/cfg/", mod + '.cfg', self.i3_module_event), daemon=True).start()
 
     def i3_config_inotify(self):
         Thread(target=self.watch, args=(self.i3_path, '_config', self.i3_config_event), daemon=True).start()
@@ -63,7 +63,7 @@ class Listner():
         try:
             for mod in self.mods.keys():
                 m=self.mods[mod]
-                with open(self.i3_path + mod + ".cfg", "w") as fp:
+                with open(self.i3_path + "/cfg/" + mod + ".cfg", "w") as fp:
                     toml.dump(m["instance"].cfg, fp)
         except:
             pass
