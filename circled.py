@@ -2,7 +2,7 @@ import i3ipc
 import re
 import os
 import toml
-from i3gen import *
+from modlib import *
 from cfg_master import *
 
 class circle(CfgMaster, Matcher):

@@ -7,7 +7,7 @@ import subprocess
 import geom
 import time
 from threading import Thread
-from i3gen import *
+from modlib import *
 from typing import Callable, List
 
 from singleton import *

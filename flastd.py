@@ -1,7 +1,7 @@
 import i3ipc
 import os
 from subprocess import check_output
-from i3gen import *
+from modlib import *
 from singleton import *
 
 class flast():

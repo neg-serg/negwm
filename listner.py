@@ -18,7 +18,7 @@ import atexit
 import subprocess
 import shlex
 import cgitb
-from i3gen import *
+from modlib import *
 from singleton import *
 
 class Listner():
