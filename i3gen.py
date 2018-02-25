@@ -1,8 +1,13 @@
 import os
 import traceback
+import subprocess
 from threading import Thread
 from collections import deque
 from singleton import *
+
+def notify_msg(s, prefix=">>"):
+    notify_msg=['notify-send', prefix, s]
+    subprocess.Popen(notify_msg)
 
 class Matcher(object):
     def match(self, win, tag):

@@ -200,8 +200,7 @@ bindsym $m4+$S+d $ns toggle console
 bindsym $m4+$S+e $ns toggle weechat
 bindsym $m4+3 $ns next
 bindsym $m4+$c+$S+R $ns geom_restore
-bindsym $m4+$c+$S+S $ns geom_save
-bindsym --whole-window --release button1 exec $ns geom_save
+bindsym $m4+$c+$S+S $ns geom_autosave_mode
 bindsym $m4+s $ns hide_current
 
 mode "" {

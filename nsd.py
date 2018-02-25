@@ -25,6 +25,7 @@ class ns(CfgMaster, Matcher):
         self.i3 = i3ipc.Connection()
         self.transients=[]
         self.mark_all_tags(hide=True)
+        self.auto_save_geom(False)
 
         self.i3.on('window::new', self.mark_tag)
         self.i3.on('window::close', self.unmark_tag)
@@ -49,7 +50,8 @@ class ns(CfgMaster, Matcher):
                 self.mark_all_tags(hide=False)
 
     def unfocus(self, tag: str) -> None:
-        self.geom_save(tag)
+        if self.geom_auto_save:
+            self.geom_save(tag)
         [
             win.command('move scratchpad')
             for win in self.marked[tag]
@@ -246,6 +248,17 @@ class ns(CfgMaster, Matcher):
                 time.sleep(sleep)
         Thread(target=auto_update_geom_payload, daemon=True).start()
 
+    def auto_save_geom(self, save=True, with_notification=True):
+        self.geom_auto_save=save
+        if with_notification:
+            notify_msg(f"geometry autosave={save}")
+
+    def autosave_toggle(self):
+        if self.geom_auto_save:
+            self.auto_save_geom(False)
+        else:
+            self.auto_save_geom(True)
+
     def geom_dump_current(self):
         self.apply_to_current_tag(self.geom_dump)
 
@@ -262,6 +275,7 @@ class ns(CfgMaster, Matcher):
             "geom_restore": self.geom_restore_current,
             "geom_dump": self.geom_dump_current,
             "geom_save": self.geom_save_current,
+            "geom_autosave_mode": self.autosave_toggle,
             "run": self.run_subtag,
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,
