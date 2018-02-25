@@ -1,11 +1,9 @@
 import i3ipc
-import uuid
-import re
 import os
-import shlex
+import re
 import subprocess
 import time
-from threading import Thread
+import uuid
 from typing import Callable, List
 
 import lib.geom as geom
