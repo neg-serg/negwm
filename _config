@@ -143,7 +143,7 @@ for_window [instance="^(gparted|_logs_|recoll|remmina|htop_term|glances_term|gno
 for_window [instance="^(subl3|sublime_text)$"] move container to workspace $dev, workspace $dev, focus
 for_window [instance="sun-awt-X11-(XWindowPeer|XDialogPeer|XFramePeer)"] floating enable
 for_window [instance="^(Update|gnome-keyring|file-progress|wicd)$"] floating enable
-for_window [instance="^(wim|nwim)$"] move container to workspace $dev, workspace $dev, focus
+for_window [instance="^(wim|nwim|oni)$"] move container to workspace $dev, workspace $dev, focus
 for_window $sclient move container to workspace $steam, workspace $steam, focus
 for_window $steam_games move container to workspace $steam, workspace $steam, fullscreen enable, focus
 for_window $steam_all mark steam_all, move container to workspace $steam, workspace $steam, focus
