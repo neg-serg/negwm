@@ -25,7 +25,7 @@ class Listner():
     def __init__(self):
         self.i3_module_event = Event()
         self.i3_config_event = Event()
-        self.mods={'circle': {}, 'ns': {}, 'flast': {}}
+        self.mods={'circle': {}, 'ns': {}, 'flast': {}, 'menu': {}}
         user_name=os.environ.get("USER", "neg")
         xdg_config_path=os.environ.get("XDG_CONFIG_HOME", "/home/" + user_name + "/.config/")
         self.i3_path=xdg_config_path+"/i3/"

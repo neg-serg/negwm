@@ -1,5 +1,4 @@
 import i3ipc
-import os
 from subprocess import check_output
 from lib.modlib import *
 from lib.singleton import *
@@ -55,7 +54,7 @@ class flast():
         return visible_windows
 
     def go_back_if_nothing(self, i3, event):
-        focused=i3.get_tree().find_focused()
+        focused = i3.get_tree().find_focused()
         if not len(self.find_visible_windows()):
             for ws in ["pic", "media"]:
                 if ws in focused.workspace().name:

@@ -1,7 +1,6 @@
 import i3ipc
 import re
 import os
-import toml
 from lib.modlib import *
 from lib.cfg_master import *
 
@@ -10,18 +9,18 @@ class circle(CfgMaster, Matcher):
 
     def __init__(self):
         super().__init__()
-        self.tagged={}
-        self.counters={}
-        self.restore_fullscreen=[]
-        self.interactive=True
-        self.repeats=0
-        self.winlist=[]
-        self.subtag_info={}
-        self.need_handle_fullscreen=True
+        self.tagged = {}
+        self.counters = {}
+        self.restore_fullscreen = []
+        self.interactive = True
+        self.repeats = 0
+        self.winlist = []
+        self.subtag_info = {}
+        self.need_handle_fullscreen = True
 
         for tag in self.cfg:
-            self.tagged[tag]=[]
-            self.counters[tag]=0
+            self.tagged[tag] = []
+            self.counters[tag] = 0
 
         self.i3 = i3ipc.Connection()
         self.tag_windows()
@@ -31,7 +30,7 @@ class circle(CfgMaster, Matcher):
         self.i3.on("window::focus", self.set_curr_win)
         self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
 
-        self.current_win=self.i3.get_tree().find_focused()
+        self.current_win = self.i3.get_tree().find_focused()
 
     def go_next(self, tag, subtag=None):
         def cur_win_in_current_class_set():
@@ -44,14 +43,14 @@ class circle(CfgMaster, Matcher):
                 return True
 
         def inc_c():
-            self.counters[tag]+=1
+            self.counters[tag] += 1
 
         def twin(with_subtag=False):
             if not with_subtag:
                 return self.tagged[tag][idx]
             else:
-                subtag_win_classes=self.subtag_info.get("includes",{})
-                for subidx,win in enumerate(self.tagged[tag]):
+                subtag_win_classes = self.subtag_info.get("includes", {})
+                for subidx, win in enumerate(self.tagged[tag]):
                     if win.window_class in subtag_win_classes:
                         return self.tagged[tag][subidx]
 
@@ -60,12 +59,12 @@ class circle(CfgMaster, Matcher):
                 if subtag is None:
                     prog_str=re.sub(
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
-                        self.cfg[tag].get("prog",{})
+                        self.cfg[tag].get("prog", {})
                     )
                 else:
                     prog_str=re.sub(
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
-                        self.cfg[tag].get("prog_dict",{}).get(subtag,{}).get("prog",{})
+                        self.cfg[tag].get("prog_dict", {}).get(subtag, {}).get("prog", {})
                     )
                 if prog_str:
                     self.i3.command('exec {}'.format(prog_str))
@@ -74,10 +73,10 @@ class circle(CfgMaster, Matcher):
 
         def focus_next(inc_counter=True, fullscreen_handler=True, subtag=None):
             if fullscreen_handler:
-                fullscreened=self.i3.get_tree().find_fullscreen()
+                fullscreened = self.i3.get_tree().find_fullscreen()
                 for win in fullscreened:
                     if cur_win_in_current_class_set() and self.current_win.id == win.id:
-                        self.need_handle_fullscreen=False
+                        self.need_handle_fullscreen = False
                         win.command('fullscreen disable')
 
             twin(subtag is not None).command('focus')
@@ -86,41 +85,42 @@ class circle(CfgMaster, Matcher):
                 inc_c()
 
             if fullscreen_handler:
-                now_focused=twin().id
+                now_focused = twin().id
                 for id in self.restore_fullscreen:
                     if id == now_focused:
-                        self.need_handle_fullscreen=False
+                        self.need_handle_fullscreen = False
                         self.i3.command(f'[con_id={now_focused}] fullscreen enable')
 
-            self.need_handle_fullscreen=True
+            self.need_handle_fullscreen = True
 
         def find_priority_win():
             inc_c()
-            self.repeats+=1
+            self.repeats += 1
             if self.repeats < 8:
                 self.go_next(tag)
             else:
-                self.repeats=0
+                self.repeats = 0
         try:
             if subtag is None:
                 if len(self.tagged[tag]) == 0:
                     run_prog()
                 elif len(self.tagged[tag]) <= 1:
-                    idx=0
+                    idx = 0
                     focus_next(fullscreen_handler=False)
                 else:
-                    idx=self.counters[tag] % len(self.tagged[tag])
+                    idx = self.counters[tag] % len(self.tagged[tag])
 
                     if ("priority" in self.cfg[tag]) and not current_class_in_priority():
                         if not len([ win for win in self.tagged[tag] if win.window_class == self.cfg[tag]["priority"]]):
                             run_prog()
                             return
 
-                        for idx,item in enumerate(self.tagged[tag]):
+                        for idx, item in enumerate(self.tagged[tag]):
                             if item.window_class == self.cfg[tag]["priority"]:
-                                fullscreened=self.i3.get_tree().find_fullscreen()
+                                fullscreened = self.i3.get_tree().find_fullscreen()
                                 for win in fullscreened:
-                                    if win.window_class in set(self.cfg[tag]["class"]) and win.window_class != self.cfg[tag]["priority"]:
+                                    if win.window_class in set(self.cfg[tag]["class"]) \
+                                    and win.window_class != self.cfg[tag]["priority"]:
                                         self.interactive=False
                                         win.command('fullscreen disable')
                                 focus_next(inc_counter=False)
@@ -130,11 +130,12 @@ class circle(CfgMaster, Matcher):
                     else:
                         focus_next()
             else:
-                self.subtag_info=self.cfg[tag].get("prog_dict",{}).get(subtag,{})
-                if not len(set(self.subtag_info.get("includes",{})) & {w.window_class for w in self.tagged[tag]}):
+                self.subtag_info = self.cfg[tag].get("prog_dict", {}).get(subtag, {})
+                if not len(set(self.subtag_info.get("includes", {})) &
+                           {w.window_class for w in self.tagged[tag]}):
                     run_prog(subtag)
                 else:
-                    idx=0
+                    idx = 0
                     focus_next(fullscreen_handler=False, subtag=subtag)
         except KeyError:
             self.tag_windows()
@@ -153,12 +154,12 @@ class circle(CfgMaster, Matcher):
                 self.tagged[tag].append(win)
 
     def tag_windows(self):
-        self.winlist=self.i3.get_tree()
+        self.winlist = self.i3.get_tree()
         wlist = self.winlist.leaves()
-        self.tagged={}
+        self.tagged = {}
 
         for tag in self.cfg:
-            self.tagged[tag]=[]
+            self.tagged[tag] = []
 
         for tag in self.cfg:
             self.find_acceptable_windows(tag, wlist)
@@ -166,13 +167,13 @@ class circle(CfgMaster, Matcher):
     def add_wins(self, i3, event):
         win = event.container
         for tag in self.cfg:
-            if self.match(win,tag):
+            if self.match(win, tag):
                 try:
                     self.tagged[tag].append(win)
                 except KeyError:
                     self.tag_windows()
                     self.add_wins(i3, event)
-        self.winlist=self.i3.get_tree()
+        self.winlist = self.i3.get_tree()
 
     def del_wins(self, i3, event):
         win = event.container
@@ -187,13 +188,13 @@ class circle(CfgMaster, Matcher):
                 except KeyError:
                     self.tag_windows()
                     self.del_wins(i3, event)
-        self.winlist=self.i3.get_tree()
+        self.winlist = self.i3.get_tree()
 
     def set_curr_win(self, i3, event):
-        self.current_win=event.container
+        self.current_win = event.container
 
     def handle_fullscreen(self, i3, event):
-        win=event.container
+        win = event.container
         if self.need_handle_fullscreen:
             if win.fullscreen_mode:
                 if win.id not in self.restore_fullscreen:
@@ -203,3 +204,4 @@ class circle(CfgMaster, Matcher):
                 if win.id in self.restore_fullscreen:
                     self.restore_fullscreen.remove(win.id)
                     return
+

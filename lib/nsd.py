@@ -16,12 +16,12 @@ class ns(CfgMaster, Matcher):
 
     def __init__(self) -> None:
         super().__init__()
-        self.winlist=None
-        self.fullscreen_list=[]
-        self.nsgeom=geom.geom(self.cfg)
-        self.marked={l:[] for l in self.cfg}
+        self.winlist = None
+        self.fullscreen_list = []
+        self.nsgeom = geom.geom(self.cfg)
+        self.marked = {l: [] for l in self.cfg}
         self.i3 = i3ipc.Connection()
-        self.transients=[]
+        self.transients = []
         self.mark_all_tags(hide=True)
         self.auto_save_geom(False)
 
@@ -66,7 +66,7 @@ class ns(CfgMaster, Matcher):
 
     def find_visible_windows(self):
         visible_windows = []
-        wswins=filter(
+        wswins = filter(
             lambda win: win.window,
             self.i3.get_tree().find_focused().workspace().descendents()
         )
@@ -100,7 +100,7 @@ class ns(CfgMaster, Matcher):
     def toggle(self, tag : str) -> None:
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
             try:
-                prog_str=re.sub("~", os.path.realpath(os.path.expandvars("$HOME")), self.cfg[tag]["prog"])
+                prog_str = re.sub("~", os.path.realpath(os.path.expandvars("$HOME")), self.cfg[tag]["prog"])
                 self.i3.command(f'exec {prog_str}')
             except:
                 pass
@@ -121,7 +121,7 @@ class ns(CfgMaster, Matcher):
         self.focus(tag)
 
     def focus_sub_tag(self, tag: str, subtag_classes_set):
-        focused=self.i3.get_tree().find_focused()
+        focused = self.i3.get_tree().find_focused()
 
         self.toggle_fs(focused)
 
@@ -137,20 +137,20 @@ class ns(CfgMaster, Matcher):
                     self.i3.command(f'[con_id={w.id}] focus')
 
         for _ in self.marked[tag]:
-            focused=self.i3.get_tree().find_focused()
-            if not focused.window_class in subtag_classes_set:
+            focused = self.i3.get_tree().find_focused()
+            if focused.window_class not in subtag_classes_set:
                 self.next_win()
 
-    def run_subtag(self, tag: str, app : str) -> None:
-        if app in self.cfg[tag].get("prog_dict",{}):
-            class_list=[win.window_class for win in self.marked[tag]]
-            subtag_classes_set=set(self.cfg[tag].get("prog_dict",{}).get(app,{}).get("includes",{}))
-            subtag_classes_matched=[w for w in class_list if w in subtag_classes_set]
+    def run_subtag(self, tag: str, app: str) -> None:
+        if app in self.cfg[tag].get("prog_dict", {}):
+            class_list = [win.window_class for win in self.marked[tag]]
+            subtag_classes_set = set(self.cfg[tag].get("prog_dict",{}).get(app,{}).get("includes",{}))
+            subtag_classes_matched = [w for w in class_list if w in subtag_classes_set]
             if not len(subtag_classes_matched):
                 try:
-                    prog_str=re.sub(
+                    prog_str = re.sub(
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
-                        self.cfg[tag].get("prog_dict",{}).get(app,{}).get("prog",{})
+                        self.cfg[tag].get("prog_dict", {}).get(app, {}).get("prog", {})
                     )
                     self.i3.command(f'exec {prog_str}')
                 except:
@@ -162,14 +162,14 @@ class ns(CfgMaster, Matcher):
 
     def restore_fullscreens(self) -> None:
         [win.command('fullscreen toggle') for win in self.fullscreen_list]
-        self.fullscreen_list=[]
+        self.fullscreen_list = []
 
     def visible_count(self, tag: str):
         visible_windows = self.find_visible_windows()
         vmarked = 0
         for w in visible_windows:
             for i in self.marked[tag]:
-                vmarked+=(w.id == i.id)
+                vmarked += (w.id == i.id)
         return vmarked
 
     def get_current_tag(self, focused) -> str:
@@ -178,9 +178,9 @@ class ns(CfgMaster, Matcher):
                 if focused.id == i.id:
                     return tag
 
-    def apply_to_current_tag(self, func : Callable) -> bool:
-        curr_tag=self.get_current_tag(self.i3.get_tree().find_focused())
-        curr_tag_exits=(curr_tag != None)
+    def apply_to_current_tag(self, func: Callable) -> bool:
+        curr_tag = self.get_current_tag(self.i3.get_tree().find_focused())
+        curr_tag_exits = (curr_tag != None)
         if curr_tag_exits:
             func(curr_tag)
         return curr_tag_exits
@@ -188,14 +188,14 @@ class ns(CfgMaster, Matcher):
     def next_win(self, hide=True) -> None:
         def next_win_(tag: str) -> None:
             self.focus(tag, Hide)
-            for idx,win in enumerate(self.marked[tag]):
+            for idx, win in enumerate(self.marked[tag]):
                 if focused_win.id != win.id:
                     self.marked[tag][idx].command('move container to workspace current')
                     self.marked[tag].insert(len(self.marked[tag]), self.marked[tag].pop(idx))
                     win.command('move scratchpad')
             self.focus(tag, Hide)
-        Hide=hide
-        focused_win=self.i3.get_tree().find_focused()
+        Hide = hide
+        focused_win = self.i3.get_tree().find_focused()
         self.apply_to_current_tag(next_win_)
 
     def hide_current(self) -> None:
@@ -203,12 +203,12 @@ class ns(CfgMaster, Matcher):
             self.i3.command('[con_id=__focused__] scratchpad show')
 
     def geom_restore(self, tag: str) -> None:
-        for idx,win in enumerate(self.marked[tag]):
+        for idx, win in enumerate(self.marked[tag]):
             # delete previous mark
             del self.marked[tag][idx]
 
             # then make a new mark and move scratchpad
-            win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
+            win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
             win.command(win_cmd)
             self.marked[tag].append(win)
 
@@ -217,26 +217,26 @@ class ns(CfgMaster, Matcher):
 
     def geom_dump(self, tag: str) -> None:
         focused = self.i3.get_tree().find_focused()
-        for idx,win in enumerate(self.marked[tag]):
+        for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
-                self.cfg[tag]["geom"]=f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                self.cfg[tag]["geom"] = f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
                 self.dump_config()
                 break
 
     def geom_save(self, tag: str) -> None:
         focused = self.i3.get_tree().find_focused()
-        for idx,win in enumerate(self.marked[tag]):
+        for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
-                self.cfg[tag]["geom"]=f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                self.cfg[tag]["geom"] = f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
                 if win.rect.x != focused.rect.x \
                 or win.rect.y != focused.rect.y \
                 or win.rect.width != focused.rect.width \
                 or win.rect.height != focused.rect.height:
-                    self.nsgeom=geom.geom(self.cfg)
-                    win.rect.x=focused.rect.x
-                    win.rect.y=focused.rect.y
-                    win.rect.width=focused.rect.width
-                    win.rect.height=focused.rect.height
+                    self.nsgeom = geom.geom(self.cfg)
+                    win.rect.x = focused.rect.x
+                    win.rect.y = focused.rect.y
+                    win.rect.width = focused.rect.width
+                    win.rect.height = focused.rect.height
                 break
 
     def auto_update_geom(self):
@@ -247,7 +247,7 @@ class ns(CfgMaster, Matcher):
         Thread(target=auto_update_geom_payload, daemon=True).start()
 
     def auto_save_geom(self, save=True, with_notification=True):
-        self.geom_auto_save=save
+        self.geom_auto_save = save
         if with_notification:
             notify_msg(f"geometry autosave={save}")
 
@@ -263,7 +263,7 @@ class ns(CfgMaster, Matcher):
     def geom_save_current(self):
         self.apply_to_current_tag(self.geom_save)
 
-    def switch(self, args : List) -> None:
+    def switch(self, args: List) -> None:
         {
             "show": self.focus,
             "hide": self.unfocus_all_but_current,
@@ -280,23 +280,23 @@ class ns(CfgMaster, Matcher):
         }[args[0]](*args[1:])
 
     def mark_tag(self, i3, event) -> None:
-        win=event.container
+        win = event.container
         for tag in self.cfg:
             if self.match(win, tag):
                 if self.check_dialog_win(win):
                     # scratch_move
-                    win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
+                    win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
                 else:
                     self.transients.append(win)
         self.dialog_toggle()
-        self.winlist=self.i3.get_tree()
+        self.winlist = self.i3.get_tree()
 
     def unmark_tag(self, i3, event) -> None:
-        win_ev=event.container
+        win_ev = event.container
         for tag in self.cfg:
-            for _,win in enumerate(self.marked[tag]):
+            for _, win in enumerate(self.marked[tag]):
                 if win.id == win_ev.id:
                     del self.marked[tag][_]
                     self.focus(tag)
@@ -305,20 +305,21 @@ class ns(CfgMaster, Matcher):
                             self.transients.remove(tr)
                     break
 
-    def mark_all_tags(self, hide : bool=True) -> None:
+    def mark_all_tags(self, hide: bool=True) -> None:
         self.winlist = self.i3.get_tree()
-        leaves=self.winlist.leaves()
+        leaves = self.winlist.leaves()
         for tag in self.cfg:
             for win in leaves:
                 if self.match(win, tag):
                     if self.check_dialog_win(win):
                         # scratch move
-                        hide_cmd=''
+                        hide_cmd = ''
                         if hide:
-                            hide_cmd='[con_id=__focused__] scratchpad show'
-                        win_cmd=f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}, {hide_cmd}"
+                            hide_cmd = '[con_id=__focused__] scratchpad show'
+                        win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
                     else:
                         self.transients.append(win)
         self.winlist = self.i3.get_tree()
+

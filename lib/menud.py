@@ -1,12 +1,19 @@
 #!/usr/bin/python3
+import i3ipc
 import json
 import re
 import subprocess
 import sys
-from lib.singleton import *
+from lib.modlib import *
 
-class i3menu():
+
+class menu():
     __metaclass__ = Singleton
+
+    def __init__(self):
+        self.i3 =  i3ipc.Connection()
+        pass
+
     def rofi_args(self, prompt=">>"):
         return [
             'rofi', '-show', '-dmenu',
@@ -21,12 +28,12 @@ class i3menu():
 
     def i3_cmds(self):
         try:
-            p=subprocess.Popen(
+            p = subprocess.Popen(
                 ['i3-msg', 'sssssnake'],
                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
             )
 
-            lst=[t.replace("'",'') for t in re.split('\s*,\s*', json.loads(
+            lst = [t.replace("'", '') for t in re.split('\s*,\s*', json.loads(
                 p.communicate()[0]
             )[0]['error'])[2:]]
 
@@ -40,14 +47,20 @@ class i3menu():
         except:
             return ""
 
+    def switch(self, args):
+        {
+            "run": self.main,
+        }[args[0]](*args[1:])
+
+
     def i3_cmd_args(self, cmd):
         try:
-            p=subprocess.Popen(
+            p = subprocess.Popen(
                 ['i3-msg', cmd],
                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
             )
-            ret=[t.replace("'",'') for t in
-                re.split('\s*,\s*',json.loads(
+            ret = [t.replace("'", '') for t in
+                re.split('\s*, \s*',json.loads(
                         p.communicate()[0]
                     )[0]['error']
                 )[1:]
@@ -62,13 +75,13 @@ class i3menu():
         cmd = ''
 
         try:
-            p=subprocess.Popen(
+            p = subprocess.Popen(
                 self.rofi_args(),
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE
             )
             p.stdin.write(bytes('\n'.join(self.i3_cmds()), 'UTF-8'))
-            p_com=p.communicate()[0]
+            p_com = p.communicate()[0]
             p.wait()
             if p_com is not None:
                 cmd = p_com.decode('UTF-8').strip()
@@ -77,30 +90,30 @@ class i3menu():
             sys.exit(e.returncode)
 
         if not cmd:
-            sys.exit(0) # nothing to do
+            sys.exit(0)  # nothing to do
 
-        debug      = False
-        ok         = False
+        debug = False
+        ok = False
         notify_msg = ""
 
-        args=None
-        prev_args=None
+        args = None
+        prev_args = None
         while not (ok or args == ['<end>'] or args == []):
             if debug:
                 print("evaluated cmd=[{}] args=[{}]".format(cmd, self.i3_cmd_args(cmd)))
-            p=subprocess.Popen( ("i3-msg " +  cmd).split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+            p = subprocess.Popen( ("i3-msg " +  cmd).split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
             r = json.loads(p.communicate()[0].decode('UTF-8').strip())
             result = r[0]['success']
             p.wait()
             ok = True
             if not result:
                 ok = False
-                notify_msg=['notify-send', 'i3-cmd error', r[0]['error']]
+                notify_msg = ['notify-send', 'i3-cmd error', r[0]['error']]
                 try:
                     args = self.i3_cmd_args(cmd)
                     if args == prev_args:
                         sys.exit(0)
-                    p=subprocess.Popen(
+                    p = subprocess.Popen(
                         self.rofi_args(">> " + cmd),
                         stdin=subprocess.PIPE,
                         stdout=subprocess.PIPE
@@ -116,6 +129,3 @@ class i3menu():
         if not ok:
             subprocess.Popen(notify_msg)
 
-if __name__ == '__main__':
-    menu = i3menu()
-    menu.main()
