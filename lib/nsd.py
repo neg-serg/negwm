@@ -7,9 +7,10 @@ import uuid
 from typing import Callable, List
 
 import lib.geom as geom
-from lib.modlib import *
-from lib.singleton import *
-from lib.cfg_master import *
+from modlib import Matcher, notify_msg
+from singleton import Singleton
+from cfg_master import CfgMaster
+
 
 class ns(CfgMaster, Matcher):
     __metaclass__ = Singleton

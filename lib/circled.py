@@ -1,8 +1,10 @@
 import i3ipc
 import re
 import os
-from lib.modlib import *
-from lib.cfg_master import *
+from modlib import Matcher
+from cfg_master import CfgMaster
+from singleton import Singleton
+
 
 class circle(CfgMaster, Matcher):
     __metaclass__ = Singleton
@@ -111,7 +113,7 @@ class circle(CfgMaster, Matcher):
                     idx = self.counters[tag] % len(self.tagged[tag])
 
                     if ("priority" in self.cfg[tag]) and not current_class_in_priority():
-                        if not len([ win for win in self.tagged[tag] if win.window_class == self.cfg[tag]["priority"]]):
+                        if not len([win for win in self.tagged[tag] if win.window_class == self.cfg[tag]["priority"]]):
                             run_prog()
                             return
 

@@ -3,7 +3,7 @@ import traceback
 import subprocess
 from threading import Thread
 from collections import deque
-from lib.singleton import *
+from singleton import Singleton
 
 
 def notify_msg(s, prefix=">>"):
@@ -75,8 +75,10 @@ class Matcher(object):
                 return True
         return False
 
+
 class daemon_manager():
     __metaclass__ = Singleton
+
     def __init__(self):
         self.daemons = {}
 
@@ -86,14 +88,16 @@ class daemon_manager():
             self.daemons[name] = d
             self.daemons[name].bind_fifo(name)
 
+
 class daemon_i3():
     __metaclass__ = Singleton
+
     def __init__(self):
         self.d = deque()
         self.fifos = {}
 
     def bind_fifo(self, name):
-        self.fifos[name] = os.path.realpath(os.path.expandvars('$HOME/tmp/'+name+'.fifo'))
+        self.fifos[name] = os.path.realpath(os.path.expandvars('$HOME/tmp/' + name + '.fifo'))
         if os.path.exists(self.fifos[name]):
             os.remove(self.fifos[name])
         try:
