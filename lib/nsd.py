@@ -78,7 +78,9 @@ class ns(CfgMaster, Matcher):
         return visible_windows
 
     def check_dialog_win(self, w):
-        if w.window_instance == "Places" or w.window_role == "GtkFileChooserDialog":
+        if w.window_instance == "Places" \
+                or w.window_role == "GtkFileChooserDialog" \
+                or w.window_class == "Dialog":
             return False
         xprop = subprocess.check_output(['xprop', '-id', str(w.window)]).decode()
         return not (

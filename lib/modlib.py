@@ -97,13 +97,14 @@ class daemon_i3():
         self.fifos = {}
 
     def bind_fifo(self, name):
-        self.fifos[name] = os.path.realpath(os.path.expandvars('$HOME/tmp/' + name + '.fifo'))
+        self.fifos[name] = \
+            os.path.realpath(os.path.expandvars('$HOME/tmp/' + name + '.fifo'))
         if os.path.exists(self.fifos[name]):
             os.remove(self.fifos[name])
         try:
             os.mkfifo(self.fifos[name])
         except OSError as oe:
-            if oe.errno != errno.EEXIST:
+            if oe.errno != os.errno.EEXIST:
                 raise
 
     def fifo_listner(self, mod, name):
@@ -116,7 +117,7 @@ class daemon_i3():
                 args = list(filter(lambda x: x != '', eval_str.split(' ')))
                 try:
                     mod.switch(args)
-                except:
+                except TypeError:
                     print(traceback.format_exc())
 
     def worker(self):
