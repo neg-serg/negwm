@@ -35,6 +35,7 @@ enum {
     CIRCLE = 0
     , NS = 1
     , FLAST = 2
+    , MENU = 3
 };
 
 const char* docstr= \
@@ -57,6 +58,7 @@ const char* docstr= \
     "  send ns hide_current\n" \
     "  send flast switch\n" \
     "  send flast reload\n" \
+    "  send menu run\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
     "\n" \
@@ -69,10 +71,11 @@ const char* docstr= \
     "github :: https://github.com/neg-serg?tab=repositories\n" \
     "year :: 2018\n"; \
 
-const char *progs[] = { 
+const char *progs[] = {
     [CIRCLE] = "circle",
     [NS] = "ns",
     [FLAST] = "flast",
+    [MENU] = "menu",
     NULL
 };
 
@@ -84,7 +87,7 @@ Args ArgMap[] = {
         { "run", 2 },
         { NULL, 0 },
     },
-    [NS] = { 
+    [NS] = {
         { "show", 1 },
         { "hide", 1 },
         { "toggle", 1 },
@@ -101,6 +104,11 @@ Args ArgMap[] = {
     },
     [FLAST] = {
         { "switch", 0 },
+        { "reload", 0 },
+        { NULL, 0 },
+    },
+    [MENU] = {
+        { "run", 0 },
         { "reload", 0 },
         { NULL, 0 },
     }
@@ -122,9 +130,11 @@ char *get_fifo_name(int modnum){
 }
 
 int main(int argc, const char *argv[]) {
-    if (!strcmp(argv[1],"help")){
-        printf("%s", docstr);
+    if (argc == 1 || !strcmp(argv[1], "help")){
+        printf("%s\n", docstr);
+        return 0;
     }
+
     char *cmd = calloc(1024, 1);
     int mod = in_arr(argv[MOD_NAME], progs, 3);
     if (mod == -1){
