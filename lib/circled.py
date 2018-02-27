@@ -34,19 +34,28 @@ class circle(CfgMaster, Matcher):
 
         self.current_win = self.i3.get_tree().find_focused()
 
-    def go_next(self, tag, subtag=None):
-        def cur_win_in_current_class_set():
-            return self.current_win.window_class in set(self.cfg[tag]["class"])
-
-        def current_class_in_priority():
-            if not cur_win_in_current_class_set():
-                return self.current_win == self.cfg[tag]["priority"]
+    def run_prog(self, tag, subtag=None):
+        try:
+            if subtag is None:
+                prog_str = re.sub(
+                    "~", os.path.realpath(os.path.expandvars("$HOME")),
+                    self.cfg[tag]
+                        .get("prog", {})
+                )
             else:
-                return True
+                prog_str = re.sub(
+                    "~", os.path.realpath(os.path.expandvars("$HOME")),
+                    self.cfg[tag]
+                        .get("prog_dict", {})
+                        .get(subtag, {})
+                        .get("prog", {})
+                )
+            if prog_str:
+                self.i3.command('exec {}'.format(prog_str))
+        except:
+            pass
 
-        def inc_c():
-            self.counters[tag] += 1
-
+    def go_next(self, tag, subtag=None):
         def twin(with_subtag=False):
             if not with_subtag:
                 return self.tagged[tag][idx]
@@ -56,86 +65,80 @@ class circle(CfgMaster, Matcher):
                     if win.window_class in subtag_win_classes:
                         return self.tagged[tag][subidx]
 
-        def run_prog(subtag=None):
-            try:
-                if subtag is None:
-                    prog_str=re.sub(
-                        "~", os.path.realpath(os.path.expandvars("$HOME")),
-                        self.cfg[tag].get("prog", {})
-                    )
-                else:
-                    prog_str=re.sub(
-                        "~", os.path.realpath(os.path.expandvars("$HOME")),
-                        self.cfg[tag].get("prog_dict", {}).get(subtag, {}).get("prog", {})
-                    )
-                if prog_str:
-                    self.i3.command('exec {}'.format(prog_str))
-            except:
-                pass
-
         def focus_next(inc_counter=True, fullscreen_handler=True, subtag=None):
             if fullscreen_handler:
                 fullscreened = self.i3.get_tree().find_fullscreen()
                 for win in fullscreened:
-                    if cur_win_in_current_class_set() and self.current_win.id == win.id:
+                    if self.current_win.window_class in set(self.cfg[tag]["class"]) \
+                            and self.current_win.id == win.id:
                         self.need_handle_fullscreen = False
                         win.command('fullscreen disable')
 
             twin(subtag is not None).command('focus')
 
             if inc_counter:
-                inc_c()
+                self.counters[tag] += 1
 
             if fullscreen_handler:
                 now_focused = twin().id
                 for id in self.restore_fullscreen:
                     if id == now_focused:
                         self.need_handle_fullscreen = False
-                        self.i3.command(f'[con_id={now_focused}] fullscreen enable')
+                        self.i3.command(
+                            f'[con_id={now_focused}] fullscreen enable'
+                        )
 
             self.need_handle_fullscreen = True
 
-        def find_priority_win():
-            inc_c()
+        def find_prioritized_win():
+            self.counters[tag] += 1
             self.repeats += 1
             if self.repeats < 8:
                 self.go_next(tag)
             else:
                 self.repeats = 0
+
         try:
             if subtag is None:
                 if len(self.tagged[tag]) == 0:
-                    run_prog()
+                    self.run_prog(tag)
                 elif len(self.tagged[tag]) <= 1:
                     idx = 0
                     focus_next(fullscreen_handler=False)
                 else:
                     idx = self.counters[tag] % len(self.tagged[tag])
 
-                    if ("priority" in self.cfg[tag]) and not current_class_in_priority():
-                        if not len([win for win in self.tagged[tag] if win.window_class == self.cfg[tag]["priority"]]):
-                            run_prog()
+                    if ("priority" in self.cfg[tag]) \
+                            and self.current_win.window_class \
+                            not in set(self.cfg[tag]["class"]):
+
+                        if not len([win for win in self.tagged[tag]
+                                    if win.window_class ==
+                                    self.cfg[tag]["priority"]]):
+                            self.run_prog(tag)
                             return
 
                         for idx, item in enumerate(self.tagged[tag]):
                             if item.window_class == self.cfg[tag]["priority"]:
-                                fullscreened = self.i3.get_tree().find_fullscreen()
+                                fullscreened = \
+                                    self.i3.get_tree().find_fullscreen()
                                 for win in fullscreened:
                                     if win.window_class in set(self.cfg[tag]["class"]) \
-                                    and win.window_class != self.cfg[tag]["priority"]:
-                                        self.interactive=False
+                                            and win.window_class != self.cfg[tag]["priority"]:
+                                        self.interactive = False
                                         win.command('fullscreen disable')
                                 focus_next(inc_counter=False)
                                 return
                     elif self.current_win.id == twin().id:
-                        find_priority_win()
+                        find_prioritized_win()
                     else:
                         focus_next()
             else:
-                self.subtag_info = self.cfg[tag].get("prog_dict", {}).get(subtag, {})
+                self.subtag_info = \
+                    self.cfg[tag].get("prog_dict", {}).get(subtag, {})
                 if not len(set(self.subtag_info.get("includes", {})) &
                            {w.window_class for w in self.tagged[tag]}):
-                    run_prog(subtag)
+                    self.run_prog(tag, subtag)
                 else:
                     idx = 0
                     focus_next(fullscreen_handler=False, subtag=subtag)
