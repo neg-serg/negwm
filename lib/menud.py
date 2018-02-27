@@ -1,18 +1,13 @@
 #!/usr/bin/python3
-import i3ipc
 import json
 import re
 import subprocess
 import sys
-from lib.modlib import *
+from singleton import Singleton
 
 
 class menu():
     __metaclass__ = Singleton
-
-    def __init__(self):
-        self.i3 =  i3ipc.Connection()
-        pass
 
     def rofi_args(self, prompt=">>"):
         return [
@@ -51,7 +46,6 @@ class menu():
         {
             "run": self.main,
         }[args[0]](*args[1:])
-
 
     def i3_cmd_args(self, cmd):
         try:
