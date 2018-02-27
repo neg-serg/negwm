@@ -1,10 +1,11 @@
 import i3ipc
 from subprocess import check_output
-from lib.modlib import *
-from lib.singleton import *
+from singleton import Singleton
+
 
 class flast():
     __metaclass__ = Singleton
+
     def __init__(self):
         self.i3 = i3ipc.Connection()
         self.window_list = self.i3.get_tree().leaves()
@@ -60,3 +61,4 @@ class flast():
                 if ws in focused.workspace().name:
                     self.alt_tab()
                     return
+
