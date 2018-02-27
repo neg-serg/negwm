@@ -18,24 +18,33 @@ import atexit
 import subprocess
 import shlex
 import cgitb
-from lib.modlib import *
-from lib.singleton import *
+from lib.modlib import daemon_manager
+
 
 class Listner():
     def __init__(self):
-        self.i3_module_event = Event()
+        self.i3_mod_event = Event()
         self.i3_config_event = Event()
-        self.mods={'circle': {}, 'ns': {}, 'flast': {}, 'menu': {}}
-        user_name=os.environ.get("USER", "neg")
-        xdg_config_path=os.environ.get("XDG_CONFIG_HOME", "/home/" + user_name + "/.config/")
-        self.i3_path=xdg_config_path+"/i3/"
+        self.mods = {'circle': {}, 'ns': {}, 'flast': {}, 'menu': {}}
+        self.mods["menu"]["no_i3"] = True
+        user_name = os.environ.get("USER", "neg")
+        xdg_config_path = os.environ.get(
+            "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
+        )
+        self.i3_path = xdg_config_path+"/i3/"
 
-    def watch(self, watch_dir, file_path, ev, watched_inotify_event="IN_MODIFY", stackless=True):
+    def watch(
+            self,
+            watch_dir,
+            file_path,
+            ev,
+            watched_inotify_event="IN_MODIFY",
+            stackless=True):
         if stackless:
-            watch_dir=watch_dir
+            watch_dir = watch_dir
         else:
-            watch_dir=watch_dir.encode()
-        i=inotify.adapters.Inotify()
+            watch_dir = watch_dir.encode()
+        i = inotify.adapters.Inotify()
         i.add_watch(watch_dir)
 
         try:
@@ -53,16 +62,24 @@ class Listner():
 
     def i3_module_inotify(self):
         for mod in self.mods.keys():
-            Thread(target=self.watch, args=(self.i3_path + "/cfg/", mod + '.cfg', self.i3_module_event), daemon=True).start()
+            Thread(
+                target=self.watch,
+                args=(self.i3_path + "/cfg/", mod + '.cfg', self.i3_mod_event),
+                daemon=True
+            ).start()
 
     def i3_config_inotify(self):
-        Thread(target=self.watch, args=(self.i3_path, '_config', self.i3_config_event), daemon=True).start()
+        Thread(
+            target=self.watch,
+            args=(self.i3_path, '_config', self.i3_config_event),
+            daemon=True
+        ).start()
 
     def dump_configs(self):
         import toml
         try:
             for mod in self.mods.keys():
-                m=self.mods[mod]
+                m = self.mods[mod]
                 with open(self.i3_path + "/cfg/" + mod + ".cfg", "w") as fp:
                     toml.dump(m["instance"].cfg, fp)
         except:
@@ -70,22 +87,30 @@ class Listner():
 
     def load_modules(self):
         for mod in self.mods.keys():
-            cm=self.mods[mod]
-            i3mod=importlib.import_module("lib." + mod + "d")
-            cm["instance"]=getattr(i3mod, mod)()
-            cm["manager"]=daemon_manager()
+            cm = self.mods[mod]
+            i3mod = importlib.import_module(mod + "d")
+            cm["instance"] = getattr(i3mod, mod)()
+            cm["manager"] = daemon_manager()
             cm["manager"].add_daemon(mod)
-            Thread(target=cm["manager"].daemons[mod].mainloop, args=(cm["instance"], mod,), daemon=True).start()
+            Thread(
+                target=cm["manager"].daemons[mod].mainloop,
+                args=(cm["instance"], mod,),
+                daemon=True
+            ).start()
 
     def return_to_i3main(self):
         # you should bypass method itself, no return value
         for mod in self.mods:
-            Thread(target=self.mods[mod]["instance"].i3.main, daemon=False).start()
+            if not self.mods.get(mod, {}).get("no_i3", {}):
+                Thread(
+                    target=self.mods[mod]["instance"].i3.main,
+                    daemon=False
+                ).start()
 
     def cleanup_on_exit(self):
         def cleanup_everything():
             for mod in self.mods.keys():
-                fifo=self.mods[mod]["manager"].daemons[mod].fifos[mod]
+                fifo = self.mods[mod]["manager"].daemons[mod].fifos[mod]
                 if os.path.exists(fifo):
                     os.remove(fifo)
         atexit.register(cleanup_everything)
@@ -96,28 +121,35 @@ class Listner():
                 if self.i3_config_event.wait():
                     self.i3_config_event.clear()
                     with open(self.i3_path + "/config", "w") as fp:
-                        p=subprocess.Popen(
+                        p = subprocess.Popen(
                             shlex.split("ppi3 " + self.i3_path + "_config"),
                             stdout=fp
                         )
                         (output, err) = p.communicate()
-                        p_status = p.wait()
-                    check_config = subprocess.run(['i3', '-C'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+                        p.wait()
+                    check_config = subprocess.run(
+                        ['i3', '-C'],
+                        stdout=subprocess.PIPE
+                    ).stdout.decode('utf-8')
                     if len(check_config):
                         subprocess.Popen(
-                            shlex.split("notify-send '{}'".format(check_config.encode('utf-8')))
+                            shlex.split(
+                                f"notify-send '{check_config.encode('utf-8')}'"
+                            )
                         )
-                    check_config=""
+                    check_config = ""
         Thread(target=reload_thread_payload, daemon=True).start()
 
     def i3_module_reload_thread(self):
         def reload_thread_payload():
             while True:
-                if self.i3_module_event.wait():
-                    self.i3_module_event.clear()
+                if self.i3_mod_event.wait():
+                    self.i3_mod_event.clear()
                     for mod in self.mods.keys():
                         subprocess.Popen(
-                            shlex.split(self.i3_path + "send " + mod + " reload")
+                            shlex.split(
+                                self.i3_path + "send " + mod + " reload"
+                            )
                         )
         Thread(target=reload_thread_payload, daemon=True).start()
 
@@ -130,7 +162,9 @@ class Listner():
         self.i3_config_reload_thread()
         self.return_to_i3main()
 
+
 if __name__ == '__main__':
     cgitb.enable(format='text')
     listner = Listner()
     listner.main()
+
