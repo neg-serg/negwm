@@ -192,7 +192,7 @@ mode " " {
 bindsym --release Print exec ~/bin/scripts/screenshot
 bindsym --release $S+Print ~/bin/scripts/screenshot current
 bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
-bindsym $m4+$c+g exec ~/.config/i3/i3_switch_workspace
+bindsym $m4+g exec $i3/switch_ws
 #----------------------------------------------
 bindsym $m4+f $ns toggle ncmpcpp
 bindsym $m4+e $ns toggle im
