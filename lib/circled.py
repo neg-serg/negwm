@@ -55,6 +55,14 @@ class circle(CfgMaster, Matcher):
         except:
             pass
 
+    def find_prioritized_win(self, tag):
+        self.counters[tag] += 1
+        self.repeats += 1
+        if self.repeats < 8:
+            self.go_next(tag)
+        else:
+            self.repeats = 0
+
     def go_next(self, tag, subtag=None):
         def twin(with_subtag=False):
             if not with_subtag:
@@ -90,14 +98,6 @@ class circle(CfgMaster, Matcher):
 
             self.need_handle_fullscreen = True
 
-        def find_prioritized_win():
-            self.counters[tag] += 1
-            self.repeats += 1
-            if self.repeats < 8:
-                self.go_next(tag)
-            else:
-                self.repeats = 0
-
         try:
             if subtag is None:
                 if len(self.tagged[tag]) == 0:
@@ -123,14 +123,15 @@ class circle(CfgMaster, Matcher):
                                 fullscreened = \
                                     self.i3.get_tree().find_fullscreen()
                                 for win in fullscreened:
-                                    if win.window_class in set(self.cfg[tag]["class"]) \
-                                            and win.window_class != self.cfg[tag]["priority"]:
+                                    tgt = self.cfg[tag]
+                                    if win.window_class in tgt["class"] \
+                                            and win.window_class != tgt["priority"]:
                                         self.interactive = False
                                         win.command('fullscreen disable')
                                 focus_next(inc_counter=False)
                                 return
                     elif self.current_win.id == twin().id:
-                        find_prioritized_win()
+                        self.find_prioritized_win(tag)
                     else:
                         focus_next()
             else:
