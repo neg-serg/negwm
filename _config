@@ -20,6 +20,7 @@ set $i3 ${XDG_CONFIG_HOME}/i3
 set $circle exec ${XDG_CONFIG_HOME}/i3/send circle
 set $ns exec ${XDG_CONFIG_HOME}/i3/send ns
 set $flast exec ${XDG_CONFIG_HOME}/i3/send flast
+set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
 
 #---------------------------
 # ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀ #
@@ -241,7 +242,7 @@ bindsym $m4+m exec ~/bin/scripts/rofi_xprop $(pfw)
 bindsym $m4+q fullscreen toggle
 bindsym $m4+grave exec $i3/focus-next-visible.py
 bindsym $m4+$S+grave exec $i3/focus-next-visible.py reverse
-bindsym $m4+$c+grave exec $i3/cmd.py
+bindsym $m4+$c+grave $menu run
 
 bindsym $m4+$c+q kill
 #-------------------------------------------------------
