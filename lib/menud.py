@@ -9,6 +9,9 @@ from singleton import Singleton
 class menu():
     __metaclass__ = Singleton
 
+    def __init__(self):
+        pass
+
     def rofi_args(self, prompt=">>"):
         return [
             'rofi', '-show', '-dmenu',
@@ -42,9 +45,13 @@ class menu():
         except:
             return ""
 
+    def reload_config(self):
+        self.__init__()
+
     def switch(self, args):
         {
-            "run": self.main,
+            "run": self.run,
+            "reload": self.reload_config,
         }[args[0]](*args[1:])
 
     def i3_cmd_args(self, cmd):
@@ -64,7 +71,7 @@ class menu():
         except:
             return None
 
-    def main(self):
+    def run(self):
         # set default menu args for supported menus
         cmd = ''
 
@@ -84,7 +91,8 @@ class menu():
             sys.exit(e.returncode)
 
         if not cmd:
-            sys.exit(0)  # nothing to do
+            # nothing to do
+            return 0
 
         debug = False
         ok = False
@@ -94,8 +102,12 @@ class menu():
         prev_args = None
         while not (ok or args == ['<end>'] or args == []):
             if debug:
-                print("evaluated cmd=[{}] args=[{}]".format(cmd, self.i3_cmd_args(cmd)))
-            p = subprocess.Popen( ("i3-msg " +  cmd).split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+                print(f"evaluated cmd=[{cmd}] args=[{self.i3_cmd_args(cmd)}]")
+            p = subprocess.Popen(
+                ("i3-msg " + cmd).split(),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL
+            )
             r = json.loads(p.communicate()[0].decode('UTF-8').strip())
             result = r[0]['success']
             p.wait()
@@ -106,7 +118,7 @@ class menu():
                 try:
                     args = self.i3_cmd_args(cmd)
                     if args == prev_args:
-                        sys.exit(0)
+                        return 0
                     p = subprocess.Popen(
                         self.rofi_args(">> " + cmd),
                         stdin=subprocess.PIPE,
@@ -118,7 +130,7 @@ class menu():
                     p.stdin.close()
                     p.wait()
                 except subprocess.CalledProcessError as e:
-                    sys.exit(e.returncode)
+                    return e.returncode
 
         if not ok:
             subprocess.Popen(notify_msg)
