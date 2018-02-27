@@ -14,6 +14,12 @@ typedef struct Arg {
 
 typedef Arg Args[16];
 
+size_t len(const char* arr[]) {
+    const char **s;
+    for(s = arr; *s; ++s);
+    return (s - arr);
+}
+
 signed int in_arr(const char *arg, const char * arr[], size_t len){
     if( arr != NULL && arg != NULL ) {
         for(int i = 0; i < len; i++){
@@ -136,7 +142,7 @@ int main(int argc, const char *argv[]) {
     }
 
     char *cmd = calloc(1024, 1);
-    int mod = in_arr(argv[MOD_NAME], progs, 3);
+    int mod = in_arr(argv[MOD_NAME], progs, len(progs));
     if (mod == -1){
         free(cmd);
         return -1;
