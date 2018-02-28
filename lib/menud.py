@@ -74,6 +74,7 @@ class menu():
             "run": self.cmd_menu,
             "xprop": self.xprop_menu,
             "autoprop": self.autoprop,
+            "ws": self.workspaces,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
@@ -160,6 +161,25 @@ class menu():
         print(aprop_str)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
         subprocess.Popen(notify_msg)
+
+    def workspaces(self):
+        wslist = [ws.name for ws in self.i3.get_workspaces()]
+        wslist.append("[empty]")
+
+        p = subprocess.Popen(
+            self.rofi_args(cnum=len(wslist), width=1200, prompt="[ws] >>"),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        )
+        p.stdin.write(bytes('\n'.join(wslist), 'UTF-8'))
+        p_com = p.communicate()[0]
+        p.wait()
+
+        if p_com is not None:
+            ws = p_com.decode('UTF-8').strip()
+        p.stdin.close()
+
+        self.i3.command(f'workspace {ws}')
 
     def cmd_menu(self):
         # set default menu args for supported menus

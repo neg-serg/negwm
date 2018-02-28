@@ -67,6 +67,7 @@ const char* docstr= \
     "  send menu run\n" \
     "  send menu xprop\n" \
     "  send menu autoprop\n" \
+    "  send menu ws\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
     "\n" \
@@ -120,6 +121,7 @@ Args ArgMap[] = {
         { "xprop", 0 },
         { "reload", 0 },
         { "autoprop", 0 },
+        { "ws", 0 },
         { NULL, 0 },
     }
 };
