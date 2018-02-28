@@ -2,7 +2,6 @@ import i3ipc
 import os
 import re
 import subprocess
-import time
 import uuid
 from typing import Callable, List
 
@@ -104,10 +103,14 @@ class ns(CfgMaster, Matcher):
             win.command('fullscreen toggle')
             self.fullscreen_list.append(win)
 
-    def toggle(self, tag : str) -> None:
+    def toggle(self, tag: str) -> None:
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
             try:
-                prog_str = re.sub("~", os.path.realpath(os.path.expandvars("$HOME")), self.cfg[tag]["prog"])
+                prog_str = re.sub(
+                    "~",
+                    os.path.realpath(os.path.expandvars("$HOME")),
+                    self.cfg[tag]["prog"]
+                )
                 self.i3.command(f'exec {prog_str}')
             except:
                 pass
@@ -151,13 +154,20 @@ class ns(CfgMaster, Matcher):
     def run_subtag(self, tag: str, app: str) -> None:
         if app in self.cfg[tag].get("prog_dict", {}):
             class_list = [win.window_class for win in self.marked[tag]]
-            subtag_classes_set = set(self.cfg[tag].get("prog_dict",{}).get(app,{}).get("includes",{}))
-            subtag_classes_matched = [w for w in class_list if w in subtag_classes_set]
+            subtag_classes_set = self.cfg[tag].get("prog_dict", {}) \
+                .get(app, {}) \
+                .get("includes", {})
+            subtag_classes_matched = [
+                w for w in class_list if w in subtag_classes_set
+            ]
             if not len(subtag_classes_matched):
                 try:
                     prog_str = re.sub(
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
-                        self.cfg[tag].get("prog_dict", {}).get(app, {}).get("prog", {})
+                        self.cfg[tag]
+                            .get("prog_dict", {})
+                            .get(app, {})
+                            .get("prog", {})
                     )
                     self.i3.command(f'exec {prog_str}')
                 except:
@@ -187,7 +197,7 @@ class ns(CfgMaster, Matcher):
 
     def apply_to_current_tag(self, func: Callable) -> bool:
         curr_tag = self.get_current_tag(self.i3.get_tree().find_focused())
-        curr_tag_exits = (curr_tag != None)
+        curr_tag_exits = (curr_tag is not None)
         if curr_tag_exits:
             func(curr_tag)
         return curr_tag_exits
@@ -197,8 +207,13 @@ class ns(CfgMaster, Matcher):
             self.focus(tag, Hide)
             for idx, win in enumerate(self.marked[tag]):
                 if focused_win.id != win.id:
-                    self.marked[tag][idx].command('move container to workspace current')
-                    self.marked[tag].insert(len(self.marked[tag]), self.marked[tag].pop(idx))
+                    self.marked[tag][idx].command(
+                        'move container to workspace current'
+                    )
+                    self.marked[tag].insert(
+                        len(self.marked[tag]),
+                        self.marked[tag].pop(idx)
+                    )
                     win.command('move scratchpad')
             self.focus(tag, Hide)
         Hide = hide
@@ -245,16 +260,6 @@ class ns(CfgMaster, Matcher):
                     win.rect.width = focused.rect.width
                     win.rect.height = focused.rect.height
                 break
-
-    def auto_update_geom(self):
-        def auto_update_geom_payload(sleep=0.5):
-            while True:
-                self.geom_save_current()
-                time.sleep(sleep)
-        Thread(
-            target=auto_update_geom_payload,
-            daemon=True
-        ).start()
 
     def auto_save_geom(self, save=True, with_notification=True):
         self.geom_auto_save = save
