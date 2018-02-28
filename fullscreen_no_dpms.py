@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
-
-from argparse import ArgumentParser
 from subprocess import call
+from lib.singleton import Singleton
 import i3ipc
 
-class FullscreenNoDPMS(SingletonMixin):
-    def __init__():
+
+class fsdpms(Singleton):
+    def __init__(self):
         self.i3 = i3ipc.Connection()
 
-        self.i3.on('window::fullscreen_mode', on_fullscreen_mode)
-        self.i3.on('window::close', on_window_close)
-
-        self.i3.main()
+        self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
+        self.i3.on('window::close', self.on_window_close)
 
     def set_dpms(self, state):
         if state:
@@ -22,8 +20,14 @@ class FullscreenNoDPMS(SingletonMixin):
             call(['xset', '-dpms'])
 
     def on_fullscreen_mode(self, e):
-        set_dpms(not len(self.i3.get_tree().find_fullscreen()))
+        self.set_dpms(not len(self.i3.get_tree().find_fullscreen()))
 
-    def on_window_close(e):
+    def on_window_close(self, e):
         if not len(not len(self.i3.get_tree().find_fullscreen())):
-            set_dpms(True)
+            self.set_dpms(True)
+
+
+if __name__ == "__main__":
+    t = FullscreenNoDPMS()
+    t.i3.main()
+
