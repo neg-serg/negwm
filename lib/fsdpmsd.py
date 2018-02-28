@@ -19,10 +19,10 @@ class fsdpms(Singleton):
 
     def on_fullscreen_mode(self, i3, event):
         self.set_dpms(
-            not len(i3.get_tree().find_fullscreen())
+            not len(self.i3.get_tree().find_fullscreen())
         )
 
     def on_window_close(self, i3, event):
-        if not len(not len(i3.get_tree().find_fullscreen())):
+        if not len(self.i3.get_tree().find_fullscreen()):
             self.set_dpms(True)
 
