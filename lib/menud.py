@@ -184,7 +184,23 @@ class menu():
         p_com = p.communicate()[0]
         p.wait()
         p.stdin.close()
-        print(p_com)
+
+        if p_com is not None:
+            ns_list = p_com.decode('UTF-8').strip()[1:-1].split(', ')
+
+        ns_list = [t.replace("'", '') for t in ns_list]
+
+        p = subprocess.Popen(
+            self.rofi_args(cnum=len(ns_list), width=1200, prompt="[ns] >>"),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        )
+        p.stdin.write(bytes('\n'.join(ns_list), 'UTF-8'))
+        p_com = p.communicate()[0]
+        p.wait()
+
+        if p_com is not None:
+            print(p_com.decode('UTF-8').strip())
 
     def workspaces(self):
         wslist = [ws.name for ws in self.i3.get_workspaces()]
