@@ -21,7 +21,8 @@ class menu():
             '-case-sensitive=false',
             '-matching', 'fuzzy',
             '-theme-str', '* { font: "Iosevka Term Medium 14"; }',
-            '-theme-str', '#window { width:1900; y-offset: -32; location: south; anchor: south; }',
+            '-theme-str', '#window { width:1900; y-offset: -32; \
+            location: south; anchor: south; }',
         ]
 
     def i3_cmds(self):
@@ -50,7 +51,7 @@ class menu():
 
     def switch(self, args):
         {
-            "run": self.run,
+            "run": self.mainmenu,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
@@ -71,7 +72,7 @@ class menu():
         except:
             return None
 
-    def run(self):
+    def mainmenu(self):
         # set default menu args for supported menus
         cmd = ''
 
