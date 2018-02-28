@@ -69,7 +69,7 @@ const char* docstr= \
     "  send menu xprop\n" \
     "  send menu autoprop\n" \
     "  send menu ws\n" \
-    "  send i3info ns_list\n" \
+    "  send i3info request\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
     "\n" \
