@@ -4,6 +4,8 @@ import re
 import subprocess
 import sys
 import i3ipc
+import shlex
+import os
 from singleton import Singleton
 
 
@@ -14,6 +16,13 @@ class menu():
         self.i3 = i3ipc.Connection()
         self.i3cmd = 'i3-msg'
         self.magic_pie = 'sssssnake'
+
+        user_name = os.environ.get("USER", "neg")
+        xdg_config_path = os.environ.get(
+            "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
+        )
+        self.i3_path = xdg_config_path+"/i3/"
+
         self.need_xprops = [
             "WM_CLASS",
             "WM_NAME",
@@ -119,9 +128,8 @@ class menu():
         p.stdin.close()
 
         # Copy to the clipboard
-        if ret is not None:
+        if ret is not None and ret != '':
             ret.strip()
-            print(f"copy ret as {ret}")
             p = subprocess.Popen(
                 ['xsel', '-i'],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE
@@ -158,9 +166,25 @@ class menu():
 
     def autoprop(self):
         aprop_str = self.get_autoprop(with_title=False)
+
         print(aprop_str)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
         subprocess.Popen(notify_msg)
+
+        subprocess.Popen(
+            shlex.split(self.i3_path + "send " + "i3info" + " ns_list")
+        )
+
+        p = subprocess.Popen(
+            shlex.split("nc 0.0.0.0 31888"),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        )
+        p.stdin.write(bytes('ns list', 'UTF-8'))
+        p_com = p.communicate()[0]
+        p.wait()
+        p.stdin.close()
+        print(p_com)
 
     def workspaces(self):
         wslist = [ws.name for ws in self.i3.get_workspaces()]
