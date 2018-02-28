@@ -130,32 +130,36 @@ class menu():
             p.wait()
             p.stdin.close()
 
-    def autoprop(self, with_title=False):
+    def get_autoprop(self, with_title=False):
         xprops = []
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.check_output(
             ['xprop', '-id', str(w.window)] + self.need_xprops
         ).decode().split('\n')
-        ret = ""
-        ret += '['
+        ret = []
         for attr in self.i3rule_xprops:
-            for line in xprop:
-                xprops.append(line)
-                if attr in line and 'not found' not in line:
-                    founded_attr = re.search("[A-Z]+(.*) = ", line).group(0)
-                    line = re.sub("[A-Z]+(.*) = ", '', line).split(', ')
+            for xattr in xprop:
+                xprops.append(xattr)
+                if attr in xattr and 'not found' not in xattr:
+                    founded_attr = re.search("[A-Z]+(.*) = ", xattr).group(0)
+                    xattr = re.sub("[A-Z]+(.*) = ", '', xattr).split(', ')
                     if "WM_CLASS" in founded_attr:
-                        if line[0] is not None and len(line[0]):
-                            ret += f'class={line[0]} '
-                        if line[1] is not None and len(line[1]):
-                            ret += f'instance={line[1]} '
+                        if xattr[0] is not None and len(xattr[0]):
+                            ret.append(f'class={xattr[0]} ')
+                        if xattr[1] is not None and len(xattr[1]):
+                            ret.append(f'instance={xattr[1]} ')
                     if "WM_WINDOW_ROLE" in founded_attr:
-                        ret += f'window_role={line[0]} '
+                        ret.append(f'window_role={xattr[0]} ')
                     if with_title:
                         if "WM_NAME" in founded_attr:
-                            ret += f'title={line[0]} '
-        ret += ']'
-        print(ret)
+                            ret.append(f'title={xattr[0]} ')
+        return "[" + ''.join(sorted(ret)) + "]"
+
+    def autoprop(self):
+        aprop_str = self.get_autoprop(with_title=False)
+        print(aprop_str)
+        notify_msg = ['notify-send', 'X11 prop', aprop_str]
+        subprocess.Popen(notify_msg)
 
     def cmd_menu(self):
         # set default menu args for supported menus
