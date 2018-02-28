@@ -65,6 +65,7 @@ const char* docstr= \
     "  send flast switch\n" \
     "  send flast reload\n" \
     "  send menu run\n" \
+    "  send menu xprop\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
     "\n" \
@@ -115,6 +116,7 @@ Args ArgMap[] = {
     },
     [MENU] = {
         { "run", 0 },
+        { "xprop", 0 },
         { "reload", 0 },
         { NULL, 0 },
     }

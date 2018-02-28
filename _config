@@ -238,7 +238,7 @@ bindsym $m4+$c+{v,e} $circle next {vm,steam}
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
 bindsym $alt+g exec rofi -sort -matching fuzzy -show window
-bindsym $m4+m exec ~/bin/scripts/rofi_xprop $(pfw)
+bindsym $m4+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
 bindsym $m4+grave exec $i3/focus-next-visible.py
 bindsym $m4+$S+grave exec $i3/focus-next-visible.py reverse
