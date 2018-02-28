@@ -196,6 +196,7 @@ bindsym $m4+g exec $i3/switch_ws
 #----------------------------------------------
 bindsym $m4+f $ns toggle ncmpcpp
 bindsym $m4+e $ns toggle im
+bindsym $m4+$S+s $menu autoprop
 bindsym $m4+$S+p $ns toggle volcontrol
 bindsym $m4+d $ns toggle teardrop
 bindsym $m4+$S+d $ns toggle console

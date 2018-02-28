@@ -24,6 +24,13 @@ class menu():
             "_NET_WM_PID"
         ]
 
+        self.i3rule_xprops = {
+            "WM_CLASS",
+            "WM_WINDOW_ROLE",
+            "WM_NAME",
+            "_NET_WM_NAME"
+        }
+
     def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=1900):
         return [
             'rofi', '-show', '-dmenu',
@@ -64,8 +71,9 @@ class menu():
 
     def switch(self, args):
         {
-            "run": self.cmdmenu,
-            "xprop": self.xpropmenu,
+            "run": self.cmd_menu,
+            "xprop": self.xprop_menu,
+            "autoprop": self.autoprop,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
@@ -86,7 +94,7 @@ class menu():
         except:
             return None
 
-    def xpropmenu(self):
+    def xprop_menu(self):
         xprops = []
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.check_output(
@@ -122,7 +130,34 @@ class menu():
             p.wait()
             p.stdin.close()
 
-    def cmdmenu(self):
+    def autoprop(self, with_title=False):
+        xprops = []
+        w = self.i3.get_tree().find_focused()
+        xprop = subprocess.check_output(
+            ['xprop', '-id', str(w.window)] + self.need_xprops
+        ).decode().split('\n')
+        ret = ""
+        ret += '['
+        for attr in self.i3rule_xprops:
+            for line in xprop:
+                xprops.append(line)
+                if attr in line and 'not found' not in line:
+                    founded_attr = re.search("[A-Z]+(.*) = ", line).group(0)
+                    line = re.sub("[A-Z]+(.*) = ", '', line).split(', ')
+                    if "WM_CLASS" in founded_attr:
+                        if line[0] is not None and len(line[0]):
+                            ret += f'class={line[0]} '
+                        if line[1] is not None and len(line[1]):
+                            ret += f'instance={line[1]} '
+                    if "WM_WINDOW_ROLE" in founded_attr:
+                        ret += f'window_role={line[0]} '
+                    if with_title:
+                        if "WM_NAME" in founded_attr:
+                            ret += f'title={line[0]} '
+        ret += ']'
+        print(ret)
+
+    def cmd_menu(self):
         # set default menu args for supported menus
         cmd = ''
 
