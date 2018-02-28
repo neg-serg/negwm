@@ -72,7 +72,9 @@ class ns(CfgMaster, Matcher):
             self.i3.get_tree().find_focused().workspace().descendents()
         )
         for w in wswins:
-            xprop = subprocess.check_output(['xprop', '-id', str(w.window)]).decode()
+            xprop = subprocess.check_output(
+                ['xprop', '-id', str(w.window)]
+            ).decode()
             if '_NET_WM_STATE_HIDDEN' not in xprop:
                 visible_windows.append(w)
         return visible_windows
@@ -82,7 +84,9 @@ class ns(CfgMaster, Matcher):
                 or w.window_role == "GtkFileChooserDialog" \
                 or w.window_class == "Dialog":
             return False
-        xprop = subprocess.check_output(['xprop', '-id', str(w.window)]).decode()
+        xprop = subprocess.check_output(
+            ['xprop', '-id', str(w.window)]
+        ).decode()
         return not (
             '_NET_WM_WINDOW_TYPE_DIALOG' in xprop
             or
@@ -93,7 +97,7 @@ class ns(CfgMaster, Matcher):
         wlist = self.i3.get_tree().leaves()
         for win in wlist:
             if not self.check_dialog_win(win):
-                win.command('move container to workspace current, show scratchpad')
+                win.command('move container to workspace current')
 
     def toggle_fs(self, win):
         if win.fullscreen_mode:
@@ -247,7 +251,10 @@ class ns(CfgMaster, Matcher):
             while True:
                 self.geom_save_current()
                 time.sleep(sleep)
-        Thread(target=auto_update_geom_payload, daemon=True).start()
+        Thread(
+            target=auto_update_geom_payload,
+            daemon=True
+        ).start()
 
     def auto_save_geom(self, save=True, with_notification=True):
         self.geom_auto_save = save
@@ -288,7 +295,8 @@ class ns(CfgMaster, Matcher):
             if self.match(win, tag):
                 if self.check_dialog_win(win):
                     # scratch_move
-                    win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
+                    win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
+                        {self.nsgeom.get_geom(tag)}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
                 else:
@@ -319,10 +327,12 @@ class ns(CfgMaster, Matcher):
                         hide_cmd = ''
                         if hide:
                             hide_cmd = '[con_id=__focused__] scratchpad show'
-                        win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}, {hide_cmd}"
+                        win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
+                            {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
                     else:
                         self.transients.append(win)
         self.winlist = self.i3.get_tree()
+        self.dialog_toggle()
 
