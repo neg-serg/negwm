@@ -83,9 +83,16 @@ class menu():
             "run": self.cmd_menu,
             "xprop": self.xprop_menu,
             "autoprop": self.autoprop,
+            "show_props": self.show_props,
             "ws": self.workspaces,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
+
+    def show_props(self):
+        aprop_str = self.get_autoprop_as_str(with_title=False)
+        print(aprop_str)
+        notify_msg = ['notify-send', 'X11 prop', aprop_str]
+        subprocess.Popen(notify_msg)
 
     def i3_cmd_args(self, cmd):
         try:
@@ -139,7 +146,7 @@ class menu():
             p.wait()
             p.stdin.close()
 
-    def get_autoprop(self, with_title=False):
+    def get_autoprop_as_str(self, with_title=False):
         xprops = []
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.check_output(
@@ -165,25 +172,22 @@ class menu():
         return "[" + ''.join(sorted(ret)) + "]"
 
     def autoprop(self):
-        aprop_str = self.get_autoprop(with_title=False)
-
-        print(aprop_str)
-        notify_msg = ['notify-send', 'X11 prop', aprop_str]
-        subprocess.Popen(notify_msg)
-
-        subprocess.Popen(
-            shlex.split(self.i3_path + "send " + "i3info" + " ns_list")
-        )
+        aprop_str = self.get_autoprop_as_str(with_title=False)
 
         p = subprocess.Popen(
             shlex.split("nc 0.0.0.0 31888"),
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
-        p.stdin.write(bytes('ns list', 'UTF-8'))
+        p.stdin.write(bytes('ns_list', 'UTF-8'))
         p_com = p.communicate()[0]
-        p.wait()
         p.stdin.close()
+
+        subprocess.Popen(
+            shlex.split(self.i3_path + "send i3info request")
+        )
+
+        p.wait()
 
         if p_com is not None:
             ns_list = p_com.decode('UTF-8').strip()[1:-1].split(', ')
@@ -198,8 +202,9 @@ class menu():
         p.stdin.write(bytes('\n'.join(ns_list), 'UTF-8'))
         p_com = p.communicate()[0]
         p.wait()
+        p.stdin.close()
 
-        if p_com is not None:
+        if p_com is not None and p_com != '':
             print(p_com.decode('UTF-8').strip())
 
     def workspaces(self):
