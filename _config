@@ -22,6 +22,8 @@ set $ns exec ${XDG_CONFIG_HOME}/i3/send ns
 set $flast exec ${XDG_CONFIG_HOME}/i3/send flast
 set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
 
+set $scratchpad_dialog floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
+
 #---------------------------
 # ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀ #
 # ░█░░░█░█░█░░░█░█░█▀▄░▀▀█ #
@@ -161,14 +163,12 @@ for_window [class="youtube-get"] move scratchpad, move absolute position 247 13,
 for_window [class="_weechat_"]   move scratchpad, move absolute position 112 33,  resize set 1736 1091
 for_window [instance="webcam"]   floating enable, move container to workspace current, move scratchpad, move absolute position center, resize set 1280 720, focus
 
-for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
-for_window [window_type="dialog"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
-for_window [window_type="menu"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
-for_window [window_type="utility"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
-for_window [window_type="toolbar"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
-for_window [class="Places"] floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
-# for_window [title="^Compress.*"] floating enable
-# for_window [title="^(Preferences)$"] floating enable
+for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
+for_window [window_type="dialog"] $scratchpad_dialog
+for_window [window_type="menu"] $scratchpad_dialog
+for_window [window_type="utility"] $scratchpad_dialog
+for_window [window_type="toolbar"] $scratchpad_dialog
+for_window [class="Places"] $scratchpad_dialog
 
 #---------------------------------------------
 # ░█░█░█▀▀░█░█░█▀▄░▀█▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀░█▀▀
