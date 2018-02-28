@@ -3,7 +3,8 @@ import socket
 import i3ipc
 import nsd
 
-from threading import Thread, Event
+from singleton import Singleton
+from threading import Event
 
 
 class BreakoutException(Exception):
@@ -11,6 +12,8 @@ class BreakoutException(Exception):
 
 
 class i3info():
+    __metaclass__ = Singleton
+
     def __init__(self):
         self.i3 = i3ipc.Connection()
         self.i3.on('workspace::focus', self.on_ws_focus)
@@ -22,9 +25,10 @@ class i3info():
         self.req_event = Event()
         self.req_event.clear()
 
+        self.ns_instance = nsd.ns()
+
     def switch(self, args):
         {
-
             "ns_list": self.ns_list,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
@@ -39,7 +43,7 @@ class i3info():
         self.name = event.current.name
         self.ws_event.set()
 
-    def idle_wait(self):
+    def idle_wait(self, current_conn):
         while True:
             if self.ws_event.wait(timeout=0.01):
                 break
@@ -64,7 +68,7 @@ class i3info():
                         break
                     elif 'idle' in data.decode():
                         while True:
-                            if self.idle_wait():
+                            if self.idle_wait(current_conn):
                                 current_conn.shutdown(1)
                                 current_conn.close()
                                 self.ws_event.clear()
@@ -76,27 +80,13 @@ class i3info():
                         current_conn.close()
                         break
                     elif 'ns list' in data.decode():
-                        ns_instance = nsd.ns()
                         output = []
-                        for k in ns_instance.cfg:
+                        for k in self.ns_instance.cfg:
                             output.append(k)
                         current_conn.send(
-                            bytes(
-                                str(output), 'UTF-8'
-                            )
+                            bytes(str(output), 'UTF-8')
                         )
-                        current_conn.shutdown(1)
-                        current_conn.close()
                         break
             except BreakoutException:
                 pass
-
-
-if __name__ == "__main__":
-    srv = i3info()
-    Thread(target=srv.listen, daemon=True).start()
-    Thread(
-        target=srv.i3.main,
-        daemon=False
-    ).start()
 
