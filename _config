@@ -298,7 +298,8 @@ mode "gaps-inner" {
 }
 
 exec_always $i3/listner.py 1>> ~/tmp/i3listner.log
-exec_always $i3/info_echo.py 2>> ~/tmp/info_echo.log
+exec_always $i3/i3infod.py 2>> ~/tmp/i3infod.log
+
 exec ~/bin/term
 exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
