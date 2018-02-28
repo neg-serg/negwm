@@ -25,7 +25,13 @@ class Listner():
     def __init__(self):
         self.i3_mod_event = Event()
         self.i3_config_event = Event()
-        self.mods = {'circle': {}, 'ns': {}, 'flast': {}, 'menu': {}}
+        self.mods = {
+            'circle': {},
+            'ns': {},
+            'flast': {},
+            'menu': {},
+            'fsdpms': {}
+        }
         self.mods["menu"]["no_i3"] = True
         user_name = os.environ.get("USER", "neg")
         xdg_config_path = os.environ.get(

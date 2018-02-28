@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
 from subprocess import call
-from lib.singleton import Singleton
+from singleton import Singleton
 import i3ipc
 
 
 class fsdpms(Singleton):
     def __init__(self):
         self.i3 = i3ipc.Connection()
-
         self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
         self.i3.on('window::close', self.on_window_close)
 
@@ -19,15 +17,12 @@ class fsdpms(Singleton):
             call(['xset', 's', 'off'])
             call(['xset', '-dpms'])
 
-    def on_fullscreen_mode(self, e):
-        self.set_dpms(not len(self.i3.get_tree().find_fullscreen()))
+    def on_fullscreen_mode(self, i3, event):
+        self.set_dpms(
+            not len(i3.get_tree().find_fullscreen())
+        )
 
-    def on_window_close(self, e):
-        if not len(not len(self.i3.get_tree().find_fullscreen())):
+    def on_window_close(self, i3, event):
+        if not len(not len(i3.get_tree().find_fullscreen())):
             self.set_dpms(True)
-
-
-if __name__ == "__main__":
-    t = FullscreenNoDPMS()
-    t.i3.main()
 
