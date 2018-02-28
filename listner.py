@@ -30,7 +30,8 @@ class Listner():
             'ns': {},
             'flast': {},
             'menu': {},
-            'fsdpms': {}
+            'fsdpms': {},
+            'i3info': {},
         }
         self.mods["menu"]["no_i3"] = True
         user_name = os.environ.get("USER", "neg")
@@ -103,6 +104,8 @@ class Listner():
                 args=(cm["instance"], mod,),
                 daemon=True
             ).start()
+            if mod == "i3info":
+                Thread(target=cm["instance"].listen, daemon=True).start()
 
     def return_to_i3main(self):
         # you should bypass method itself, no return value
