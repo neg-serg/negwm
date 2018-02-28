@@ -3,19 +3,23 @@ import socket
 import i3ipc
 from threading import Thread, Event
 
-class BreakoutException(Exception): pass
+
+class BreakoutException(Exception):
+    pass
+
 
 class currws():
     def __init__(self):
         self.i3 = i3ipc.Connection()
         self.i3.on('workspace::focus', self.on_ws_focus)
-        self.name=""
-        self.event=Event()
+        self.name = ""
+        self.event = Event()
         self.event.clear()
 
     def on_ws_focus(self, i3, event):
-        self.name=event.current.name
+        self.name = event.current.name
         self.event.set()
+
 
 def listen(cws):
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,7 +50,9 @@ def listen(cws):
         except BreakoutException:
             pass
 
+
 if __name__ == "__main__":
     cws = currws()
     Thread(target=listen, args=(cws,), daemon=True).start()
-    Thread(target=cws.i3.main,daemon=False).start()
+    Thread(target=cws.i3.main, daemon=False).start()
+
