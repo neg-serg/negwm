@@ -279,17 +279,16 @@ class ns(CfgMaster, Matcher):
     def geom_save_current(self):
         self.apply_to_current_tag(self.geom_save)
 
-    def add_prop(self, tag, prop_str, Copy=False):
-        if not Copy:
-            prev_tag = self.get_prev_tag(prop_str)
-            if prev_tag is not None:
-                self.del_prop(prev_tag, prop_str)
+    def add_prop(self, tag, prop_str):
         self.add_props(tag, prop_str)
         self.mark(tag)
 
-    def del_prop(self, tag, prop_str):
+    def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
-        self.unmark(tag)
+        if not full_reload:
+            self.unmark(tag)
+        else:
+            self.mark_all_tags(hide=True)
 
     def switch(self, args: List) -> None:
         {

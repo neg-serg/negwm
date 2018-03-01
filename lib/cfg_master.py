@@ -101,13 +101,14 @@ class CfgMaster(object):
                             return tag
                 if t in self.cfg_regex_props:
                     if t == "class_r":
-                        for reg in self.cfg[tag][t].copy():
+                        for reg in self.cfg[tag][t]:
                             lst_by_reg = self.i3.get_tree().find_classed(reg)
                             for l in lst_by_reg:
-                                if self.attr_dict[t[:-2]] == l.window_class:
+                                if self.attr_dict[t[:-2]] == l.window_class \
+                                        or self.attr_dict[t[:-2]] == l.window_instance:
                                     return tag
                     if t == "role_r":
-                        for reg in self.cfg[tag][t].copy():
+                        for reg in self.cfg[tag][t]:
                             lst_by_reg = self.i3.get_tree().find_by_role(reg)
                             for l in lst_by_reg:
                                 if self.attr_dict[t[:-2]] == l.window_role:
@@ -123,12 +124,10 @@ class CfgMaster(object):
     def del_props(self, tag, prop_str):
         self.fill_attr_dict(prop_str)
         # Delete 'direct' props:
-        print(f'tag={tag}')
         for t in self.cfg[tag]:
             if t in self.cfg_props:
                 if self.attr_dict[t] in self.cfg[tag][t]:
                     self.cfg[tag][t].remove(self.attr_dict[t])
-
         # Delete appropriate regexes
         for t in self.cfg[tag]:
             if t in self.cfg_regex_props:
@@ -136,7 +135,8 @@ class CfgMaster(object):
                     for reg in self.cfg[tag][t].copy():
                         lst_by_reg = self.i3.get_tree().find_classed(reg)
                         for l in lst_by_reg:
-                            if self.attr_dict[t[:-2]] == l.window_class:
+                            if self.attr_dict[t[:-2]] == l.window_class \
+                                    or self.attr_dict[t[:-2]] == l.window_instance:
                                 try:
                                     self.cfg[tag][t].remove(reg)
                                 except KeyError:

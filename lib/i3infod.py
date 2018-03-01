@@ -132,6 +132,29 @@ class i3info():
                             bytes(str(output), 'UTF-8')
                         )
                         break
+                    elif 'del_props' in data.decode():
+                        s = data.decode()
+                        prop_str = s.split('@', maxsplit=1)[1]
+                        circle_tag = self.circle_instance.get_prev_tag(
+                            prop_str
+                        )
+                        ns_tag = self.ns_instance.get_prev_tag(
+                            prop_str
+                        )
+                        print(f'circle_tag={circle_tag}, ns_tag={ns_tag}')
+                        if circle_tag is not None:
+                            self.circle_instance.del_prop(
+                                circle_tag,
+                                prop_str,
+                                full_reload=False
+                            )
+                        if ns_tag is not None:
+                            self.ns_instance.del_prop(
+                                ns_tag,
+                                prop_str,
+                                full_reload=False
+                            )
+                        break
             except BreakoutException:
                 pass
 

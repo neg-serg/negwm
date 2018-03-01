@@ -1,6 +1,8 @@
 import i3ipc
 import re
 import os
+import shlex
+import subprocess
 from modlib import Matcher
 from cfg_master import CfgMaster
 from singleton import Singleton
@@ -156,17 +158,16 @@ class circle(CfgMaster, Matcher):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def add_prop(self, tag, prop_str, Copy=False):
-        if not Copy:
-            prev_tag = self.get_prev_tag(prop_str)
-            if prev_tag is not None:
-                self.del_prop(prev_tag, prop_str)
+    def add_prop(self, tag, prop_str):
         self.add_props(tag, prop_str)
         self.tag_window(tag)
 
-    def del_prop(self, tag, prop_str):
+    def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
-        self.tag_window(tag)
+        if not full_reload:
+            self.tag_window(tag)
+        else:
+            self.tag_windows()
 
     def tag_window(self, tag):
         self.winlist = self.i3.get_tree()
