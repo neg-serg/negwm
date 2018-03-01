@@ -116,10 +116,14 @@ class CfgMaster(object):
 
     def add_props(self, tag, prop_str):
         self.fill_attr_dict(prop_str)
-        for t in self.cfg[tag]:
-            if t in self.cfg_props:
-                if self.attr_dict[t] not in self.cfg[tag][t]:
-                    self.cfg[tag][t].add(self.attr_dict[t])
+        ftors = set(self.cfg_props) & set(self.attr_dict.keys())
+        if tag in self.cfg:
+            for t in ftors:
+                if self.attr_dict[t] not in self.cfg.get(tag, {}).get(t, {}):
+                    if t in self.cfg[tag]:
+                        self.cfg[tag][t].add(self.attr_dict[t])
+                    else:
+                        self.cfg[tag].update({t: self.attr_dict[t]})
 
     def del_props(self, tag, prop_str):
         self.fill_attr_dict(prop_str)
