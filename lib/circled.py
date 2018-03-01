@@ -151,8 +151,18 @@ class circle(CfgMaster, Matcher):
         {
             "next": self.go_next,
             "run": self.go_next,
+            "add_prop": self.add_prop,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
+
+    def add_prop(self, tag, prop_str):
+        self.add_props(tag, prop_str)
+        self.tag_window(tag)
+
+    def tag_window(self, tag):
+        self.winlist = self.i3.get_tree()
+        self.tagged[tag] = []
+        self.find_acceptable_windows(tag, self.winlist.leaves())
 
     def find_acceptable_windows(self, tag, wlist):
         for win in wlist:

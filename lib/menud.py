@@ -17,6 +17,8 @@ class menu():
         self.i3cmd = 'i3-msg'
         self.magic_pie = 'sssssnake'
 
+        self.possible_mods = ['ns', 'circle']
+
         user_name = os.environ.get("USER", "neg")
         xdg_config_path = os.environ.get(
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
@@ -39,6 +41,7 @@ class menu():
             "WM_NAME",
             "_NET_WM_NAME"
         }
+        self.xprop_delim="@"
 
     def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=1900):
         return [
@@ -148,7 +151,6 @@ class menu():
 
     def get_autoprop_as_str(self, with_title=False):
         xprops = []
-        xprop_delimiter="@"
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.check_output(
             ['xprop', '-id', str(w.window)] + self.need_xprops
@@ -162,56 +164,79 @@ class menu():
                     xattr = re.sub("[A-Z]+(.*) = ", '', xattr).split(', ')
                     if "WM_CLASS" in founded_attr:
                         if xattr[0] is not None and len(xattr[0]):
-                            ret.append(f'class={xattr[0]}{xprop_delimiter}')
+                            ret.append(f'class={xattr[0]}{self.xprop_delim}')
                         if xattr[1] is not None and len(xattr[1]):
-                            ret.append(f'instance={xattr[1]}{xprop_delimiter}')
+                            ret.append(f'instance={xattr[1]}{self.xprop_delim}')
                     if "WM_WINDOW_ROLE" in founded_attr:
-                        ret.append(f'window_role={xattr[0]}{xprop_delimiter}')
+                        ret.append(f'window_role={xattr[0]}{self.xprop_delim}')
                     if with_title:
                         if "WM_NAME" in founded_attr:
-                            ret.append(f'title={xattr[0]}{xprop_delimiter}')
+                            ret.append(f'title={xattr[0]}{self.xprop_delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
-    def autoprop(self):
-        aprop_str = self.get_autoprop_as_str(with_title=False)
-        mod = "ns"
+    def make_i3req(self):
+        subprocess.Popen(shlex.split(self.i3_path + "send i3info request"))
 
+    def mod_data_list(self, mod):
         p = subprocess.Popen(
             shlex.split("nc 0.0.0.0 31888"),
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
-        p.stdin.write(bytes('ns_list', 'UTF-8'))
+        p.stdin.write(bytes(f'{mod}_list', 'UTF-8'))
         p_com = p.communicate()[0]
         p.stdin.close()
-
-        subprocess.Popen(
-            shlex.split(self.i3_path + "send i3info request")
-        )
-
         p.wait()
-
         if p_com is not None:
-            ns_list = p_com.decode('UTF-8').strip()[1:-1].split(', ')
+            lst = p_com.decode('UTF-8').strip()[1:-1].split(', ')
+        lst = [t.replace("'", '') for t in lst]
 
-        ns_list = [t.replace("'", '') for t in ns_list]
+        return lst
 
+    def tag_name(self, mod, lst):
         p = subprocess.Popen(
             self.rofi_args(
-                cnum=len(ns_list),
+                cnum=len(lst),
                 width=1200,
                 prompt=f"[{mod}] >>"
             ),
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
-        p.stdin.write(bytes('\n'.join(ns_list), 'UTF-8'))
+        p.stdin.write(bytes('\n'.join(lst), 'UTF-8'))
         p_com = p.communicate()[0]
         p.wait()
         p.stdin.close()
 
         if p_com is not None and p_com != '':
-            tag_name = p_com.decode('UTF-8').strip()
+            return p_com.decode('UTF-8').strip()
+
+    def get_mod(self):
+        prompt = "selmod"
+        p = subprocess.Popen(
+            self.rofi_args(
+                cnum=len(self.possible_mods),
+                width=1200,
+                prompt=f"[{prompt}] >>"
+            ),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        )
+        p.stdin.write(bytes('\n'.join(self.possible_mods), 'UTF-8'))
+        p_com = p.communicate()[0]
+        p.wait()
+        p.stdin.close()
+
+        if p_com is not None and p_com != '':
+            return p_com.decode('UTF-8').strip()
+
+    def autoprop(self):
+        mod = self.get_mod()
+        aprop_str = self.get_autoprop_as_str(with_title=False)
+
+        lst = self.mod_data_list(mod)
+        self.make_i3req()
+        tag_name = self.tag_name(mod, lst)
 
         subprocess.Popen(
             shlex.split(f'{self.i3_path}send {mod} add_prop \

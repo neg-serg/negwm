@@ -65,3 +65,27 @@ class CfgMaster(object):
             self.cfg = toml.load(fp)
         self.dict_converse()
 
+    def add_props(self, tag, prop_str):
+        attr_dict = {}
+        possible_props = ['class', 'instance', 'window_role', 'title']
+        cfg_props = [ 'class', 'instance', 'role' ]
+        conv_props = {
+            'class': cfg_props[0],
+            'instance': cfg_props[1],
+            'window_role': cfg_props[2],
+        }
+        prop_str = prop_str[1:-1]
+        for t in prop_str.split('@'):
+            if len(t):
+                toks = t.split('=')
+                attr = toks[0]
+                value = toks[1]
+                if value[0] == value[-1] and value[0] in {'"', "'"}:
+                    value = value[1:-1]
+                if attr in possible_props:
+                    attr_dict[conv_props.get(attr, {})] = value
+        for t in self.cfg[tag]:
+            if t in cfg_props:
+                if attr_dict[t] not in self.cfg[tag][t]:
+                    self.cfg[tag][t].add(attr_dict[t])
+

@@ -4,8 +4,10 @@ import i3ipc
 import os
 import select
 import selectors
-import nsd
 from singleton import Singleton
+
+from nsd import ns
+from circled import circle
 
 
 class BreakoutException(Exception):
@@ -57,14 +59,15 @@ class i3info():
         self.port = 31888
         self.name = ""
 
+        self.ns_instance = ns()
+        self.circle_instance = circle()
+
         self.sel = selectors.DefaultSelector()
         self.ws_event = WaitableEvent()
         self.req_event = WaitableEvent()
 
         self.sel.register(self.ws_event, selectors.EVENT_READ, "ws event")
         self.sel.register(self.req_event, selectors.EVENT_READ, "req event")
-
-        self.ns_instance = nsd.ns()
 
     def switch(self, args):
         {
@@ -116,6 +119,14 @@ class i3info():
                     elif 'ns_list' in data.decode():
                         output = []
                         for k in self.ns_instance.cfg:
+                            output.append(k)
+                        current_conn.send(
+                            bytes(str(output), 'UTF-8')
+                        )
+                        break
+                    elif 'circle_list' in data.decode():
+                        output = []
+                        for k in self.circle_instance.cfg:
                             output.append(k)
                         current_conn.send(
                             bytes(str(output), 'UTF-8')
