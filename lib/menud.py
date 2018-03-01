@@ -149,7 +149,7 @@ class menu():
             p.wait()
             p.stdin.close()
 
-    def get_autoprop_as_str(self, with_title=False):
+    def get_autoprop_as_str(self, with_title=False, with_role=False):
         xprops = []
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.check_output(
@@ -164,11 +164,12 @@ class menu():
                     xattr = re.sub("[A-Z]+(.*) = ", '', xattr).split(', ')
                     if "WM_CLASS" in founded_attr:
                         if xattr[0] is not None and len(xattr[0]):
-                            ret.append(f'class={xattr[0]}{self.delim}')
+                            ret.append(f'instance={xattr[0]}{self.delim}')
                         if xattr[1] is not None and len(xattr[1]):
-                            ret.append(f'instance={xattr[1]}{self.delim}')
-                    if "WM_WINDOW_ROLE" in founded_attr:
-                        ret.append(f'window_role={xattr[0]}{self.delim}')
+                            ret.append(f'class={xattr[1]}{self.delim}')
+                    if with_role:
+                        if "WM_WINDOW_ROLE" in founded_attr:
+                            ret.append(f'window_role={xattr[0]}{self.delim}')
                     if with_title:
                         if "WM_NAME" in founded_attr:
                             ret.append(f'title={xattr[0]}{self.delim}')
