@@ -312,7 +312,6 @@ class ns(CfgMaster, Matcher):
         return False
 
     def unmark(self, tag, hide=True):
-        print("here")
         leaves = self.i3.get_tree().leaves()
         for win in leaves:
             if not self.match(win, tag) and self.check_win_marked(win, tag):

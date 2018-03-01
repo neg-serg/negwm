@@ -2,6 +2,7 @@ import os
 import sys
 import toml
 import traceback
+import i3ipc
 
 
 class CfgMaster(object):
@@ -17,6 +18,7 @@ class CfgMaster(object):
             'instance': self.cfg_props[1],
             'window_role': self.cfg_props[2],
         }
+        self.i3 = i3ipc.Connection()
 
     def reload_config(self):
         prev_conf = self.cfg
@@ -74,7 +76,7 @@ class CfgMaster(object):
             self.cfg = toml.load(fp)
         self.dict_converse()
 
-    def add_props(self, tag, prop_str):
+    def fill_attr_dict(self, prop_str):
         prop_str = prop_str[1:-1]
         for t in prop_str.split('@'):
             if len(t):
@@ -85,26 +87,43 @@ class CfgMaster(object):
                     value = value[1:-1]
                 if attr in self.possible_props:
                     self.attr_dict[self.conv_props.get(attr, {})] = value
+
+    def add_props(self, tag, prop_str):
+        self.fill_attr_dict(prop_str)
         for t in self.cfg[tag]:
             if t in self.cfg_props:
                 if self.attr_dict[t] not in self.cfg[tag][t]:
                     self.cfg[tag][t].add(self.attr_dict[t])
 
     def del_props(self, tag, prop_str):
-        prop_str = prop_str[1:-1]
-        for t in prop_str.split('@'):
-            if len(t):
-                toks = t.split('=')
-                attr = toks[0]
-                value = toks[1]
-                if value[0] == value[-1] and value[0] in {'"', "'"}:
-                    value = value[1:-1]
-                if attr in self.possible_props:
-                    self.attr_dict[self.conv_props.get(attr, {})] = value
+        self.fill_attr_dict(prop_str)
         # Delete 'direct' props:
         for t in self.cfg[tag]:
             if t in self.cfg_props:
                 if self.attr_dict[t] in self.cfg[tag][t]:
                     self.cfg[tag][t].remove(self.attr_dict[t])
-                    print(self.cfg[tag][t])
+
+        # Delete appropriate regexes
+        for t in self.cfg[tag]:
+            if t in self.cfg_regex_props:
+                if t == "class_r":
+                    for reg in self.cfg[tag][t].copy():
+                        lst_by_reg = self.i3.get_tree().find_classed(reg)
+                        for l in lst_by_reg:
+                            if self.attr_dict[t[:-2]] == l.window_class:
+                                try:
+                                    self.cfg[tag][t].remove(reg)
+                                except KeyError:
+                                    pass
+                                break
+                if t == "role_r":
+                    for reg in self.cfg[tag][t].copy():
+                        lst_by_reg = self.i3.get_tree().find_by_role(reg)
+                        for l in lst_by_reg:
+                            if self.attr_dict[t[:-2]] == l.window_role:
+                                try:
+                                    self.cfg[tag][t].remove(reg)
+                                except KeyError:
+                                    pass
+                                break
 
