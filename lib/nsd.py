@@ -283,6 +283,10 @@ class ns(CfgMaster, Matcher):
         self.add_props(tag, prop_str)
         self.mark(tag)
 
+    def del_prop(self, tag, prop_str):
+        self.del_props(tag, prop_str)
+        self.unmark(tag)
+
     def switch(self, args: List) -> None:
         {
             "show": self.focus,
@@ -295,9 +299,10 @@ class ns(CfgMaster, Matcher):
             "geom_save": self.geom_save_current,
             "geom_autosave_mode": self.autosave_toggle,
             "run": self.run_subtag,
+            "add_prop": self.add_prop,
+            "del_prop": self.del_prop,
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,
-            "add_prop": self.add_prop,
         }[args[0]](*args[1:])
 
     def check_win_marked(self, win, tag):
@@ -305,6 +310,22 @@ class ns(CfgMaster, Matcher):
             if tag + "-" in mrk:
                 return True
         return False
+
+    def unmark(self, tag, hide=True):
+        print("here")
+        leaves = self.i3.get_tree().leaves()
+        for win in leaves:
+            if not self.match(win, tag) and self.check_win_marked(win, tag):
+                for _, oldwin in enumerate(self.marked[tag]):
+                    if oldwin.id == win.id:
+                        del self.marked[tag][_]
+                        self.focus(tag)
+                        for tr in self.transients:
+                            if tr.id == win.id:
+                                self.transients.remove(tr)
+                        break
+        self.winlist = self.i3.get_tree()
+        self.dialog_toggle()
 
     def mark(self, tag, hide=True):
         leaves = self.i3.get_tree().leaves()

@@ -52,6 +52,7 @@ const char* docstr= \
     "  send circle info <name>\n" \
     "  send circle run <name> <subtag>\n" \
     "  send circle add_prop <tag> <rule>\n" \
+    "  send circle del_prop <tag> <rule>\n" \
     "  send ns show <name>\n" \
     "  send ns hide <name>\n" \
     "  send ns toggle <name>\n" \
@@ -65,6 +66,7 @@ const char* docstr= \
     "  send ns geom_autosave_mode\n" \
     "  send ns hide_current\n" \
     "  send ns add_prop <tag> <rule>\n" \
+    "  send ns del_prop <tag> <rule>\n" \
     "  send flast switch\n" \
     "  send flast reload\n" \
     "  send menu run\n" \
@@ -100,6 +102,7 @@ Args ArgMap[] = {
         { "info", 1 },
         { "run", 2 },
         { "add_prop", 2 },
+        { "del_prop", 2 },
         { NULL, 0 },
     },
     [NS] = {
@@ -116,6 +119,7 @@ Args ArgMap[] = {
         { "hide_current", 0 },
         { "dialog", 0 },
         { "add_prop", 2 },
+        { "del_prop", 2 },
         { NULL, 0 },
     },
     [FLAST] = {

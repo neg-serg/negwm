@@ -59,7 +59,7 @@ class Matcher(object):
             return False
 
         factors = [
-            "class", "instance",
+            "class", "instance", "role",
             "class_r", "instance_r", "name_r", "role_r"
         ]
 

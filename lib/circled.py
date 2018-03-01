@@ -152,11 +152,16 @@ class circle(CfgMaster, Matcher):
             "next": self.go_next,
             "run": self.go_next,
             "add_prop": self.add_prop,
+            "del_prop": self.del_prop,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
     def add_prop(self, tag, prop_str):
         self.add_props(tag, prop_str)
+        self.tag_window(tag)
+
+    def del_prop(self, tag, prop_str):
+        self.del_props(tag, prop_str)
         self.tag_window(tag)
 
     def tag_window(self, tag):
