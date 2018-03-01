@@ -95,7 +95,6 @@ class CfgMaster(object):
             for t in self.cfg[tag]:
                 # Look by ordinary props
                 if t in self.cfg_props:
-                    # print(f't={t} v={self.cfg[tag][t]}')
                     for val in self.cfg[tag][t]:
                         if t == 'class':
                             if self.attr_dict['class'] == val:
@@ -106,26 +105,21 @@ class CfgMaster(object):
                         if t == 'role':
                             if self.attr_dict['role'] == val:
                                 return tag
-                    # print(self.attr_dict)
-                    # val = self.attr_dict.get(t, {})
-                    # if val:
-                    #     if val in self.cfg[tag][t]:
-                    #         return tag
-                # # Look for regex props
-                # if t in self.cfg_regex_props:
-                #     if t == "class_r":
-                #         for reg in self.cfg[tag][t]:
-                #             lst_by_reg = self.i3.get_tree().find_classed(reg)
-                #             for l in lst_by_reg:
-                #                 if self.attr_dict[t[:-2]] == l.window_class \
-                #                         or self.attr_dict[t[:-2]] == l.window_instance:
-                #                     return tag
-                #     if t == "role_r":
-                #         for reg in self.cfg[tag][t]:
-                #             lst_by_reg = self.i3.get_tree().find_by_role(reg)
-                #             for l in lst_by_reg:
-                #                 if self.attr_dict[t[:-2]] == l.window_role:
-                #                     return tag
+                # Look for regex props
+                if t in self.cfg_regex_props:
+                    if t == "class_r":
+                        for reg in self.cfg[tag][t]:
+                            lst_by_reg = self.i3.get_tree().find_classed(reg)
+                            for l in lst_by_reg:
+                                if self.attr_dict[t[:-2]] == l.window_class \
+                                        or self.attr_dict[t[:-2]] == l.window_instance:
+                                    return tag
+                    if t == "role_r":
+                        for reg in self.cfg[tag][t]:
+                            lst_by_reg = self.i3.get_tree().find_by_role(reg)
+                            for l in lst_by_reg:
+                                if self.attr_dict[t[:-2]] == l.window_role:
+                                    return tag
 
     def add_props(self, tag, prop_str):
         self.fill_attr_dict(prop_str)
@@ -149,30 +143,33 @@ class CfgMaster(object):
                     for tok in self.cfg[tag][t].copy():
                         if self.attr_dict[t] == tok:
                             self.cfg[tag][t].remove(tok)
-        # Delete appropriate regexes
-        for t in self.cfg[tag]:
-            if t in self.cfg_regex_props:
-                if t == "class_r":
-                    for reg in self.cfg[tag][t].copy():
-                        lst_by_reg = self.i3.get_tree().find_classed(reg)
-                        for l in lst_by_reg:
-                            if self.attr_dict[t[:-2]] == l.window_class \
-                                    or self.attr_dict[t[:-2]] == l.window_instance:
-                                try:
-                                    self.cfg[tag][t].remove(reg)
-                                except KeyError:
-                                    pass
-                                break
-                if t == "role_r":
-                    for reg in self.cfg[tag][t].copy():
-                        lst_by_reg = self.i3.get_tree().find_by_role(reg)
-                        for l in lst_by_reg:
-                            if self.attr_dict[t[:-2]] == l.window_role:
-                                try:
-                                    self.cfg[tag][t].remove(reg)
-                                except KeyError:
-                                    pass
-                                break
+        # NEED REWORK
+        # # Delete appropriate regexes
+        # for t in self.cfg[tag]:
+        #     if t in self.cfg_regex_props:
+        #         if t == "class_r":
+        #             for reg in self.cfg[tag][t].copy():
+        #                 lst_by_reg = self.i3.get_tree().find_classed(reg)
+        #                 for l in lst_by_reg:
+        #                     if self.attr_dict[t[:-2]] == l.window_class \
+        #                             or self.attr_dict[t[:-2]] == l.window_instance:
+        #                         try:
+        #                             self.cfg[tag][t].remove(reg)
+        #                         except KeyError:
+        #                             print("key error for class_r")
+        #                             pass
+        #                         break
+        #         if t == "role_r":
+        #             for reg in self.cfg[tag][t].copy():
+        #                 lst_by_reg = self.i3.get_tree().find_by_role(reg)
+        #                 for l in lst_by_reg:
+        #                     if self.attr_dict[t[:-2]] == l.window_role:
+        #                         try:
+        #                             self.cfg[tag][t].remove(reg)
+        #                         except KeyError:
+        #                             print("key error for role_r")
+        #                             pass
+        #                         break
 
         # Cleanup
         for t in set(self.cfg_regex_props) | set(self.cfg_props):

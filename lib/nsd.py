@@ -283,6 +283,13 @@ class ns(CfgMaster, Matcher):
         if tag in self.cfg:
             self.add_props(tag, prop_str)
 
+        for t in self.cfg:
+            if t != tag:
+                self.del_props(t, prop_str)
+                if self.marked[t] != []:
+                    for win in self.marked[t]:
+                        win.command('unmark')
+
         self.winlist = None
         self.fullscreen_list = []
         self.nsgeom = geom.geom(self.cfg)
@@ -291,12 +298,6 @@ class ns(CfgMaster, Matcher):
         self.transients = []
         self.mark_all_tags(hide=True)
         self.auto_save_geom(False)
-
-        for t in self.cfg:
-            if t != tag:
-                self.del_props(t, prop_str)
-
-        # self.mark(tag)
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
