@@ -11,8 +11,8 @@ class CfgMaster(object):
         self.load_config()
         self.attr_dict = {}
         self.possible_props = ['class', 'instance', 'window_role', 'title']
-        self.cfg_props = [ 'class', 'instance', 'role' ]
-        self.cfg_regex_props = [ "class_r", "instance_r", "name_r", "role_r" ]
+        self.cfg_props = ['class', 'instance', 'role']
+        self.cfg_regex_props = ["class_r", "instance_r", "name_r", "role_r"]
         self.conv_props = {
             'class': self.cfg_props[0],
             'instance': self.cfg_props[1],
@@ -131,7 +131,10 @@ class CfgMaster(object):
         for t in self.cfg[tag]:
             if t in self.cfg_props:
                 if self.attr_dict[t] in self.cfg[tag][t]:
-                    self.cfg[tag][t].remove(self.attr_dict[t])
+                    if type(self.cfg[tag][t]) == 'str':
+                        del self.cfg[tag][t]
+                    elif type(self.cfg[tag][t]) == 'dict':
+                        self.cfg[tag][t].remove(self.attr_dict[t])
         # Delete appropriate regexes
         for t in self.cfg[tag]:
             if t in self.cfg_regex_props:
@@ -144,6 +147,7 @@ class CfgMaster(object):
                                 try:
                                     self.cfg[tag][t].remove(reg)
                                 except KeyError:
+                                    print("class_r key error")
                                     pass
                                 break
                 if t == "role_r":
@@ -154,6 +158,12 @@ class CfgMaster(object):
                                 try:
                                     self.cfg[tag][t].remove(reg)
                                 except KeyError:
+                                    print("role_r key error")
                                     pass
                                 break
+
+        # Cleanup
+        for t in set(self.cfg_regex_props) | set(self.cfg_props):
+            if t in self.cfg[tag] and self.cfg[tag][t] == set():
+                del self.cfg[tag][t]
 
