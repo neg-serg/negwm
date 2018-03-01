@@ -63,6 +63,7 @@ const char* docstr= \
     "  send ns geom_dump\n" \
     "  send ns geom_autosave_mode\n" \
     "  send ns hide_current\n" \
+    "  send ns add_prop\n" \
     "  send flast switch\n" \
     "  send flast reload\n" \
     "  send menu run\n" \
@@ -112,6 +113,7 @@ Args ArgMap[] = {
         { "geom_autosave_mode", 0 },
         { "hide_current", 0 },
         { "dialog", 0 },
+        { "add_prop", 2 },
         { NULL, 0 },
     },
     [FLAST] = {

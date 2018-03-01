@@ -148,6 +148,7 @@ class menu():
 
     def get_autoprop_as_str(self, with_title=False):
         xprops = []
+        xprop_delimiter="@"
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.check_output(
             ['xprop', '-id', str(w.window)] + self.need_xprops
@@ -161,18 +162,19 @@ class menu():
                     xattr = re.sub("[A-Z]+(.*) = ", '', xattr).split(', ')
                     if "WM_CLASS" in founded_attr:
                         if xattr[0] is not None and len(xattr[0]):
-                            ret.append(f'class={xattr[0]} ')
+                            ret.append(f'class={xattr[0]}{xprop_delimiter}')
                         if xattr[1] is not None and len(xattr[1]):
-                            ret.append(f'instance={xattr[1]} ')
+                            ret.append(f'instance={xattr[1]}{xprop_delimiter}')
                     if "WM_WINDOW_ROLE" in founded_attr:
-                        ret.append(f'window_role={xattr[0]} ')
+                        ret.append(f'window_role={xattr[0]}{xprop_delimiter}')
                     if with_title:
                         if "WM_NAME" in founded_attr:
-                            ret.append(f'title={xattr[0]} ')
+                            ret.append(f'title={xattr[0]}{xprop_delimiter}')
         return "[" + ''.join(sorted(ret)) + "]"
 
     def autoprop(self):
         aprop_str = self.get_autoprop_as_str(with_title=False)
+        print(aprop_str)
 
         p = subprocess.Popen(
             shlex.split("nc 0.0.0.0 31888"),

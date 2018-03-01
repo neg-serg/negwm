@@ -19,6 +19,9 @@ class Matcher(object):
         def match_instance():
             return win.window_instance in matched_list
 
+        def match_role():
+            return win.window_role in matched_list
+
         def match_class_r():
             for reg in matched_list:
                 cls_by_regex = self.winlist.find_classed(reg)
@@ -63,6 +66,7 @@ class Matcher(object):
         match = {
             "class": match_class,
             "instance": match_instance,
+            "role": match_role,
             "class_r": match_class_r,
             "instance_r": match_instance_r,
             "role_r": match_role_r,
