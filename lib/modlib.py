@@ -59,14 +59,13 @@ class Matcher(object):
             return False
 
         factors = [
-            "class", "instance", "role",
+            "class", "instance",
             "class_r", "instance_r", "name_r", "role_r"
         ]
 
         match = {
             "class": match_class,
             "instance": match_instance,
-            "role": match_role,
             "class_r": match_class_r,
             "instance_r": match_instance_r,
             "role_r": match_role_r,
