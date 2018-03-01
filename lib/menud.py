@@ -41,7 +41,7 @@ class menu():
             "WM_NAME",
             "_NET_WM_NAME"
         }
-        self.xprop_delim="@"
+        self.delim="@"
 
     def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=1900):
         return [
@@ -164,14 +164,14 @@ class menu():
                     xattr = re.sub("[A-Z]+(.*) = ", '', xattr).split(', ')
                     if "WM_CLASS" in founded_attr:
                         if xattr[0] is not None and len(xattr[0]):
-                            ret.append(f'class={xattr[0]}{self.xprop_delim}')
+                            ret.append(f'class={xattr[0]}{self.delim}')
                         if xattr[1] is not None and len(xattr[1]):
-                            ret.append(f'instance={xattr[1]}{self.xprop_delim}')
+                            ret.append(f'instance={xattr[1]}{self.delim}')
                     if "WM_WINDOW_ROLE" in founded_attr:
-                        ret.append(f'window_role={xattr[0]}{self.xprop_delim}')
+                        ret.append(f'window_role={xattr[0]}{self.delim}')
                     if with_title:
                         if "WM_NAME" in founded_attr:
-                            ret.append(f'title={xattr[0]}{self.xprop_delim}')
+                            ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
     def make_i3req(self):
@@ -216,6 +216,7 @@ class menu():
         p = subprocess.Popen(
             self.rofi_args(
                 cnum=len(self.possible_mods),
+                lnum=1,
                 width=1200,
                 prompt=f"[{prompt}] >>"
             ),
@@ -224,14 +225,16 @@ class menu():
         )
         p.stdin.write(bytes('\n'.join(self.possible_mods), 'UTF-8'))
         p_com = p.communicate()[0]
-        p.wait()
         p.stdin.close()
+        p.wait()
 
         if p_com is not None and p_com != '':
             return p_com.decode('UTF-8').strip()
 
     def autoprop(self):
         mod = self.get_mod()
+        if mod is None or not len(mod):
+            return
         aprop_str = self.get_autoprop_as_str(with_title=False)
 
         lst = self.mod_data_list(mod)

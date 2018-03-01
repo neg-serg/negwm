@@ -119,7 +119,8 @@ class ns(CfgMaster, Matcher):
             self.unfocus(tag)
             return
 
-        # We need to hide scratchpad it is visible, regardless it focused or not
+        # We need to hide scratchpad it is visible,
+        # regardless it focused or not
         focused = self.i3.get_tree().find_focused()
 
         for w in self.marked[tag]:
@@ -306,12 +307,10 @@ class ns(CfgMaster, Matcher):
         return False
 
     def mark(self, tag, hide=True):
-        already_marked = False
         leaves = self.i3.get_tree().leaves()
         for win in leaves:
             if self.match(win, tag):
                 if not self.check_win_marked(win, tag):
-                    print(f'{win.name}')
                     # scratch move
                     hide_cmd = ''
                     if hide:
