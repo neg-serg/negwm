@@ -302,6 +302,8 @@ class ns(CfgMaster, Matcher):
                 if attr_dict[t] not in self.cfg[tag][t]:
                     self.cfg[tag][t].add(attr_dict[t])
 
+        self.mark(tag)
+
     def switch(self, args: List) -> None:
         {
             "show": self.focus,
@@ -318,6 +320,30 @@ class ns(CfgMaster, Matcher):
             "dialog": self.dialog_toggle,
             "add_prop": self.add_prop,
         }[args[0]](*args[1:])
+
+    def check_win_marked(self, win, tag):
+        for mrk in win.marks:
+            if tag + "-" in mrk:
+                return True
+        return False
+
+    def mark(self, tag, hide=True):
+        already_marked = False
+        leaves = self.i3.get_tree().leaves()
+        for win in leaves:
+            if self.match(win, tag):
+                if not self.check_win_marked(win, tag):
+                    print(f'{win.name}')
+                    # scratch move
+                    hide_cmd = ''
+                    if hide:
+                        hide_cmd = '[con_id=__focused__] scratchpad show'
+                    win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
+                        {self.nsgeom.get_geom(tag)}, {hide_cmd}"
+                    win.command(win_cmd)
+                    self.marked[tag].append(win)
+        self.winlist = self.i3.get_tree()
+        self.dialog_toggle()
 
     def mark_tag(self, i3, event) -> None:
         win = event.container
