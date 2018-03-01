@@ -77,6 +77,7 @@ class CfgMaster(object):
         self.dict_converse()
 
     def fill_attr_dict(self, prop_str):
+        self.attr_dict = {}
         prop_str = prop_str[1:-1]
         for t in prop_str.split('@'):
             if len(t):
@@ -88,6 +89,30 @@ class CfgMaster(object):
                 if attr in self.possible_props:
                     self.attr_dict[self.conv_props.get(attr, {})] = value
 
+    def get_prev_tag(self, prop_str):
+        self.fill_attr_dict(prop_str)
+        for tag in self.cfg:
+            for t in self.cfg[tag]:
+                # Look by ordinary props
+                if t in self.cfg_props:
+                    val = self.attr_dict.get(t, {})
+                    if val:
+                        if val in self.cfg[tag][t]:
+                            return tag
+                if t in self.cfg_regex_props:
+                    if t == "class_r":
+                        for reg in self.cfg[tag][t].copy():
+                            lst_by_reg = self.i3.get_tree().find_classed(reg)
+                            for l in lst_by_reg:
+                                if self.attr_dict[t[:-2]] == l.window_class:
+                                    return tag
+                    if t == "role_r":
+                        for reg in self.cfg[tag][t].copy():
+                            lst_by_reg = self.i3.get_tree().find_by_role(reg)
+                            for l in lst_by_reg:
+                                if self.attr_dict[t[:-2]] == l.window_role:
+                                    return tag
+
     def add_props(self, tag, prop_str):
         self.fill_attr_dict(prop_str)
         for t in self.cfg[tag]:
@@ -98,6 +123,7 @@ class CfgMaster(object):
     def del_props(self, tag, prop_str):
         self.fill_attr_dict(prop_str)
         # Delete 'direct' props:
+        print(f'tag={tag}')
         for t in self.cfg[tag]:
             if t in self.cfg_props:
                 if self.attr_dict[t] in self.cfg[tag][t]:

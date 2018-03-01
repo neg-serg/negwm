@@ -156,7 +156,11 @@ class circle(CfgMaster, Matcher):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def add_prop(self, tag, prop_str):
+    def add_prop(self, tag, prop_str, Copy=False):
+        if not Copy:
+            prev_tag = self.get_prev_tag(prop_str)
+            if prev_tag is not None:
+                self.del_prop(prev_tag, prop_str)
         self.add_props(tag, prop_str)
         self.tag_window(tag)
 
