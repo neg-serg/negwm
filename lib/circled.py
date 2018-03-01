@@ -1,8 +1,6 @@
 import i3ipc
 import re
 import os
-import shlex
-import subprocess
 from modlib import Matcher
 from cfg_master import CfgMaster
 from singleton import Singleton
@@ -159,15 +157,30 @@ class circle(CfgMaster, Matcher):
         }[args[0]](*args[1:])
 
     def add_prop(self, tag, prop_str):
-        self.add_props(tag, prop_str)
-        self.tag_window(tag)
+        if tag in self.cfg:
+            self.add_props(tag, prop_str)
+
+        for t in self.cfg:
+            if t != tag:
+                self.del_props(t, prop_str)
+
+        self.tagged = {}
+        self.counters = {}
+        self.restore_fullscreen = []
+        self.interactive = True
+        self.repeats = 0
+        self.winlist = []
+        self.subtag_info = {}
+        self.need_handle_fullscreen = True
+
+        for tag in self.cfg:
+            self.tagged[tag] = []
+            self.counters[tag] = 0
+        self.tag_windows()
+        self.current_win = self.i3.get_tree().find_focused()
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
-        if not full_reload:
-            self.tag_window(tag)
-        else:
-            self.tag_windows()
 
     def tag_window(self, tag):
         self.winlist = self.i3.get_tree()

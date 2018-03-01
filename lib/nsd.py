@@ -280,15 +280,30 @@ class ns(CfgMaster, Matcher):
         self.apply_to_current_tag(self.geom_save)
 
     def add_prop(self, tag, prop_str):
-        self.add_props(tag, prop_str)
-        self.mark(tag)
+        if tag in self.cfg:
+            self.add_props(tag, prop_str)
+
+        self.winlist = None
+        self.fullscreen_list = []
+        self.nsgeom = geom.geom(self.cfg)
+        self.marked = {l: [] for l in self.cfg}
+        self.i3 = i3ipc.Connection()
+        self.transients = []
+        self.mark_all_tags(hide=True)
+        self.auto_save_geom(False)
+
+        for t in self.cfg:
+            if t != tag:
+                self.del_props(t, prop_str)
+
+        # self.mark(tag)
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
-        if not full_reload:
-            self.unmark(tag)
-        else:
-            self.mark_all_tags(hide=True)
+        # if not full_reload:
+        #     self.unmark(tag)
+        # else:
+        #     self.mark_all_tags(hide=True)
 
     def switch(self, args: List) -> None:
         {

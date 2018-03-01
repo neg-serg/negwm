@@ -241,16 +241,11 @@ class menu():
         self.make_i3req()
         tag_name = self.tag_name(mod, lst)
 
-        p = subprocess.Popen(
-            shlex.split("nc 0.0.0.0 31888"),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
-        )
-        p.stdin.write(bytes(f'del_props{self.delim}{aprop_str}', 'UTF-8'))
-        p.stdin.close()
-        p.wait()
+        add_prop_cmd = f'{self.i3_path}send ns add_prop \
+                        {tag_name} {aprop_str}'
+        subprocess.Popen(shlex.split(add_prop_cmd))
 
-        add_prop_cmd = f'{self.i3_path}send {mod} add_prop \
+        add_prop_cmd = f'{self.i3_path}send circle add_prop \
                         {tag_name} {aprop_str}'
         subprocess.Popen(shlex.split(add_prop_cmd))
 
