@@ -174,7 +174,7 @@ class menu():
 
     def autoprop(self):
         aprop_str = self.get_autoprop_as_str(with_title=False)
-        print(aprop_str)
+        mod = "ns"
 
         p = subprocess.Popen(
             shlex.split("nc 0.0.0.0 31888"),
@@ -197,7 +197,11 @@ class menu():
         ns_list = [t.replace("'", '') for t in ns_list]
 
         p = subprocess.Popen(
-            self.rofi_args(cnum=len(ns_list), width=1200, prompt="[ns] >>"),
+            self.rofi_args(
+                cnum=len(ns_list),
+                width=1200,
+                prompt=f"[{mod}] >>"
+            ),
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
@@ -207,7 +211,12 @@ class menu():
         p.stdin.close()
 
         if p_com is not None and p_com != '':
-            print(p_com.decode('UTF-8').strip())
+            tag_name = p_com.decode('UTF-8').strip()
+
+        subprocess.Popen(
+            shlex.split(f'{self.i3_path}send {mod} add_prop \
+                        {tag_name} {aprop_str}')
+        )
 
     def workspaces(self):
         wslist = [ws.name for ws in self.i3.get_workspaces()]
