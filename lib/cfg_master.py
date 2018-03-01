@@ -128,7 +128,13 @@ class CfgMaster(object):
             for t in ftors:
                 if self.attr_dict[t] not in self.cfg.get(tag, {}).get(t, {}):
                     if t in self.cfg[tag]:
-                        self.cfg[tag][t].add(self.attr_dict[t])
+                        if type(self.cfg[tag][t]) == str:
+                            self.cfg[tag][t] = {
+                                self.cfg[tag][t],
+                                self.attr_dict[t]
+                            }
+                        elif type(self.cfg[tag][t]) == set:
+                            self.cfg[tag][t].add(self.attr_dict[t])
                     else:
                         self.cfg[tag].update({t: self.attr_dict[t]})
 
