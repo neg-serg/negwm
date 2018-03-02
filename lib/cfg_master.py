@@ -129,14 +129,15 @@ class CfgMaster(object):
                 if self.attr_dict[t] not in self.cfg.get(tag, {}).get(t, {}):
                     if t in self.cfg[tag]:
                         if type(self.cfg[tag][t]) == str:
-                            self.cfg[tag][t] = {
-                                self.cfg[tag][t],
-                                self.attr_dict[t]
-                            }
+                            self.cfg[tag][t] = {self.attr_dict[t]}
                         elif type(self.cfg[tag][t]) == set:
                             self.cfg[tag][t].add(self.attr_dict[t])
                     else:
                         self.cfg[tag].update({t: self.attr_dict[t]})
+                    # special fix for the case where attr
+                    # is just attr not {attr}
+                    if type(self.cfg[tag][t]) == str:
+                        self.cfg[tag][t] = {self.attr_dict[t]}
 
     def del_props(self, tag, prop_str):
         self.fill_attr_dict(prop_str)
