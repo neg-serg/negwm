@@ -2,6 +2,7 @@
 import socket
 import i3ipc
 import os
+import re
 import select
 import selectors
 from singleton import Singleton
@@ -55,19 +56,37 @@ class i3info():
     def __init__(self):
         self.i3 = i3ipc.Connection()
         self.i3.on('workspace::focus', self.on_ws_focus)
+        self.i3.on('binding', self.on_binding_event)
         self.addr = '0.0.0.0'
         self.port = 31888
         self.name = ""
+        self.binding_mode = ""
+        self.mode_regex = re.compile('^mode ')
 
         self.ns_instance = ns()
         self.circle_instance = circle()
 
         self.sel = selectors.DefaultSelector()
+
         self.ws_event = WaitableEvent()
         self.req_event = WaitableEvent()
+        self.binding_event = WaitableEvent()
 
-        self.sel.register(self.ws_event, selectors.EVENT_READ, "ws event")
-        self.sel.register(self.req_event, selectors.EVENT_READ, "req event")
+        self.sel.register(
+            self.ws_event,
+            selectors.EVENT_READ,
+            "ws event"
+        )
+        self.sel.register(
+            self.req_event,
+            selectors.EVENT_READ,
+            "req event"
+        )
+        self.sel.register(
+            self.binding_event,
+            selectors.EVENT_READ,
+            "binding event"
+        )
 
     def switch(self, args):
         {
@@ -85,8 +104,27 @@ class i3info():
         self.name = event.current.name
         self.ws_event.set()
 
+    def colorize(self, s, color="#005fd7"):
+        return f"%{{F{color}}}{s}%{{F#ccc}}"
+
+    def on_binding_event(self, i3, event):
+        try:
+            bind_cmd = event.binding.command
+            if re.match(self.mode_regex, bind_cmd):
+                bind_cmd = re.sub(self.mode_regex, '', bind_cmd)
+                if bind_cmd[0] == bind_cmd[-1] and bind_cmd[0] in {'"',"'"}:
+                    bind_cmd = bind_cmd[1:-1]
+                    if bind_cmd == "default":
+                        self.binding_mode = ''
+                    else:
+                        print(self.colorize(bind_cmd))
+                        self.binding_mode = self.colorize(bind_cmd) + ' '
+        except:
+            pass
+        self.binding_event.set()
+
     def idle_wait(self):
-        for ev in self.sel.select(0.01):
+        for ev in self.sel.select():
             pass
         return True
 
@@ -112,7 +150,7 @@ class i3info():
                                 current_conn.close()
                                 raise BreakoutException
                     elif 'ws' in data.decode():
-                        current_conn.send(self.name.encode())
+                        current_conn.send((self.binding_mode + self.name).encode())
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
