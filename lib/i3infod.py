@@ -59,11 +59,12 @@ class i3info(CfgMaster):
         self.i3 = i3ipc.Connection()
         self.i3.on('workspace::focus', self.on_ws_focus)
         self.i3.on('binding', self.on_binding_event)
+
         self.addr = self.cfg["addr"]
         self.port = int(self.cfg["port"])
         self.ws_name = ""
         self.binding_mode = ""
-        self.mode_regex = re.compile('^mode ')
+        self.mode_regex = re.compile('^.*mode ')
 
         self.ns_instance = ns()
         self.circle_instance = circle()
@@ -73,6 +74,16 @@ class i3info(CfgMaster):
         self.ws_event = WaitableEvent()
         self.req_event = WaitableEvent()
         self.binding_event = WaitableEvent()
+
+        for ws in self.i3.get_workspaces():
+            if ws.focused:
+                self.ws_name = ws.name
+                if not self.ws_name[0].isalpha():
+                    self.ws_name = self.colorize(
+                        self.ws_name[0], color="#8FA8C7"
+                    ) + self.ws_name[1:]
+                self.ws_event.set()
+                break
 
         self.sel.register(
             self.ws_event,
@@ -114,19 +125,16 @@ class i3info(CfgMaster):
         return f"%{{F{color}}}{s}%{{F#ccc}}"
 
     def on_binding_event(self, i3, event):
-        try:
-            bind_cmd = event.binding.command
-            if re.match(self.mode_regex, bind_cmd):
-                bind_cmd = re.sub(self.mode_regex, '', bind_cmd)
-                if bind_cmd[0] == bind_cmd[-1] and bind_cmd[0] in {'"',"'"}:
-                    bind_cmd = bind_cmd[1:-1]
-                    if bind_cmd == "default":
+        bind_cmd = event.binding.command
+        for t in bind_cmd.split(';'):
+            if 'mode' in t:
+                ret = re.sub(self.mode_regex, '', t)
+                if ret[0] == ret[-1] and ret[0] in {'"',"'"}:
+                    ret = ret[1:-1]
+                    if ret == "default":
                         self.binding_mode = ''
                     else:
-                        print(self.colorize(bind_cmd))
-                        self.binding_mode = self.colorize(bind_cmd) + ' '
-        except:
-            pass
+                        self.binding_mode = self.colorize(ret) + ' '
         self.binding_event.set()
 
     def idle_wait(self):
