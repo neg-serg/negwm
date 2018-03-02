@@ -242,13 +242,10 @@ class menu():
         self.make_i3req()
         tag_name = self.tag_name(mod, lst)
 
-        add_prop_cmd = f'{self.i3_path}send ns add_prop \
-                        {tag_name} {aprop_str}'
-        subprocess.Popen(shlex.split(add_prop_cmd))
-
-        add_prop_cmd = f'{self.i3_path}send circle add_prop \
-                        {tag_name} {aprop_str}'
-        subprocess.Popen(shlex.split(add_prop_cmd))
+        for mod in self.possible_mods:
+            add_prop_cmd = f'{self.i3_path}send {mod} add_prop \
+                            {tag_name} {aprop_str}'
+            subprocess.Popen(shlex.split(add_prop_cmd))
 
     def workspaces(self):
         wslist = [ws.name for ws in self.i3.get_workspaces()]
