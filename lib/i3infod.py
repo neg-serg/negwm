@@ -6,6 +6,7 @@ import re
 import select
 import selectors
 from singleton import Singleton
+from cfg_master import CfgMaster
 
 from nsd import ns
 from circled import circle
@@ -50,15 +51,16 @@ class WaitableEvent:
         os.close(self._write_fd)
 
 
-class i3info():
+class i3info(CfgMaster):
     __metaclass__ = Singleton
 
     def __init__(self):
+        super().__init__()
         self.i3 = i3ipc.Connection()
         self.i3.on('workspace::focus', self.on_ws_focus)
         self.i3.on('binding', self.on_binding_event)
-        self.addr = '0.0.0.0'
-        self.port = 31888
+        self.addr = self.cfg["addr"]
+        self.port = int(self.cfg["port"])
         self.ws_name = ""
         self.binding_mode = ""
         self.mode_regex = re.compile('^mode ')
