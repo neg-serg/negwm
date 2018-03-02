@@ -210,7 +210,7 @@ mode "" {
     #-------------------------------------------------------
     bindsym c mode "pass "
     bindsym e mode "default", [urgent=latest] focus
-    bindsym a mode "default" $ns dialog
+    bindsym a mode "default", $ns dialog
     bindsym {i,o,$S+O} mode "default", exec ~/bin/pls -{output,sink,vol}
     bindsym $c+t mode "default", $circle run web tor
     bindsym $c+y mode "default", $circle run web yandex
