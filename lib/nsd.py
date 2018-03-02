@@ -301,10 +301,6 @@ class ns(CfgMaster, Matcher):
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
-        # if not full_reload:
-        #     self.unmark(tag)
-        # else:
-        #     self.mark_all_tags(hide=True)
 
     def switch(self, args: List) -> None:
         {
