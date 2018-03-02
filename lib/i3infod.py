@@ -64,7 +64,8 @@ class i3info(CfgMaster):
         self.port = int(self.cfg["port"])
         self.ws_name = ""
         self.binding_mode = ""
-        self.mode_regex = re.compile('^.*mode ')
+        self.mode_regex = re.compile('.*mode ')
+        self.split_by = re.compile('[;,]')
 
         self.ns_instance = ns()
         self.circle_instance = circle()
@@ -126,8 +127,9 @@ class i3info(CfgMaster):
 
     def on_binding_event(self, i3, event):
         bind_cmd = event.binding.command
-        for t in bind_cmd.split(';'):
+        for t in re.split(self.split_by, bind_cmd):
             if 'mode' in t:
+                print(f't={t}')
                 ret = re.sub(self.mode_regex, '', t)
                 if ret[0] == ret[-1] and ret[0] in {'"',"'"}:
                     ret = ret[1:-1]
