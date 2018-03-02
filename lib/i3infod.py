@@ -59,7 +59,7 @@ class i3info():
         self.i3.on('binding', self.on_binding_event)
         self.addr = '0.0.0.0'
         self.port = 31888
-        self.name = ""
+        self.ws_name = ""
         self.binding_mode = ""
         self.mode_regex = re.compile('^mode ')
 
@@ -101,7 +101,11 @@ class i3info():
         pass
 
     def on_ws_focus(self, i3, event):
-        self.name = event.current.name
+        self.ws_name = event.current.name
+        if not self.ws_name[0].isalpha():
+            self.ws_name = self.colorize(
+                self.ws_name[0], color="#8FA8C7"
+            ) + self.ws_name[1:]
         self.ws_event.set()
 
     def colorize(self, s, color="#005fd7"):
@@ -150,7 +154,7 @@ class i3info():
                                 current_conn.close()
                                 raise BreakoutException
                     elif 'ws' in data.decode():
-                        current_conn.send((self.binding_mode + self.name).encode())
+                        current_conn.send((self.binding_mode + self.ws_name).encode())
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
