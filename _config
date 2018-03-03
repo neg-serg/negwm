@@ -297,9 +297,9 @@ mode "gaps-inner" {
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
-exec_always $i3/listner.py 1>> ~/tmp/i3listner.log
-
 exec ~/bin/term
+
+exec_always $i3/listner.py >> ~/tmp/i3listner.log 2>&1 &
 exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
 exec_always [[ $(pgrep polybar|wc -l) -le 1  ]] && polybar -c $XDG_CONFIG_HOME/polybar/main main & sleep 0.2 && [[ $(pgrep mpd) ]] && mpc volume +1 && mpc volume -1
