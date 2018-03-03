@@ -16,7 +16,13 @@ class ns(CfgMaster, Matcher):
 
     def __init__(self) -> None:
         super().__init__()
-        self.winlist = None
+        self.initialize()
+
+        self.i3.on('window::new', self.mark_tag)
+        self.i3.on('window::close', self.unmark_tag)
+
+    def initialize(self):
+        self.winlist = self.i3.get_tree()
         self.fullscreen_list = []
         self.nsgeom = geom.geom(self.cfg)
         self.marked = {l: [] for l in self.cfg}
@@ -24,9 +30,6 @@ class ns(CfgMaster, Matcher):
         self.transients = []
         self.mark_all_tags(hide=True)
         self.auto_save_geom(False)
-
-        self.i3.on('window::new', self.mark_tag)
-        self.i3.on('window::close', self.unmark_tag)
 
     def make_mark_str(self, tag: str) -> str:
         uuid_str = str(str(uuid.uuid4().fields[-1]))
@@ -290,14 +293,7 @@ class ns(CfgMaster, Matcher):
                     for win in self.marked[t]:
                         win.command('unmark')
 
-        self.winlist = None
-        self.fullscreen_list = []
-        self.nsgeom = geom.geom(self.cfg)
-        self.marked = {l: [] for l in self.cfg}
-        self.i3 = i3ipc.Connection()
-        self.transients = []
-        self.mark_all_tags(hide=True)
-        self.auto_save_geom(False)
+        self.initialize()
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
