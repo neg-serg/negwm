@@ -129,7 +129,6 @@ class i3info(CfgMaster):
         bind_cmd = event.binding.command
         for t in re.split(self.split_by, bind_cmd):
             if 'mode' in t:
-                print(f't={t}')
                 ret = re.sub(self.mode_regex, '', t)
                 if ret[0] == ret[-1] and ret[0] in {'"',"'"}:
                     ret = ret[1:-1]
