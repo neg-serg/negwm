@@ -106,6 +106,7 @@ class Listner():
             ).start()
             if mod == "i3info":
                 Thread(target=cm["instance"].listen, daemon=True).start()
+            print(f'loaded {cm["instance"]}')
 
     def return_to_i3main(self):
         # you should bypass method itself, no return value
@@ -169,6 +170,7 @@ class Listner():
         self.i3_module_reload_thread()
         self.i3_config_inotify()
         self.i3_config_reload_thread()
+        print("[modules loaded]")
         self.return_to_i3main()
 
 
