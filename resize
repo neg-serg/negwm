@@ -11,14 +11,14 @@ import i3ipc
 
 # get key from input
 if len(sys.argv) < 2:
-	sys.exit(-1)
+    sys.exit(-1)
 key = sys.argv[1].lower()
 
 # (optionally) get amount from input
 if len(sys.argv) == 3:
-	amount = sys.argv[2]
+    amount = sys.argv[2]
 else:
-	amount = '10 px or 10 ppt'
+    amount = '10 px or 10 ppt'
 
 # open a connection with i3
 i3 = i3ipc.Connection()
@@ -39,24 +39,25 @@ y = (window.rect.y - workspace.rect.y) + (window.rect.height / 2)
 
 # resize based on key and closest edge
 if key == 'up':
-	if y > height / 2:
-		i3.command('resize grow up %s' % amount)
-	else:
-		i3.command('resize shrink down %s' % amount)
+    if y > height / 2:
+        i3.command('resize grow up %s' % amount)
+    else:
+        i3.command('resize shrink down %s' % amount)
 elif key == 'down':
-	if y > height / 2:
-		i3.command('resize shrink up %s' % amount)
-	else:
-		i3.command('resize grow down %s' % amount)
+    if y > height / 2:
+        i3.command('resize shrink up %s' % amount)
+    else:
+        i3.command('resize grow down %s' % amount)
 elif key == 'left':
-	if x > width / 2:
-		i3.command('resize grow left %s' % amount)
-	else:
-		i3.command('resize shrink right %s' % amount)
+    if x > width / 2:
+        i3.command('resize grow left %s' % amount)
+    else:
+        i3.command('resize shrink right %s' % amount)
 elif key == 'right':
-	if x > width / 2:
-		i3.command('resize shrink left %s' % amount)
-	else:
-		i3.command('resize grow right %s' % amount)
+    if x > width / 2:
+        i3.command('resize shrink left %s' % amount)
+    else:
+        i3.command('resize grow right %s' % amount)
 else:
-	sys.exit(-1)
+    sys.exit(-1)
+
