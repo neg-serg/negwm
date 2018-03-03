@@ -11,12 +11,19 @@ class circle(CfgMaster, Matcher):
 
     def __init__(self):
         super().__init__()
+        self.initialize()
+        self.i3.on('window::new', self.add_wins)
+        self.i3.on('window::close', self.del_wins)
+        self.i3.on("window::focus", self.set_curr_win)
+        self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
+
+    def initialize(self):
         self.tagged = {}
         self.counters = {}
         self.restore_fullscreen = []
         self.interactive = True
         self.repeats = 0
-        self.winlist = []
+        self.winlist = self.i3.get_tree()
         self.subtag_info = {}
         self.need_handle_fullscreen = True
 
@@ -26,12 +33,6 @@ class circle(CfgMaster, Matcher):
 
         self.i3 = i3ipc.Connection()
         self.tag_windows()
-
-        self.i3.on('window::new', self.add_wins)
-        self.i3.on('window::close', self.del_wins)
-        self.i3.on("window::focus", self.set_curr_win)
-        self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
-
         self.current_win = self.i3.get_tree().find_focused()
 
     def run_prog(self, tag, subtag=None):
@@ -164,20 +165,7 @@ class circle(CfgMaster, Matcher):
             if t != tag:
                 self.del_props(t, prop_str)
 
-        self.tagged = {}
-        self.counters = {}
-        self.restore_fullscreen = []
-        self.interactive = True
-        self.repeats = 0
-        self.winlist = []
-        self.subtag_info = {}
-        self.need_handle_fullscreen = True
-
-        for tag in self.cfg:
-            self.tagged[tag] = []
-            self.counters[tag] = 0
-        self.tag_windows()
-        self.current_win = self.i3.get_tree().find_focused()
+        self.initialize()
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)
