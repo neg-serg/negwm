@@ -183,7 +183,6 @@ bindsym $m4+$S+$c+BackSpace mode " " # blocking mode
 bindsym $m4+h focus left
 bindsym $m4+l focus right
 #----------------------------------------------
-bindsym $m4+$c+c $circle next sxiv
 mode " " {
     bindsym $m4+$S+BackSpace mode "default"
     bindsym $m4+$c+$S+BackSpace mode "default"
@@ -194,6 +193,9 @@ bindsym --release $S+Print ~/bin/scripts/screenshot current
 bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
 bindsym $m4+g $menu ws
 #----------------------------------------------
+# ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
+# ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
+# ░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀░░░░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░
 bindsym $m4+f $ns toggle ncmpcpp
 bindsym $m4+e $ns toggle im
 bindsym $m4+$S+s $menu autoprop
@@ -206,12 +208,17 @@ bindsym $m4+$c+$S+R $ns geom_restore
 bindsym $m4+$c+$S+S $ns geom_autosave_mode
 bindsym $m4+s $ns hide_current
 
+# ░█▀▀░▀█▀░█▀▄░█▀▀░█░░░█▀▀
+# ░█░░░░█░░█▀▄░█░░░█░░░█▀▀
+# ░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀
+bindsym $m4+$c+c $circle next sxiv
 bindsym $m4+{x,1} $circle next {term,nwim}
 bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
 bindsym $m4+F3 $circle next emacs
 bindsym $m4+$c+{v,e} $circle next {vm,steam}
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
+
 bindsym $alt+g exec rofi -sort -matching fuzzy -show window
 bindsym $m4+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
@@ -224,12 +231,16 @@ bindsym $m4+$c+q kill
 bindsym $alt+Tab $flast switch
 bindsym $m4+slash $flast switch
 #-------------------------------------------------------
-
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀█░█▀█░█▀▀░█▀▀
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▀░█▀█░▀▀█░▀▀█
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░░░▀░▀░▀▀▀░▀▀▀
 mode "pass " {
     bindsym {c,p} exec ~/bin/scripts/lpwd {,type}, $exit
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
-
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▄░█▀▀░█▀▀░▀█▀░▀▀█░█▀▀
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▄░█▀▀░▀▀█░░█░░▄▀░░█▀▀
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 # resize window (you can also use the mouse for that)
 mode "" {
     bindsym {$S+h,h} resize {shrink,grow} left 4
@@ -245,7 +256,9 @@ mode "" {
     bindsym {semicolon,$S+colon} resize {shrink,grow} right 4
     bindsym {Return,Escape,space,$c+C,$c+G} $exit
 }
-
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█░█░▀█▀░█▀█░░░░░█▄█░█▀█░█▀█░█▀█░█▀▀░█▀▀
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░█▄█░░█░░█░█░░░░░█░█░█▀█░█░█░█▀█░█░█░█▀▀
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀▀
 mode "" {
 	bindsym {grave,t,s,minus,backslash} layout {default,tabbed,stacking,splith,splitv}; $exit
 	bindsym {j,k,h,l} split {vertical,vertical,horizontal,horizontal}; $exit
@@ -258,7 +271,9 @@ mode "" {
     #-------------------------------------------------------
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
-
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀▀░█▀▀░▀█▀░█▀█░█░░
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░▀▀█░█▀▀░█▀▀░█░░░░█░░█▀█░█░░
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░░░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
 mode "" {
     #-------------------------------------------------------
     bindsym c mode "pass "
@@ -280,11 +295,16 @@ mode "" {
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀
 mode "" {
 	bindsym {o,i} mode gaps-{outer,inner}
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
-
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░█▀█░█░█░▀█▀░█▀▀░█▀▄
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░█░█░█░█░░█░░█▀▀░█▀▄
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀
 mode "gaps-outer" {
 	bindsym {plus,minus}     gaps outer current {plus,minus} 5
 	bindsym 0                gaps outer current set 0
@@ -294,7 +314,9 @@ mode "gaps-outer" {
 
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
-
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░▀█▀░█▀█░█▀█░█▀▀░█▀▄
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░░█░░█░█░█░█░█▀▀░█▀▄
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀░▀░▀░▀░▀▀▀░▀░▀
 mode "gaps-inner" {
 	bindsym {plus,minus}     gaps inner current {plus,minus} 5
 	bindsym 0                gaps inner current set 0
@@ -305,8 +327,10 @@ mode "gaps-inner" {
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
+# ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
+# ░▀▀█░░█░░█▀█░█▀▄░░█░
+# ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
 exec ~/bin/term
-
 exec_always $i3/listner.py >> ~/tmp/i3listner.log 2>&1 &
 exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
