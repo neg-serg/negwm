@@ -1,6 +1,7 @@
 import os
 import traceback
 import subprocess
+import re
 from threading import Thread
 from collections import deque
 from singleton import Singleton
@@ -12,70 +13,92 @@ def notify_msg(s, prefix=">>"):
 
 
 class Matcher(object):
+    def find_classed(self, wlist, pattern):
+        return [c for c in wlist
+                if c.window_class and re.search(pattern, c.window_class)]
+
+    def find_instanced(self, wlist, pattern):
+        return [c for c in wlist
+                if c.window_instance and re.search(pattern, c.window_instance)]
+
+    def find_by_role(self, wlist, pattern):
+        return [c for c in wlist
+                if c.window_role and re.search(pattern, c.window_role)]
+
+    def find_named(self, wlist, pattern):
+        return [c for c in wlist
+                if c.name and re.search(pattern, c.name)]
+
+    def class_r(self):
+        for pattern in self.matched_list:
+            cls_by_regex = self.find_classed(
+                self.winlist.leaves(),
+                pattern
+            )
+            if cls_by_regex:
+                for class_regex in cls_by_regex:
+                    if self.win.window_class == class_regex.window_class:
+                        return True
+        return False
+
+    def instance_r(self):
+        for pattern in self.matched_list:
+            inst_by_regex = self.find_instanced(
+                self.winlist.leaves(),
+                pattern
+            )
+            if inst_by_regex:
+                for inst_regex in inst_by_regex:
+                    if self.win.window_instance == inst_regex.window_instance:
+                        return True
+        return False
+
+    def role_r(self):
+        for pattern in self.matched_list:
+            role_by_regex = self.find_by_role(
+                self.winlist.leaves(),
+                pattern
+            )
+            if role_by_regex:
+                for role_regex in role_by_regex:
+                    if self.win.window_role == role_regex.window_role:
+                        return True
+        return False
+
+    def name_r(self):
+        for pattern in self.matched_list:
+            name_by_regex = self.find_named(
+                self.winlist.leaves(),
+                pattern
+            )
+            if name_by_regex:
+                for name_regex in name_by_regex:
+                    if self.win.name == name_regex.name:
+                        return True
+        return False
+
     def match(self, win, tag):
-        def match_class():
-            return win.window_class in matched_list
-
-        def match_instance():
-            return win.window_instance in matched_list
-
-        def match_role():
-            return win.window_role in matched_list
-
-        def match_class_r():
-            for reg in matched_list:
-                cls_by_regex = self.winlist.find_classed(reg)
-                if cls_by_regex:
-                    for class_regex in cls_by_regex:
-                        if win.window_class == class_regex.window_class:
-                            return True
-            return False
-
-        def match_instance_r():
-            for reg in matched_list:
-                inst_by_regex = self.winlist.find_instanced(reg)
-                if inst_by_regex:
-                    for inst_regex in inst_by_regex:
-                        if win.window_instance == inst_regex.window_instance:
-                            return True
-            return False
-
-        def match_role_r():
-            for reg in matched_list:
-                role_by_regex = self.winlist.find_by_role(reg)
-                if role_by_regex:
-                    for role_regex in role_by_regex:
-                        if win.window_role == role_regex.window_role:
-                            return True
-            return False
-
-        def match_name_r():
-            for reg in matched_list:
-                name_by_regex = self.winlist.find_named(reg)
-                if name_by_regex:
-                    for name_regex in name_by_regex:
-                        if win.name == name_regex.name:
-                            return True
-            return False
-
+        self.win = win
         factors = [
-            "class", "instance",
+            "class", "instance", "role",
             "class_r", "instance_r", "name_r", "role_r"
         ]
 
         match = {
-            "class": match_class,
-            "instance": match_instance,
-            "class_r": match_class_r,
-            "instance_r": match_instance_r,
-            "role_r": match_role_r,
-            "name_r": match_name_r,
+            "class": lambda: win.window_class in self.matched_list,
+            "instance": lambda: win.window_instance in self.matched_list,
+            "role": lambda: win.window_role in self.matched_list,
+            "class_r": self.class_r,
+            "instance_r": self.instance_r,
+            "role_r": self.role_r,
+            "name_r": self.name_r,
         }
 
         for f in factors:
-            matched_list = self.cfg.get(tag, {}).get(f, {})
-            if match[f]():
-                return True
+            self.matched_list = self.cfg.get(tag, {}).get(f, {})
+            if self.matched_list is not None and self.matched_list != []:
+                if match[f]():
+                    return True
         return False
 
 
