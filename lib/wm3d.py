@@ -56,36 +56,44 @@ class wm3(Singleton):
         else:
             gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
 
+        half_width = int(curr_scr['width'] / 2)
+        half_height = int(curr_scr['height'] / 2)
+        double_dgaps = int(gaps['d'] * 2)
+        double_sgaps = int(gaps['s'] * 2)
+
         if mode == 1:
-            self.set_geom(focused, {
+            geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
-                'width': curr_scr['width'] / 2 - gaps['d'],
-                'height': curr_scr['height'] / 2 - gaps['s'],
-            })
+                'width': half_width - gaps['d'],
+                'height': half_height - gaps['s'],
+            }
         elif mode == 2:
-            self.set_geom(focused, {
-                'x': curr_scr['width'] / 2 + gaps['a'],
+            geom = {
+                'x': half_width + gaps['a'],
                 'y': gaps['w'],
-                'width': curr_scr['width'] / 2 - gaps['d'] * 2,
-                'height': curr_scr['height'] / 2 - gaps['s'] * 2,
-            })
+                'width': half_width - double_dgaps,
+                'height': half_height - double_sgaps,
+            }
         elif mode == 3:
-            self.set_geom(focused, {
+            geom = {
                 'x': gaps['a'],
-                'y': gaps['w'] + curr_scr['height'] / 2,
-                'width': curr_scr['width'] / 2 - gaps['d'],
-                'height': curr_scr['height'] / 2 - gaps['s'],
-            })
+                'y': gaps['w'] + half_height,
+                'width': half_width - double_dgaps,
+                'height': half_height - double_sgaps,
+            }
         elif mode == 4:
-            self.set_geom(focused, {
-                'x': gaps['a'] + curr_scr['width'] / 2,
-                'y': gaps['w'] + curr_scr['height'] / 2,
-                'width': curr_scr['width'] / 2 - gaps['d'],
-                'height': curr_scr['height'] / 2 - gaps['s'],
-            })
+            geom = {
+                'x': gaps['a'] + half_width,
+                'y': gaps['w'] + half_height,
+                'width': half_width - double_dgaps,
+                'height': half_height - double_sgaps,
+            }
         else:
             return
+
+        if focused is not None:
+            self.set_geom(focused, geom)
 
     def maximize(self, by='XY'):
         geom = {}
@@ -103,21 +111,15 @@ class wm3(Singleton):
                     return
             if 'XY' == by or 'YX' == by:
                 max_geom = self.maximized_geom(
-                    geom.copy(),
-                    byX=True,
-                    byY=True
+                    geom.copy(), byX=True, byY=True
                 )
             elif 'X' == by:
                 max_geom = self.maximized_geom(
-                    geom.copy(),
-                    byX=True,
-                    byY=False
+                    geom.copy(), byX=True, byY=False
                 )
             elif 'Y' == by:
                 max_geom = self.maximized_geom(
-                    geom.copy(),
-                    byX=False,
-                    byY=True
+                    geom.copy(), byX=False, byY=True
                 )
             self.set_geom(self.current_win, max_geom)
 

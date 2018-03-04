@@ -264,6 +264,12 @@ mode "" {
 	bindsym {grave,t,minus,backslash} layout {default,tabbed,splith,splitv}; $exit
 	bindsym {j,k,h,l} split {vertical,vertical,horizontal,horizontal}; $exit
 	bindsym {w,a,s,d} move {up,left,down,right}
+	bindsym m $wm3 maximize
+    bindsym $S+m $wm3 revert_maximize
+    bindsym {x,y} $wm3 {maxhor,maxvert}
+    bindsym $S+x $wm3 revert_maximize
+    bindsym $S+y $wm3 revert_maximize
+    bindsym {1,2,3,4} $wm3 quad {1,2,3,4}
     bindsym $S+g mode ""
     #-------------------------------------------------------
 	bindsym $c+{a,3} layout toggle all
