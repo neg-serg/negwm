@@ -76,6 +76,11 @@ const char* docstr= \
     "  send menu ws\n" \
     "  send wm3 focus_next_visible\n" \
     "  send wm3 focus_prev_visible\n" \
+    "  send wm3 maximize\n" \
+    "  send wm3 maxhor\n" \
+    "  send wm3 maxvert\n" \
+    "  send wm3 quad\n" \
+    "  send wm3 revert_maximize\n" \
     "  send wm3 reload\n" \
     "  send info request\n" \
     "  send (-h | --help)\n" \
@@ -149,6 +154,11 @@ Args ArgMap[] = {
         { "focus_next_visible", 0 },
         { "focus_prev_visible", 0 },
         { "reload", 0 },
+        { "maximize", 0 },
+        { "maxhor", 0 },
+        { "maxvert", 0 },
+        { "quad", 1 },
+        { "revert_maximize", 0 },
         { NULL, 0 },
     }
 };
