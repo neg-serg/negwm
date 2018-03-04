@@ -99,6 +99,8 @@ class Matcher(object):
             if self.matched_list is not None and self.matched_list != []:
                 if match[f]():
                     return True
+            else:
+                print(f'error for ftor={f} and match_list={self.matched_list}')
         return False
 
 

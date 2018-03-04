@@ -158,6 +158,7 @@ class ns(CfgMaster, Matcher):
     def run_subtag(self, tag: str, app: str) -> None:
         if app in self.cfg[tag].get("prog_dict", {}):
             class_list = [win.window_class for win in self.marked[tag]]
+            print(f'class_list={class_list}')
             subtag_classes_set = self.cfg[tag].get("prog_dict", {}) \
                 .get(app, {}) \
                 .get("includes", {})
@@ -322,21 +323,6 @@ class ns(CfgMaster, Matcher):
                 return True
         return False
 
-    def unmark(self, tag, hide=True):
-        leaves = self.i3.get_tree().leaves()
-        for win in leaves:
-            if not self.match(win, tag) and self.check_win_marked(win, tag):
-                for _, oldwin in enumerate(self.marked[tag]):
-                    if oldwin.id == win.id:
-                        del self.marked[tag][_]
-                        self.focus(tag)
-                        for tr in self.transients:
-                            if tr.id == win.id:
-                                self.transients.remove(tr)
-                        break
-        self.winlist = self.i3.get_tree()
-        self.dialog_toggle()
-
     def mark(self, tag, hide=True):
         leaves = self.i3.get_tree().leaves()
         for win in leaves:
@@ -355,6 +341,7 @@ class ns(CfgMaster, Matcher):
 
     def mark_tag(self, i3, event) -> None:
         win = event.container
+        self.winlist = self.i3.get_tree()
         for tag in self.cfg:
             if self.match(win, tag):
                 if self.check_dialog_win(win):
