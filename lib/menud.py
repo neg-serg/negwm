@@ -299,7 +299,7 @@ class menu():
             if debug:
                 print(f"evaluated cmd=[{cmd}] args=[{self.i3_cmd_args(cmd)}]")
             p = subprocess.Popen(
-                (f"{self.i3msg} " + cmd).split(),
+                (f"{self.i3cmd} " + cmd).split(),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL
             )
