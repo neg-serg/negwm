@@ -30,6 +30,7 @@ class ns(CfgMaster, Matcher):
         self.transients = []
         self.mark_all_tags(hide=True)
         self.auto_save_geom(False)
+        self.focus_win_flag = [False, ""]
 
     def make_mark_str(self, tag: str) -> str:
         uuid_str = str(str(uuid.uuid4().fields[-1]))
@@ -142,7 +143,7 @@ class ns(CfgMaster, Matcher):
         if focused.window_class in subtag_classes_set:
             return
 
-        self.focus(tag, hide=True)
+        self.focus(tag)
 
         visible_windows = self.find_visible_windows()
         for w in visible_windows:
@@ -158,7 +159,6 @@ class ns(CfgMaster, Matcher):
     def run_subtag(self, tag: str, app: str) -> None:
         if app in self.cfg[tag].get("prog_dict", {}):
             class_list = [win.window_class for win in self.marked[tag]]
-            print(f'class_list={class_list}')
             subtag_classes_set = self.cfg[tag].get("prog_dict", {}) \
                 .get(app, {}) \
                 .get("includes", {})
@@ -175,6 +175,7 @@ class ns(CfgMaster, Matcher):
                             .get("prog", {})
                     )
                     self.i3.command(f'exec {prog_str}')
+                    self.focus_win_flag = [True, tag]
                 except:
                     pass
             else:
@@ -355,8 +356,17 @@ class ns(CfgMaster, Matcher):
         self.dialog_toggle()
         self.winlist = self.i3.get_tree()
 
+        # Special hack to invalidate windows after subtag start
+        if self.focus_win_flag[0]:
+            special_tag = self.focus_win_flag[1]
+            if special_tag in self.cfg:
+                self.focus(special_tag, hide=True)
+            self.focus_win_flag[0] = False
+            self.focus_win_flag[1] = ""
+
     def unmark_tag(self, i3, event) -> None:
         win_ev = event.container
+        self.winlist = self.i3.get_tree()
         for tag in self.cfg:
             for _, win in enumerate(self.marked[tag]):
                 if win.id == win_ev.id:
@@ -366,6 +376,7 @@ class ns(CfgMaster, Matcher):
                         if tr.id == win.id:
                             self.transients.remove(tr)
                     break
+        self.winlist = self.i3.get_tree()
 
     def mark_all_tags(self, hide: bool=True) -> None:
         self.winlist = self.i3.get_tree()
