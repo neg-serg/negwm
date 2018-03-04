@@ -32,7 +32,7 @@ class wm3(Singleton):
     def reload_config(self):
         self.__init__()
 
-    def prev_geom(self):
+    def get_prev_geom(self):
         self.geom_list.append(
             {
                 "id": self.current_win.id,
@@ -49,7 +49,7 @@ class wm3(Singleton):
             return
 
         curr_scr = self.current_resolution
-        focused = self.i3.get_tree().find_focused()
+        self.current_win = self.i3.get_tree().find_focused()
 
         if use_gaps:
             gaps = self.useless_gaps
@@ -92,8 +92,15 @@ class wm3(Singleton):
         else:
             return
 
-        if focused is not None:
-            self.set_geom(focused, geom)
+        if self.current_win is not None:
+            if not self.geom_list[-1]:
+                self.get_prev_geom()
+            elif self.geom_list[-1]:
+                prev = self.geom_list[-1].get('id', {})
+                if prev != self.current_win.id:
+                    geom = self.get_prev_geom()
+
+            self.set_geom(self.current_win, geom)
 
     def maximize(self, by='XY'):
         geom = {}
@@ -101,11 +108,11 @@ class wm3(Singleton):
         self.current_win = self.i3.get_tree().find_focused()
         if self.current_win is not None:
             if not self.geom_list[-1]:
-                geom = self.prev_geom()
+                geom = self.get_prev_geom()
             elif self.geom_list[-1]:
                 prev = self.geom_list[-1].get('id', {})
                 if prev != self.current_win.id:
-                    geom = self.prev_geom()
+                    geom = self.get_prev_geom()
                 else:
                     # do nothing
                     return
@@ -126,9 +133,10 @@ class wm3(Singleton):
     def revert_maximize(self):
         try:
             focused = self.i3.get_tree().find_focused()
-            self.set_geom(focused, self.geom_list[-1]["geom"])
+            if self.geom_list[-1].get("geom", {}):
+                self.set_geom(focused, self.geom_list[-1]["geom"])
             del self.geom_list[-1]
-        except KeyError:
+        except (KeyError, TypeError, AttributeError):
             pass
 
     def maximized_geom(self, geom, gaps={}, byX=False, byY=False):
