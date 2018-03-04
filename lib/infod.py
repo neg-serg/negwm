@@ -51,7 +51,7 @@ class WaitableEvent:
         os.close(self._write_fd)
 
 
-class i3info(CfgMaster):
+class info(CfgMaster):
     __metaclass__ = Singleton
 
     def __init__(self):

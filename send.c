@@ -42,7 +42,7 @@ enum {
     , NS = 1
     , FLAST = 2
     , MENU = 3
-    , I3INFO = 4
+    , INFO = 4
 };
 
 const char* docstr= \
@@ -73,7 +73,7 @@ const char* docstr= \
     "  send menu xprop\n" \
     "  send menu autoprop\n" \
     "  send menu ws\n" \
-    "  send i3info request\n" \
+    "  send info request\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
     "\n" \
@@ -91,7 +91,7 @@ const char *progs[] = {
     [NS] = "ns",
     [FLAST] = "flast",
     [MENU] = "menu",
-    [I3INFO] = "i3info",
+    [INFO] = "info",
     NULL
 };
 
@@ -135,7 +135,7 @@ Args ArgMap[] = {
         { "ws", 0 },
         { NULL, 0 },
     },
-    [I3INFO] = {
+    [INFO] = {
         { "request", 0 },
         { "reload", 0 },
         { NULL, 0 },

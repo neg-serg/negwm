@@ -176,7 +176,7 @@ class menu():
         return "[" + ''.join(sorted(ret)) + "]"
 
     def make_i3req(self):
-        subprocess.Popen(shlex.split(self.i3_path + "send i3info request"))
+        subprocess.Popen(shlex.split(self.i3_path + "send info request"))
 
     def mod_data_list(self, mod):
         p = subprocess.Popen(

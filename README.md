@@ -21,7 +21,7 @@ more.
 
 *fsmpmsd* : module to disable dpms, when fullscreen mode are toggled on.
 
-*i3infod* : module to extract info from running i3-mods via AF_INET socket.
+*infod* : module to extract info from running i3-mods via AF_INET socket.
 For example it used to send information to the *polybar* as current workspace
 or i3-binding mode because of native polybar i3-interaction tends to race
 condition when you try to switch workspaces backward-forward to quickly.
