@@ -1,23 +1,8 @@
 My nice and fast modules for i3.
 
-# Dependencies:
-
-* i3ipc
-* ppi3 as i3 config preprocessor.
-* modern python3(stackless python3 is preferred) with modules:
-
-- i3ipc
-- shlex
-- subprocess
-- toml
-- typing
-- uuid
-
-I recommend you to use stackless python for better performance. Nuitka / pypy
-/ cython are not the best choise here: native python3 performance looks
-better on my machine. For example you can check it with pycallgraph.
-
 # What is it?
+
+For now this collection of modules for i3 includes:
 
 *nsd* : named ion3-like scratchpads with a whistles and fakes.
 *flastd* : alt-tab to the previous window, not the workspace.
@@ -29,6 +14,48 @@ autoreload.
 
 *listner* : application that run all modules and handle configuration of
 ppi3+i3 and modules on python. Also handles toml-configs updating.
+
+*menud* : menu module including i3-menu with hackish autocompletion, menu to
+attach window to window group(circled) or target named scratchpad(nsd) and
+more.
+
+*fsmpmsd* : module to disable dpms, when fullscreen mode are toggled on.
+
+*i3infod* : module to extract info from running i3-mods via AF_INET socket.
+For example it used to send information to the *polybar* as current workspace
+or i3-binding mode because of native polybar i3-interaction tends to race
+condition when you try to switch workspaces backward-forward to quickly.
+
+# Dependencies:
+
+* i3ipc
+* ppi3 as i3 config preprocessor.
+* modern python3(stackless python3 is preferred) with modules:
+
+1) i3ipc -- for i3 ipc interaction
+2) shlex -- split arguments for popen, etc
+3) subprocess -- to spawn processes
+4) toml -- to save/load human-readable configuration files
+5) typing -- to add type annotations
+6) uuid -- to create uuid for objects
+
+# Performance
+
+I recommend you to use *stackless python* for better performance. Nuitka / pypy
+/ cython are *not* the best choise here: native python3 performance looks
+better on my machine. You can check measure performance with tools like pycallgraph.
+
+# Why
+
+It is only my attempt to port the best UX parts from ion3/notion and also improve
+it when possible. But if you try I may find that things, like better
+scratchpad or navigation very useful.
+
+# Bugs
+
+For now here can be dragons, so add bug report to github if you get
+problems. I know that some things like the subtag support need to be slightly
+improved.
 
 # Video Demonstration
 [![i3pluginsdemo](https://img.youtube.com/vi/U7eJMP0zvKc/0.jpg)](https://www.youtube.com/embed/U7eJMP0zvKc)
