@@ -21,6 +21,7 @@ set $circle exec ${XDG_CONFIG_HOME}/i3/send circle
 set $ns exec ${XDG_CONFIG_HOME}/i3/send ns
 set $flast exec ${XDG_CONFIG_HOME}/i3/send flast
 set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
+set $wm3 exec ${XDG_CONFIG_HOME}/i3/send wm3
 
 set $scratchpad_dialog floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
 
@@ -222,8 +223,8 @@ bindsym $m4+$S+o $circle next obs
 bindsym $alt+g exec rofi -sort -matching fuzzy -show window
 bindsym $m4+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
-bindsym $m4+grave exec $i3/focus-next-visible.py
-bindsym $m4+$S+grave exec $i3/focus-next-visible.py reverse
+bindsym $m4+grave exec $wm3 focus_next_visible
+bindsym $m4+$S+grave exec $wm3 focus_prev_visible
 bindsym $m4+$c+grave $menu run
 
 bindsym $m4+$c+q kill
@@ -260,7 +261,7 @@ mode "" {
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▄█░░█░░█░█░░░░░█░█░█▀█░█░█░█▀█░█░█░█▀▀
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀▀
 mode "" {
-	bindsym {grave,t,s,minus,backslash} layout {default,tabbed,stacking,splith,splitv}; $exit
+	bindsym {grave,t,minus,backslash} layout {default,tabbed,splith,splitv}; $exit
 	bindsym {j,k,h,l} split {vertical,vertical,horizontal,horizontal}; $exit
 	bindsym {w,a,s,d} move {up,left,down,right}
     bindsym $S+g mode ""

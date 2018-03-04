@@ -43,6 +43,7 @@ enum {
     , FLAST = 2
     , MENU = 3
     , INFO = 4
+    , WM3 = 5
 };
 
 const char* docstr= \
@@ -73,6 +74,9 @@ const char* docstr= \
     "  send menu xprop\n" \
     "  send menu autoprop\n" \
     "  send menu ws\n" \
+    "  send wm3 focus_next_visible\n" \
+    "  send wm3 focus_prev_visible\n" \
+    "  send wm3 reload\n" \
     "  send info request\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
@@ -92,6 +96,7 @@ const char *progs[] = {
     [FLAST] = "flast",
     [MENU] = "menu",
     [INFO] = "info",
+    [WM3] = "wm3",
     NULL
 };
 
@@ -137,6 +142,12 @@ Args ArgMap[] = {
     },
     [INFO] = {
         { "request", 0 },
+        { "reload", 0 },
+        { NULL, 0 },
+    },
+    [WM3] = {
+        { "focus_next_visible", 0 },
+        { "focus_prev_visible", 0 },
         { "reload", 0 },
         { NULL, 0 },
     }
