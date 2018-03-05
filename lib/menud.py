@@ -41,7 +41,8 @@ class menu():
             "WM_NAME",
             "_NET_WM_NAME"
         }
-        self.delim="@"
+
+        self.delim = "@"
 
     def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=1900):
         return [
