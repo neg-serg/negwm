@@ -13,12 +13,16 @@ class vol(Singleton, CfgMaster):
         self.inc = 1
         self.mpd_addr = "127.0.0.1"
         self.mpd_port = "6600"
-        self.mpd_status = "play"
+        self.mpd_status = "none"
 
         self.i3.on("window::focus", self.set_curr_win)
         self.default_cooldown = 4
         self.cooldown = self.default_cooldown
-        Thread(target=self.update_mpd_status, args=(self.cooldown,), daemon=True).start()
+
+        Thread(
+            target=self.update_mpd_status, args=(self.cooldown,), daemon=True
+        ).start()
+
         self.current_win = self.i3.get_tree().find_focused()
 
     def set_curr_win(self, i3, event):
@@ -31,25 +35,28 @@ class vol(Singleton, CfgMaster):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
+    def check_mpd_status(self):
+        p = subprocess.Popen(
+            ['nc', self.mpd_addr, self.mpd_port],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        )
+        p.stdin.write(bytes('status\nclose\n', 'UTF-8'))
+        p_com = p.communicate()[0].decode('UTF-8').split('\n')
+        p.stdin.close()
+        p.wait()
+
+        if p_com is not None:
+            ret = [t for t in p_com if 'state' in t]
+            if ret and ret == ['state: play']:
+                self.mpd_status = "play"
+
+        if self.mpd_status != "play":
+            self.mpd_status = "none"
+
     def update_mpd_status(self, cooldown):
         while True:
-            p = subprocess.Popen(
-                ['nc', self.mpd_addr, self.mpd_port],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE
-            )
-            p.stdin.write(bytes('status\nclose\n', 'UTF-8'))
-            p_com = p.communicate()[0].decode('UTF-8').split('\n')
-            p.stdin.close()
-            p.wait()
-            if p_com is not None:
-                ret = [t for t in p_com if 'state' in t]
-                if ret and ret == ['state: play']:
-                    self.mpd_status = "play"
-
-            if self.mpd_status != "play":
-                self.mpd_status = "none"
-
+            self.check_mpd_status()
             sleep(cooldown)  # time to wait in sleep
             cooldown *= 2
 
@@ -80,7 +87,7 @@ class vol(Singleton, CfgMaster):
             p = subprocess.Popen(
                 [
                     'xdotool', 'key',
-                    '--window', 'f{self.current_win.id}', f'{mpv_key}'
+                    '--window', str(self.current_win.window), mpv_key
                 ],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE
