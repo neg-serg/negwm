@@ -220,12 +220,17 @@ bindsym $m4+$c+{v,e} $circle next {vm,steam}
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
 
+# ░█░█░█▄█░▀▀█
+# ░█▄█░█░█░░▀▄
+# ░▀░▀░▀░▀░▀▀░
+bindsym $m4+grave exec $wm3 focus_next_visible
+bindsym $m4+$S+grave exec $wm3 focus_prev_visible
+
 bindsym $alt+g exec rofi -sort -matching fuzzy -show window
 bindsym $m4+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
-bindsym $m4+grave exec $wm3 focus_next_visible
-bindsym $m4+$S+grave exec $wm3 focus_prev_visible
 bindsym $m4+$c+grave $menu run
+
 
 bindsym $m4+$c+q kill
 #-------------------------------------------------------
@@ -264,12 +269,18 @@ mode "" {
 	bindsym {grave,t,minus,backslash} layout {default,tabbed,splith,splitv}; $exit
 	bindsym {j,k,h,l} split {vertical,vertical,horizontal,horizontal}; $exit
 	bindsym {w,a,s,d} move {up,left,down,right}
+
+    # ░█░█░█▄█░▀▀█
+    # ░█▄█░█░█░░▀▄
+    # ░▀░▀░▀░▀░▀▀░
 	bindsym m $wm3 maximize
     bindsym $S+m $wm3 revert_maximize
     bindsym {x,y} $wm3 {maxhor,maxvert}
     bindsym $S+x $wm3 revert_maximize
     bindsym $S+y $wm3 revert_maximize
     bindsym {1,2,3,4} $wm3 quad {1,2,3,4}
+    bindsym $S+{w,a,s,d} $wm3 x2 {hup,vleft,hdown,vright}
+    #-------------------------------------------------------
     bindsym $S+g mode ""
     #-------------------------------------------------------
 	bindsym $c+{a,3} layout toggle all
