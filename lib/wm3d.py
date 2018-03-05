@@ -20,11 +20,14 @@ class wm3(Singleton, CfgMaster):
             maxlen=maxlength
         )
         self.current_resolution = self.get_screen_resolution()
-        self.useless_gaps = self.cfg["useless_gaps"]
-        self.quad_use_gaps = self.cfg["quad_use_gaps"]
-        self.x2_use_gaps = self.cfg["x2_use_gaps"]
-        self.grow_coeff = self.cfg["grow_coeff"]
-        self.shrink_coeff = self.cfg["shrink_coeff"]
+        self.useless_gaps = self.cfg.get("useless_gaps", {
+                "w": 12, "a": 12, "s": 12, "d": 12
+            }
+        )
+        self.quad_use_gaps = self.cfg.get("quad_use_gaps", True)
+        self.x2_use_gaps = self.cfg.get("x2_use_gaps", True)
+        self.grow_coeff = self.cfg.get("grow_coeff", 1.01)
+        self.shrink_coeff = self.cfg.get("shrink_coeff", 0.99)
 
     def switch(self, args):
         {
