@@ -131,7 +131,11 @@ class ns(CfgMaster, Matcher):
 
         self.focus(tag)
 
-        visible_windows = find_visible_windows()
+        wswins = filter(
+            lambda win: win.window,
+            self.i3.get_tree().find_focused().workspace().descendents()
+        )
+        visible_windows = find_visible_windows(wswins)
         for w in visible_windows:
             for i in self.marked[tag]:
                 if w.window_class in subtag_classes_set and w.id == i.id:
@@ -174,7 +178,11 @@ class ns(CfgMaster, Matcher):
         self.fullscreen_list = []
 
     def visible_count(self, tag: str):
-        visible_windows = find_visible_windows()
+        wswins = filter(
+            lambda win: win.window,
+            self.i3.get_tree().find_focused().workspace().descendents()
+        )
+        visible_windows = find_visible_windows(wswins)
         vmarked = 0
         for w in visible_windows:
             for i in self.marked[tag]:

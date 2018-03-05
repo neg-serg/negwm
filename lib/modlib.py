@@ -12,7 +12,7 @@ def notify_msg(s, prefix=">>"):
     subprocess.Popen(notify_msg)
 
 
-def find_visible_windows(self, windows_on_ws):
+def find_visible_windows(windows_on_ws):
         visible_windows = []
         for w in windows_on_ws:
             try:
