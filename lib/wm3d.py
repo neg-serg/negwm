@@ -1,21 +1,27 @@
 import subprocess
 import collections
 from itertools import cycle
-from singleton import Singleton
 import i3ipc
+from modlib import find_visible_windows
+from singleton import Singleton
+from cfg_master import CfgMaster
 
 
-class wm3(Singleton):
+class wm3(Singleton, CfgMaster):
     def __init__(self):
+        super().__init__()
+        self.initialize()
+
+    def initialize(self):
         self.i3 = i3ipc.Connection()
-        self.geom_list = collections.deque([None] * 10, maxlen=10)
+        maxlength = self.cfg["cache_list_size"]
+        self.geom_list = collections.deque(
+            [None] * maxlength,
+            maxlen=maxlength
+        )
         self.current_resolution = self.get_screen_resolution()
-        self.useless_gaps = {
-            "w": 40,
-            "a": 40,
-            "s": 40,
-            "d": 40,
-        }
+        self.useless_gaps = self.cfg["useless_gaps"]
+        self.quad_use_gaps = self.cfg["quad_use_gaps"]
 
     def switch(self, args):
         {
@@ -41,7 +47,7 @@ class wm3(Singleton):
         )
         return self.geom_list[-1]["geom"]
 
-    def quad(self, mode, use_gaps=True):
+    def quad(self, mode):
         try:
             mode = int(mode)
         except TypeError:
@@ -51,7 +57,7 @@ class wm3(Singleton):
         curr_scr = self.current_resolution
         self.current_win = self.i3.get_tree().find_focused()
 
-        if use_gaps:
+        if self.quad_use_gaps:
             gaps = self.useless_gaps
         else:
             gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
@@ -174,24 +180,8 @@ class wm3(Singleton):
             self.i3.get_tree().find_focused().workspace().descendents()
         )
 
-    def find_visible_windows(self, windows_on_ws):
-        visible_windows = []
-        for w in windows_on_ws:
-            try:
-                xprop = subprocess.check_output(
-                    ['xprop', '-id', str(w.window)]
-                ).decode()
-            except FileNotFoundError:
-                raise SystemExit("The `xprop` utility is not found!"
-                                 " Please install it and retry.")
-
-            if '_NET_WM_STATE_HIDDEN' not in xprop:
-                visible_windows.append(w)
-
-        return visible_windows
-
     def focus_next(self, reversed_order=False):
-        visible_windows = self.find_visible_windows(self.get_windows_on_ws())
+        visible_windows = find_visible_windows(self.get_windows_on_ws())
         if reversed_order:
             cycle_windows = cycle(reversed(visible_windows))
         else:
