@@ -11,51 +11,55 @@ class geom():
         for tag in self.settings:
             self.parsed_geom[tag] = self.__parse_geom(tag)
 
+    def scratchpad_hide(self, hide):
+        ret = ""
+        if hide:
+            ret = ", [con_id=__focused__] scratchpad show"
+        return ret
+
+    def ret_info(self, tag, attr, key, dprefix, hide):
+        if key in attr:
+            lst = [item for item in self.settings[tag][key] if item != '']
+            if lst != []:
+                pref = dprefix+"[" + '{}="'.format(attr) + \
+                    self.ch(self.settings[tag][attr], '^')
+                for_win_cmd = pref + self.parse_attr(tag, key) + \
+                    "move scratchpad, " + self.get_geom(tag) \
+                                        + self.scratchpad_hide(hide)
+                return for_win_cmd
+        return ''
+
     def ch(self, lst, ch):
         ret = ''
         if len(lst) > 1:
             ret = ch
         return ret
 
-    def init_i3_win_cmds(self, hide=True, dprefix_="for_window "):
-        def parse_attr(attr):
-            ret = ""
-            attrib_list = self.settings[tag][attr]
-            if len(attrib_list) > 1:
-                ret += '('
-            for iter, item in enumerate(attrib_list):
-                ret += item
-                if iter+1 < len(attrib_list):
-                    ret += '|'
-            if len(attrib_list) > 1:
-                ret += ')$'
-            ret += '"] '
+    def parse_attr(self, tag, attr):
+        ret = ''
+        attrib_list = self.settings[tag][attr]
+        if len(attrib_list) > 1:
+            ret += '('
+        for iter, item in enumerate(attrib_list):
+            ret += item
+            if iter+1 < len(attrib_list):
+                ret += '|'
+        if len(attrib_list) > 1:
+            ret += ')$'
+        ret += '"] '
 
-            return ret
+        return ret
 
-        def hide_cmd():
-            ret = ""
-            if hide:
-                ret = ", [con_id=__focused__] scratchpad show"
-            return ret
-
-        def ret_info(key):
-            if key in attr:
-                lst = [item for item in self.settings[tag][key] if item != '']
-                if lst != []:
-                    pref = dprefix_+"[" + '{}="'.format(attr) + \
-                        self.ch(self.settings[tag][attr], '^')
-                    for_win_cmd = pref + parse_attr(key) + \
-                        "move scratchpad, " + self.get_geom(tag) + hide_cmd()
-                    return for_win_cmd
-            return ''
-
+    def create_i3_match_rules(self, hide=True, dprefix="for_window "):
         cmd_list = []
         for tag in self.settings:
             for attr in self.settings[tag]:
-                cmd_list.append(ret_info('class'))
-                cmd_list.append(ret_info('instance'))
-
+                cmd_list.append(self.ret_info(
+                    tag, attr, 'class', dprefix, hide)
+                )
+                cmd_list.append(self.ret_info(
+                    tag, attr, 'instance', dprefix, hide)
+                )
         self.cmd_list = filter(lambda str: str != '', cmd_list)
 
     # nsd need this function
