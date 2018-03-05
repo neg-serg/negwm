@@ -34,27 +34,29 @@ class CfgMaster(object):
 
     def dict_converse(self):
         for i in self.cfg:
-            for j in self.cfg[i]:
-                if j in {"class", "class_r", "instance"}:
-                    self.cfg[i][j] = set(self.cfg[i][sys.intern(j)])
-                if j == "prog_dict":
-                    for k in self.cfg[i][j]:
-                        for kk in self.cfg[i][j][k]:
-                            if kk == "includes":
-                                self.cfg[i][j][k][kk] = \
-                                    set(self.cfg[i][j][k][sys.intern(kk)])
+            if type(i) is list:
+                for j in self.cfg[i]:
+                    if j in {"class", "class_r", "instance"}:
+                        self.cfg[i][j] = set(self.cfg[i][sys.intern(j)])
+                    if j == "prog_dict":
+                        for k in self.cfg[i][j]:
+                            for kk in self.cfg[i][j][k]:
+                                if kk == "includes":
+                                    self.cfg[i][j][k][kk] = \
+                                        set(self.cfg[i][j][k][sys.intern(kk)])
 
     def dict_deconverse(self):
         for i in self.cfg:
-            for j in self.cfg[i]:
-                if j in {"class", "class_r", "instance"}:
-                    self.cfg[i][j] = list(self.cfg[i][j])
-                if j == "prog_dict":
-                    for k in self.cfg[i][j]:
-                        for kk in self.cfg[i][j][k]:
-                            if kk == "includes":
-                                self.cfg[i][j][k][kk] = \
-                                    list(self.cfg[i][j][k][kk])
+            if type(i) is dict:
+                for j in self.cfg[i]:
+                    if j in {"class", "class_r", "instance"}:
+                        self.cfg[i][j] = list(self.cfg[i][j])
+                    if j == "prog_dict":
+                        for k in self.cfg[i][j]:
+                            for kk in self.cfg[i][j][k]:
+                                if kk == "includes":
+                                    self.cfg[i][j][k][kk] = \
+                                        list(self.cfg[i][j][k][kk])
 
     def load_config(self):
         user_name = os.environ.get("USER", "neg")
