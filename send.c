@@ -79,6 +79,8 @@ const char* docstr= \
     "  send wm3 maximize\n" \
     "  send wm3 maxhor\n" \
     "  send wm3 maxvert\n" \
+    "  send wm3 x2\n" \
+    "  send wm3 x4\n" \
     "  send wm3 quad\n" \
     "  send wm3 revert_maximize\n" \
     "  send wm3 reload\n" \
@@ -158,6 +160,7 @@ Args ArgMap[] = {
         { "maxhor", 0 },
         { "maxvert", 0 },
         { "quad", 1 },
+        { "x2", 1 },
         { "revert_maximize", 0 },
         { NULL, 0 },
     }
