@@ -1,19 +1,19 @@
-import subprocess
 import i3ipc
+from threading import Thread, Event
+
 from singleton import Singleton
 from cfg_master import CfgMaster
-from threading import Thread, Event
+
+import subprocess
 
 
 class vol(Singleton, CfgMaster):
     def __init__(self):
-        self.i3 = i3ipc.Connection()
         self.mpv_socket = "/tmp/mpv.socket"
         self.inc = 1
         self.mpd_addr = "127.0.0.1"
         self.mpd_port = "6600"
 
-        self.i3.on("window::focus", self.set_curr_win)
         self.player_event = Event()
 
         self.mpd_status = "none"
@@ -28,7 +28,10 @@ class vol(Singleton, CfgMaster):
         ).start()
 
         self.player_event.set()
+
+        self.i3 = i3ipc.Connection()
         self.current_win = self.i3.get_tree().find_focused()
+        self.i3.on("window::focus", self.set_curr_win)
 
     def set_curr_win(self, i3, event):
         self.current_win = event.container
