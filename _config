@@ -110,51 +110,74 @@ set ${graph,ws15} " ο: [graph]"
 # ░█░█░█▄█░░░░░█▀▄░█░█░█░░░█▀▀░█▀▀
 # ░█▄█░█░█░░░░░█▀▄░█░█░█░░░█▀▀░▀▀█
 # ░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
-for_window [class=".*"] title_format " >_ %title "
 for_window $browsers  move container to workspace $web, workspace $web, focus
+for_window [class="guncharmap"] move container to workspace $doc
+for_window [class="(?i)^(VirtualBox|vmware|[Qq]emu.*|spic).*$"] move container to workspace $vm, focus
+for_window [class="^(libreoffice|abiword).*$"]  move container to workspace $doc
+for_window [class="^MainTerminal$"] move container to workspace $term, focus
+for_window [class="^(MPlayer|mplayer2|mpv|cheese|obs)$"] move container to workspace $media, workspace $media, focus
+for_window [class="^lollypop$"] move container to workspace $media, workspace $media, focus
+for_window [class="spotify"] move container to workspace $spotify
+for_window [class="Sxiv"]  move container to workspace $sxiv, workspace $sxiv, focus
+for_window [class=".*"] title_format " >_ %title "
+for_window [class="^(Vuze|Ktorrent|stig)$"] move container to workspace $torrent
+for_window [instance="^(gparted|_logs_|recoll|remmina|htop_term|glances_term|gnome-disks)$"] move container to workspace $admin
+for_window [instance="^(subl3|sublime_text)$"] move container to workspace $dev, workspace $dev, focus
+
+# ░█░█░█▀█░█▀▄░░░░░█▀▀░█░░░█▀█░█▀█░▀█▀░▀█▀░█▀█░█▀▀
+# ░▀▄▀░█▀█░█▀▄░░░░░█▀▀░█░░░█░█░█▀█░░█░░░█░░█░█░█░█
+# ░░▀░░▀░▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░▀▀▀
 for_window [class="^(caja|Pavucontrol|Awf-gtk3|lxappearance|stardict|Conky|zazu)$"] floating enable
-for_window [class="com-sun-javaws-Main" instance="sun-awt-X11-XFramePeer"] floating enable, move container to workspace $dev, workspace $dev, focus
 for_window [class="cool-retro-term"] floating enable
-for_window [class="Cr3" instance="cr3"] move container to workspace $doc
-for_window [class="^(Emacs|Atom)$"] move container to workspace $dev, workspace $dev, focus
-for_window [class="Emacs" instance="emacs" title="Question"] floating enable
 for_window [class="(feh|qiv)"] floating enable
+for_window [class="Nicotine.*" instance="nicotine"] floating enable
+for_window [class="rdesktop" instance="rdesktop"] floating enable
+for_window [class="^(Tilda|Guake|Xmessage|XFontSel|XCalc|Xfce)$"] floating enable
+for_window [class="wpg"] floating enable, move absolute position 1210 626, resize set 700 500, focus
+for_window [class="yakuake"] floating enable
+for_window [instance="^(gcalctool|galculator|console|gdb|mixer|htop|gcolor2|gpick)$"] floating enable
+for_window [instance="sun-awt-X11-(XWindowPeer|XDialogPeer|XFramePeer)"] floating enable
+for_window [instance="^(Update|gnome-keyring|file-progress|wicd)$"] floating enable
+for_window [title="^(screenkey|Debconf|control-center|Pavucontrol|B2[Gg])$"] floating enable
+
+# ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
+# ░█▀▄░█▀▀░█▀█░█░█░█▀▀░█▀▄░▀▀█
+# ░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀
+for_window [class="Cr3" instance="cr3"] move container to workspace $doc
+for_window [class="^(Okular|Apvlv|Zathura|Evince|XDvi)$"]  move container to workspace $doc, workspace $doc, focus
+
+# ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
+# ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
+# ░▀▀▀░▀░▀░▀░▀░▀░░░▀░▀░▀▀▀░▀▀▀░▀▀▀
 for_window [class="Gimp"] move container to workspace $gimp, workspace $gimp, focus
 for_window [class="Gimp" window_role="^(gimp-file-{open,save}|gimp-message-dialog|gimp-image-new|gimp-toolbox-color-dialog)$"]  floating enable
 for_window [class="darktable"] move container to workspace $gimp, workspace $gimp, focus
-for_window [class="guncharmap"]  move container to workspace $doc
-for_window [class="(?i)dota.*"] floating enable, move container to workspace $wine, workspace $wine, focus
 for_window [class="^(inkscape|simple-scan)$"] move container to workspace $graph
+
+# ░█▀▀░█▀▄░▀█▀░▀█▀░█▀█░█▀▄░█▀▀
+# ░█▀▀░█░█░░█░░░█░░█░█░█▀▄░▀▀█
+# ░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀
+for_window [class="Emacs" instance="emacs" title="Question"] floating enable
+for_window [class="^(Emacs|Atom)$"] move container to workspace $dev, workspace $dev, focus
 for_window [class="(?i)^.*vim$"] move container to workspace $dev, workspace $dev, focus
-for_window [class="(?i)^(VirtualBox|vmware|[Qq]emu.*|spic).*$"] move container to workspace $vm, focus
-for_window [class="(?i)(Wine|Crossover)"] floating enable, move container to workspace $wine, workspace $wine, focus
-for_window [title="^.*.exe$"] floating enable, move container to workspace $wine, workspace $wine, focus
-for_window [class="^jetbrains-(idea|clion|andrond-studio).*"] move container to workspace $ide, workspace $ide, focus
-for_window [class="^(libreoffice|abiword).*$"]  move container to workspace $doc
-for_window [class="^MainTerminal$"] move container to workspace $term, workspace $gimp, focus
-for_window [class="^(MPlayer|mplayer2|mpv|cheese|obs)$"] move container to workspace $media, workspace $media, focus
-for_window [class="^lollypop$"] move container to workspace $media, workspace $media, focus
-for_window [class="Nicotine.*" instance="nicotine"] floating enable
-for_window [class="^(Okular|Apvlv|Zathura|Evince|XDvi)$"]  move container to workspace $doc, workspace $doc, focus
-for_window [class="rdesktop" instance="rdesktop"] floating enable
-for_window [class="spotify"] move container to workspace $spotify
-for_window [class="Sxiv"]  move container to workspace $sxiv, workspace $sxiv, focus
-for_window [class="^(Vuze|Ktorrent)$"] move container to workspace $torrent
-for_window [class="^(Tilda|Guake|Xmessage|XFontSel|XCalc|Xfce)$"] floating enable
-for_window [class="^(XRebirth|UE4Editor)$"] floating enable, move container to workspace $wine, workspace $wine, focus
-for_window [class="yakuake"] floating enable
-for_window [instance="^(gcalctool|galculator|console|gdb|mixer|htop|gcolor2|gpick)$"] floating enable
-for_window [instance="^(gparted|_logs_|recoll|remmina|htop_term|glances_term|gnome-disks)$"] move container to workspace $admin
-for_window [instance="^(subl3|sublime_text)$"] move container to workspace $dev, workspace $dev, focus
-for_window [instance="sun-awt-X11-(XWindowPeer|XDialogPeer|XFramePeer)"] floating enable
-for_window [instance="^(Update|gnome-keyring|file-progress|wicd)$"] floating enable
 for_window [instance="^(wim|nwim|oni)$"] move container to workspace $dev, workspace $dev, focus
+for_window [class="^jetbrains-(idea|clion|andrond-studio).*"] move container to workspace $ide, workspace $ide, focus
+for_window [class="com-sun-javaws-Main" instance="sun-awt-X11-XFramePeer"] floating enable, move container to workspace $dev, workspace $dev, focus
+
+# ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
+# ░█░█░█▀█░█░█░█▀▀░▀▀█
+# ░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀
+for_window [class="(?i)(Wine|Crossover)"] floating enable, move container to workspace $wine, workspace $wine, focus
 for_window $sclient move container to workspace $steam, workspace $steam, focus
 for_window $steam_games move container to workspace $steam, workspace $steam, fullscreen enable, focus
+for_window [class="(?i)dota.*"] floating enable, move container to workspace $wine, workspace $wine, focus
+for_window [class="^(XRebirth|UE4Editor)$"] floating enable, move container to workspace $wine, workspace $wine, focus
 for_window $steam_all mark steam_all, move container to workspace $steam, workspace $steam, focus
-for_window [title="^(screenkey|Debconf|control-center|Pavucontrol|B2[Gg])$"] floating enable
-for_window [class="wpg"] floating enable, move absolute position 1210 626, resize set 700 500, focus
+for_window [title="^.*.exe$"] floating enable, move container to workspace $wine, workspace $wine, focus
 
+#░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
+#░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
+#░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░░▀▀▀
 for_window [class="^(telegram-desktop|Skype|Telegram-desktop|ViberPC|TelegramDesktop|finch|VK)$"] move scratchpad, move absolute position 1372 127, resize set 528 1029
 for_window [class="mpd-pad2"]    move scratchpad, move absolute position 400 400, resize set 1200 600
 for_window [instance="mutt"]     move scratchpad, move absolute position 293 0,   resize set 1250 700
@@ -164,6 +187,9 @@ for_window [class="youtube-get"] move scratchpad, move absolute position 247 13,
 for_window [class="_weechat_"]   move scratchpad, move absolute position 112 33,  resize set 1736 1091
 for_window [instance="webcam"]   floating enable, move container to workspace current, move scratchpad, move absolute position center, resize set 1280 720, focus
 
+#░█▀▄░▀█▀░█▀█░█░░░█▀█░█▀▀░█▀▀
+#░█░█░░█░░█▀█░█░░░█░█░█░█░▀▀█
+#░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [window_type="dialog"] $scratchpad_dialog
 for_window [window_type="menu"] $scratchpad_dialog
@@ -230,7 +256,6 @@ bindsym $alt+g exec rofi -sort -matching fuzzy -show window
 bindsym $m4+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
 bindsym $m4+$c+grave $menu run
-
 
 bindsym $m4+$c+q kill
 #-------------------------------------------------------
