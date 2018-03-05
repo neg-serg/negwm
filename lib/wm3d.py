@@ -42,8 +42,43 @@ class wm3(Singleton, CfgMaster):
             "quad": self.quad,
             "grow": self.grow,
             "shrink": self.shrink,
+            "center": self.move_center,
             "revert_maximize": self.revert_maximize,
         }[args[0]](*args[1:])
+
+    def center_geom(self, win, change_geom=False, degrade_coeff=0.82):
+        geom = {}
+        center = {}
+
+        center['x'] = int(self.current_resolution['width'] / 2)
+        center['y'] = int(self.current_resolution['height'] / 2)
+
+        if not change_geom:
+            geom['width'] = int(win.rect.width)
+            geom['height'] = int(win.rect.height)
+        else:
+            geom['width'] = int(
+                self.current_resolution['width'] * degrade_coeff
+            )
+            geom['height'] = int(
+                self.current_resolution['height'] * degrade_coeff
+            )
+
+        geom['x'] = center['x'] - int(geom['width'] / 2)
+        geom['y'] = center['y'] - int(geom['height'] / 2)
+
+        return geom
+
+    def move_center(self, resize):
+        focused = self.i3.get_tree().find_focused()
+        if "default" == resize or "none" == resize:
+            geom = self.center_geom(focused)
+            self.set_geom(focused, geom)
+        elif "resize" == resize or "on" == resize or "yes" == resize:
+            geom = self.center_geom(focused, change_geom=True)
+            self.set_geom(focused, geom)
+        else:
+            return
 
     def reload_config(self):
         self.__init__()

@@ -86,6 +86,7 @@ const char* docstr= \
     "  send wm3 reload\n" \
     "  send wm3 grow\n" \
     "  send wm3 shrink\n" \
+    "  send wm3 center\n" \
     "  send info request\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
@@ -166,6 +167,7 @@ Args ArgMap[] = {
         { "revert_maximize", 0 },
         { "grow", 0 },
         { "shrink", 0 },
+        { "center", 1 },
         { NULL, 0 },
     }
 };
