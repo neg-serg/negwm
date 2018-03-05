@@ -71,8 +71,8 @@ class wm3(Singleton, CfgMaster):
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
-                'width': half_width - gaps['d'],
-                'height': half_height - gaps['s'],
+                'width': half_width - double_dgaps,
+                'height': half_height - double_dgaps,
             }
         elif mode == 2:
             geom = {
