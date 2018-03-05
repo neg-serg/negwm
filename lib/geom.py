@@ -1,24 +1,24 @@
 import re
-import subprocess
+from modlib import get_screen_resolution
 
 
 class geom():
     def __init__(self, settings):
         self.cmd_list = []
         self.parsed_geom = {}
-        self.current_resolution = self.__get_screen_resolution()
+        self.current_resolution = get_screen_resolution()
         self.settings = settings
         for tag in self.settings:
             self.parsed_geom[tag] = self.__parse_geom(tag)
 
-    def init_i3_win_cmds(self, hide=True, dprefix_="for_window "):
-        def ch_(list, ch):
-            ret = ''
-            if len(list) > 1:
-                ret = ch
-            return ret
+    def ch(self, lst, ch):
+        ret = ''
+        if len(lst) > 1:
+            ret = ch
+        return ret
 
-        def parse_attr_(attr):
+    def init_i3_win_cmds(self, hide=True, dprefix_="for_window "):
+        def parse_attr(attr):
             ret = ""
             attrib_list = self.settings[tag][attr]
             if len(attrib_list) > 1:
@@ -44,8 +44,8 @@ class geom():
                 lst = [item for item in self.settings[tag][key] if item != '']
                 if lst != []:
                     pref = dprefix_+"[" + '{}="'.format(attr) + \
-                        ch_(self.settings[tag][attr], '^')
-                    for_win_cmd = pref + parse_attr_(key) + \
+                        self.ch(self.settings[tag][attr], '^')
+                    for_win_cmd = pref + parse_attr(key) + \
                         "move scratchpad, " + self.get_geom(tag) + hide_cmd()
                     return for_win_cmd
             return ''
@@ -61,15 +61,6 @@ class geom():
     # nsd need this function
     def get_geom(self, tag):
         return self.parsed_geom[tag]
-
-    def __get_screen_resolution(self):
-        output = subprocess.Popen(
-            'xrandr | awk \'/*/{print $1}\'',
-            shell=True,
-            stdout=subprocess.PIPE
-        ).communicate()[0]
-        resolution = output.split()[0].split(b'x')
-        return {'width': int(resolution[0]), 'height': int(resolution[1])}
 
     def __parse_geom(self, group):
         rd = {'width': 1920, 'height': 1200}  # resolution_default

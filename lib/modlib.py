@@ -12,20 +12,36 @@ def notify_msg(s, prefix=">>"):
     subprocess.Popen(notify_msg)
 
 
+def get_screen_resolution():
+    output = subprocess.Popen(
+        'xrandr | awk \'/*/{print $1}\'',
+        shell=True,
+        stdout=subprocess.PIPE
+    ).communicate()[0]
+    if output:
+        resolution = output.split()[0].split(b'x')
+        ret = {'width': int(resolution[0]), 'height': int(resolution[1])}
+    else:
+        ret = {'width': 1920, 'height': 1200}
+    return ret
+
+
 def find_visible_windows(windows_on_ws):
-        visible_windows = []
-        for w in windows_on_ws:
-            try:
-                xprop = subprocess.check_output(
-                    ['xprop', '-id', str(w.window)]
-                ).decode()
-            except FileNotFoundError:
-                raise SystemExit("The `xprop` utility is not found!"
-                                 " Please install it and retry.")
+    visible_windows = []
+    for w in windows_on_ws:
+        try:
+            xprop = subprocess.check_output(
+                ['xprop', '-id', str(w.window)]
+            ).decode()
+        except FileNotFoundError:
+            raise SystemExit("The `xprop` utility is not found!"
+                             " Please install it and retry.")
 
-            if '_NET_WM_STATE_HIDDEN' not in xprop:
-                visible_windows.append(w)
-
+    if not xprop:
+        return windows_on_ws
+    else:
+        if '_NET_WM_STATE_HIDDEN' not in xprop:
+            visible_windows.append(w)
         return visible_windows
 
 

@@ -2,7 +2,7 @@ import subprocess
 import collections
 from itertools import cycle
 import i3ipc
-from modlib import find_visible_windows
+from modlib import find_visible_windows, get_screen_resolution
 from singleton import Singleton
 from cfg_master import CfgMaster
 
@@ -19,7 +19,7 @@ class wm3(Singleton, CfgMaster):
             [None] * maxlength,
             maxlen=maxlength
         )
-        self.current_resolution = self.get_screen_resolution()
+        self.current_resolution = get_screen_resolution()
         self.load_useless_gaps()
         self.quad_use_gaps = self.cfg.get("quad_use_gaps", True)
         self.x2_use_gaps = self.cfg.get("x2_use_gaps", True)
@@ -331,17 +331,4 @@ class wm3(Singleton, CfgMaster):
 
     def focus_next_visible(self):
         self.focus_next()
-
-    def get_screen_resolution(self):
-        output = subprocess.Popen(
-            'xrandr | awk \'/*/{print $1}\'',
-            shell=True,
-            stdout=subprocess.PIPE
-        ).communicate()[0]
-        if output:
-            resolution = output.split()[0].split(b'x')
-            ret = {'width': int(resolution[0]), 'height': int(resolution[1])}
-        else:
-            ret = {'width': 1920, 'height': 1200}
-        return ret
 
