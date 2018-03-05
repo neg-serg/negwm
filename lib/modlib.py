@@ -12,6 +12,23 @@ def notify_msg(s, prefix=">>"):
     subprocess.Popen(notify_msg)
 
 
+def find_visible_windows(self, windows_on_ws):
+        visible_windows = []
+        for w in windows_on_ws:
+            try:
+                xprop = subprocess.check_output(
+                    ['xprop', '-id', str(w.window)]
+                ).decode()
+            except FileNotFoundError:
+                raise SystemExit("The `xprop` utility is not found!"
+                                 " Please install it and retry.")
+
+            if '_NET_WM_STATE_HIDDEN' not in xprop:
+                visible_windows.append(w)
+
+        return visible_windows
+
+
 class Matcher(object):
     def find_classed(self, wlist, pattern):
         return [c for c in wlist

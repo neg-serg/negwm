@@ -1,5 +1,5 @@
 import i3ipc
-from subprocess import check_output
+from modlib import find_visible_windows
 from singleton import Singleton
 
 
@@ -46,17 +46,9 @@ class flast():
             self.i3.get_tree().find_focused().workspace().descendents()
         )
 
-    def find_visible_windows(self):
-        visible_windows = []
-        for w in self.get_windows_on_ws():
-            xprop = check_output(['xprop', '-id', str(w.window)]).decode()
-            if '_NET_WM_STATE_HIDDEN' not in xprop:
-                visible_windows.append(w)
-        return visible_windows
-
     def go_back_if_nothing(self, i3, event):
         focused = i3.get_tree().find_focused()
-        if not len(self.find_visible_windows()):
+        if not len(find_visible_windows()):
             for ws in ["pic", "media"]:
                 if ws in focused.workspace().name:
                     self.alt_tab()

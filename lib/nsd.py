@@ -6,7 +6,7 @@ import uuid
 from typing import Callable, List
 
 import lib.geom as geom
-from modlib import Matcher, notify_msg
+from modlib import Matcher, notify_msg, find_visible_windows
 from singleton import Singleton
 from cfg_master import CfgMaster
 
@@ -67,20 +67,6 @@ class ns(CfgMaster, Matcher):
                 win.command('move scratchpad')
             else:
                 win.command('move container to workspace current')
-
-    def find_visible_windows(self):
-        visible_windows = []
-        wswins = filter(
-            lambda win: win.window,
-            self.i3.get_tree().find_focused().workspace().descendents()
-        )
-        for w in wswins:
-            xprop = subprocess.check_output(
-                ['xprop', '-id', str(w.window)]
-            ).decode()
-            if '_NET_WM_STATE_HIDDEN' not in xprop:
-                visible_windows.append(w)
-        return visible_windows
 
     def check_dialog_win(self, w):
         if w.window_instance == "Places" \
@@ -145,7 +131,7 @@ class ns(CfgMaster, Matcher):
 
         self.focus(tag)
 
-        visible_windows = self.find_visible_windows()
+        visible_windows = find_visible_windows()
         for w in visible_windows:
             for i in self.marked[tag]:
                 if w.window_class in subtag_classes_set and w.id == i.id:
@@ -188,7 +174,7 @@ class ns(CfgMaster, Matcher):
         self.fullscreen_list = []
 
     def visible_count(self, tag: str):
-        visible_windows = self.find_visible_windows()
+        visible_windows = find_visible_windows()
         vmarked = 0
         for w in visible_windows:
             for i in self.marked[tag]:
