@@ -44,6 +44,7 @@ enum {
     , MENU = 3
     , INFO = 4
     , WM3 = 5
+    , VOL = 6
 };
 
 const char* docstr= \
@@ -88,6 +89,8 @@ const char* docstr= \
     "  send wm3 shrink\n" \
     "  send wm3 center\n" \
     "  send info request\n" \
+    "  send vol u\n" \
+    "  send vol d\n" \
     "  send (-h | --help)\n" \
     "  send --version\n" \
     "\n" \
@@ -107,6 +110,7 @@ const char *progs[] = {
     [MENU] = "menu",
     [INFO] = "info",
     [WM3] = "wm3",
+    [VOL] = "vol",
     NULL
 };
 
@@ -169,7 +173,12 @@ Args ArgMap[] = {
         { "shrink", 0 },
         { "center", 1 },
         { NULL, 0 },
-    }
+    },
+    [VOL] = {
+        { "u", 0 },
+        { "d", 0 },
+        { NULL, 0 },
+    },
 };
 
 char *get_fifo_name(int modnum){

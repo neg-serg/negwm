@@ -22,6 +22,7 @@ set $ns exec ${XDG_CONFIG_HOME}/i3/send ns
 set $flast exec ${XDG_CONFIG_HOME}/i3/send flast
 set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
 set $wm3 exec ${XDG_CONFIG_HOME}/i3/send wm3
+set $volume exec ${XDG_CONFIG_HOME}/i3/send vol
 
 set $scratchpad_dialog floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
 
@@ -372,6 +373,8 @@ mode "gaps-inner" {
 
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
+
+bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░

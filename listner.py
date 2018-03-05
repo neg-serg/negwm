@@ -50,6 +50,7 @@ class Listner():
             'fsdpms': {},
             'info': {},
             'wm3': {},
+            'vol': {},
         }
         self.mods["menu"]["no_i3"] = True
         user_name = os.environ.get("USER", "neg")
