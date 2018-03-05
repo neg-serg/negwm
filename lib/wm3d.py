@@ -22,6 +22,7 @@ class wm3(Singleton, CfgMaster):
         self.current_resolution = self.get_screen_resolution()
         self.useless_gaps = self.cfg["useless_gaps"]
         self.quad_use_gaps = self.cfg["quad_use_gaps"]
+        self.x2_use_gaps = self.cfg["x2_use_gaps"]
 
     def switch(self, args):
         {
@@ -31,6 +32,8 @@ class wm3(Singleton, CfgMaster):
             "maximize": self.maximize,
             "maxhor": lambda: self.maximize(by='X'),
             "maxvert": lambda: self.maximize(by='Y'),
+            "x2": self.x2,
+            "x4": self.quad,
             "quad": self.quad,
             "revert_maximize": self.revert_maximize,
         }[args[0]](*args[1:])
@@ -46,6 +49,65 @@ class wm3(Singleton, CfgMaster):
             }
         )
         return self.geom_list[-1]["geom"]
+
+    def x2(self, mode):
+        curr_scr = self.current_resolution
+        self.current_win = self.i3.get_tree().find_focused()
+
+        if self.x2_use_gaps:
+            gaps = self.useless_gaps
+        else:
+            gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
+
+        half_width = int(curr_scr['width'] / 2)
+        half_height = int(curr_scr['height'] / 2)
+        double_dgaps = int(gaps['d'] * 2)
+        double_sgaps = int(gaps['s'] * 2)
+
+        if 'h1' == mode or 'hup' == mode:
+            print('h1')
+            geom = {
+                'x': gaps['a'],
+                'y': gaps['w'],
+                'width': curr_scr['width'] - double_dgaps,
+                'height': half_height - double_sgaps,
+            }
+        elif 'h2' == mode or 'hdown' == mode:
+            print('h2')
+            geom = {
+                'x': gaps['a'],
+                'y': half_height + gaps['w'],
+                'width': curr_scr['width'] - double_dgaps,
+                'height': half_height - double_sgaps,
+            }
+        elif 'v1' == mode or 'vleft' == mode:
+            print('v1')
+            geom = {
+                'x': gaps['a'],
+                'y': gaps['w'],
+                'width': half_width - double_dgaps,
+                'height': curr_scr['height'] - double_sgaps,
+            }
+        elif 'v2' == mode or 'vright' == mode:
+            print('v2')
+            geom = {
+                'x': gaps['a'] + half_width,
+                'y': gaps['w'],
+                'width': half_width - double_dgaps,
+                'height': curr_scr['height'] - double_sgaps,
+            }
+        else:
+            return
+
+        if self.current_win is not None:
+            if not self.geom_list[-1]:
+                self.get_prev_geom()
+            elif self.geom_list[-1]:
+                prev = self.geom_list[-1].get('id', {})
+                if prev != self.current_win.id:
+                    geom = self.get_prev_geom()
+
+            self.set_geom(self.current_win, geom)
 
     def quad(self, mode):
         try:
@@ -67,28 +129,28 @@ class wm3(Singleton, CfgMaster):
         double_dgaps = int(gaps['d'] * 2)
         double_sgaps = int(gaps['s'] * 2)
 
-        if mode == 1:
+        if 1 == mode:
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
                 'width': half_width - double_dgaps,
-                'height': half_height - double_dgaps,
+                'height': half_height - double_sgaps,
             }
-        elif mode == 2:
+        elif 2 == mode:
             geom = {
                 'x': half_width + gaps['a'],
                 'y': gaps['w'],
                 'width': half_width - double_dgaps,
                 'height': half_height - double_sgaps,
             }
-        elif mode == 3:
+        elif 3 == mode:
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'] + half_height,
                 'width': half_width - double_dgaps,
                 'height': half_height - double_sgaps,
             }
-        elif mode == 4:
+        elif 4 == mode:
             geom = {
                 'x': gaps['a'] + half_width,
                 'y': gaps['w'] + half_height,
