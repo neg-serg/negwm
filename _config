@@ -305,6 +305,7 @@ mode "" {
     bindsym $S+y $wm3 revert_maximize
     bindsym {1,2,3,4} $wm3 quad {1,2,3,4}
     bindsym $S+{w,a,s,d} $wm3 x2 {hup,vleft,hdown,vright}
+    bindsym $S+{plus,minus} $wm3 {grow,shrink}
     #-------------------------------------------------------
     bindsym $S+g mode ""
     #-------------------------------------------------------

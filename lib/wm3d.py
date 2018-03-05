@@ -23,6 +23,8 @@ class wm3(Singleton, CfgMaster):
         self.useless_gaps = self.cfg["useless_gaps"]
         self.quad_use_gaps = self.cfg["quad_use_gaps"]
         self.x2_use_gaps = self.cfg["x2_use_gaps"]
+        self.grow_coeff = self.cfg["grow_coeff"]
+        self.shrink_coeff = self.cfg["shrink_coeff"]
 
     def switch(self, args):
         {
@@ -35,6 +37,8 @@ class wm3(Singleton, CfgMaster):
             "x2": self.x2,
             "x4": self.quad,
             "quad": self.quad,
+            "grow": self.grow,
+            "shrink": self.shrink,
             "revert_maximize": self.revert_maximize,
         }[args[0]](*args[1:])
 
@@ -49,6 +53,24 @@ class wm3(Singleton, CfgMaster):
             }
         )
         return self.geom_list[-1]["geom"]
+
+    def multiple_geom(self, win, coeff):
+        return {
+            'x': int(win.rect.x),
+            'y': int(win.rect.y),
+            'width': int(win.rect.width * coeff),
+            'height': int(win.rect.height * coeff),
+        }
+
+    def grow(self):
+        focused = self.i3.get_tree().find_focused()
+        geom = self.multiple_geom(focused, self.grow_coeff)
+        self.set_geom(focused, geom)
+
+    def shrink(self):
+        focused = self.i3.get_tree().find_focused()
+        geom = self.multiple_geom(focused, self.shrink_coeff)
+        self.set_geom(focused, geom)
 
     def x2(self, mode):
         curr_scr = self.current_resolution
