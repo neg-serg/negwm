@@ -2,8 +2,7 @@ import subprocess
 import i3ipc
 from singleton import Singleton
 from cfg_master import CfgMaster
-from time import sleep
-from threading import Thread
+from threading import Thread, Event
 
 
 class vol(Singleton, CfgMaster):
@@ -13,16 +12,22 @@ class vol(Singleton, CfgMaster):
         self.inc = 1
         self.mpd_addr = "127.0.0.1"
         self.mpd_port = "6600"
-        self.mpd_status = "none"
 
         self.i3.on("window::focus", self.set_curr_win)
-        self.default_cooldown = 4
-        self.cooldown = self.default_cooldown
+        self.player_event = Event()
+
+        self.mpd_status = "none"
+        self.counter = 0
 
         Thread(
-            target=self.update_mpd_status, args=(self.cooldown,), daemon=True
+            target=self.update_mpd_status, args=(), daemon=True
         ).start()
 
+        Thread(
+            target=self.wait_for_mpd_status_update, args=(), daemon=True
+        ).start()
+
+        self.player_event.set()
         self.current_win = self.i3.get_tree().find_focused()
 
     def set_curr_win(self, i3, event):
@@ -34,6 +39,23 @@ class vol(Singleton, CfgMaster):
             "d": self.volume_down,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
+
+    def wait_for_mpd_status_update(self):
+        while True:
+            p = subprocess.Popen(
+                ['mpc', 'idleloop', 'player'],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE
+            )
+            # Read mpc idleloop for player event
+            while True:
+                output = p.stdout.readline()
+                if output == '' and p.poll() is not None:
+                    self.player_event.clear()
+                    break
+                if output:
+                    self.mpd_status = "none"
+                    self.player_event.set()
 
     def check_mpd_status(self):
         p = subprocess.Popen(
@@ -54,27 +76,23 @@ class vol(Singleton, CfgMaster):
         if self.mpd_status != "play":
             self.mpd_status = "none"
 
-    def update_mpd_status(self, cooldown):
+    def update_mpd_status(self):
         while True:
-            self.check_mpd_status()
-            sleep(cooldown)  # time to wait in sleep
-            cooldown *= 2
-
-    def get_mpd_status(self):
-        return self.mpd_status
+            if self.player_event.wait():
+                self.check_mpd_status()
+                self.player_event.clear()
 
     def reload_config(self):
         self.__init__()
 
     def change_volume(self, val):
-        self.cooldown = self.default_cooldown
-
+        self.counter += 1
         val_str = str(val)
         mpv_key = '9'
         if val > 0:
             val_str = "+" + str(val)
             mpv_key = '0'
-        if self.get_mpd_status() == "play":
+        if self.mpd_status == "play":
             p = subprocess.Popen(
                 ['nc', f'{self.mpd_addr}', f'{self.mpd_port}'],
                 stdin=subprocess.PIPE,
@@ -92,6 +110,8 @@ class vol(Singleton, CfgMaster):
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE
             )
+        else:
+            return
 
     def volume_up(self, *args):
         count = len(args)
