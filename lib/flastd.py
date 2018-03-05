@@ -48,7 +48,11 @@ class flast():
 
     def go_back_if_nothing(self, i3, event):
         focused = i3.get_tree().find_focused()
-        if not len(find_visible_windows()):
+        wswins = filter(
+            lambda win: win.window,
+            self.i3.get_tree().find_focused().workspace().descendents()
+        )
+        if not len(find_visible_windows(wswins)):
             for ws in ["pic", "media"]:
                 if ws in focused.workspace().name:
                     self.alt_tab()
