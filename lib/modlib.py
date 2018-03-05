@@ -29,20 +29,23 @@ def get_screen_resolution():
 def find_visible_windows(windows_on_ws):
     visible_windows = []
     for w in windows_on_ws:
+        p_com = None
         try:
-            xprop = subprocess.check_output(
-                ['xprop', '-id', str(w.window)]
-            ).decode()
-        except FileNotFoundError:
-            raise SystemExit("The `xprop` utility is not found!"
-                             " Please install it and retry.")
+            p = subprocess.Popen(
+                ['xprop', '-id', str(w.window)],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE
+            )
+            p_com = p.communicate()[0]
+            p.wait()
+        except:
+            print("get some problem in [find_visible_windows] in [modlib]")
+            pass
+        if p_com is not None:
+            xprop = p_com.decode('UTF-8').strip()
+            if '_NET_WM_STATE_HIDDEN' not in xprop:
+                visible_windows.append(w)
 
-    if not xprop:
-        return windows_on_ws
-    else:
-        if '_NET_WM_STATE_HIDDEN' not in xprop:
-            visible_windows.append(w)
-        return visible_windows
+    return visible_windows
 
 
 class Matcher(object):

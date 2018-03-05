@@ -75,11 +75,24 @@ class ns(CfgMaster, Matcher):
             self.i3.get_tree().find_focused().workspace().descendents()
         )
         for w in wswins:
-            xprop = subprocess.check_output(
-                ['xprop', '-id', str(w.window)]
-            ).decode()
-            if '_NET_WM_STATE_HIDDEN' not in xprop:
-                visible_windows.append(w)
+            p_com = None
+            try:
+                p = subprocess.Popen(
+                    ['xprop', '-id', str(w.window)],
+                    stdin=subprocess.PIPE, stdout=subprocess.PIPE
+                )
+                p_com = p.communicate()[0]
+                p.wait()
+            except:
+                print("some problem with [find_visible_windows] in [nsd.py]")
+                pass
+
+            if p_com is not None:
+                xprop = p_com.decode('UTF-8').strip()
+                if xprop:
+                    if '_NET_WM_STATE_HIDDEN' not in xprop:
+                        visible_windows.append(w)
+
         return visible_windows
 
     def check_dialog_win(self, w):
@@ -87,14 +100,29 @@ class ns(CfgMaster, Matcher):
                 or w.window_role == "GtkFileChooserDialog" \
                 or w.window_class == "Dialog":
             return False
-        xprop = subprocess.check_output(
-            ['xprop', '-id', str(w.window)]
-        ).decode()
-        return not (
-            '_NET_WM_WINDOW_TYPE_DIALOG' in xprop
-            or
-            '_NET_WM_STATE_MODAL' in xprop
-        )
+        p_com = None
+        ret = True
+        try:
+            p = subprocess.Popen(
+                ['xprop', '-id', str(w.window)],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE
+            )
+            p_com = p.communicate()[0]
+            p.wait()
+        except:
+            print("get some problem in [check_dialog_win] in [nsd.py]")
+            pass
+
+        if p_com is not None:
+            xprop = p_com.decode('UTF-8').strip()
+            if xprop:
+                if '_NET_WM_STATE_HIDDEN' not in xprop:
+                    ret = not (
+                        '_NET_WM_WINDOW_TYPE_DIALOG' in xprop
+                        or
+                        '_NET_WM_STATE_MODAL' in xprop
+                    )
+        return ret
 
     def dialog_toggle(self):
         wlist = self.i3.get_tree().leaves()
