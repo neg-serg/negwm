@@ -20,10 +20,7 @@ class wm3(Singleton, CfgMaster):
             maxlen=maxlength
         )
         self.current_resolution = self.get_screen_resolution()
-        self.useless_gaps = self.cfg.get("useless_gaps", {
-                "w": 12, "a": 12, "s": 12, "d": 12
-            }
-        )
+        self.load_useless_gaps()
         self.quad_use_gaps = self.cfg.get("quad_use_gaps", True)
         self.x2_use_gaps = self.cfg.get("x2_use_gaps", True)
         self.grow_coeff = self.cfg.get("grow_coeff", 1.01)
@@ -46,9 +43,24 @@ class wm3(Singleton, CfgMaster):
             "revert_maximize": self.revert_maximize,
         }[args[0]](*args[1:])
 
+    def load_useless_gaps(self):
+        try:
+            self.useless_gaps = self.cfg.get("useless_gaps", {
+                    "w": 12, "a": 12, "s": 12, "d": 12
+                }
+            )
+            for field in ["w", "a", "s", "d"]:
+                if self.useless_gaps[field] < 0:
+                    self.useless_gaps[field] = abs(self.useless_gaps[field])
+        except (KeyError, TypeError, AttributeError):
+            self.useless_gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
+
     def center_geom(self, win, change_geom=False, degrade_coeff=0.82):
         geom = {}
         center = {}
+
+        if degrade_coeff > 1.0:
+            degrade_coeff = 1.0
 
         center['x'] = int(self.current_resolution['width'] / 2)
         center['y'] = int(self.current_resolution['height'] / 2)
@@ -326,6 +338,10 @@ class wm3(Singleton, CfgMaster):
             shell=True,
             stdout=subprocess.PIPE
         ).communicate()[0]
-        resolution = output.split()[0].split(b'x')
-        return {'width': int(resolution[0]), 'height': int(resolution[1])}
+        if output:
+            resolution = output.split()[0].split(b'x')
+            ret = {'width': int(resolution[0]), 'height': int(resolution[1])}
+        else:
+            ret = {'width': 1920, 'height': 1200}
+        return ret
 
