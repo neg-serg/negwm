@@ -2,8 +2,8 @@ import os
 import traceback
 import subprocess
 import re
-from threading import Thread
-from collections import deque
+from gevent.queue import Queue
+from gevent import Greenlet
 from singleton import Singleton
 
 
@@ -152,12 +152,11 @@ class daemon_manager():
             self.daemons[name] = d
             self.daemons[name].bind_fifo(name)
 
-
 class daemon_i3():
     __metaclass__ = Singleton
 
     def __init__(self):
-        self.d = deque()
+        self.d = Queue()
         self.fifos = {}
 
     def bind_fifo(self, name):
@@ -185,13 +184,11 @@ class daemon_i3():
                     print(traceback.format_exc())
 
     def worker(self):
-        while True:
-            if self.d:
-                raise SystemExit()
+        while not self.d.empty():
             self.d.get()
 
     def mainloop(self, mod, name):
         while True:
-            self.d.append(self.fifo_listner(mod, name))
-            Thread(target=self.worker).start()
+            self.d.put_nowait(self.fifo_listner(mod, name))
+            Greenlet.spawn(self.worker)
 
