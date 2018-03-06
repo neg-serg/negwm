@@ -13,7 +13,7 @@ class vol(Singleton, CfgMaster):
         self.inc = 1
         self.mpd_addr = "127.0.0.1"
         self.mpd_port = "6600"
-        self.use_mpv09 = False
+        self.use_mpv09 = True
 
         self.i3.on("window::focus", self.set_curr_win)
         self.player_event = Event()
@@ -87,7 +87,6 @@ class vol(Singleton, CfgMaster):
         self.__init__()
 
     def change_volume(self, val):
-        self.counter += 1
         val_str = str(val)
         mpv_key = '9'
         if val > 0:
@@ -104,8 +103,8 @@ class vol(Singleton, CfgMaster):
             self.mpd_socket.close()
         elif self.use_mpv09 and self.current_win.window_class == "mpv":
             subprocess.call([
-                    'xdotool', 'key',
-                    '--window', str(self.current_win.window), mpv_key,
+                    'xdotool', 'type', '--clearmodifiers',
+                    '--delay', '0', str(mpv_key) * abs(val)
                 ])
         else:
             return
