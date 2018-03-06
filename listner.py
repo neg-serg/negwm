@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/home/neg/fsrc/stackless/bin/python3
 """ i3 listner script
 Usage:
     listner.py
