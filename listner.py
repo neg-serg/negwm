@@ -59,13 +59,9 @@ class Listner():
         )
         self.i3_path = xdg_config_path+"/i3/"
 
-    def watch(
-            self,
-            watch_dir,
-            file_path,
-            ev,
-            watched_inotify_event="IN_MODIFY",
-            stackless=True):
+    def watch(self, watch_dir, file_path,
+              ev, watched_inotify_event="IN_MODIFY",
+              stackless=True):
         if stackless:
             watch_dir = watch_dir
         else:
@@ -113,19 +109,19 @@ class Listner():
 
     def load_modules(self):
         for mod in self.mods.keys():
-            cm = self.mods[mod]
+            m = self.mods[mod]
             i3mod = importlib.import_module(mod + "d")
-            cm["instance"] = getattr(i3mod, mod)()
-            cm["manager"] = daemon_manager()
-            cm["manager"].add_daemon(mod)
+            m["instance"] = getattr(i3mod, mod)()
+            m["manager"] = daemon_manager()
+            m["manager"].add_daemon(mod)
             Thread(
-                target=cm["manager"].daemons[mod].mainloop,
-                args=(cm["instance"], mod,),
+                target=m["manager"].daemons[mod].mainloop,
+                args=(m["instance"], mod,),
                 daemon=True
             ).start()
             if mod == "info":
-                Thread(target=cm["instance"].listen, daemon=True).start()
-            print(f'loaded {cm["instance"]}')
+                Thread(target=m["instance"].listen, daemon=True).start()
+            print(f'loaded {m["instance"]}')
 
     def return_to_i3main(self):
         # you should bypass method itself, no return value
