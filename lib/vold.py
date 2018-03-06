@@ -1,5 +1,6 @@
 import subprocess
 import i3ipc
+import socket
 from singleton import Singleton
 from cfg_master import CfgMaster
 from threading import Thread, Event
@@ -12,6 +13,7 @@ class vol(Singleton, CfgMaster):
         self.inc = 1
         self.mpd_addr = "127.0.0.1"
         self.mpd_port = "6600"
+        self.use_mpv09 = False
 
         self.i3.on("window::focus", self.set_curr_win)
         self.player_event = Event()
@@ -66,7 +68,6 @@ class vol(Singleton, CfgMaster):
         p.stdin.write(bytes('status\nclose\n', 'UTF-8'))
         p_com = p.communicate()[0].decode('UTF-8').split('\n')
         p.stdin.close()
-        p.wait()
 
         if p_com is not None:
             ret = [t for t in p_com if 'state' in t]
@@ -93,23 +94,19 @@ class vol(Singleton, CfgMaster):
             val_str = "+" + str(val)
             mpv_key = '0'
         if self.mpd_status == "play":
-            p = subprocess.Popen(
-                ['nc', f'{self.mpd_addr}', f'{self.mpd_port}'],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE
+            self.mpd_socket = socket.socket(
+                socket.AF_INET,
+                socket.SOCK_STREAM
             )
-            p.stdin.write(bytes(f'volume {val_str}\nclose\n', 'UTF-8'))
-            p.communicate()[0].decode('UTF-8').split('\n')
-            p.stdin.close()
-        elif self.current_win.window_class == "mpv":
-            p = subprocess.Popen(
-                [
+            self.mpd_socket.connect((self.mpd_addr, int(self.mpd_port)))
+            self.mpd_socket.send(bytes(f'volume {val_str}\nclose\n', 'UTF-8'))
+            self.mpd_socket.recv(1024)
+            self.mpd_socket.close()
+        elif self.use_mpv09 and self.current_win.window_class == "mpv":
+            subprocess.call([
                     'xdotool', 'key',
-                    '--window', str(self.current_win.window), mpv_key
-                ],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE
-            )
+                    '--window', str(self.current_win.window), mpv_key,
+                ])
         else:
             return
 
