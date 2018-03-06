@@ -89,9 +89,11 @@ class vol(Singleton, CfgMaster):
     def change_volume(self, val):
         val_str = str(val)
         mpv_key = '9'
+        mpv_cmd = '--decrease'
         if val > 0:
             val_str = "+" + str(val)
             mpv_key = '0'
+            mpv_cmd = '--increase'
         if self.mpd_status == "play":
             self.mpd_socket = socket.socket(
                 socket.AF_INET,
@@ -106,6 +108,10 @@ class vol(Singleton, CfgMaster):
                     'xdotool', 'type', '--clearmodifiers',
                     '--delay', '0', str(mpv_key) * abs(val)
                 ])
+        elif self.use_mpv09:
+            subprocess.call([
+                'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
+            ])
         else:
             return
 
