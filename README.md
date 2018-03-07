@@ -30,20 +30,32 @@ condition when you try to switch workspaces backward-forward to quickly.
 
 * i3ipc
 * ppi3 as i3 config preprocessor.
-* modern python3(stackless python3 is preferred) with modules:
+* modern python3 with modules:
 
-1) i3ipc -- for i3 ipc interaction
-2) shlex -- split arguments for popen, etc
-3) subprocess -- to spawn processes
-4) toml -- to save/load human-readable configuration files
-5) typing -- to add type annotations
-6) uuid -- to create uuid for objects
+1) i3ipc -- for i3 ipc interaction.
+2) toml -- to save/load human-readable configuration files.
+3) inotify -- to reload configs in realtime without reloading.
+4) gevent -- for the mainloop queue, greenlets.
+
+To install it you may use pip:
+
+```
+pip install inotify
+pip install gevent
+pip install i3ipc
+pip install toml
+```
 
 # Performance
 
 I recommend you to use *stackless python* for better performance. Nuitka / pypy
 / cython are *not* the best choise here: native python3 performance looks
 better on my machine. You can check measure performance with tools like pycallgraph.
+
+*Upd*: for some reason with stackless python I've got not correct return for
+`focused.workspace().descendents()` case, maybe it's my fault, but I can't
+fix that. As the result the nsd.py behaviour is not always corrent for now
+with stackless python 3.6 or 3.7, but ok with Cpython 3.6.
 
 # Why
 
