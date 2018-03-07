@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/pypy3
 """ i3 listner script
 Usage:
     listner.py
