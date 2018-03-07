@@ -1,4 +1,5 @@
 #!/home/neg/fsrc/stackless/bin/python3
+# #!/home/neg/fsrc/stackless/bin/python3
 """ i3 listner script
 Usage:
     listner.py
@@ -52,7 +53,8 @@ class Listner():
             'wm3': {},
             'vol': {},
         }
-        self.mods["menu"]["no_i3"] = True
+        if "menu" in self.mods:
+            self.mods["menu"]["no_i3"] = True
         user_name = os.environ.get("USER", "neg")
         xdg_config_path = os.environ.get(
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
