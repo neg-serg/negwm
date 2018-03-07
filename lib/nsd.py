@@ -68,23 +68,24 @@ class ns(CfgMaster, Matcher):
             else:
                 win.command('move container to workspace current')
 
-    def find_visible_windows(self):
+    def find_visible_windows(self, focused=None):
         visible_windows = []
-        wswins = filter(
-            lambda win: win.window,
-            self.i3.get_tree().find_focused().workspace().descendents()
-        )
+        wswins = []
+
+        if focused is None:
+            focused = self.i3.get_tree().find_focused()
+
+        for win in focused.workspace().descendents():
+            if win.window is not None:
+                wswins.append(win)
+        xprop = None
         for w in wswins:
-            try:
-                p = subprocess.Popen(
-                    ['xprop', '-id', str(w.window)],
-                    stdin=subprocess.PIPE, stdout=subprocess.PIPE
-                )
-                xprop = p.communicate()[0]
-                p.wait()
-            except:
-                print("some problem with [find_visible_windows] in [nsd.py]")
-                pass
+            p = subprocess.Popen(
+                ['xprop', '-id', str(w.window)],
+                stdin=None, stdout=subprocess.PIPE
+            )
+            xprop = p.communicate()[0]
+            p.wait()
 
             if xprop is not None:
                 xprop = xprop.decode('UTF-8').strip()
@@ -99,21 +100,21 @@ class ns(CfgMaster, Matcher):
                 or w.window_role == "GtkFileChooserDialog" \
                 or w.window_class == "Dialog":
             return False
-        p_com = None
         ret = True
+        xprop = None
         try:
             p = subprocess.Popen(
                 ['xprop', '-id', str(w.window)],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE
             )
-            p_com = p.communicate()[0]
+            xprop = p.communicate()[0]
             p.wait()
         except:
             print("get some problem in [check_dialog_win] in [nsd.py]")
             pass
 
-        if p_com is not None:
-            xprop = p_com.decode('UTF-8').strip()
+        if xprop is not None:
+            xprop = xprop.decode('UTF-8').strip()
             if xprop:
                 if '_NET_WM_STATE_HIDDEN' not in xprop:
                     ret = not (
@@ -172,7 +173,7 @@ class ns(CfgMaster, Matcher):
 
         self.focus(tag)
 
-        visible_windows = self.find_visible_windows()
+        visible_windows = self.find_visible_windows(focused)
         for w in visible_windows:
             for i in self.marked[tag]:
                 if w.window_class in subtag_classes_set and w.id == i.id:
