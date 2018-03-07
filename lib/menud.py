@@ -118,12 +118,17 @@ class menu():
     def xprop_menu(self):
         xprops = []
         w = self.i3.get_tree().find_focused()
-        xprop = subprocess.check_output(
-            ['xprop', '-id', str(w.window)] + self.need_xprops
-        ).decode().split('\n')
-        for line in xprop:
-            if 'not found' not in line:
-                xprops.append(line)
+        p = subprocess.Popen(
+            ['xprop', '-id', str(w.window)] + self.need_xprops,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE
+        )
+        xprop = p.communicate()[0]
+        p.wait()
+        if xprop is not None:
+            xprop = xprop.decode().split('\n')
+            for line in xprop:
+                if 'not found' not in line:
+                    xprops.append(line)
 
         p = subprocess.Popen(
             self.rofi_args(cnum=1, lnum=len(xprops), width=900),
@@ -153,9 +158,14 @@ class menu():
     def get_autoprop_as_str(self, with_title=False, with_role=False):
         xprops = []
         w = self.i3.get_tree().find_focused()
-        xprop = subprocess.check_output(
-            ['xprop', '-id', str(w.window)] + self.need_xprops
-        ).decode().split('\n')
+        p = subprocess.Popen(
+            ['xprop', '-id', str(w.window)] + self.need_xprops,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE
+        )
+        xprop = p.communicate()[0]
+        p.wait()
+        if xprop is not None:
+            xprop = xprop.decode().split('\n')
         ret = []
         for attr in self.i3rule_xprops:
             for xattr in xprop:
