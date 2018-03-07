@@ -75,20 +75,19 @@ class ns(CfgMaster, Matcher):
             self.i3.get_tree().find_focused().workspace().descendents()
         )
         for w in wswins:
-            p_com = None
             try:
                 p = subprocess.Popen(
                     ['xprop', '-id', str(w.window)],
                     stdin=subprocess.PIPE, stdout=subprocess.PIPE
                 )
-                p_com = p.communicate()[0]
+                xprop = p.communicate()[0]
                 p.wait()
             except:
                 print("some problem with [find_visible_windows] in [nsd.py]")
                 pass
 
-            if p_com is not None:
-                xprop = p_com.decode('UTF-8').strip()
+            if xprop is not None:
+                xprop = xprop.decode('UTF-8').strip()
                 if xprop:
                     if '_NET_WM_STATE_HIDDEN' not in xprop:
                         visible_windows.append(w)
