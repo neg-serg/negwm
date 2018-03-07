@@ -48,14 +48,17 @@ pip install toml
 
 # Performance
 
-I recommend you to use *stackless python* for better performance. Nuitka / pypy
+~~I recommend you to use *stackless python* for better performance. Nuitka / pypy
 / cython are *not* the best choise here: native python3 performance looks
-better on my machine. You can check measure performance with tools like pycallgraph.
+better on my machine. You can check measure performance with tools like pycallgraph.~~
 
 *Upd*: for some reason with stackless python I've got not correct return for
 `focused.workspace().descendents()` case, maybe it's my fault, but I can't
 fix that. As the result the nsd.py behaviour is not always corrent for now
 with stackless python 3.6 or 3.7, but ok with Cpython 3.6.
+
+It seems that for now `pypy3 5.10.1-1` works very nice. Maybe this is because
+of code changes over the time.
 
 # Why
 
