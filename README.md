@@ -5,7 +5,9 @@ My nice and fast modules for i3.
 For now this collection of modules for i3 includes:
 
 *nsd* : named ion3-like scratchpads with a whistles and fakes.
+
 *flastd* : alt-tab to the previous window, not the workspace.
+
 *circled* : better run-or-raise, with jump in a circle, subgroups, priorities
 and more.
 
@@ -26,6 +28,10 @@ For example it used to send information to the *polybar* as current workspace
 or i3-binding mode because of native polybar i3-interaction tends to race
 condition when you try to switch workspaces backward-forward to quickly.
 
+*vold* : contextual volume manager. Handles mpd by default. If mpd is stopped
+then handles mpv with mpvc if the current window is mpv, or with sending 0,
+9 keys to the mpv window if not.
+
 # Dependencies:
 
 * i3ipc
@@ -45,6 +51,14 @@ pip install gevent
 pip install i3ipc
 pip install toml
 ```
+
+In case of pypy it may be something like
+
+```
+pypy3 -m pip install gevent
+```
+
+etc. Of course you are also need pip or conda, or smth to install dependencies.
 
 # Performance
 
