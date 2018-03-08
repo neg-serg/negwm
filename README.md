@@ -11,9 +11,6 @@ For now this collection of modules for i3 includes:
 *circled* : better run-or-raise, with jump in a circle, subgroups, priorities
 and more.
 
-*nsd* and *circled* can be configured over toml files with inotify-based
-autoreload.
-
 *negi3mods* : application that run all modules and handle configuration of
 ppi3+i3 and modules on python. Also handles toml-configs updating.
 
@@ -31,6 +28,9 @@ condition when you try to switch workspaces backward-forward to quickly.
 *vold* : contextual volume manager. Handles mpd by default. If mpd is stopped
 then handles mpv with mpvc if the current window is mpv, or with sending 0,
 9 keys to the mpv window if not.
+
+Many of them as circled, infod, nsd, vold, wm3d can be configured via
+TOML-files with inotify-based autoreload.
 
 # Dependencies:
 
