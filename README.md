@@ -34,9 +34,7 @@ then handles mpv with mpvc if the current window is mpv, or with sending 0,
 
 # Dependencies:
 
-* i3ipc
-* ppi3 as i3 config preprocessor.
-* modern python3 with modules:
+## Modern python3 with modules:
 
 1) i3ipc -- for i3 ipc interaction.
 2) toml -- to save/load human-readable configuration files.
@@ -60,6 +58,8 @@ pypy3 -m pip install gevent
 
 etc. Of course you are also need pip or conda, or smth to install dependencies.
 
+Also you need [ppi3] as i3 config preprocessor.
+
 # Performance
 
 ~~I recommend you to use *stackless python* for better performance. Nuitka / pypy
@@ -69,7 +69,7 @@ better on my machine. You can check measure performance with tools like pycallgr
 *Upd*: for some reason with stackless python I've got not correct return for
 `focused.workspace().descendents()` case, maybe it's my fault, but I can't
 fix that. As the result the nsd.py behaviour is not always corrent for now
-with stackless python 3.6 or 3.7, but ok with Cpython 3.6.
+with stackless python 3.6 or 3.7, but ok with `CPython 3.6`.
 
 It seems that for now `pypy3 5.10.1-1` works very nice. Maybe this is because
 of code changes over the time.
@@ -88,3 +88,5 @@ improved.
 
 # Video Demonstration
 [![i3pluginsdemo](https://img.youtube.com/vi/U7eJMP0zvKc/0.jpg)](https://www.youtube.com/embed/U7eJMP0zvKc)
+
+[ppi3]: https://github.com/KeyboardFire/ppi3
