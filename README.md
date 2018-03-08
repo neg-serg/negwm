@@ -14,7 +14,7 @@ and more.
 *nsd* and *circled* can be configured over toml files with inotify-based
 autoreload.
 
-*listner* : application that run all modules and handle configuration of
+*negi3mods* : application that run all modules and handle configuration of
 ppi3+i3 and modules on python. Also handles toml-configs updating.
 
 *menud* : menu module including i3-menu with hackish autocompletion, menu to
@@ -59,6 +59,19 @@ pypy3 -m pip install gevent
 etc. Of course you are also need pip or conda, or smth to install dependencies.
 
 Also you need [ppi3] as i3 config preprocessor.
+
+# Run
+
+To start daemon you need:
+
+```
+cd ${XDG_CONFIG_HOME}/i3
+./negi3mods.py
+```
+
+but I reccomend you to look at my config(_config). It can start / restart automatically,
+because of i3 connection will be closed after i3 restart and then started by
+`exec_always`.
 
 # Performance
 

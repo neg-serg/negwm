@@ -1,7 +1,7 @@
 #!/usr/bin/pypy3
-""" i3 listner script
+""" i3 negi3mods daemon script
 Usage:
-    listner.py
+    negi3mods.py
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -38,7 +38,7 @@ def get_lock(process_name):
         sys.exit()
 
 
-class Listner():
+class Negi3Mods():
     def __init__(self):
         self.i3_mod_event = Event()
         self.i3_config_event = Event()
@@ -191,8 +191,8 @@ class Listner():
 
 
 if __name__ == '__main__':
-    get_lock('listner.py')
+    get_lock('negi3mods.py')
     cgitb.enable(format='text')
-    listner = Listner()
-    listner.main()
+    daemon = Negi3Mods()
+    daemon.main()
 

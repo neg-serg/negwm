@@ -381,7 +381,7 @@ bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
 exec ~/bin/term
 exec_always gcc -D_FORCE_OCLOEXEC -march=native -Os -std=gnu11 $i3/send.c -o $i3/send
-exec_always $i3/listner.py >> ~/tmp/i3listner.log 2>&1 &
+exec_always $i3/negi3mods.py >> ~/tmp/negi3mods.log 2>&1 &
 exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
 exec_always [[ $(pgrep polybar|wc -l) -le 1  ]] && polybar -c $XDG_CONFIG_HOME/polybar/main main & sleep 0.2 && [[ $(pgrep mpd) ]] && mpc volume +1 && mpc volume -1
