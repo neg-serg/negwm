@@ -380,6 +380,7 @@ bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
 exec ~/bin/term
+exec_always gcc -D_FORCE_OCLOEXEC -march=native -Os -std=gnu11 $i3/send.c -o $i3/send
 exec_always $i3/listner.py >> ~/tmp/i3listner.log 2>&1 &
 exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
