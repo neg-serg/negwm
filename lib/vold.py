@@ -8,12 +8,14 @@ from threading import Thread, Event
 
 class vol(Singleton, CfgMaster):
     def __init__(self):
+        super().__init__()
         self.i3 = i3ipc.Connection()
-        self.mpv_socket = "/tmp/mpv.socket"
-        self.inc = 1
-        self.mpd_addr = "127.0.0.1"
-        self.mpd_port = "6600"
-        self.use_mpv09 = True
+
+        self.inc = self.cfg.get("mpd_inc", 1)
+        self.mpd_addr = self.cfg.get("mpd_addr", "127.0.0.1")
+        self.mpd_port = self.cfg.get("mpd_port", "6600")
+        self.mpv_socket = self.cfg.get("mpv_socket", "/tmp/mpv.socket")
+        self.use_mpv09 = self.cfg.get("use_mpv09", True)
 
         self.i3.on("window::focus", self.set_curr_win)
         self.player_event = Event()
