@@ -80,13 +80,11 @@ class ns(CfgMaster, Matcher):
                 wswins.append(win)
         xprop = None
         for w in wswins:
-            p = subprocess.Popen(
+            xprop = subprocess.run(
                 ['xprop', '-id', str(w.window)],
-                stdin=None, stdout=subprocess.PIPE
-            )
-            xprop = p.communicate()[0]
-            p.wait()
-
+                stdin=None,
+                stdout=subprocess.PIPE
+            ).stdout
             if xprop is not None:
                 xprop = xprop.decode('UTF-8').strip()
                 if xprop:
@@ -103,12 +101,11 @@ class ns(CfgMaster, Matcher):
         ret = True
         xprop = None
         try:
-            p = subprocess.Popen(
+            xprop = subprocess.run(
                 ['xprop', '-id', str(w.window)],
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE
-            )
-            xprop = p.communicate()[0]
-            p.wait()
+                stdin=None,
+                stdout=subprocess.PIPE
+            ).stdout
         except:
             print("get some problem in [check_dialog_win] in [nsd.py]")
             pass
