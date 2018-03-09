@@ -53,6 +53,7 @@ class vol(Singleton, CfgMaster):
                 if out:
                     self.mpd_status = "none"
                     self.player_event.set()
+            p.kill()
 
     def check_mpd_status(self):
         out = subprocess.run(
