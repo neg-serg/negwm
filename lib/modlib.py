@@ -1,6 +1,7 @@
 import os
 import sys
 import select
+import selectors
 import subprocess
 import traceback
 import re
@@ -194,27 +195,33 @@ class daemon_manager():
             sys.intern('wm3'): Queue(),
             sys.intern('vol'): Queue(),
         }
+        self.sel = selectors.DefaultSelector()
 
     def add_daemon(self, name):
         d = daemon_i3()
         if d not in self.daemons.keys():
             self.daemons[name] = d
             self.daemons[name].bind_fifo(name)
+            self.daemons[name].bind_selector(self.sel, name)
+
+    def idle_wait(self):
+        for ev in self.sel.select():
+            print(ev[0])
+            sleep(0)
+        return True
+
 
     def mainloop(self, mods):
         def loop(name):
             while True:
-                self.Q[name].put_nowait(
-                    self.daemons[name].fifo_listner(
-                        self.mods[name], name
-                    )
-                )
-                Greenlet.spawn(self.worker)
+                new_listner = self.daemons[name].fifo_listner(self.mods[name], name)
+                self.Q[name].put_nowait(new_listner)
+                self.worker(name)
 
         self.mods = mods
         for name in self.Q:
-            print(f"[STARTING {name}]")
-            Thread(target=loop, args=(name, ), daemon=True).start()
+            print(f"[starting {name}]", end='....')
+            Thread(target=loop, args=(name, )).start()
             print(f"[OK {name}]")
 
     def worker(self, name):
@@ -226,6 +233,14 @@ class daemon_i3():
 
     def __init__(self):
         self.fifos = {}
+        self.ev = WaitableEvent()
+
+    def bind_selector(self, selector, name):
+        selector.register(
+            self.ev,
+            selectors.EVENT_READ,
+            name
+        )
 
     def bind_fifo(self, name):
         self.fifos[name] = \
@@ -248,6 +263,7 @@ class daemon_i3():
                 args = list(filter(lambda x: x != '', eval_str.split(' ')))
                 try:
                     mod.switch(args)
+                    self.ev.set()
                 except TypeError:
                     print(traceback.format_exc())
 
