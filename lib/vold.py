@@ -98,9 +98,9 @@ class vol(Singleton, CfgMaster):
             self.mpd_socket.close()
         elif self.use_mpv09 and self.current_win.window_class == "mpv":
             subprocess.call([
-                    'xdotool', 'type', '--clearmodifiers',
-                    '--delay', '0', str(mpv_key) * abs(val)
-                ])
+                'xdotool', 'type', '--clearmodifiers',
+                '--delay', '0', str(mpv_key) * abs(val)
+            ])
         elif self.use_mpv09:
             subprocess.call([
                 'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
