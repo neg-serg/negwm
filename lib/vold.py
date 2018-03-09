@@ -7,7 +7,7 @@ from cfg_master import CfgMaster
 
 class vol(Singleton, CfgMaster):
     def __init__(self, i3):
-        super().__init__()
+        super().__init__(i3)
         self.i3 = i3
 
         self.inc = self.cfg.get("mpd_inc", 1)

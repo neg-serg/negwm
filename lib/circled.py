@@ -9,7 +9,7 @@ class circle(CfgMaster, Matcher):
     __metaclass__ = Singleton
 
     def __init__(self, i3):
-        super().__init__()
+        super().__init__(i3)
         self.initialize(i3)
         self.i3.on('window::new', self.add_wins)
         self.i3.on('window::close', self.del_wins)

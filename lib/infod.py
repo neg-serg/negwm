@@ -18,7 +18,7 @@ class info(CfgMaster):
     __metaclass__ = Singleton
 
     def __init__(self, i3):
-        super().__init__()
+        super().__init__(i3)
         self.i3 = i3
         self.i3.on('workspace::focus', self.on_ws_focus)
         self.i3.on('binding', self.on_binding_event)

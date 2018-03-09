@@ -223,9 +223,9 @@ class daemon_manager():
             self.Q[name].put_nowait(new_listner)
             self.worker(name)
 
-    def mainloop(self):
-        self.loop = asyncio.get_event_loop()
-        self.loop.run_until_complete(
+    def mainloop(self, loop):
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(
             asyncio.wait([
                 self.fifo_listner("circle"),
                 self.fifo_listner("ns"),
@@ -249,7 +249,6 @@ class daemon_i3():
     def __init__(self, mods):
         self.fifo = None
         self.mods = mods
-        self.loop = asyncio.get_event_loop()
 
     def create_fifo(self, name):
         self.fifo = \

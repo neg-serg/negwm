@@ -56,6 +56,7 @@ class Negi3Mods():
         )
         self.i3_path = xdg_config_path + "/i3/"
         self.i3 = i3ipc.Connection()
+        self.loop = asyncio.get_event_loop()
 
     def dump_configs(self):
         import toml
@@ -68,14 +69,11 @@ class Negi3Mods():
             pass
 
     def load_modules(self):
-        manager = daemon_manager(self.mods)
+        self.manager = daemon_manager(self.mods)
         for mod in self.mods.keys():
             i3mod = importlib.import_module(mod + "d")
             self.mods[mod] = getattr(i3mod, mod)(self.i3)
-            manager.add_daemon(mod)
-        Thread(target=self.mods["info"].listen, daemon=True).start()
-        Thread(target=self.i3.main, daemon=True).start()
-        manager.mainloop()
+            self.manager.add_daemon(mod)
 
     def cleanup_on_exit(self):
         def cleanup_everything():
@@ -137,29 +135,36 @@ class Negi3Mods():
             )
         check_config = ""
 
-    def start_inotify_watchers(self):
-        # Prepare the loop
-        self.loop = asyncio.get_event_loop()
-        self.loop.run_until_complete(
+    def start_inotify_watchers(self, loop):
+        loop.run_until_complete(
             asyncio.wait([
                 self.mods_cfg_worker(self.mods_cfg_watcher()),
                 self.i3_config_worker(self.i3_config_watcher())
             ])
         )
-        print('[i3 cfg watcher enabled]')
-        self.loop.stop()
-        self.loop.close()
 
     def main(self):
         use_inotify = True
         print("[starting modules loading]")
         self.load_modules()
         print("[modules loaded]")
-        self.i3.main()
+
+        print('[run]')
+        print('[start info]', end='')
+        Thread(target=self.mods["info"].listen).start()
+        print('... info started')
+        print('[start manager]', end='')
+        Thread(target=self.manager.mainloop, args=(self.loop,)).start()
+        print('... manager started')
         if use_inotify:
-            print("[starting inotify]")
-            self.start_inotify_watchers()
-            print("[inotify started]")
+            print('[start inotify]', end='')
+            Thread(target=self.start_inotify_watchers, args=(self.loop,)).start()
+            print('... inotify started')
+        print('[start i3.main()]')
+        Thread(target=self.i3.main).start()
+        print('[run i3 main]')
+        print('[... all done ...]')
+
 
 if __name__ == '__main__':
     get_lock('negi3mods.py')

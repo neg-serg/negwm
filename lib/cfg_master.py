@@ -2,11 +2,10 @@ import os
 import sys
 import toml
 import traceback
-import i3ipc
 
 
 class CfgMaster(object):
-    def __init__(self):
+    def __init__(self, i3):
         self.mod = self.__class__.__name__
         self.load_config()
         self.attr_dict = {}
@@ -18,13 +17,13 @@ class CfgMaster(object):
             'instance': self.cfg_props[1],
             'window_role': self.cfg_props[2],
         }
-        self.i3 = i3ipc.Connection()
+        self.i3 = i3
 
     def reload_config(self):
         prev_conf = self.cfg
         try:
             self.load_config()
-            self.__init__()
+            self.__init__(self.i3)
             print(f"[{self.mod}] config reloaded")
         except:
             print(f"[{self.mod}] config reload failed")

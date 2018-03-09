@@ -7,7 +7,7 @@ from cfg_master import CfgMaster
 
 class wm3(Singleton, CfgMaster):
     def __init__(self, i3):
-        super().__init__()
+        super().__init__(i3)
         self.initialize(i3)
 
     def initialize(self, i3):

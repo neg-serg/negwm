@@ -13,7 +13,7 @@ class flast():
         self.i3.on('window::close', self.go_back_if_nothing)
 
     def reload_config(self):
-        self.__init__()
+        self.__init__(self.i3)
 
     def switch(self, args):
         {
