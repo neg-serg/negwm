@@ -17,9 +17,11 @@ def get_screen_resolution():
         'xrandr | awk \'/*/{print $1}\'',
         shell=True,
         stdout=subprocess.PIPE
-    ).communicate()[0]
-    if output:
-        resolution = output.split()[0].split(b'x')
+    )
+    out = output.communicate()[0]
+    output.wait()
+    if out:
+        resolution = out.split()[0].split(b'x')
         ret = {'width': int(resolution[0]), 'height': int(resolution[1])}
     else:
         ret = {'width': 1920, 'height': 1200}

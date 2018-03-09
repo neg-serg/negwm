@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import socket
 import i3ipc
 import os
@@ -7,6 +6,7 @@ import select
 import selectors
 from singleton import Singleton
 from cfg_master import CfgMaster
+from gevent import sleep
 
 from nsd import ns
 from circled import circle
@@ -60,8 +60,11 @@ class info(CfgMaster):
         self.i3.on('workspace::focus', self.on_ws_focus)
         self.i3.on('binding', self.on_binding_event)
 
-        self.addr = self.cfg["addr"]
-        self.port = int(self.cfg["port"])
+        self.addr = self.cfg.get("addr", '0.0.0.0')
+        self.port = int(self.cfg.get("port", '31888'))
+        self.conn_count = int(self.cfg.get("conn_count", 10))
+        self.ws_color = self.cfg.get('workspace_color', "#8FA8C7")
+        self.buf_size = int(self.cfg.get('buf_size', 2048))
         self.ws_name = ""
         self.binding_mode = ""
         self.mode_regex = re.compile('.*mode ')
@@ -72,35 +75,23 @@ class info(CfgMaster):
 
         self.sel = selectors.DefaultSelector()
 
-        self.ws_event = WaitableEvent()
-        self.req_event = WaitableEvent()
-        self.binding_event = WaitableEvent()
+        self.ws_ev = WaitableEvent()
+        self.request_ev = WaitableEvent()
+        self.binding_ev = WaitableEvent()
 
         for ws in self.i3.get_workspaces():
             if ws.focused:
                 self.ws_name = ws.name
                 if not self.ws_name[0].isalpha():
                     self.ws_name = self.colorize(
-                        self.ws_name[0], color="#8FA8C7"
+                        self.ws_name[0], color=self.ws_color
                     ) + self.ws_name[1:]
-                self.ws_event.set()
+                self.ws_ev.set()
                 break
 
-        self.sel.register(
-            self.ws_event,
-            selectors.EVENT_READ,
-            "ws event"
-        )
-        self.sel.register(
-            self.req_event,
-            selectors.EVENT_READ,
-            "req event"
-        )
-        self.sel.register(
-            self.binding_event,
-            selectors.EVENT_READ,
-            "binding event"
-        )
+        self.sel.register(self.ws_ev, selectors.EVENT_READ, "workspace")
+        self.sel.register(self.request_ev, selectors.EVENT_READ, "request")
+        self.sel.register(self.binding_ev, selectors.EVENT_READ, "binding")
 
     def switch(self, args):
         {
@@ -109,10 +100,10 @@ class info(CfgMaster):
         }[args[0]](*args[1:])
 
     def request(self):
-        self.req_event.set()
+        self.request_ev.set()
 
     def reload_config(self):
-        pass
+        self.__init__()
 
     def on_ws_focus(self, i3, event):
         self.ws_name = event.current.name
@@ -120,7 +111,7 @@ class info(CfgMaster):
             self.ws_name = self.colorize(
                 self.ws_name[0], color="#8FA8C7"
             ) + self.ws_name[1:]
-        self.ws_event.set()
+        self.ws_ev.set()
 
     def colorize(self, s, color="#005fd7"):
         return f"%{{F{color}}}{s}%{{F#ccc}}"
@@ -130,30 +121,30 @@ class info(CfgMaster):
         for t in re.split(self.split_by, bind_cmd):
             if 'mode' in t:
                 ret = re.sub(self.mode_regex, '', t)
-                if ret[0] == ret[-1] and ret[0] in {'"',"'"}:
+                if ret[0] == ret[-1] and ret[0] in {'"', "'"}:
                     ret = ret[1:-1]
                     if ret == "default":
                         self.binding_mode = ''
                     else:
                         self.binding_mode = self.colorize(ret) + ' '
-        self.binding_event.set()
+        self.binding_ev.set()
 
     def idle_wait(self):
         for ev in self.sel.select():
-            pass
+            sleep(0)
         return True
 
     def listen(self):
         conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         conn.bind((self.addr, self.port))
-        conn.listen(10)
+        conn.listen(self.conn_count)
 
         while True:
             try:
                 current_conn, address = conn.accept()
                 while True:
-                    data = current_conn.recv(2048)
+                    data = current_conn.recv(self.buf_size)
                     if data is None:
                         current_conn.shutdown(1)
                         current_conn.close()
@@ -173,17 +164,17 @@ class info(CfgMaster):
                         output = []
                         for k in self.ns_instance.cfg:
                             output.append(k)
-                        current_conn.send(
-                            bytes(str(output), 'UTF-8')
-                        )
+                        current_conn.send(bytes(str(output), 'UTF-8'))
+                        current_conn.shutdown(1)
+                        current_conn.close()
                         break
                     elif 'circle_list' in data.decode():
                         output = []
                         for k in self.circle_instance.cfg:
                             output.append(k)
-                        current_conn.send(
-                            bytes(str(output), 'UTF-8')
-                        )
+                        current_conn.send(bytes(str(output), 'UTF-8'))
+                        current_conn.shutdown(1)
+                        current_conn.close()
                         break
             except BreakoutException:
                 pass

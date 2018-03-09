@@ -6,6 +6,7 @@ import i3ipc
 import shlex
 import os
 from singleton import Singleton
+from gevent import sleep
 
 
 class menu():
@@ -189,18 +190,16 @@ class menu():
         subprocess.Popen(shlex.split(self.i3_path + "send info request"))
 
     def mod_data_list(self, mod):
-        p = subprocess.Popen(
+        out = subprocess.run(
             shlex.split("nc 0.0.0.0 31888"),
-            stdin=subprocess.PIPE,
+            input=bytes(f'{mod}_list\n', 'UTF-8'),
+            timeout=5,
             stdout=subprocess.PIPE
-        )
-        p.stdin.write(bytes(f'{mod}_list', 'UTF-8'))
-        p_com = p.communicate()[0]
-        p.stdin.close()
-        p.wait()
-        if p_com is not None:
-            lst = p_com.decode('UTF-8').strip()[1:-1].split(', ')
-        lst = [t.replace("'", '') for t in lst]
+        ).stdout
+        lst = []
+        if out is not None:
+            lst = out.decode('UTF-8').strip()[1:-1].split(', ')
+            lst = [t.replace("'", '') for t in lst]
 
         return lst
 
