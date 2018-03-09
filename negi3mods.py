@@ -24,6 +24,7 @@ from gevent import Greenlet
 from threading import Thread
 from lib.modlib import daemon_manager
 
+
 # Create a pid lock with abstract socket.
 # Taken from [https://stackoverflow.com/questions/788411/check-to-see-if-python-script-is-running]
 def get_lock(process_name):
