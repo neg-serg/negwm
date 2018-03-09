@@ -9,19 +9,17 @@ from singleton import Singleton
 
 def notify_msg(s, prefix=">>"):
     notify_msg = ['notify-send', prefix, s]
-    subprocess.Popen(notify_msg)
+    subprocess.run(notify_msg)
 
 
 def get_screen_resolution():
-    output = subprocess.Popen(
+    out = subprocess.run(
         'xrandr | awk \'/*/{print $1}\'',
         shell=True,
         stdout=subprocess.PIPE
-    )
-    out = output.communicate()[0]
-    output.wait()
-    if out:
-        resolution = out.split()[0].split(b'x')
+    ).stdout
+    if out is not None and out:
+        resolution = out.decode('UTF-8').split()[0].split('x')
         ret = {'width': int(resolution[0]), 'height': int(resolution[1])}
     else:
         ret = {'width': 1920, 'height': 1200}
@@ -31,19 +29,16 @@ def get_screen_resolution():
 def find_visible_windows(windows_on_ws):
     visible_windows = []
     for w in windows_on_ws:
-        p_com = None
+        xprop = None
         try:
-            p = subprocess.Popen(
+            xprop = subprocess.run(
                 ['xprop', '-id', str(w.window)],
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE
-            )
-            p_com = p.communicate()[0]
-            p.wait()
+                stdout=subprocess.PIPE
+            ).stdout
         except:
             print("get some problem in [find_visible_windows] in [modlib]")
-            pass
-        if p_com is not None:
-            xprop = p_com.decode('UTF-8').strip()
+        if xprop is not None and xprop:
+            xprop = xprop.decode('UTF-8').strip()
             if '_NET_WM_STATE_HIDDEN' not in xprop:
                 visible_windows.append(w)
 
