@@ -2,7 +2,6 @@ import json
 import re
 import subprocess
 import sys
-import i3ipc
 import shlex
 import os
 from singleton import Singleton

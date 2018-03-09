@@ -1,4 +1,3 @@
-import i3ipc
 import re
 import os
 from modlib import Matcher
@@ -165,7 +164,7 @@ class circle(CfgMaster, Matcher):
             if t != tag:
                 self.del_props(t, prop_str)
 
-        self.initialize()
+        self.initialize(self.i3)
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)

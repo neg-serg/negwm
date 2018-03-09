@@ -1,5 +1,4 @@
 import subprocess
-import i3ipc
 import socket
 from threading import Thread, Event
 from singleton import Singleton

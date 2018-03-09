@@ -1,5 +1,4 @@
 import socket
-import i3ipc
 import re
 import selectors
 from singleton import Singleton

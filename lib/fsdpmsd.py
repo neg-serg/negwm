@@ -1,6 +1,5 @@
 from subprocess import call
 from singleton import Singleton
-import i3ipc
 
 
 class fsdpms(Singleton):

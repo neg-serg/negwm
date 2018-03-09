@@ -1,4 +1,3 @@
-import i3ipc
 import os
 import re
 import subprocess
@@ -320,7 +319,7 @@ class ns(CfgMaster, Matcher):
                     for win in self.marked[t]:
                         win.command('unmark')
 
-        self.initialize()
+        self.initialize(self.i3)
 
     def del_prop(self, tag, prop_str, full_reload=False):
         self.del_props(tag, prop_str)

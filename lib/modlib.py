@@ -5,11 +5,11 @@ import selectors
 import subprocess
 import traceback
 import re
+import asyncio
+import aiofiles
 from gevent.queue import Queue
-from gevent import Greenlet
 from threading import Thread
 from singleton import Singleton
-
 
 def notify_msg(s, prefix=">>"):
     notify_msg = ['notify-send', prefix, s]
@@ -183,7 +183,7 @@ class Matcher(object):
 class daemon_manager():
     __metaclass__ = Singleton
 
-    def __init__(self):
+    def __init__(self, mods):
         self.daemons = {}
         self.Q = {
             sys.intern('circle'): Queue(),
@@ -196,33 +196,48 @@ class daemon_manager():
             sys.intern('vol'): Queue(),
         }
         self.sel = selectors.DefaultSelector()
+        self.mods = mods
+
+    async def fifo_listner(self, name):
+        while True:
+            async with aiofiles.open(self.daemons[name].fifo, mode='r') as fifo:
+                while True:
+                    data = await fifo.read()
+                    if not len(data):
+                        break
+                    eval_str = data.split('\n', 1)[0]
+                    args = list(filter(lambda x: x != '', eval_str.split(' ')))
+                    try:
+                        self.mods[name].switch(args)
+                    except TypeError:
+                        print(traceback.format_exc())
 
     def add_daemon(self, name):
-        d = daemon_i3()
+        d = daemon_i3(self.mods)
         if d not in self.daemons.keys():
             self.daemons[name] = d
-            self.daemons[name].bind_fifo(name)
-            self.daemons[name].bind_selector(self.sel, name)
+            self.daemons[name].create_fifo(name)
 
-    def idle_wait(self):
-        for ev in self.sel.select():
-            print(ev[0])
-            sleep(0)
-        return True
+    def loop(self, name):
+        while True:
+            new_listner = self.daemons[name].fifo_listner(name)
+            self.Q[name].put_nowait(new_listner)
+            self.worker(name)
 
-
-    def mainloop(self, mods):
-        def loop(name):
-            while True:
-                new_listner = self.daemons[name].fifo_listner(self.mods[name], name)
-                self.Q[name].put_nowait(new_listner)
-                self.worker(name)
-
-        self.mods = mods
-        for name in self.Q:
-            print(f"[starting {name}]", end='....')
-            Thread(target=loop, args=(name, )).start()
-            print(f"[OK {name}]")
+    def mainloop(self):
+        self.loop = asyncio.get_event_loop()
+        self.loop.run_until_complete(
+            asyncio.wait([
+                self.fifo_listner("circle"),
+                self.fifo_listner("ns"),
+                self.fifo_listner("flast"),
+                self.fifo_listner("menu"),
+                self.fifo_listner("fsdpms"),
+                self.fifo_listner("info"),
+                self.fifo_listner("wm3"),
+                self.fifo_listner("vol")
+            ])
+        )
 
     def worker(self, name):
         while not self.Q[name].empty():
@@ -231,39 +246,19 @@ class daemon_manager():
 class daemon_i3():
     __metaclass__ = Singleton
 
-    def __init__(self):
-        self.fifos = {}
-        self.ev = WaitableEvent()
+    def __init__(self, mods):
+        self.fifo = None
+        self.mods = mods
+        self.loop = asyncio.get_event_loop()
 
-    def bind_selector(self, selector, name):
-        selector.register(
-            self.ev,
-            selectors.EVENT_READ,
-            name
-        )
-
-    def bind_fifo(self, name):
-        self.fifos[name] = \
+    def create_fifo(self, name):
+        self.fifo = \
             os.path.realpath(os.path.expandvars('$HOME/tmp/' + name + '.fifo'))
-        if os.path.exists(self.fifos[name]):
-            os.remove(self.fifos[name])
+        if os.path.exists(self.fifo):
+            os.remove(self.fifo)
         try:
-            os.mkfifo(self.fifos[name])
+            os.mkfifo(self.fifo)
         except OSError as oe:
             if oe.errno != os.errno.EEXIST:
                 raise
-
-    def fifo_listner(self, mod, name):
-        with open(self.fifos[name]) as fifo:
-            while True:
-                data = fifo.read()
-                if not len(data):
-                    break
-                eval_str = data.split('\n', 1)[0]
-                args = list(filter(lambda x: x != '', eval_str.split(' ')))
-                try:
-                    mod.switch(args)
-                    self.ev.set()
-                except TypeError:
-                    print(traceback.format_exc())
 

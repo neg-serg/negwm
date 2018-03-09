@@ -1,7 +1,5 @@
-import subprocess
 import collections
 from itertools import cycle
-import i3ipc
 from modlib import find_visible_windows, get_screen_resolution
 from singleton import Singleton
 from cfg_master import CfgMaster

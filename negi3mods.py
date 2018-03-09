@@ -20,10 +20,8 @@ import cgitb
 import asyncio
 import aionotify
 import i3ipc
-from gevent import Greenlet
 from threading import Thread
 from lib.modlib import daemon_manager
-
 
 # Create a pid lock with abstract socket.
 # Taken from [https://stackoverflow.com/questions/788411/check-to-see-if-python-script-is-running]
@@ -56,7 +54,7 @@ class Negi3Mods():
         xdg_config_path = os.environ.get(
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
         )
-        self.i3_path = xdg_config_path+"/i3/"
+        self.i3_path = xdg_config_path + "/i3/"
         self.i3 = i3ipc.Connection()
 
     def dump_configs(self):
@@ -70,13 +68,14 @@ class Negi3Mods():
             pass
 
     def load_modules(self):
-        manager = daemon_manager()
+        manager = daemon_manager(self.mods)
         for mod in self.mods.keys():
             i3mod = importlib.import_module(mod + "d")
             self.mods[mod] = getattr(i3mod, mod)(self.i3)
             manager.add_daemon(mod)
         Thread(target=self.mods["info"].listen, daemon=True).start()
-        manager.mainloop(self.mods)
+        Thread(target=self.i3.main, daemon=True).start()
+        manager.mainloop()
 
     def cleanup_on_exit(self):
         def cleanup_everything():
@@ -156,25 +155,15 @@ class Negi3Mods():
         print("[starting modules loading]")
         self.load_modules()
         print("[modules loaded]")
-
-        Thread(target=self.i3.main, daemon=True).start()
-
+        self.i3.main()
         if use_inotify:
             print("[starting inotify]")
             self.start_inotify_watchers()
             print("[inotify started]")
 
-
 if __name__ == '__main__':
-    monkey_patch = False
-
     get_lock('negi3mods.py')
     cgitb.enable(format='text')
     daemon = Negi3Mods()
-
-    if monkey_patch:
-        from gevent import monkey
-        monkey.patch_all()
-
     daemon.main()
 

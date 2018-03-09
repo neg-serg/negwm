@@ -1,4 +1,3 @@
-import i3ipc
 from modlib import find_visible_windows
 from singleton import Singleton
 
