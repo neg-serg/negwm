@@ -6,7 +6,6 @@ import i3ipc
 import shlex
 import os
 from singleton import Singleton
-from gevent import sleep
 
 
 class menu():
@@ -59,16 +58,18 @@ class menu():
 
     def i3_cmds(self):
         try:
-            p = subprocess.Popen(
+            out = subprocess.run(
                 [self.i3cmd, self.magic_pie],
-                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
-            )
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL
+            ).stdout
 
-            lst = [t.replace("'", '') for t in re.split('\s*,\s*', json.loads(
-                p.communicate()[0]
-            )[0]['error'])[2:]]
-
-            p.wait()
+            lst = [
+                t.replace("'", '')
+                for t in re.split('\s*,\s*', json.loads(
+                    out.decode('UTF-8')
+                )[0]['error'])[2:]
+            ]
 
             lst.remove('nop')
             lst.append('splitv')
@@ -96,21 +97,21 @@ class menu():
         aprop_str = self.get_autoprop_as_str(with_title=False)
         print(aprop_str)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
-        subprocess.Popen(notify_msg)
+        subprocess.run(notify_msg)
 
     def i3_cmd_args(self, cmd):
         try:
-            p = subprocess.Popen(
+            out = subprocess.run(
                 ['i3-msg', cmd],
                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
-            )
-            ret = [t.replace("'", '') for t in
-                re.split('\s*, \s*',json.loads(
-                        p.communicate()[0]
-                    )[0]['error']
-                )[1:]
-            ]
-            p.wait()
+            ).stdout
+            if out is not None:
+                ret = [
+                    t.replace("'", '') for t in
+                    re.split('\s*, \s*', json.loads(
+                                out.decode('UTF-8')
+                            )[0]['error'])[1:]
+                ]
             return ret
         except:
             return None
@@ -118,54 +119,42 @@ class menu():
     def xprop_menu(self):
         xprops = []
         w = self.i3.get_tree().find_focused()
-        p = subprocess.Popen(
+        xprop = subprocess.run(
             ['xprop', '-id', str(w.window)] + self.need_xprops,
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE
-        )
-        xprop = p.communicate()[0]
-        p.wait()
+            stdout=subprocess.PIPE
+        ).stdout
         if xprop is not None:
             xprop = xprop.decode().split('\n')
             for line in xprop:
                 if 'not found' not in line:
                     xprops.append(line)
 
-        p = subprocess.Popen(
+        xprop_sel = subprocess.run(
             self.rofi_args(cnum=1, lnum=len(xprops), width=900),
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE
-        )
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(xprops), 'UTF-8')
+        ).stdout
 
-        p.stdin.write(bytes('\n'.join(xprops), 'UTF-8'))
-        p_com = p.communicate()[0]
-        p.wait()
-
-        if p_com is not None:
-            ret = p_com.decode('UTF-8').strip()
-        p.stdin.close()
+        if xprop_sel is not None:
+            ret = xprop_sel.decode('UTF-8').strip()
 
         # Copy to the clipboard
         if ret is not None and ret != '':
             ret.strip()
-            p = subprocess.Popen(
+            subprocess.run(
                 ['xsel', '-i'],
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE
+                input=bytes(ret, 'UTF-8')
             )
-            p.stdin.write(bytes(ret, 'UTF-8'))
-            p.communicate()[0]
-            p.wait()
-            p.stdin.close()
 
     def get_autoprop_as_str(self, with_title=False, with_role=False):
         xprops = []
         w = self.i3.get_tree().find_focused()
-        p = subprocess.Popen(
+        xprop = subprocess.run(
             ['xprop', '-id', str(w.window)] + self.need_xprops,
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE
-        )
-        xprop = p.communicate()[0]
-        p.wait()
+            stdout=subprocess.PIPE
+        ).stdout
         if xprop is not None:
-            xprop = xprop.decode().split('\n')
+            xprop = xprop.decode('UTF-8').split('\n')
         ret = []
         for attr in self.i3rule_xprops:
             for xattr in xprop:
@@ -187,7 +176,7 @@ class menu():
         return "[" + ''.join(sorted(ret)) + "]"
 
     def make_i3req(self):
-        subprocess.Popen(shlex.split(self.i3_path + "send info request"))
+        subprocess.run(shlex.split(self.i3_path + "send info request"))
 
     def mod_data_list(self, mod):
         out = subprocess.run(
@@ -204,42 +193,34 @@ class menu():
         return lst
 
     def tag_name(self, mod, lst):
-        p = subprocess.Popen(
+        rofi_tag = subprocess.run(
             self.rofi_args(
                 cnum=len(lst),
                 width=1200,
                 prompt=f"[{mod}] >>"
             ),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
-        )
-        p.stdin.write(bytes('\n'.join(lst), 'UTF-8'))
-        p_com = p.communicate()[0]
-        p.wait()
-        p.stdin.close()
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(lst), 'UTF-8')
+        ).stdout
 
-        if p_com is not None and p_com != '':
-            return p_com.decode('UTF-8').strip()
+        if rofi_tag is not None and rofi_tag:
+            return rofi_tag.decode('UTF-8').strip()
 
     def get_mod(self):
         prompt = "selmod"
-        p = subprocess.Popen(
+        mod = subprocess.run(
             self.rofi_args(
                 cnum=len(self.possible_mods),
                 lnum=1,
                 width=1200,
                 prompt=f"[{prompt}] >>"
             ),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
-        )
-        p.stdin.write(bytes('\n'.join(self.possible_mods), 'UTF-8'))
-        p_com = p.communicate()[0]
-        p.stdin.close()
-        p.wait()
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(self.possible_mods), 'UTF-8')
+        ).stdout
 
-        if p_com is not None and p_com != '':
-            return p_com.decode('UTF-8').strip()
+        if mod is not None and mod:
+            return mod.decode('UTF-8').strip()
 
     def autoprop(self):
         mod = self.get_mod()
@@ -254,24 +235,20 @@ class menu():
         for mod in self.possible_mods:
             add_prop_cmd = f'{self.i3_path}send {mod} add_prop \
                             {tag_name} {aprop_str}'
-            subprocess.Popen(shlex.split(add_prop_cmd))
+            subprocess.run(shlex.split(add_prop_cmd))
 
     def workspaces(self):
         wslist = [ws.name for ws in self.i3.get_workspaces()]
         wslist.append("[empty]")
 
-        p = subprocess.Popen(
+        ws = subprocess.run(
             self.rofi_args(cnum=len(wslist), width=1200, prompt="[ws] >>"),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
-        )
-        p.stdin.write(bytes('\n'.join(wslist), 'UTF-8'))
-        p_com = p.communicate()[0]
-        p.wait()
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(wslist), 'UTF-8')
+        ).stdout
 
-        if p_com is not None:
-            ws = p_com.decode('UTF-8').strip()
-        p.stdin.close()
+        if ws is not None and ws:
+            ws = ws.decode('UTF-8').strip()
 
         self.i3.command(f'workspace {ws}')
 
@@ -280,17 +257,13 @@ class menu():
         cmd = ''
 
         try:
-            p = subprocess.Popen(
+            cmd_rofi = subprocess.run(
                 self.rofi_args(),
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE
-            )
-            p.stdin.write(bytes('\n'.join(self.i3_cmds()), 'UTF-8'))
-            p_com = p.communicate()[0]
-            p.wait()
-            if p_com is not None:
-                cmd = p_com.decode('UTF-8').strip()
-            p.stdin.close()
+                stdout=subprocess.PIPE,
+                input=bytes('\n'.join(self.i3_cmds()), 'UTF-8')
+            ).stdout
+            if cmd_rofi is not None and cmd_rofi:
+                cmd = cmd_rofi.decode('UTF-8').strip()
         except subprocess.CalledProcessError as e:
             sys.exit(e.returncode)
 
@@ -307,35 +280,33 @@ class menu():
         while not (ok or args == ['<end>'] or args == []):
             if debug:
                 print(f"evaluated cmd=[{cmd}] args=[{self.i3_cmd_args(cmd)}]")
-            p = subprocess.Popen(
+            out = subprocess.run(
                 (f"{self.i3cmd} " + cmd).split(),
                 stdout=subprocess.PIPE,
-                stderr=subprocess.DEVNULL
-            )
-            r = json.loads(p.communicate()[0].decode('UTF-8').strip())
-            result = r[0]['success']
-            p.wait()
-            ok = True
-            if not result:
-                ok = False
-                notify_msg = ['notify-send', 'i3-cmd error', r[0]['error']]
-                try:
-                    args = self.i3_cmd_args(cmd)
-                    if args == prev_args:
-                        return 0
-                    p = subprocess.Popen(
-                        self.rofi_args(">> " + cmd),
-                        stdin=subprocess.PIPE,
-                        stdout=subprocess.PIPE
-                    )
-                    p.stdin.write(bytes('\n'.join(args), 'UTF-8'))
-                    cmd += ' ' + p.communicate()[0].decode('UTF-8').strip()
-                    prev_args = args
-                    p.stdin.close()
-                    p.wait()
-                except subprocess.CalledProcessError as e:
-                    return e.returncode
+                stderr=subprocess.PIPE,
+            ).stdout
+            if out is not None and out:
+                r = json.loads(out.decode('UTF-8').strip())
+                result = r[0].get('success', '')
+                err = r[0].get('error', '')
+                ok = True
+                if not result:
+                    ok = False
+                    notify_msg = ['notify-send', 'i3-cmd error', err]
+                    try:
+                        args = self.i3_cmd_args(cmd)
+                        if args == prev_args:
+                            return 0
+                        cmd_rerun = subprocess.run(
+                            self.rofi_args(">> " + cmd),
+                            stdout=subprocess.PIPE,
+                            input=bytes('\n'.join(args), 'UTF-8')
+                        ).stdout
+                        cmd += ' ' + cmd_rerun.decode('UTF-8').strip()
+                        prev_args = args
+                    except subprocess.CalledProcessError as e:
+                        return e.returncode
 
         if not ok:
-            subprocess.Popen(notify_msg)
+            subprocess.run(notify_msg)
 
