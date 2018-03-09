@@ -41,22 +41,19 @@ def get_lock(process_name):
 class Negi3Mods():
     def __init__(self):
         self.mods = {
-            'circle': {},
-            'ns': {},
-            'flast': {},
-            'menu': {},
-            'fsdpms': {},
-            'info': {},
-            'wm3': {},
-            'vol': {},
+            sys.intern('circle'): None,
+            sys.intern('ns'): None,
+            sys.intern('flast'): None,
+            sys.intern('menu'): None,
+            sys.intern('fsdpms'): None,
+            sys.intern('info'): None,
+            sys.intern('wm3'): None,
+            sys.intern('vol'): None,
         }
-        if "menu" in self.mods:
-            self.mods["menu"]["no_i3"] = True
         user_name = os.environ.get("USER", "neg")
         xdg_config_path = os.environ.get(
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
         )
-        self.use_greenlet = False
         self.i3_path = xdg_config_path+"/i3/"
 
     def dump_configs(self):
@@ -65,43 +62,25 @@ class Negi3Mods():
             for mod in self.mods.keys():
                 m = self.mods[mod]
                 with open(self.i3_path + "/cfg/" + mod + ".cfg", "w") as fp:
-                    toml.dump(m["instance"].cfg, fp)
+                    toml.dump(m.cfg, fp)
         except:
             pass
 
     def load_modules(self):
+        manager = daemon_manager()
         for mod in self.mods.keys():
-            m = self.mods[mod]
             i3mod = importlib.import_module(mod + "d")
-            m["instance"] = getattr(i3mod, mod)()
-            m["manager"] = daemon_manager()
-            m["manager"].add_daemon(mod)
-            if self.use_greenlet:
-                Greenlet.spawn(
-                    m["manager"].daemons[mod].mainloop,
-                    m["instance"], mod,
-                )
-            else:
-                Thread(
-                    target=m["manager"].daemons[mod].mainloop,
-                    args=(m["instance"], mod,), daemon=True
-                ).start()
-            if mod == "info":
-                if self.use_greenlet:
-                    Greenlet.spawn(m["instance"].listen)
-                else:
-                    Thread(target=m["instance"].listen, daemon=True)
-            print(f'loaded {m["instance"]}')
+            self.mods[mod] = getattr(i3mod, mod)()
+            manager.add_daemon(mod)
+        manager.mainloop(self.mods)
+        if mod == "info":
+            Thread(target=self.mods[mod].listen, daemon=True).start()
 
     def return_to_i3main(self):
         # you should bypass method itself, no return value
         for mod in self.mods:
-            if not self.mods.get(mod, {}).get("no_i3", {}):
-                instance = self.mods[mod]["instance"]
-                if self.use_greenlet:
-                    Greenlet.spawn(instance.i3.main)
-                else:
-                    Thread(target=instance.i3.main, daemon=True).start()
+            if mod != "menu":
+                Thread(target=self.mods[mod].i3.main, daemon=True).start()
                 print(f'[{mod}] -> main')
 
     def cleanup_on_exit(self):
@@ -179,7 +158,7 @@ class Negi3Mods():
 
     def main(self):
         use_inotify = True
-        self.cleanup_on_exit()
+        # self.cleanup_on_exit()
         print("[starting modules loading]")
         self.load_modules()
         print("[modules loaded]")

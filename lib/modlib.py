@@ -1,9 +1,11 @@
 import os
+import sys
 import traceback
 import subprocess
 import re
 from gevent.queue import Queue
 from gevent import Greenlet
+from threading import Thread
 from singleton import Singleton
 
 
@@ -113,18 +115,23 @@ class Matcher(object):
     def match(self, win, tag):
         self.win = win
         factors = [
-            "class", "instance", "role",
-            "class_r", "instance_r", "name_r", "role_r"
+            sys.intern("class"),
+            sys.intern("instance"),
+            sys.intern("role"),
+            sys.intern("class_r"),
+            sys.intern("instance_r"),
+            sys.intern("name_r"),
+            sys.intern("role_r")
         ]
 
         match = {
-            "class": lambda: win.window_class in self.matched_list,
-            "instance": lambda: win.window_instance in self.matched_list,
-            "role": lambda: win.window_role in self.matched_list,
-            "class_r": self.class_r,
-            "instance_r": self.instance_r,
-            "role_r": self.role_r,
-            "name_r": self.name_r,
+            sys.intern("class"): lambda: win.window_class in self.matched_list,
+            sys.intern("instance"): lambda: win.window_instance in self.matched_list,
+            sys.intern("role"): lambda: win.window_role in self.matched_list,
+            sys.intern("class_r"): self.class_r,
+            sys.intern("instance_r"): self.instance_r,
+            sys.intern("role_r"): self.role_r,
+            sys.intern("name_r"): self.name_r,
         }
 
         for f in factors:
@@ -142,6 +149,16 @@ class daemon_manager():
 
     def __init__(self):
         self.daemons = {}
+        self.Q = {
+            sys.intern('circle'): Queue(),
+            sys.intern('ns'): Queue(),
+            sys.intern('flast'): Queue(),
+            sys.intern('menu'): Queue(),
+            sys.intern('fsdpms'): Queue(),
+            sys.intern('info'): Queue(),
+            sys.intern('wm3'): Queue(),
+            sys.intern('vol'): Queue(),
+        }
 
     def add_daemon(self, name):
         d = daemon_i3()
@@ -149,11 +166,30 @@ class daemon_manager():
             self.daemons[name] = d
             self.daemons[name].bind_fifo(name)
 
+    def mainloop(self, mods):
+        def loop(name):
+            while True:
+                self.Q[name].put_nowait(
+                    self.daemons[name].fifo_listner(
+                        self.mods[name], name
+                    )
+                )
+                Greenlet.spawn(self.worker)
+
+        self.mods = mods
+        for name in self.Q:
+            print(f"[STARTING {name}]")
+            Thread(target=loop, args=(name, ), daemon=True).start()
+            print(f"[OK {name}]")
+
+    def worker(self, name):
+        while not self.Q[name].empty():
+            self.Q[name].get()
+
 class daemon_i3():
     __metaclass__ = Singleton
 
     def __init__(self):
-        self.d = Queue()
         self.fifos = {}
 
     def bind_fifo(self, name):
@@ -179,13 +215,4 @@ class daemon_i3():
                     mod.switch(args)
                 except TypeError:
                     print(traceback.format_exc())
-
-    def worker(self):
-        while not self.d.empty():
-            self.d.get()
-
-    def mainloop(self, mod, name):
-        while True:
-            self.d.put_nowait(self.fifo_listner(mod, name))
-            Greenlet.spawn(self.worker)
 
