@@ -8,7 +8,6 @@ import re
 import asyncio
 import aiofiles
 from gevent.queue import Queue
-from threading import Thread
 from singleton import Singleton
 
 def notify_msg(s, prefix=">>"):
@@ -242,6 +241,7 @@ class daemon_manager():
     def worker(self, name):
         while not self.Q[name].empty():
             self.Q[name].get()
+
 
 class daemon_i3():
     __metaclass__ = Singleton
