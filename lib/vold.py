@@ -46,9 +46,8 @@ class vol(Singleton, CfgMaster):
 
     def wait_for_mpd_status_update(self):
         while True:
-            p = subprocess.Popen(
+            p = subprocess.run(
                 ['mpc', 'idleloop', 'player'],
-                stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE
             )
             # Read mpc idleloop for player event
@@ -62,17 +61,15 @@ class vol(Singleton, CfgMaster):
                     self.player_event.set()
 
     def check_mpd_status(self):
-        p = subprocess.Popen(
+        out = subprocess.run(
             ['nc', self.mpd_addr, self.mpd_port],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
-        )
-        p.stdin.write(bytes('status\nclose\n', 'UTF-8'))
-        p_com = p.communicate()[0].decode('UTF-8').split('\n')
-        p.stdin.close()
+            stdout=subprocess.PIPE,
+            input=bytes('status\nclose\n', 'UTF-8')
+        ).stdout
 
-        if p_com is not None:
-            ret = [t for t in p_com if 'state' in t]
+        if out is not None:
+            out = out.decode('UTF-8').split('\n')
+            ret = [t for t in out if 'state' in t]
             if ret and ret == ['state: play']:
                 self.mpd_status = "play"
 
