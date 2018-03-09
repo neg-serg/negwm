@@ -1,9 +1,9 @@
 import subprocess
 import i3ipc
 import socket
+from threading import Thread, Event
 from singleton import Singleton
 from cfg_master import CfgMaster
-from threading import Thread, Event
 
 
 class vol(Singleton, CfgMaster):
@@ -21,15 +21,9 @@ class vol(Singleton, CfgMaster):
         self.player_event = Event()
 
         self.mpd_status = "none"
-        self.counter = 0
 
-        Thread(
-            target=self.update_mpd_status, args=(), daemon=True
-        ).start()
-
-        Thread(
-            target=self.wait_for_mpd_status_update, args=(), daemon=True
-        ).start()
+        Thread(target=self.update_mpd_status, daemon=True).start()
+        Thread(target=self.wait_for_mpd_status_update, daemon=True).start()
 
         self.player_event.set()
         self.current_win = self.i3.get_tree().find_focused()
@@ -46,17 +40,17 @@ class vol(Singleton, CfgMaster):
 
     def wait_for_mpd_status_update(self):
         while True:
-            p = subprocess.run(
+            p = subprocess.Popen(
                 ['mpc', 'idleloop', 'player'],
                 stdout=subprocess.PIPE
             )
+            (out, _) = p.communicate()
             # Read mpc idleloop for player event
             while True:
-                output = p.stdout.readline()
-                if output == '' and p.poll() is not None:
+                if not out and p.poll() is not None:
                     self.player_event.clear()
                     break
-                if output:
+                if out:
                     self.mpd_status = "none"
                     self.player_event.set()
 
@@ -70,7 +64,7 @@ class vol(Singleton, CfgMaster):
         if out is not None:
             out = out.decode('UTF-8').split('\n')
             ret = [t for t in out if 'state' in t]
-            if ret and ret == ['state: play']:
+            if ret == ['state: play']:
                 self.mpd_status = "play"
 
         if self.mpd_status != "play":
