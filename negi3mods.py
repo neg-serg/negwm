@@ -1,6 +1,5 @@
 #!/usr/bin/pypy3
-""" i3 negi3mods daemon script
-Usage:
+""" i3 negi3mods daemon script Usage:
     negi3mods.py
 
 Created by :: Neg
@@ -15,11 +14,12 @@ import sys
 import socket
 from threading import Thread, Event
 import importlib
-import inotify.adapters
 import atexit
 import subprocess
 import shlex
 import cgitb
+import asyncio
+import aionotify
 from lib.modlib import daemon_manager
 
 
@@ -59,44 +59,6 @@ class Negi3Mods():
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
         )
         self.i3_path = xdg_config_path+"/i3/"
-
-    def watch(self, watch_dir, file_path,
-              ev, watched_inotify_event="IN_MODIFY",
-              stackless=True):
-        if stackless:
-            watch_dir = watch_dir
-        else:
-            watch_dir = watch_dir.encode()
-        i = inotify.adapters.Inotify()
-        i.add_watch(watch_dir)
-
-        try:
-            for event in i.event_gen():
-                if event is not None:
-                    (header, type_names, watch_path, filename) = event
-                    if stackless:
-                        if filename == file_path and watched_inotify_event in type_names:
-                            ev.set()
-                    else:
-                        if filename.decode() == file_path and watched_inotify_event in type_names:
-                            ev.set()
-        finally:
-            i.remove_watch(watch_dir)
-
-    def i3_module_inotify(self):
-        for mod in self.mods.keys():
-            Thread(
-                target=self.watch,
-                args=(self.i3_path + "/cfg/", mod + '.cfg', self.i3_mod_event),
-                daemon=True
-            ).start()
-
-    def i3_config_inotify(self):
-        Thread(
-            target=self.watch,
-            args=(self.i3_path, '_config', self.i3_config_event),
-            daemon=True
-        ).start()
 
     def dump_configs(self):
         import toml
@@ -141,53 +103,87 @@ class Negi3Mods():
                     os.remove(fifo)
         atexit.register(cleanup_everything)
 
-    def i3_config_reload_thread(self):
-        def reload_thread_payload():
-            while True:
-                if self.i3_config_event.wait():
-                    self.i3_config_event.clear()
-                    with open(self.i3_path + "/config", "w") as fp:
-                        p = subprocess.Popen(
-                            shlex.split("ppi3 " + self.i3_path + "_config"),
-                            stdout=fp
-                        )
-                        (output, err) = p.communicate()
-                        p.wait()
-                    check_config = subprocess.run(
-                        ['i3', '-C'],
-                        stdout=subprocess.PIPE
-                    ).stdout.decode('utf-8')
-                    if len(check_config):
-                        subprocess.Popen(
-                            shlex.split(
-                                f"notify-send '{check_config.encode('utf-8')}'"
-                            )
-                        )
-                    check_config = ""
-        Thread(target=reload_thread_payload, daemon=True).start()
+    def mods_cfg_watcher(self):
+        watcher = aionotify.Watcher()
+        watcher.watch(
+            alias='configs',
+            path=self.i3_path + "/cfg/",
+            flags=aionotify.Flags.MODIFY,
+        )
+        return watcher
 
-    def i3_module_reload_thread(self):
-        def reload_thread_payload():
-            while True:
-                if self.i3_mod_event.wait():
-                    self.i3_mod_event.clear()
-                    for mod in self.mods.keys():
-                        subprocess.Popen(
-                            shlex.split(
-                                self.i3_path + "send " + mod + " reload"
-                            )
-                        )
-        Thread(target=reload_thread_payload, daemon=True).start()
+    def i3_config_watcher(self):
+        watcher = aionotify.Watcher()
+        watcher.watch(
+            alias='i3cfg',
+            path=self.i3_path,
+            flags=aionotify.Flags.CLOSE_WRITE,
+        )
+        return watcher
+
+    async def mods_cfg_worker(self, watcher):
+        await watcher.setup(self.loop)
+        while True:
+            # Pick the 10 first events
+            event = await watcher.get_event()
+            if event.name[:-4] in self.mods:
+                for mod in self.mods.keys():
+                    subprocess.Popen(shlex.split(self.i3_path + "send " + mod + " reload"))
+        watcher.close()
+
+    async def i3_config_worker(self, watcher):
+        await watcher.setup(self.loop)
+        while True:
+            # Pick the 10 first events
+            event = await watcher.get_event()
+            if event.name == '_config':
+                with open(self.i3_path + "/config", "w") as fp:
+                    subprocess.run(
+                        shlex.split("ppi3 " + self.i3_path + "_config"),
+                        stdout=fp
+                    )
+        watcher.close()
+
+    def check_i3_config(self):
+        check_config = subprocess.run(
+            ['i3', '-C'],
+            stdout=subprocess.PIPE
+        ).stdout.decode('utf-8')
+        if len(check_config):
+            subprocess.Popen(
+                shlex.split(
+                    f"notify-send '{check_config.encode('utf-8')}'"
+                )
+            )
+        check_config = ""
+
+    def start_inotify_watchers(self):
+        # Prepare the loop
+        self.loop = asyncio.get_event_loop()
+        self.loop.run_until_complete(
+            asyncio.wait([
+                self.mods_cfg_worker(self.mods_cfg_watcher()),
+                self.i3_config_worker(self.i3_config_watcher())
+            ])
+        )
+        print('[i3 cfg watcher enabled]')
+        self.loop.stop()
+        self.loop.close()
 
     def main(self):
+        use_inotify = True
         self.cleanup_on_exit()
+        print("[starting modules loading]")
         self.load_modules()
-        self.i3_module_inotify()
-        self.i3_module_reload_thread()
-        self.i3_config_inotify()
-        self.i3_config_reload_thread()
         print("[modules loaded]")
+
         self.return_to_i3main()
+        print('[returned to i3]')
+
+        if use_inotify:
+            print("[starting inotify]")
+            self.start_inotify_watchers()
+            print("[inotify started]")
 
 
 if __name__ == '__main__':
