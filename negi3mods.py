@@ -12,7 +12,6 @@ year :: 2018
 import os
 import sys
 import socket
-from threading import Thread, Event
 import importlib
 import atexit
 import subprocess
@@ -20,8 +19,9 @@ import shlex
 import cgitb
 import asyncio
 import aionotify
+from gevent import Greenlet
+from threading import Thread
 from lib.modlib import daemon_manager
-
 
 # Create a pid lock with abstract socket.
 # Taken from [https://stackoverflow.com/questions/788411/check-to-see-if-python-script-is-running]
@@ -40,8 +40,6 @@ def get_lock(process_name):
 
 class Negi3Mods():
     def __init__(self):
-        self.i3_mod_event = Event()
-        self.i3_config_event = Event()
         self.mods = {
             'circle': {},
             'ns': {},
@@ -58,6 +56,7 @@ class Negi3Mods():
         xdg_config_path = os.environ.get(
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
         )
+        self.use_greenlet = False
         self.i3_path = xdg_config_path+"/i3/"
 
     def dump_configs(self):
@@ -77,23 +76,33 @@ class Negi3Mods():
             m["instance"] = getattr(i3mod, mod)()
             m["manager"] = daemon_manager()
             m["manager"].add_daemon(mod)
-            Thread(
-                target=m["manager"].daemons[mod].mainloop,
-                args=(m["instance"], mod,),
-                daemon=True
-            ).start()
+            if self.use_greenlet:
+                Greenlet.spawn(
+                    m["manager"].daemons[mod].mainloop,
+                    m["instance"], mod,
+                )
+            else:
+                Thread(
+                    target=m["manager"].daemons[mod].mainloop,
+                    args=(m["instance"], mod,), daemon=True
+                ).start()
             if mod == "info":
-                Thread(target=m["instance"].listen, daemon=True).start()
+                if self.use_greenlet:
+                    Greenlet.spawn(m["instance"].listen)
+                else:
+                    Thread(target=m["instance"].listen, daemon=True)
             print(f'loaded {m["instance"]}')
 
     def return_to_i3main(self):
         # you should bypass method itself, no return value
         for mod in self.mods:
             if not self.mods.get(mod, {}).get("no_i3", {}):
-                Thread(
-                    target=self.mods[mod]["instance"].i3.main,
-                    daemon=False
-                ).start()
+                instance = self.mods[mod]["instance"]
+                if self.use_greenlet:
+                    Greenlet.spawn(instance.i3.main)
+                else:
+                    Thread(target=instance.i3.main, daemon=True).start()
+                print(f'[{mod}] -> main')
 
     def cleanup_on_exit(self):
         def cleanup_everything():
@@ -124,7 +133,6 @@ class Negi3Mods():
     async def mods_cfg_worker(self, watcher):
         await watcher.setup(self.loop)
         while True:
-            # Pick the 10 first events
             event = await watcher.get_event()
             if event.name[:-4] in self.mods:
                 for mod in self.mods.keys():
@@ -134,7 +142,6 @@ class Negi3Mods():
     async def i3_config_worker(self, watcher):
         await watcher.setup(self.loop)
         while True:
-            # Pick the 10 first events
             event = await watcher.get_event()
             if event.name == '_config':
                 with open(self.i3_path + "/config", "w") as fp:
@@ -187,8 +194,15 @@ class Negi3Mods():
 
 
 if __name__ == '__main__':
+    monkey_patch = False
+
     get_lock('negi3mods.py')
     cgitb.enable(format='text')
     daemon = Negi3Mods()
+
+    if monkey_patch:
+        from gevent import monkey
+        monkey.patch_all()
+
     daemon.main()
 
