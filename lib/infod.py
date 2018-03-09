@@ -54,9 +54,9 @@ class WaitableEvent:
 class info(CfgMaster):
     __metaclass__ = Singleton
 
-    def __init__(self):
+    def __init__(self, i3):
         super().__init__()
-        self.i3 = i3ipc.Connection()
+        self.i3 = i3
         self.i3.on('workspace::focus', self.on_ws_focus)
         self.i3.on('binding', self.on_binding_event)
 
@@ -70,8 +70,8 @@ class info(CfgMaster):
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.ns_instance = ns()
-        self.circle_instance = circle()
+        self.ns_instance = ns(self.i3)
+        self.circle_instance = circle(self.i3)
 
         self.sel = selectors.DefaultSelector()
 

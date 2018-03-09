@@ -7,9 +7,9 @@ from cfg_master import CfgMaster
 
 
 class vol(Singleton, CfgMaster):
-    def __init__(self):
+    def __init__(self, i3):
         super().__init__()
-        self.i3 = i3ipc.Connection()
+        self.i3 = i3
 
         self.inc = self.cfg.get("mpd_inc", 1)
         self.mpd_addr = self.cfg.get("mpd_addr", "127.0.0.1")

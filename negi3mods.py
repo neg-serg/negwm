@@ -19,6 +19,7 @@ import shlex
 import cgitb
 import asyncio
 import aionotify
+import i3ipc
 from gevent import Greenlet
 from threading import Thread
 from lib.modlib import daemon_manager
@@ -55,6 +56,7 @@ class Negi3Mods():
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
         )
         self.i3_path = xdg_config_path+"/i3/"
+        self.i3 = i3ipc.Connection()
 
     def dump_configs(self):
         import toml
@@ -70,18 +72,10 @@ class Negi3Mods():
         manager = daemon_manager()
         for mod in self.mods.keys():
             i3mod = importlib.import_module(mod + "d")
-            self.mods[mod] = getattr(i3mod, mod)()
+            self.mods[mod] = getattr(i3mod, mod)(self.i3)
             manager.add_daemon(mod)
+        Thread(target=self.mods["info"].listen, daemon=True).start()
         manager.mainloop(self.mods)
-        if mod == "info":
-            Thread(target=self.mods[mod].listen, daemon=True).start()
-
-    def return_to_i3main(self):
-        # you should bypass method itself, no return value
-        for mod in self.mods:
-            if mod != "menu":
-                Thread(target=self.mods[mod].i3.main, daemon=True).start()
-                print(f'[{mod}] -> main')
 
     def cleanup_on_exit(self):
         def cleanup_everything():
@@ -158,13 +152,11 @@ class Negi3Mods():
 
     def main(self):
         use_inotify = True
-        # self.cleanup_on_exit()
         print("[starting modules loading]")
         self.load_modules()
         print("[modules loaded]")
 
-        self.return_to_i3main()
-        print('[returned to i3]')
+        Thread(target=self.i3.main, daemon=True).start()
 
         if use_inotify:
             print("[starting inotify]")

@@ -8,12 +8,12 @@ from cfg_master import CfgMaster
 
 
 class wm3(Singleton, CfgMaster):
-    def __init__(self):
+    def __init__(self, i3):
         super().__init__()
-        self.initialize()
+        self.initialize(i3)
 
-    def initialize(self):
-        self.i3 = i3ipc.Connection()
+    def initialize(self, i3):
+        self.i3 = i3
         maxlength = self.cfg["cache_list_size"]
         self.geom_list = collections.deque(
             [None] * maxlength,

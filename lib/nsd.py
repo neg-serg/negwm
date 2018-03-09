@@ -14,19 +14,19 @@ from cfg_master import CfgMaster
 class ns(CfgMaster, Matcher):
     __metaclass__ = Singleton
 
-    def __init__(self) -> None:
+    def __init__(self, i3) -> None:
         super().__init__()
-        self.initialize()
+        self.initialize(i3)
 
         self.i3.on('window::new', self.mark_tag)
         self.i3.on('window::close', self.unmark_tag)
 
-    def initialize(self):
+    def initialize(self, i3):
         self.winlist = self.i3.get_tree()
         self.fullscreen_list = []
         self.nsgeom = geom.geom(self.cfg)
         self.marked = {l: [] for l in self.cfg}
-        self.i3 = i3ipc.Connection()
+        self.i3 = i3
         self.transients = []
         self.mark_all_tags(hide=True)
         self.auto_save_geom(False)

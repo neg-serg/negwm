@@ -9,15 +9,15 @@ from singleton import Singleton
 class circle(CfgMaster, Matcher):
     __metaclass__ = Singleton
 
-    def __init__(self):
+    def __init__(self, i3):
         super().__init__()
-        self.initialize()
+        self.initialize(i3)
         self.i3.on('window::new', self.add_wins)
         self.i3.on('window::close', self.del_wins)
         self.i3.on("window::focus", self.set_curr_win)
         self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
 
-    def initialize(self):
+    def initialize(self, i3):
         self.tagged = {}
         self.counters = {}
         self.restore_fullscreen = []
@@ -31,7 +31,7 @@ class circle(CfgMaster, Matcher):
             self.tagged[tag] = []
             self.counters[tag] = 0
 
-        self.i3 = i3ipc.Connection()
+        self.i3 = i3
         self.tag_windows()
         self.current_win = self.i3.get_tree().find_focused()
 
