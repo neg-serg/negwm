@@ -66,7 +66,7 @@ class info(CfgMaster):
         self.request_ev.set()
 
     def reload_config(self):
-        self.__init__()
+        self.__init__(self.i3)
 
     def on_ws_focus(self, i3, event):
         self.ws_name = event.current.name
