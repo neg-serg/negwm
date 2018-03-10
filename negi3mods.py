@@ -165,20 +165,19 @@ class Negi3Mods():
             # join with timeout. Without timeout signal cannot be caught.
             self.threads[t].join(0.1)
             print(f'>>joined {daemon.threads[t]}')
+        print('... everything loaded ...')
+        try:
+            self.start(self.i3.main, 'i3.main()')
+        except KeyboardInterrupt:
+            self.i3.main_quit()
+        print('... exit ...')
 
-        self.start(self.i3.main, 'i3.main()')
-
-        print('... all|done ...')
-
-
-def force_exit():
-    os._exit(0)
 
 if __name__ == '__main__':
     get_lock('negi3mods.py')
     cgitb.enable(format='text')
 
-    atexit.register(force_exit)
+    atexit.register(lambda: os._exit(0))
 
     daemon = Negi3Mods()
     daemon.main()
