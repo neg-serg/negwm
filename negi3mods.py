@@ -135,39 +135,39 @@ class Negi3Mods():
             )
         check_config = ""
 
-    def start_inotify_watchers(self):
+    def run_inotify_watchers(self):
         asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
         asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
 
-    def start(self, func, name, args=None):
-        print(f'[{name} loading ', end='')
-        if args is None:
-            func()
-        elif args is not None:
-            func(*args)
-        print(f'... {name} loaded]')
-
     def main(self):
-        use_inotify = True
-        self.start(self.load_modules, 'modules')
-        if use_inotify:
-            self.start(self.start_inotify_watchers, 'inotify watchers')
+        def start(func, name, args=None):
+            print(f'[{name} loading ', end='')
+            if args is None:
+                func()
+            elif args is not None:
+                func(*args)
+            print(f'... {name} loaded]')
 
-        self.threads = {
-            'mainloop': Thread(target=daemon.manager.mainloop, args=(daemon.loop,), daemon=True),
-            'info': Thread(target=daemon.mods["info"].listen, daemon=True),
+        use_inotify = True
+        start(self.load_modules, 'modules')
+        if use_inotify:
+            start(self.run_inotify_watchers, 'inotify watchers')
+
+        threads = {
+            'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
+            'info': Thread(target=self.mods["info"].listen, daemon=True),
         }
 
-        self.start(self.threads['mainloop'].start, 'mainloop')
-        self.start(self.threads['info'].start, 'info')
+        start(threads['mainloop'].start, 'mainloop')
+        start(threads['info'].start, 'info')
 
-        for t in self.threads:
+        for t in threads:
             # join with timeout. Without timeout signal cannot be caught.
-            self.threads[t].join(0.1)
-            print(f'>>joined {daemon.threads[t]}')
+            threads[t].join(0.1)
+            print(f'>>joined {threads[t]}')
         print('... everything loaded ...')
         try:
-            self.start(self.i3.main, 'i3.main()')
+            start(self.i3.main, 'i3.main()')
         except KeyboardInterrupt:
             self.i3.main_quit()
         print('... exit ...')
