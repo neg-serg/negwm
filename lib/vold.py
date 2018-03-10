@@ -21,7 +21,7 @@ class vol(Singleton, CfgMaster):
 
         self.mpd_status = "none"
 
-        subprocess.run(['pkill', '-KILL', '-f', 'mpc idleloop player'])
+        subprocess.Popen(['pkill', '-KILL', '-f', 'mpc idleloop player']).wait()
         Thread(target=self.update_mpd_status, daemon=True).start()
         Thread(target=self.wait_for_mpd_status_update, daemon=True).start()
 
@@ -90,10 +90,7 @@ class vol(Singleton, CfgMaster):
             mpv_key = '0'
             mpv_cmd = '--increase'
         if self.mpd_status == "play":
-            self.mpd_socket = socket.socket(
-                socket.AF_INET,
-                socket.SOCK_STREAM
-            )
+            self.mpd_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 self.mpd_socket.connect((self.mpd_addr, int(self.mpd_port)))
                 self.mpd_socket.send(bytes(f'volume {val_str}\nclose\n', 'UTF-8'))
