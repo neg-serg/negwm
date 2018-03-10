@@ -184,18 +184,11 @@ class daemon_manager():
 
     def __init__(self, mods):
         self.daemons = {}
-        self.Q = {
-            sys.intern('circle'): Queue(),
-            sys.intern('ns'): Queue(),
-            sys.intern('flast'): Queue(),
-            sys.intern('menu'): Queue(),
-            sys.intern('fsdpms'): Queue(),
-            sys.intern('info'): Queue(),
-            sys.intern('wm3'): Queue(),
-            sys.intern('vol'): Queue(),
-        }
-        self.sel = selectors.DefaultSelector()
         self.mods = mods
+        self.Q = {}
+        for m in self.mods:
+            self.Q[sys.intern(m)] = Queue()
+        self.sel = selectors.DefaultSelector()
 
     async def fifo_listner(self, name):
         while True:
@@ -212,7 +205,7 @@ class daemon_manager():
                         print(traceback.format_exc())
 
     def add_daemon(self, name):
-        d = daemon_i3(self.mods)
+        d = daemon_i3()
         if d not in self.daemons.keys():
             self.daemons[name] = d
             self.daemons[name].create_fifo(name)
@@ -220,16 +213,7 @@ class daemon_manager():
     def mainloop(self, loop):
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
-            asyncio.wait([
-                self.fifo_listner("circle"),
-                self.fifo_listner("ns"),
-                self.fifo_listner("flast"),
-                self.fifo_listner("menu"),
-                self.fifo_listner("fsdpms"),
-                self.fifo_listner("info"),
-                self.fifo_listner("wm3"),
-                self.fifo_listner("vol")
-            ])
+            asyncio.wait([self.fifo_listner(m) for m in self.mods])
         )
 
     def worker(self, name):
@@ -240,9 +224,8 @@ class daemon_manager():
 class daemon_i3():
     __metaclass__ = Singleton
 
-    def __init__(self, mods):
+    def __init__(self):
         self.fifo = None
-        self.mods = mods
 
     def create_fifo(self, name):
         self.fifo = \
