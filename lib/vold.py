@@ -21,6 +21,7 @@ class vol(Singleton, CfgMaster):
 
         self.mpd_status = "none"
 
+        subprocess.run(['pkill', '-KILL', '-f', 'mpc idleloop player'])
         Thread(target=self.update_mpd_status, daemon=True).start()
         Thread(target=self.wait_for_mpd_status_update, daemon=True).start()
 
@@ -49,10 +50,11 @@ class vol(Singleton, CfgMaster):
                 if not out and p.poll() is not None:
                     self.player_event.clear()
                     p.kill()
-                    break
                 if out:
                     self.mpd_status = "none"
                     self.player_event.set()
+                    p.kill()
+                break
 
     def check_mpd_status(self):
         out = subprocess.run(
