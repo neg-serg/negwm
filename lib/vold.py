@@ -48,11 +48,11 @@ class vol(Singleton, CfgMaster):
             while True:
                 if not out and p.poll() is not None:
                     self.player_event.clear()
+                    p.kill()
                     break
                 if out:
                     self.mpd_status = "none"
                     self.player_event.set()
-            p.kill()
 
     def check_mpd_status(self):
         out = subprocess.run(
@@ -92,10 +92,12 @@ class vol(Singleton, CfgMaster):
                 socket.AF_INET,
                 socket.SOCK_STREAM
             )
-            self.mpd_socket.connect((self.mpd_addr, int(self.mpd_port)))
-            self.mpd_socket.send(bytes(f'volume {val_str}\nclose\n', 'UTF-8'))
-            self.mpd_socket.recv(1024)
-            self.mpd_socket.close()
+            try:
+                self.mpd_socket.connect((self.mpd_addr, int(self.mpd_port)))
+                self.mpd_socket.send(bytes(f'volume {val_str}\nclose\n', 'UTF-8'))
+                self.mpd_socket.recv(1024)
+            finally:
+                self.mpd_socket.close()
         elif self.use_mpv09 and self.current_win.window_class == "mpv":
             subprocess.run([
                 'xdotool', 'type', '--clearmodifiers',
