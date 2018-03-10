@@ -77,7 +77,7 @@ class vol(Singleton, CfgMaster):
                 self.player_event.clear()
 
     def reload_config(self):
-        self.__init__()
+        self.__init__(self.i3)
 
     def change_volume(self, val):
         val_str = str(val)
@@ -97,12 +97,12 @@ class vol(Singleton, CfgMaster):
             self.mpd_socket.recv(1024)
             self.mpd_socket.close()
         elif self.use_mpv09 and self.current_win.window_class == "mpv":
-            subprocess.call([
+            subprocess.run([
                 'xdotool', 'type', '--clearmodifiers',
                 '--delay', '0', str(mpv_key) * abs(val)
             ])
         elif self.use_mpv09:
-            subprocess.call([
+            subprocess.run([
                 'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
             ])
         else:

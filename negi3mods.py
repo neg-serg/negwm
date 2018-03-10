@@ -135,40 +135,50 @@ class Negi3Mods():
             )
         check_config = ""
 
-    def start_inotify_watchers(self, loop):
-        loop.run_until_complete(
-            asyncio.wait([
-                self.mods_cfg_worker(self.mods_cfg_watcher()),
-                self.i3_config_worker(self.i3_config_watcher())
-            ])
-        )
+    def start_inotify_watchers(self):
+        asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
+        asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
+
+    def start(self, func, name, args=None):
+        print(f'[{name} loading ', end='')
+        if args is None:
+            func()
+        elif args is not None:
+            func(*args)
+        print(f'... {name} loaded]')
 
     def main(self):
         use_inotify = True
-        print("[starting modules loading]")
-        self.load_modules()
-        print("[modules loaded]")
-
-        print('[run]')
-        print('[start info]', end='')
-        Thread(target=self.mods["info"].listen).start()
-        print('... info started')
-        print('[start manager]', end='')
-        Thread(target=self.manager.mainloop, args=(self.loop,)).start()
-        print('... manager started')
+        self.start(self.load_modules, 'modules')
         if use_inotify:
-            print('[start inotify]', end='')
-            Thread(target=self.start_inotify_watchers, args=(self.loop,)).start()
-            print('... inotify started')
-        print('[start i3.main()]')
-        Thread(target=self.i3.main).start()
-        print('[run i3 main]')
-        print('[... all done ...]')
+            self.start(self.start_inotify_watchers, 'inotify watchers')
 
+        self.threads = {
+            'mainloop': Thread(target=daemon.manager.mainloop, args=(daemon.loop,), daemon=True),
+            'info': Thread(target=daemon.mods["info"].listen, daemon=True),
+        }
+
+        self.start(self.threads['mainloop'].start, 'mainloop')
+        self.start(self.threads['info'].start, 'info')
+
+        for t in self.threads:
+            # join with timeout. Without timeout signal cannot be caught.
+            self.threads[t].join(0.1)
+            print(f'>>joined {daemon.threads[t]}')
+
+        self.start(self.i3.main, 'i3.main()')
+
+        print('... all|done ...')
+
+
+def force_exit():
+    os._exit(0)
 
 if __name__ == '__main__':
     get_lock('negi3mods.py')
     cgitb.enable(format='text')
+
+    atexit.register(force_exit)
+
     daemon = Negi3Mods()
     daemon.main()
-

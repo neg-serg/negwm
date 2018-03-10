@@ -80,7 +80,7 @@ class menu():
             return ""
 
     def reload_config(self):
-        self.__init__()
+        self.__init__(self.i3)
 
     def switch(self, args):
         {

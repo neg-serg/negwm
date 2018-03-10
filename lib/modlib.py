@@ -217,12 +217,6 @@ class daemon_manager():
             self.daemons[name] = d
             self.daemons[name].create_fifo(name)
 
-    def loop(self, name):
-        while True:
-            new_listner = self.daemons[name].fifo_listner(name)
-            self.Q[name].put_nowait(new_listner)
-            self.worker(name)
-
     def mainloop(self, loop):
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
