@@ -10,6 +10,7 @@ import aiofiles
 from gevent.queue import Queue
 from singleton import Singleton
 
+
 def notify_msg(s, prefix=">>"):
     notify_msg = ['notify-send', prefix, s]
     subprocess.run(notify_msg)
@@ -46,6 +47,7 @@ def find_visible_windows(windows_on_ws):
                 visible_windows.append(w)
 
     return visible_windows
+
 
 class WaitableEvent:
     # Provides an abstract object that can be used to resume select loops with
