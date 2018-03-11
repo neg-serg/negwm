@@ -26,7 +26,9 @@ class info(CfgMaster):
 
         self.addr = self.cfg.get("addr", '0.0.0.0')
         self.port = int(self.cfg.get("port", '31888'))
+        self.ws_port = int(self.cfg.get("ws_port", '31889'))
         self.conn_count = int(self.cfg.get("conn_count", 10))
+
         self.ws_color = self.cfg.get('workspace_color', "#8FA8C7")
         self.buf_size = int(self.cfg.get('buf_size', 2048))
         self.ws_name = ""
@@ -96,6 +98,32 @@ class info(CfgMaster):
             pass
         return True
 
+    def wait_ws(self):
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        conn.bind((self.addr, self.ws_port))
+        conn.listen(self.conn_count)
+        while True:
+            try:
+                current_conn, address = conn.accept()
+                while True:
+                    data = current_conn.recv(self.buf_size)
+                    if data is None:
+                        current_conn.shutdown(1)
+                        current_conn.close()
+                        break
+                    elif 'idle' in data.decode():
+                        while True:
+                            if self.ws_ev.wait():
+                                output = '1'
+                                current_conn.send(bytes(str(output), 'UTF-8'))
+                                self.ws_ev.clear()
+                                current_conn.shutdown(1)
+                                current_conn.close()
+                                raise BreakoutException
+            except:
+                pass
+
     def listen(self):
         conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -111,15 +139,6 @@ class info(CfgMaster):
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
-                    elif 'idle' in data.decode():
-                        while True:
-                            if self.idle_wait():
-                                self.binding_ev.clear()
-                                self.request_ev.clear()
-                                self.ws_ev.clear()
-                                current_conn.shutdown(1)
-                                current_conn.close()
-                                raise BreakoutException
                     elif 'ws' in data.decode():
                         current_conn.send((self.binding_mode + self.ws_name).encode())
                         self.ws_ev.clear()
