@@ -17,6 +17,7 @@ class circle(CfgMaster, Matcher):
         self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
 
     def initialize(self, i3):
+        self.i3 = i3
         self.tagged = {}
         self.counters = {}
         self.restore_fullscreen = []
@@ -30,7 +31,6 @@ class circle(CfgMaster, Matcher):
             self.tagged[tag] = []
             self.counters[tag] = 0
 
-        self.i3 = i3
         self.tag_windows()
         self.current_win = self.i3.get_tree().find_focused()
 

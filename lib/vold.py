@@ -49,11 +49,9 @@ class vol(Singleton, CfgMaster):
             while True:
                 if not out and p.poll() is not None:
                     self.player_event.clear()
-                    p.kill()
                 if out:
                     self.mpd_status = "none"
                     self.player_event.set()
-                    p.kill()
                 break
 
     def check_mpd_status(self):
