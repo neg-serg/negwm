@@ -5,9 +5,10 @@ import sys
 import shlex
 import os
 from singleton import Singleton
+from cfg_master import CfgMaster
 
 
-class menu():
+class menu(CfgMaster):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None):
@@ -78,9 +79,6 @@ class menu():
             return lst
         except:
             return ""
-
-    def reload_config(self):
-        self.__init__(self.i3)
 
     def switch(self, args):
         {

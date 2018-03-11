@@ -60,9 +60,6 @@ class vol(Singleton, CfgMaster):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def reload_config(self):
-        self.__init__(self.i3, self.loop)
-
     def change_volume(self, val):
         val_str = str(val)
         mpv_key = '9'

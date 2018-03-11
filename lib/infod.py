@@ -65,9 +65,6 @@ class info(CfgMaster):
     def request(self):
         self.request_ev.set()
 
-    def reload_config(self):
-        self.__init__(self.i3)
-
     def on_ws_focus(self, i3, event):
         self.ws_name = event.current.name
         if not self.ws_name[0].isalpha():

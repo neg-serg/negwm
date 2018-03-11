@@ -90,9 +90,6 @@ class wm3(Singleton, CfgMaster):
         else:
             return
 
-    def reload_config(self):
-        self.__init__(self.i3)
-
     def get_prev_geom(self):
         self.geom_list.append(
             {
