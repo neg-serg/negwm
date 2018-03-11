@@ -3,7 +3,6 @@ import re
 import selectors
 from singleton import Singleton
 from cfg_master import CfgMaster
-from gevent import sleep
 
 from nsd import ns
 from circled import circle
