@@ -1,5 +1,6 @@
 import subprocess
 import socket
+import asyncio
 from threading import Thread, Event
 from singleton import Singleton
 from cfg_master import CfgMaster
@@ -14,6 +15,7 @@ class vol(Singleton, CfgMaster):
         self.mpd_addr = self.cfg.get("mpd_addr", "127.0.0.1")
         self.mpd_port = self.cfg.get("mpd_port", "6600")
         self.mpv_socket = self.cfg.get("mpv_socket", "/tmp/mpv.socket")
+        self.mpd_buf_size = self.cfg.get("mpd_buf_size", 1024)
         self.use_mpv09 = self.cfg.get("use_mpv09", True)
 
         self.i3.on("window::focus", self.set_curr_win)
@@ -21,15 +23,45 @@ class vol(Singleton, CfgMaster):
 
         self.mpd_status = "none"
 
-        subprocess.Popen(['pkill', '-KILL', '-f', 'mpc idleloop player']).wait()
-        Thread(target=self.update_mpd_status, daemon=True).start()
-        Thread(target=self.wait_for_mpd_status_update, daemon=True).start()
-
         self.player_event.set()
         self.current_win = self.i3.get_tree().find_focused()
 
+        self.loop = asyncio.get_event_loop()
+        asyncio.ensure_future(self.update_mpd_status(self.loop))
+
     def set_curr_win(self, i3, event):
         self.current_win = event.container
+
+    async def update_mpd_status(self, loop):
+        reader, writer = await asyncio.open_connection(
+            host=self.mpd_addr, port=self.mpd_port, loop=loop
+        )
+        buf_sz = self.mpd_buf_size
+        idle_cmd_str = "idle player\n"
+        status_cmd_str = "status\n"
+        data = await reader.read(buf_sz)
+        if data.startswith(b'OK'):
+            writer.write(status_cmd_str.encode(encoding='utf-8'))
+            # Returns something like this: b'changed: player\nOK\n'
+            stat_data = await reader.read(buf_sz)  # type: bytes
+            if 'state: play' in stat_data.decode('UTF-8').split('\n'):
+                self.mpd_status = "play"
+            else:
+                self.mpd_status = "none"
+            # Connection succeed
+            while True:
+                # All communication data is encoded in UTF-8
+                writer.write(idle_cmd_str.encode(encoding='utf-8'))
+                # Returns something like this: b'changed: player\nOK\n'
+                data = await reader.read(buf_sz)  # type: bytes
+                if 'player' in data.decode('UTF-8').split('\n')[0]:
+                    writer.write(status_cmd_str.encode(encoding='utf-8'))
+                    # Returns something like this: b'changed: player\nOK\n'
+                    stat_data = await reader.read(buf_sz)  # type: bytes
+                    if 'state: play' in stat_data.decode('UTF-8').split('\n'):
+                        self.mpd_status = "play"
+                    else:
+                        self.mpd_status = "none"
 
     def switch(self, args) -> None:
         {
@@ -37,44 +69,6 @@ class vol(Singleton, CfgMaster):
             "d": self.volume_down,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
-
-    def wait_for_mpd_status_update(self):
-        while True:
-            p = subprocess.Popen(
-                ['mpc', 'idleloop', 'player'],
-                stdout=subprocess.PIPE
-            )
-            (out, _) = p.communicate()
-            # Read mpc idleloop for player event
-            while True:
-                if not out and p.poll() is not None:
-                    self.player_event.clear()
-                if out:
-                    self.mpd_status = "none"
-                    self.player_event.set()
-                break
-
-    def check_mpd_status(self):
-        out = subprocess.run(
-            ['nc', self.mpd_addr, self.mpd_port],
-            stdout=subprocess.PIPE,
-            input=bytes('status\nclose\n', 'UTF-8')
-        ).stdout
-
-        if out is not None:
-            out = out.decode('UTF-8').split('\n')
-            ret = [t for t in out if 'state' in t]
-            if ret == ['state: play']:
-                self.mpd_status = "play"
-
-        if self.mpd_status != "play":
-            self.mpd_status = "none"
-
-    def update_mpd_status(self):
-        while True:
-            if self.player_event.wait():
-                self.check_mpd_status()
-                self.player_event.clear()
 
     def reload_config(self):
         self.__init__(self.i3)
@@ -92,18 +86,24 @@ class vol(Singleton, CfgMaster):
             try:
                 self.mpd_socket.connect((self.mpd_addr, int(self.mpd_port)))
                 self.mpd_socket.send(bytes(f'volume {val_str}\nclose\n', 'UTF-8'))
-                self.mpd_socket.recv(1024)
+                self.mpd_socket.recv(self.mpd_buf_size)
             finally:
                 self.mpd_socket.close()
         elif self.use_mpv09 and self.current_win.window_class == "mpv":
             subprocess.run([
                 'xdotool', 'type', '--clearmodifiers',
                 '--delay', '0', str(mpv_key) * abs(val)
-            ])
+            ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
         elif self.use_mpv09:
             subprocess.run([
-                'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
-            ])
+                    'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
         else:
             return
 
