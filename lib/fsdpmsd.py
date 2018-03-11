@@ -3,7 +3,7 @@ from singleton import Singleton
 
 
 class fsdpms(Singleton):
-    def __init__(self, i3):
+    def __init__(self, i3, loop=None):
         self.i3 = i3
         self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
         self.i3.on('window::close', self.on_window_close)

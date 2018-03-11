@@ -5,7 +5,7 @@ from singleton import Singleton
 class flast():
     __metaclass__ = Singleton
 
-    def __init__(self, i3):
+    def __init__(self, i3, loop=None):
         self.i3 = i3
         self.window_list = self.i3.get_tree().leaves()
         self.max_win_history = 64

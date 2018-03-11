@@ -8,7 +8,7 @@ from singleton import Singleton
 class circle(CfgMaster, Matcher):
     __metaclass__ = Singleton
 
-    def __init__(self, i3):
+    def __init__(self, i3, loop=None):
         super().__init__(i3)
         self.initialize(i3)
         self.i3.on('window::new', self.add_wins)

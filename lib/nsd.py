@@ -13,7 +13,7 @@ from cfg_master import CfgMaster
 class ns(CfgMaster, Matcher):
     __metaclass__ = Singleton
 
-    def __init__(self, i3) -> None:
+    def __init__(self, i3, loop=None) -> None:
         super().__init__(i3)
         self.initialize(i3)
 

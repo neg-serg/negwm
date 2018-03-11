@@ -10,7 +10,7 @@ from singleton import Singleton
 class menu():
     __metaclass__ = Singleton
 
-    def __init__(self, i3):
+    def __init__(self, i3, loop=None):
         self.i3 = i3
         self.i3cmd = 'i3-msg'
         self.magic_pie = 'sssssnake'

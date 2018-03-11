@@ -72,7 +72,7 @@ class Negi3Mods():
         self.manager = daemon_manager(self.mods)
         for mod in self.mods.keys():
             i3mod = importlib.import_module(mod + "d")
-            self.mods[mod] = getattr(i3mod, mod)(self.i3)
+            self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             self.manager.add_daemon(mod)
 
     def cleanup_on_exit(self):

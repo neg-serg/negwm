@@ -17,7 +17,7 @@ class BreakoutException(Exception):
 class info(CfgMaster):
     __metaclass__ = Singleton
 
-    def __init__(self, i3):
+    def __init__(self, i3, loop=None):
         super().__init__(i3)
         self.i3 = i3
         self.i3.on('workspace::focus', self.on_ws_focus)
