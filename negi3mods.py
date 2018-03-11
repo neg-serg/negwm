@@ -141,12 +141,12 @@ class Negi3Mods():
 
     def main(self):
         def start(func, name, args=None):
-            print(f'[{name} loading ', end='')
+            print(f'[{name} loading ', end='', flush=True)
             if args is None:
                 func()
             elif args is not None:
                 func(*args)
-            print(f'... {name} loaded]')
+            print(f'... {name} loaded]', flush=True)
 
         use_inotify = True
         start(self.load_modules, 'modules')
@@ -154,12 +154,12 @@ class Negi3Mods():
             start(self.run_inotify_watchers, 'inotify watchers')
 
         threads = {
-            'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
             'info': Thread(target=self.mods["info"].listen, daemon=True),
+            'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
         }
 
-        start(threads['mainloop'].start, 'mainloop')
         start(threads['info'].start, 'info')
+        start(threads['mainloop'].start, 'mainloop')
 
         for t in threads:
             # join with timeout. Without timeout signal cannot be caught.
@@ -167,7 +167,7 @@ class Negi3Mods():
             print(f'>>joined {threads[t]}')
         print('... everything loaded ...')
         try:
-            start(self.i3.main, 'i3.main()')
+            self.i3.main()
         except KeyboardInterrupt:
             self.i3.main_quit()
         print('... exit ...')
