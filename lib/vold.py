@@ -102,8 +102,8 @@ class vol(Singleton, CfgMaster):
                 self.mpd_socket.close()
         elif self.use_mpv09 and self.current_win.window_class == "mpv":
             subprocess.run([
-                'xdotool', 'type', '--clearmodifiers',
-                '--delay', '0', str(mpv_key) * abs(val)
+                    'xdotool', 'type', '--clearmodifiers',
+                    '--delay', '0', str(mpv_key) * abs(val)
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
