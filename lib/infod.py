@@ -94,7 +94,7 @@ class info(CfgMaster):
 
     def idle_wait(self):
         for ev in self.sel.select():
-            sleep(0)
+            pass
         return True
 
     def listen(self):
@@ -115,11 +115,15 @@ class info(CfgMaster):
                     elif 'idle' in data.decode():
                         while True:
                             if self.idle_wait():
+                                self.binding_ev.clear()
+                                self.request_ev.clear()
+                                self.ws_ev.clear()
                                 current_conn.shutdown(1)
                                 current_conn.close()
                                 raise BreakoutException
                     elif 'ws' in data.decode():
                         current_conn.send((self.binding_mode + self.ws_name).encode())
+                        self.ws_ev.clear()
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
@@ -128,6 +132,7 @@ class info(CfgMaster):
                         for k in self.ns_instance.cfg:
                             output.append(k)
                         current_conn.send(bytes(str(output), 'UTF-8'))
+                        self.request_ev.clear()
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
@@ -136,6 +141,7 @@ class info(CfgMaster):
                         for k in self.circle_instance.cfg:
                             output.append(k)
                         current_conn.send(bytes(str(output), 'UTF-8'))
+                        self.request_ev.clear()
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
