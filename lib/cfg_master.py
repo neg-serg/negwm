@@ -18,12 +18,18 @@ class CfgMaster(object):
             'window_role': self.cfg_props[2],
         }
         self.i3 = i3
+        self.loop = None
+        if loop is not None:
+            self.loop = loop
 
     def reload_config(self):
         prev_conf = self.cfg
         try:
             self.load_config()
-            self.__init__(self.i3)
+            if self.loop is None:
+                self.__init__(self.i3)
+            else:
+                self.__init__(self.i3, loop=self.loop)
             print(f"[{self.mod}] config reloaded")
         except:
             print(f"[{self.mod}] config reload failed")
