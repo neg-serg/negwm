@@ -7,6 +7,7 @@ from gevent import sleep
 
 from nsd import ns
 from circled import circle
+from vold import vol
 from modlib import WaitableEvent
 
 
@@ -17,9 +18,10 @@ class BreakoutException(Exception):
 class info(CfgMaster):
     __metaclass__ = Singleton
 
-    def __init__(self, i3, loop=None):
+    def __init__(self, i3, loop):
         super().__init__(i3)
         self.i3 = i3
+        self.loop = loop
         self.i3.on('workspace::focus', self.on_ws_focus)
         self.i3.on('binding', self.on_binding_event)
 
@@ -33,8 +35,9 @@ class info(CfgMaster):
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.ns_instance = ns(self.i3)
-        self.circle_instance = circle(self.i3)
+        self.ns_instance = ns(self.i3, self.loop)
+        self.circle_instance = circle(self.i3, self.loop)
+        self.vol_instance = vol(self.i3, self.loop)
 
         self.sel = selectors.DefaultSelector()
 
@@ -132,6 +135,13 @@ class info(CfgMaster):
                         output = []
                         for k in self.circle_instance.cfg:
                             output.append(k)
+                        current_conn.send(bytes(str(output), 'UTF-8'))
+                        current_conn.shutdown(1)
+                        current_conn.close()
+                        break
+                    elif 'v' in data.decode():
+                        output = []
+                        output = self.vol_instance.volume
                         current_conn.send(bytes(str(output), 'UTF-8'))
                         current_conn.shutdown(1)
                         current_conn.close()

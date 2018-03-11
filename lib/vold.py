@@ -19,13 +19,16 @@ class vol(Singleton, CfgMaster):
         self.i3.on("window::focus", self.set_curr_win)
 
         self.mpd_status = "none"
+        self.volume = " "
         self.idle_cmd_str = "idle player\n"
+        self.idle_mixer = "idle mixer\n"
         self.status_cmd_str = "status\n"
 
         self.current_win = self.i3.get_tree().find_focused()
 
         asyncio.set_event_loop(self.loop)
         asyncio.ensure_future(self.update_mpd_status(self.loop))
+        asyncio.ensure_future(self.update_mpd_volume(self.loop))
 
     def set_curr_win(self, i3, event):
         self.current_win = event.container
@@ -42,6 +45,7 @@ class vol(Singleton, CfgMaster):
                 self.mpd_status = "play"
             else:
                 self.mpd_status = "none"
+                self.volume = " "
             while True:
                 writer.write(self.idle_cmd_str.encode(encoding='utf-8'))
                 data = await reader.read(self.mpd_buf_size)
@@ -52,6 +56,24 @@ class vol(Singleton, CfgMaster):
                         self.mpd_status = "play"
                     else:
                         self.mpd_status = "none"
+                        self.volume = " "
+
+    async def update_mpd_volume(self, loop):
+        reader, writer = await asyncio.open_connection(
+            host=self.mpd_addr, port=self.mpd_port, loop=loop
+        )
+        data = await reader.read(self.mpd_buf_size)
+        if data.startswith(b'OK'):
+            while True:
+                writer.write(self.idle_mixer.encode(encoding='utf-8'))
+                data = await reader.read(self.mpd_buf_size)
+                if data.decode('UTF-8'):
+                    writer.write(self.status_cmd_str.encode(encoding='utf-8'))
+                    stat_data = await reader.read(self.mpd_buf_size)
+                    parsed = stat_data.decode('UTF-8').split('\n')
+                    if 'volume' in parsed[0]:
+                        self.volume = parsed[0][8:]
+                        self.volume = f'%{{F#395573}} || %{{F-}}%{{F#cccccc}}Vol: {self.volume}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
 
     def switch(self, args) -> None:
         {
@@ -83,11 +105,15 @@ class vol(Singleton, CfgMaster):
                 'xdotool', 'type', '--clearmodifiers',
                 '--delay', '0', str(mpv_key) * abs(val)
                 ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
             )
         elif self.use_mpv09:
             subprocess.run([
                     'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
                 ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
             )
         else:
             return
