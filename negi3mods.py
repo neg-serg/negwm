@@ -10,6 +10,7 @@ year :: 2018
 """
 
 import os
+from datetime import datetime
 import sys
 import socket
 import importlib
@@ -70,10 +71,17 @@ class Negi3Mods():
 
     def load_modules(self):
         self.manager = daemon_manager(self.mods)
+        print()
         for mod in self.mods.keys():
+            start_time = datetime.now()
             i3mod = importlib.import_module(mod + "d")
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             self.manager.add_daemon(mod)
+            end_time = datetime.now()
+            print(
+                f'{mod} [{self.mods[mod]}] at {end_time - start_time}',
+                flush=True
+            )
 
     def cleanup_on_exit(self):
         def cleanup_everything():
@@ -158,13 +166,16 @@ class Negi3Mods():
             'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
         }
 
+        def join_threads():
+            for t in threads:
+                # join with timeout. Without timeout signal cannot be caught.
+                threads[t].join(0.1)
+                print(f'{threads[t].name} .', end='', flush=True)
+
         start(threads['info'].start, 'info')
         start(threads['mainloop'].start, 'mainloop')
+        start(join_threads, 'join threads')
 
-        for t in threads:
-            # join with timeout. Without timeout signal cannot be caught.
-            threads[t].join(0.1)
-            print(f'>>joined {threads[t]}')
         print('... everything loaded ...')
         try:
             self.i3.main()
