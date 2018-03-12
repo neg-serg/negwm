@@ -20,15 +20,12 @@ class info(CfgMaster):
         super().__init__(i3)
         self.i3 = i3
         self.loop = loop
-        self.i3.on('workspace::focus', self.on_ws_focus)
 
         self.addr = self.cfg.get("addr", '0.0.0.0')
         self.port = int(self.cfg.get("port", '31888'))
         self.conn_count = int(self.cfg.get("conn_count", 10))
 
-        self.ws_color = self.cfg.get('workspace_color', "#8FA8C7")
         self.buf_size = int(self.cfg.get('buf_size', 2048))
-        self.ws_name = ""
         self.binding_mode = ""
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
@@ -37,19 +34,11 @@ class info(CfgMaster):
         self.circle_instance = circle(self.i3, self.loop)
         self.vol_instance = vol(self.i3, self.loop)
 
-        for ws in self.i3.get_workspaces():
-            if ws.focused:
-                self.ws_name = ws.name
-                break
-
     def switch(self, args):
         {
             "request": self.request,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
-
-    def on_ws_focus(self, i3, event):
-        self.ws_name = event.current.name
 
     def close_conn(self):
         self.curr_conn.shutdown(1)
@@ -67,10 +56,6 @@ class info(CfgMaster):
                 while True:
                     data = self.curr_conn.recv(self.buf_size)
                     if data is None:
-                        self.close_conn()
-                        break
-                    elif 'ws' in data.decode():
-                        self.curr_conn.send((self.binding_mode + self.ws_name).encode())
                         self.close_conn()
                         break
                     elif 'ns_list' in data.decode():

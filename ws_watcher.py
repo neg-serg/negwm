@@ -17,6 +17,7 @@ class ws_watcher():
 
         self.loop = asyncio.get_event_loop()
         self.ws_str = "ws"
+        self.ws_name = ""
 
         self.binding_mode = ""
         self.mode_regex = re.compile('.*mode ')
@@ -27,7 +28,15 @@ class ws_watcher():
         self.buf_size = 1024
         self.status = "none"
 
+        self.ws_color = "#8FA8C7"
+        self.ws_name = ""
+        for ws in self.i3.get_workspaces():
+            if ws.focused:
+                self.ws_name = ws.name
+                break
+
     def on_ws_focus(self, i3, event):
+        self.ws_name = event.current.name
         self.event.set()
 
     def colorize(self, s, color="#005fd7"):
@@ -49,9 +58,7 @@ class ws_watcher():
     def main(self):
         asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(
-            asyncio.wait([
-                self.update_status(self.loop),
-            ])
+            self.update_status(self.loop),
         )
 
     async def update_status(self, loop):
@@ -60,9 +67,7 @@ class ws_watcher():
                 reader, writer = await asyncio.open_connection(
                     host=self.addr, port=self.port, loop=loop
                 )
-                writer.write(self.ws_str.encode(encoding='utf-8'))
-                ws = await reader.read(self.buf_size)
-                ws = ws.decode('utf-8')
+                ws = self.ws_name
                 if not ws[0].isalpha():
                     ws = self.colorize(ws[0], color="#8FA8C7") + ws[1:]
                 sys.stdout.write(f"{self.binding_mode + ws}\n")
