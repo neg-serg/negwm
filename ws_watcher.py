@@ -23,11 +23,6 @@ class ws_watcher():
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.addr = "0.0.0.0"
-        self.port = "31888"
-        self.buf_size = 1024
-        self.status = "none"
-
         self.ws_color = "#8FA8C7"
         self.ws_name = ""
         for ws in self.i3.get_workspaces():
@@ -64,14 +59,12 @@ class ws_watcher():
     async def update_status(self, loop):
         while True:
             if self.event.wait():
-                reader, writer = await asyncio.open_connection(
-                    host=self.addr, port=self.port, loop=loop
-                )
                 ws = self.ws_name
                 if not ws[0].isalpha():
                     ws = self.colorize(ws[0], color="#8FA8C7") + ws[1:]
                 sys.stdout.write(f"{self.binding_mode + ws}\n")
                 self.event.clear()
+                await asyncio.sleep(0)
 
 
 if __name__ == '__main__':
