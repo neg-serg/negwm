@@ -13,7 +13,7 @@ class volume_watcher():
         self.port = "6600"
         self.buf_size = 1024
         self.volume = ""
-        self.idle_mixer = "idle mixer\n"
+        self.idle_mixer = "idle mixer player\n"
         self.status_cmd_str = "status\n"
 
     def main(self):
@@ -21,6 +21,10 @@ class volume_watcher():
         self.loop.run_until_complete(
             self.update_mpd_volume(self.loop),
         )
+
+    def pretty_printing(self, string):
+        return f'%{{F#395573}} || %{{F-}}%{{F#cccccc}}' + \
+            f'Vol: {string}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
 
     async def update_mpd_volume(self, loop):
         reader, writer = await asyncio.open_connection(
@@ -32,8 +36,11 @@ class volume_watcher():
         parsed = stat_data.decode('UTF-8').split('\n')
         if 'volume' in parsed[0]:
             self.volume = parsed[0][8:]
-            self.volume = f'%{{F#395573}} || %{{F-}}%{{F#cccccc}}Vol: {self.volume}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
-            sys.stdout.write(f"{self.volume}\n")
+            if int(self.volume) > 0:
+                self.volume = self.pretty_printing(self.volume)
+                sys.stdout.write(f"{self.volume}\n")
+            else:
+                sys.stdout.write(f" \n")
         if data.startswith(b'OK'):
             while True:
                 writer.write(self.idle_mixer.encode(encoding='utf-8'))
@@ -42,10 +49,16 @@ class volume_watcher():
                     writer.write(self.status_cmd_str.encode(encoding='utf-8'))
                     stat_data = await reader.read(self.buf_size)
                     parsed = stat_data.decode('UTF-8').split('\n')
-                    if 'volume' in parsed[0]:
-                        self.volume = parsed[0][8:]
-                        self.volume = f'%{{F#395573}} || %{{F-}}%{{F#cccccc}}Vol: {self.volume}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
-                        sys.stdout.write(f"{self.volume}\n")
+                    if 'state: play' in parsed:
+                        if 'volume' in parsed[0]:
+                            self.volume = parsed[0][8:]
+                            if int(self.volume) > 0:
+                                self.volume = self.pretty_printing(self.volume)
+                                sys.stdout.write(f"{self.volume}\n")
+                            else:
+                                sys.stdout.write(" \n")
+                    else:
+                        sys.stdout.write(" \n")
 
 
 if __name__ == '__main__':
