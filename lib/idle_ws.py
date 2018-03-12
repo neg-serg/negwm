@@ -13,7 +13,7 @@ class idle_ws():
     def __init__(self):
         self.i3 = i3ipc.Connection()
         self.event = Event()
-        self.event.clear()
+        self.event.set()
         self.i3.on('workspace::focus', self.on_ws_focus)
 
     def on_ws_focus(self, i3, event):
