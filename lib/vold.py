@@ -1,6 +1,7 @@
 import subprocess
 import socket
 import asyncio
+# import timeit
 from singleton import Singleton
 from cfg_master import CfgMaster
 
@@ -65,6 +66,7 @@ class vol(Singleton, CfgMaster):
         data = await reader.read(self.mpd_buf_size)
         if data.startswith(b'OK'):
             while True:
+                # start_time = timeit.default_timer()
                 writer.write(self.idle_mixer.encode(encoding='utf-8'))
                 data = await reader.read(self.mpd_buf_size)
                 if data.decode('UTF-8'):
@@ -74,6 +76,7 @@ class vol(Singleton, CfgMaster):
                     if 'volume' in parsed[0]:
                         self.volume = parsed[0][8:]
                         self.volume = f'%{{F#395573}} || %{{F-}}%{{F#cccccc}}Vol: {self.volume}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
+                    # print(timeit.default_timer() - start_time)
 
     def switch(self, args) -> None:
         {

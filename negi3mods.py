@@ -5,9 +5,7 @@
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
 github :: https://github.com/neg-serg?tab=repositories
-year :: 2018
-
-"""
+year :: 2018 """
 
 import os
 from datetime import datetime
@@ -163,7 +161,6 @@ class Negi3Mods():
 
         threads = {
             'info': Thread(target=self.mods["info"].listen, daemon=True),
-            'ws': Thread(target=self.mods["info"].wait_ws, daemon=True),
             'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
         }
 
@@ -174,7 +171,6 @@ class Negi3Mods():
                 print(f'{threads[t].name} .', end='', flush=True)
 
         start(threads['info'].start, 'info')
-        start(threads['ws'].start, 'ws')
         start(threads['mainloop'].start, 'mainloop')
         start(join_threads, 'join threads')
 

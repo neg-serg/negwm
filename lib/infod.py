@@ -1,13 +1,12 @@
 import socket
 import re
-import selectors
 from singleton import Singleton
 from cfg_master import CfgMaster
 
 from nsd import ns
 from circled import circle
 from vold import vol
-from modlib import WaitableEvent
+from threading import Event
 
 
 class BreakoutException(Exception):
@@ -22,7 +21,7 @@ class info(CfgMaster):
         self.i3 = i3
         self.loop = loop
         self.i3.on('workspace::focus', self.on_ws_focus)
-        self.i3.on('binding', self.on_binding_event)
+        self.i3.on('binding', self.on_eventent)
 
         self.addr = self.cfg.get("addr", '0.0.0.0')
         self.port = int(self.cfg.get("port", '31888'))
@@ -40,11 +39,7 @@ class info(CfgMaster):
         self.circle_instance = circle(self.i3, self.loop)
         self.vol_instance = vol(self.i3, self.loop)
 
-        self.sel = selectors.DefaultSelector()
-
-        self.ws_ev = WaitableEvent()
-        self.request_ev = WaitableEvent()
-        self.binding_ev = WaitableEvent()
+        self.event = Event()
 
         for ws in self.i3.get_workspaces():
             if ws.focused:
@@ -53,12 +48,8 @@ class info(CfgMaster):
                     self.ws_name = self.colorize(
                         self.ws_name[0], color=self.ws_color
                     ) + self.ws_name[1:]
-                self.ws_ev.set()
+                self.event.set()
                 break
-
-        self.sel.register(self.ws_ev, selectors.EVENT_READ, "workspace")
-        self.sel.register(self.request_ev, selectors.EVENT_READ, "request")
-        self.sel.register(self.binding_ev, selectors.EVENT_READ, "binding")
 
     def switch(self, args):
         {
@@ -67,7 +58,7 @@ class info(CfgMaster):
         }[args[0]](*args[1:])
 
     def request(self):
-        self.request_ev.set()
+        self.event.set()
 
     def on_ws_focus(self, i3, event):
         self.ws_name = event.current.name
@@ -75,12 +66,12 @@ class info(CfgMaster):
             self.ws_name = self.colorize(
                 self.ws_name[0], color="#8FA8C7"
             ) + self.ws_name[1:]
-        self.ws_ev.set()
+        self.event.set()
 
     def colorize(self, s, color="#005fd7"):
         return f"%{{F{color}}}{s}%{{F#ccc}}"
 
-    def on_binding_event(self, i3, event):
+    def on_eventent(self, i3, event):
         bind_cmd = event.binding.command
         for t in re.split(self.split_by, bind_cmd):
             if 'mode' in t:
@@ -91,38 +82,7 @@ class info(CfgMaster):
                         self.binding_mode = ''
                     else:
                         self.binding_mode = self.colorize(ret) + ' '
-        self.binding_ev.set()
-
-    def idle_wait(self):
-        for ev in self.sel.select():
-            pass
-        return True
-
-    def wait_ws(self):
-        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        conn.bind((self.addr, self.ws_port))
-        conn.listen(self.conn_count)
-        while True:
-            try:
-                current_conn, address = conn.accept()
-                while True:
-                    data = current_conn.recv(self.buf_size)
-                    if data is None:
-                        current_conn.shutdown(1)
-                        current_conn.close()
-                        break
-                    elif 'idle' in data.decode():
-                        while True:
-                            if self.ws_ev.wait():
-                                output = '1'
-                                current_conn.send(bytes(str(output), 'UTF-8'))
-                                self.ws_ev.clear()
-                                current_conn.shutdown(1)
-                                current_conn.close()
-                                raise BreakoutException
-            except:
-                pass
+        self.event.set()
 
     def listen(self):
         conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -139,9 +99,15 @@ class info(CfgMaster):
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
+                    elif 'idle' in data.decode():
+                        while True:
+                            if self.event.wait():
+                                current_conn.shutdown(1)
+                                current_conn.close()
+                                self.event.clear()
+                                raise BreakoutException
                     elif 'ws' in data.decode():
                         current_conn.send((self.binding_mode + self.ws_name).encode())
-                        self.ws_ev.clear()
                         current_conn.shutdown(1)
                         current_conn.close()
                         break
@@ -150,18 +116,18 @@ class info(CfgMaster):
                         for k in self.ns_instance.cfg:
                             output.append(k)
                         current_conn.send(bytes(str(output), 'UTF-8'))
-                        self.request_ev.clear()
                         current_conn.shutdown(1)
                         current_conn.close()
+                        self.event.set()
                         break
                     elif 'circle_list' in data.decode():
                         output = []
                         for k in self.circle_instance.cfg:
                             output.append(k)
                         current_conn.send(bytes(str(output), 'UTF-8'))
-                        self.request_ev.clear()
                         current_conn.shutdown(1)
                         current_conn.close()
+                        self.event.set()
                         break
                     elif 'v' in data.decode():
                         output = []
@@ -169,6 +135,7 @@ class info(CfgMaster):
                         current_conn.send(bytes(str(output), 'UTF-8'))
                         current_conn.shutdown(1)
                         current_conn.close()
+                        self.event.set()
                         break
             except BreakoutException:
                 pass
