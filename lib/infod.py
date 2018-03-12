@@ -83,11 +83,6 @@ class info(CfgMaster):
                         self.curr_conn.send(bytes(str(output), 'UTF-8'))
                         self.close_conn()
                         break
-                    elif 'v' in data.decode():
-                        output = self.vol_instance.volume
-                        self.curr_conn.send(bytes(str(output), 'UTF-8'))
-                        self.close_conn()
-                        break
             except BreakoutException:
                 pass
 
