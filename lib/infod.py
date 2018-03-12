@@ -1,5 +1,6 @@
-import socket
+import subprocess
 import re
+import socket
 from singleton import Singleton
 from cfg_master import CfgMaster
 
@@ -45,6 +46,9 @@ class info(CfgMaster):
                         self.ws_name[0], color=self.ws_color
                     ) + self.ws_name[1:]
                 break
+
+        subprocess.run(['pkill', '-f', 'idle_ws.py'])
+        subprocess.run([self.i3_path + 'lib/' + 'idle_ws.py &'], shell=True)
 
     def switch(self, args):
         {
