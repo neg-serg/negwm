@@ -47,9 +47,6 @@ class info(CfgMaster):
                     ) + self.ws_name[1:]
                 break
 
-        subprocess.run(['pkill', '-f', 'idle_ws.py'])
-        subprocess.run([self.i3_path + 'lib/' + 'idle_ws.py &'], shell=True)
-
     def switch(self, args):
         {
             "request": self.request,
