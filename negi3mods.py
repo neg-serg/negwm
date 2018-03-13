@@ -143,11 +143,9 @@ class Negi3Mods():
         if use_inotify:
             start(self.run_inotify_watchers, 'inotify watchers')
 
-        threads = {
-            'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
-        }
+        subprocess.run(['pkill', '-f', 'infod.py'])
         subprocess.run([self.i3_path + 'infod.py &'], shell=True)
-        start(threads['mainloop'].start, 'mainloop')
+        start(Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True).start, 'mainloop')
 
         print('... everything loaded ...')
         try:
