@@ -9,8 +9,7 @@ year :: 2018 """
 
 import os
 import timeit
-import sys
-import socket
+from sys import intern
 import importlib
 import atexit
 import subprocess
@@ -20,34 +19,21 @@ import asyncio
 import aionotify
 import i3ipc
 from threading import Thread
+from lib.locker import get_lock
 from lib.modlib import daemon_manager
-
-# Create a pid lock with abstract socket.
-# Taken from [https://stackoverflow.com/questions/788411/check-to-see-if-python-script-is-running]
-def get_lock(process_name):
-    # Without holding a reference to our socket somewhere it gets garbage
-    # collected when the function exits
-    get_lock._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-
-    try:
-        get_lock._lock_socket.bind('\0' + process_name)
-        print('locking successful')
-    except socket.error:
-        print('lock exists')
-        sys.exit()
 
 
 class Negi3Mods():
     def __init__(self):
         self.mods = {
-            sys.intern('circle'): None,
-            sys.intern('ns'): None,
-            sys.intern('flast'): None,
-            sys.intern('menu'): None,
-            sys.intern('fsdpms'): None,
-            sys.intern('info'): None,
-            sys.intern('wm3'): None,
-            sys.intern('vol'): None,
+            intern('circle'): None,
+            intern('ns'): None,
+            intern('flast'): None,
+            intern('menu'): None,
+            intern('fsdpms'): None,
+            intern('info'): None,
+            intern('wm3'): None,
+            intern('vol'): None,
         }
         user_name = os.environ.get("USER", "neg")
         xdg_config_path = os.environ.get(
