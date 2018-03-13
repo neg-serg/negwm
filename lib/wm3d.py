@@ -132,7 +132,6 @@ class wm3(Singleton, CfgMaster):
         double_sgaps = int(gaps['s'] * 2)
 
         if 'h1' == mode or 'hup' == mode:
-            print('h1')
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
@@ -140,7 +139,6 @@ class wm3(Singleton, CfgMaster):
                 'height': half_height - double_sgaps,
             }
         elif 'h2' == mode or 'hdown' == mode:
-            print('h2')
             geom = {
                 'x': gaps['a'],
                 'y': half_height + gaps['w'],
@@ -148,7 +146,6 @@ class wm3(Singleton, CfgMaster):
                 'height': half_height - double_sgaps,
             }
         elif 'v1' == mode or 'vleft' == mode:
-            print('v1')
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
@@ -156,7 +153,6 @@ class wm3(Singleton, CfgMaster):
                 'height': curr_scr['height'] - double_sgaps,
             }
         elif 'v2' == mode or 'vright' == mode:
-            print('v2')
             geom = {
                 'x': gaps['a'] + half_width,
                 'y': gaps['w'],
