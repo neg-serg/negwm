@@ -1,9 +1,12 @@
 #!/usr/bin/pypy3 -u
+from gevent import monkey
+monkey.patch_all()
+
 import asyncio
 import i3ipc
 import sys
 import re
-from threading import Event
+from threading import Thread, Event
 
 
 class ws_watcher():
@@ -69,6 +72,6 @@ class ws_watcher():
 
 if __name__ == '__main__':
     loop = ws_watcher()
-    loop.main()
+    Thread(target=loop.main, daemon=False).start()
     loop.i3.main()
 
