@@ -146,7 +146,7 @@ class Negi3Mods():
         threads = {
             'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
         }
-        subprocess.run([self.i3_path + '/infod.py &'], shell=True)
+        subprocess.run([self.i3_path + 'infod.py &'], shell=True)
 
         def join_threads():
             for t in threads:
