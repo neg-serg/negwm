@@ -3,7 +3,7 @@ import asyncio
 import i3ipc
 import sys
 import re
-from threading import Thread, Event
+from threading import Event
 
 
 class ws_watcher():
@@ -69,6 +69,6 @@ class ws_watcher():
 
 if __name__ == '__main__':
     loop = ws_watcher()
-    Thread(target=loop.main, daemon=True).start()
+    loop.main()
     loop.i3.main()
 
