@@ -147,15 +147,7 @@ class Negi3Mods():
             'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
         }
         subprocess.run([self.i3_path + 'infod.py &'], shell=True)
-
-        def join_threads():
-            for t in threads:
-                # join with timeout. Without timeout signal cannot be caught.
-                threads[t].join(0.1)
-                print(f'{threads[t].name} .', end='', flush=True)
-
         start(threads['mainloop'].start, 'mainloop')
-        start(join_threads, 'join threads')
 
         print('... everything loaded ...')
         try:
