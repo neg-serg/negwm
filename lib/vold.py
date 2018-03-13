@@ -19,7 +19,6 @@ class vol(Singleton, CfgMaster):
         self.i3.on("window::focus", self.set_curr_win)
 
         self.mpd_status = "none"
-        self.volume = " "
         self.idle_cmd_str = "idle player\n"
         self.status_cmd_str = "status\n"
 
@@ -43,7 +42,6 @@ class vol(Singleton, CfgMaster):
                 self.mpd_status = "play"
             else:
                 self.mpd_status = "none"
-                self.volume = " "
             while True:
                 writer.write(self.idle_cmd_str.encode(encoding='utf-8'))
                 data = await reader.read(self.mpd_buf_size)
@@ -54,7 +52,6 @@ class vol(Singleton, CfgMaster):
                         self.mpd_status = "play"
                     else:
                         self.mpd_status = "none"
-                        self.volume = " "
 
     def switch(self, args) -> None:
         {
