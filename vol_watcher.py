@@ -1,7 +1,6 @@
 #!/usr/bin/pypy3 -u
 import asyncio
 import sys
-from threading import Thread
 
 
 class volume_watcher():
@@ -63,5 +62,5 @@ class volume_watcher():
 
 if __name__ == '__main__':
     loop = volume_watcher()
-    Thread(target=loop.main, daemon=False).start()
+    loop.main()
 
