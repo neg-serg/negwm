@@ -42,9 +42,8 @@ enum {
     , NS = 1
     , FLAST = 2
     , MENU = 3
-    , INFO = 4
-    , WM3 = 5
-    , VOL = 6
+    , WM3 = 4
+    , VOL = 5
 };
 
 const char* docstr= \
@@ -88,7 +87,6 @@ const char* docstr= \
     "  send wm3 grow\n" \
     "  send wm3 shrink\n" \
     "  send wm3 center\n" \
-    "  send info request\n" \
     "  send vol u\n" \
     "  send vol d\n" \
     "  send (-h | --help)\n" \
@@ -108,7 +106,6 @@ const char *progs[] = {
     [NS] = "ns",
     [FLAST] = "flast",
     [MENU] = "menu",
-    [INFO] = "info",
     [WM3] = "wm3",
     [VOL] = "vol",
     NULL
@@ -152,11 +149,6 @@ Args ArgMap[] = {
         { "reload", 0 },
         { "autoprop", 0 },
         { "ws", 0 },
-        { NULL, 0 },
-    },
-    [INFO] = {
-        { "request", 0 },
-        { "reload", 0 },
         { NULL, 0 },
     },
     [WM3] = {

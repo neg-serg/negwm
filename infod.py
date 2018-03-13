@@ -1,34 +1,29 @@
+#!/usr/bin/pypy3
+
 import socket
-from singleton import Singleton
+import i3ipc
+from lib.singleton import Singleton
 from cfg_master import CfgMaster
+from threading import Thread
 
 from nsd import ns
 from circled import circle
-from vold import vol
 
 
 class info(CfgMaster):
     __metaclass__ = Singleton
 
-    def __init__(self, i3, loop):
+    def __init__(self, i3):
         super().__init__(i3)
         self.i3 = i3
-        self.loop = loop
 
         self.addr = self.cfg.get("addr", '0.0.0.0')
         self.port = int(self.cfg.get("port", '31888'))
         self.conn_count = int(self.cfg.get("conn_count", 10))
         self.buf_size = int(self.cfg.get('buf_size', 2048))
 
-        self.ns_instance = ns(self.i3, self.loop)
-        self.circle_instance = circle(self.i3, self.loop)
-        self.vol_instance = vol(self.i3, self.loop)
-
-    def switch(self, args):
-        {
-            "request": self.request,
-            "reload": self.reload_config,
-        }[args[0]](*args[1:])
+        self.ns_instance = ns(self.i3)
+        self.circle_instance = circle(self.i3)
 
     def close_conn(self):
         self.curr_conn.shutdown(1)
@@ -57,4 +52,11 @@ class info(CfgMaster):
                     self.curr_conn.send(bytes(str(output), 'UTF-8'))
                     self.close_conn()
                     break
+
+
+if __name__ == '__main__':
+    i3 = i3ipc.Connection()
+    loop = info(i3)
+    Thread(target=loop.listen, daemon=True).start()
+    loop.i3.main()
 

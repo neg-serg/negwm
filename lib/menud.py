@@ -172,9 +172,6 @@ class menu(CfgMaster):
                             ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
-    def make_i3req(self):
-        subprocess.run(shlex.split(self.i3_path + "send info request"))
-
     def mod_data_list(self, mod):
         out = subprocess.run(
             shlex.split("nc 0.0.0.0 31888"),
@@ -226,7 +223,6 @@ class menu(CfgMaster):
         aprop_str = self.get_autoprop_as_str(with_title=False)
 
         lst = self.mod_data_list(mod)
-        self.make_i3req()
         tag_name = self.tag_name(mod, lst)
 
         for mod in self.possible_mods:

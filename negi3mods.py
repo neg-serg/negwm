@@ -10,9 +10,9 @@ year :: 2018 """
 import os
 import timeit
 from sys import intern
+import subprocess
 import importlib
 import atexit
-import subprocess
 import shlex
 import cgitb
 import asyncio
@@ -31,7 +31,6 @@ class Negi3Mods():
             intern('flast'): None,
             intern('menu'): None,
             intern('fsdpms'): None,
-            intern('info'): None,
             intern('wm3'): None,
             intern('vol'): None,
         }
@@ -145,9 +144,9 @@ class Negi3Mods():
             start(self.run_inotify_watchers, 'inotify watchers')
 
         threads = {
-            'info': Thread(target=self.mods["info"].listen, daemon=True),
             'mainloop': Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True),
         }
+        subprocess.run(['./infod.py &'], shell=True)
 
         def join_threads():
             for t in threads:
@@ -155,7 +154,6 @@ class Negi3Mods():
                 threads[t].join(0.1)
                 print(f'{threads[t].name} .', end='', flush=True)
 
-        start(threads['info'].start, 'info')
         start(threads['mainloop'].start, 'mainloop')
         start(join_threads, 'join threads')
 
