@@ -8,7 +8,7 @@ github :: https://github.com/neg-serg?tab=repositories
 year :: 2018 """
 
 import os
-from datetime import datetime
+import timeit
 import sys
 import socket
 import importlib
@@ -71,13 +71,12 @@ class Negi3Mods():
         self.manager = daemon_manager(self.mods)
         print()
         for mod in self.mods.keys():
-            start_time = datetime.now()
+            start_time = timeit.default_timer()
             i3mod = importlib.import_module(mod + "d")
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             self.manager.add_daemon(mod)
-            end_time = datetime.now()
             print(
-                f'{mod} [{self.mods[mod]}] at {end_time - start_time}',
+                f'{mod} [{self.mods[mod]}] at {timeit.default_timer() - start_time}',
                 flush=True
             )
 
