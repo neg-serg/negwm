@@ -1,5 +1,3 @@
-import subprocess
-import re
 import socket
 from singleton import Singleton
 from cfg_master import CfgMaster
@@ -7,10 +5,6 @@ from cfg_master import CfgMaster
 from nsd import ns
 from circled import circle
 from vold import vol
-
-
-class BreakoutException(Exception):
-    pass
 
 
 class info(CfgMaster):
@@ -24,11 +18,7 @@ class info(CfgMaster):
         self.addr = self.cfg.get("addr", '0.0.0.0')
         self.port = int(self.cfg.get("port", '31888'))
         self.conn_count = int(self.cfg.get("conn_count", 10))
-
         self.buf_size = int(self.cfg.get('buf_size', 2048))
-        self.binding_mode = ""
-        self.mode_regex = re.compile('.*mode ')
-        self.split_by = re.compile('[;,]')
 
         self.ns_instance = ns(self.i3, self.loop)
         self.circle_instance = circle(self.i3, self.loop)
@@ -51,23 +41,20 @@ class info(CfgMaster):
         conn.listen(self.conn_count)
 
         while True:
-            try:
-                self.curr_conn, _ = conn.accept()
-                while True:
-                    data = self.curr_conn.recv(self.buf_size)
-                    if data is None:
-                        self.close_conn()
-                        break
-                    elif 'ns_list' in data.decode():
-                        output = [k for k in self.ns_instance.cfg]
-                        self.curr_conn.send(bytes(str(output), 'UTF-8'))
-                        self.close_conn()
-                        break
-                    elif 'circle_list' in data.decode():
-                        output = [k for k in self.circle_instance.cfg]
-                        self.curr_conn.send(bytes(str(output), 'UTF-8'))
-                        self.close_conn()
-                        break
-            except BreakoutException:
-                pass
+            self.curr_conn, _ = conn.accept()
+            while True:
+                data = self.curr_conn.recv(self.buf_size)
+                if data is None:
+                    self.close_conn()
+                    break
+                elif 'ns_list' in data.decode():
+                    output = [k for k in self.ns_instance.cfg]
+                    self.curr_conn.send(bytes(str(output), 'UTF-8'))
+                    self.close_conn()
+                    break
+                elif 'circle_list' in data.decode():
+                    output = [k for k in self.circle_instance.cfg]
+                    self.curr_conn.send(bytes(str(output), 'UTF-8'))
+                    self.close_conn()
+                    break
 
