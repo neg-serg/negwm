@@ -75,11 +75,8 @@ class Negi3Mods():
 
     def mods_cfg_watcher(self):
         watcher = aionotify.Watcher()
-        watcher.watch(
-            alias='configs',
-            path=self.i3_path + "/cfg/",
-            flags=aionotify.Flags.MODIFY,
-        )
+        watcher.watch(alias='configs', path=self.i3_path + "/cfg/",
+                      flags=aionotify.Flags.MODIFY)
         return watcher
 
     def i3_config_watcher(self):
@@ -97,7 +94,7 @@ class Negi3Mods():
             event = await watcher.get_event()
             if event.name[:-4] in self.mods:
                 for mod in self.mods.keys():
-                    subprocess.Popen(shlex.split(self.i3_path + "send " + mod + " reload"))
+                    subprocess.run(shlex.split(self.i3_path + "send " + mod + " reload"))
         watcher.close()
 
     async def i3_config_worker(self, watcher):
@@ -145,7 +142,8 @@ class Negi3Mods():
 
         subprocess.run(['pkill', '-f', 'infod.py'])
         subprocess.run([self.i3_path + 'infod.py &'], shell=True)
-        start(Thread(target=self.manager.mainloop, args=(self.loop,), daemon=True).start, 'mainloop')
+        start(Thread(target=self.manager.mainloop,
+              args=(self.loop,), daemon=True).start, 'mainloop')
 
         print('... everything loaded ...')
         try:
