@@ -1,4 +1,4 @@
-import i3ipc
+import lib.i3ipc as i3ipc
 from threading import Thread
 from subprocess import run
 from singleton import Singleton

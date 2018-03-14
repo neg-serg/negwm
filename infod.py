@@ -1,7 +1,7 @@
 #!/usr/bin/pypy3
 
 import socket
-import i3ipc
+import lib.i3ipc as i3ipc
 from lib.singleton import Singleton
 from modi3cfg import modi3cfg
 from threading import Thread
