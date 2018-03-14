@@ -25,15 +25,14 @@ class volume_watcher():
         return f'%{{F#395573}} || %{{F-}}%{{F#cccccc}}' + \
             f'Vol: {string}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
 
-    async def update_mpd_volume(self, loop):
-        prev_volume = 0
-        reader, writer = await asyncio.open_connection(
-            host=self.addr, port=self.port, loop=loop
-        )
+    def empty_output(self):
+        sys.stdout.write("%{{F#395573}} ⟭%{{F-}}\n")
+
+    async def initial_mpd_volume(self, loop, reader, writer):
         data = await reader.read(self.buf_size)
         writer.write(self.status_cmd_str.encode(encoding='utf-8'))
         stat_data = await reader.read(self.buf_size)
-        parsed = stat_data.decode('UTF-8').split('\n')
+        parsed = stat_data.decode('utf-8').split('\n')
         if 'volume' in parsed[0]:
             self.volume = parsed[0][8:]
             if int(self.volume) >= 0:
@@ -41,14 +40,21 @@ class volume_watcher():
                 sys.stdout.write(f"{self.volume}\n")
             else:
                 sys.stdout.write(f" \n")
-        if data.startswith(b'OK'):
+        return data.startswith(b'OK')
+
+    async def update_mpd_volume(self, loop):
+        prev_volume = 0
+        reader, writer = await asyncio.open_connection(
+            host=self.addr, port=self.port, loop=loop
+        )
+        if await self.initial_mpd_volume(loop, reader, writer):
             while True:
                 writer.write(self.idle_mixer.encode(encoding='utf-8'))
                 data = await reader.read(self.buf_size)
-                if data.decode('UTF-8'):
+                if data.decode('utf-8'):
                     writer.write(self.status_cmd_str.encode(encoding='utf-8'))
                     stat_data = await reader.read(self.buf_size)
-                    parsed = stat_data.decode('UTF-8').split('\n')
+                    parsed = stat_data.decode('utf-8').split('\n')
                     if 'state: play' in parsed:
                         if 'volume' in parsed[0]:
                             self.volume = parsed[0][8:]
@@ -58,9 +64,9 @@ class volume_watcher():
                                     sys.stdout.write(f"{self.volume}\n")
                                 prev_volume = parsed[0][8:]
                             else:
-                                sys.stdout.write(" \n")
+                                self.empty_output()
                     else:
-                        sys.stdout.write(" \n")
+                        self.empty_output()
 
 
 if __name__ == '__main__':
