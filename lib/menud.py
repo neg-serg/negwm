@@ -1,4 +1,5 @@
 import json
+import socket
 import re
 import subprocess
 import sys
@@ -16,6 +17,10 @@ class menu(modi3cfg):
         self.i3_path = i3path()
         self.i3cmd = 'i3-msg'
         self.magic_pie = 'sssssnake'
+
+        self.host = '0.0.0.0'
+        self.port = 31888
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.possible_mods = ['ns', 'circle']
 
@@ -168,12 +173,10 @@ class menu(modi3cfg):
         return "[" + ''.join(sorted(ret)) + "]"
 
     def mod_data_list(self, mod):
-        out = subprocess.run(
-            shlex.split("nc 0.0.0.0 31888"),
-            input=bytes(f'{mod}_list\n', 'UTF-8'),
-            timeout=5,
-            stdout=subprocess.PIPE
-        ).stdout
+        self.sock.connect((self.host, self.port))
+        self.sock.send(bytes(f'{mod}_list\n', 'UTF-8'))
+        out = self.sock.recv(1024)
+        self.sock.close()
         lst = []
         if out is not None:
             lst = out.decode('UTF-8').strip()[1:-1].split(', ')
@@ -196,13 +199,12 @@ class menu(modi3cfg):
             return rofi_tag.decode('UTF-8').strip()
 
     def get_mod(self):
-        prompt = "selmod"
         mod = subprocess.run(
             self.rofi_args(
                 cnum=len(self.possible_mods),
                 lnum=1,
                 width=1200,
-                prompt=f"[{prompt}] >>"
+                prompt=f"[selmod] >>"
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.possible_mods), 'UTF-8')
@@ -212,7 +214,6 @@ class menu(modi3cfg):
             return mod.decode('UTF-8').strip()
 
     def autoprop(self):
-        print('HERE')
         mod = self.get_mod()
         if mod is None or not mod:
             return
