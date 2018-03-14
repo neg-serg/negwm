@@ -26,6 +26,7 @@ class volume_watcher():
             f'Vol: {string}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
 
     async def update_mpd_volume(self, loop):
+        prev_volume = 0
         reader, writer = await asyncio.open_connection(
             host=self.addr, port=self.port, loop=loop
         )
@@ -52,8 +53,10 @@ class volume_watcher():
                         if 'volume' in parsed[0]:
                             self.volume = parsed[0][8:]
                             if int(self.volume) >= 0:
-                                self.volume = self.pretty_printing(self.volume)
-                                sys.stdout.write(f"{self.volume}\n")
+                                if prev_volume != self.volume:
+                                    self.volume = self.pretty_printing(self.volume)
+                                    sys.stdout.write(f"{self.volume}\n")
+                                prev_volume = parsed[0][8:]
                             else:
                                 sys.stdout.write(" \n")
                     else:
