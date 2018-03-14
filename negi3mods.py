@@ -13,7 +13,6 @@ from sys import intern
 import subprocess
 import importlib
 import atexit
-import shlex
 import cgitb
 import asyncio
 import aionotify
@@ -94,7 +93,7 @@ class Negi3Mods():
             event = await watcher.get_event()
             if event.name[:-4] in self.mods:
                 for mod in self.mods.keys():
-                    subprocess.run(shlex.split(self.i3_path + "send " + mod + " reload"))
+                    subprocess.run([self.i3_path + 'send', mod, 'reload'])
         watcher.close()
 
     async def i3_config_worker(self, watcher):
@@ -104,7 +103,7 @@ class Negi3Mods():
             if event.name == '_config':
                 with open(self.i3_path + "/config", "w") as fp:
                     subprocess.run(
-                        shlex.split("ppi3 " + self.i3_path + "_config"),
+                        ['ppi3', self.i3_path + '_config'],
                         stdout=fp
                     )
         watcher.close()
@@ -116,9 +115,7 @@ class Negi3Mods():
         ).stdout.decode('utf-8')
         if len(check_config):
             subprocess.Popen(
-                shlex.split(
-                    f"notify-send '{check_config.encode('utf-8')}'"
-                )
+                ["notify-send", check_config.encode('utf-8')]
             )
         check_config = ""
 
@@ -126,7 +123,7 @@ class Negi3Mods():
         asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
         asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
 
-    def main(self):
+    def run(self):
         def start(func, name, args=None):
             print(f'[{name} loading ', end='', flush=True)
             if args is None:
@@ -144,7 +141,6 @@ class Negi3Mods():
         subprocess.run([self.i3_path + 'infod.py &'], shell=True)
         start(Thread(target=self.manager.mainloop,
               args=(self.loop,), daemon=True).start, 'mainloop')
-
         print('... everything loaded ...')
         try:
             self.i3.main()
@@ -160,5 +156,5 @@ if __name__ == '__main__':
     atexit.register(lambda: os._exit(0))
 
     daemon = Negi3Mods()
-    daemon.main()
+    daemon.run()
 
