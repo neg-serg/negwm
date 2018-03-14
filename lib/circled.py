@@ -172,23 +172,22 @@ class circle(modi3cfg, Matcher):
     def tag_window(self, tag):
         self.winlist = self.i3.get_tree()
         self.tagged[tag] = []
-        self.find_acceptable_windows(tag, self.winlist.leaves())
+        self.find_acceptable_windows(tag)
 
-    def find_acceptable_windows(self, tag, wlist):
-        for win in wlist:
+    def find_acceptable_windows(self, tag):
+        for win in self.winlist.leaves():
             if self.match(win, tag):
                 self.tagged[tag].append(win)
 
     def tag_windows(self):
         self.winlist = self.i3.get_tree()
-        wlist = self.winlist.leaves()
         self.tagged = {}
 
         for tag in self.cfg:
             self.tagged[tag] = []
 
         for tag in self.cfg:
-            self.find_acceptable_windows(tag, wlist)
+            self.find_acceptable_windows(tag)
 
     def add_wins(self, i3, event):
         win = event.container
