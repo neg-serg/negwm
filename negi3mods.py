@@ -19,7 +19,7 @@ import aionotify
 import i3ipc
 from threading import Thread
 from lib.locker import get_lock
-from lib.modlib import daemon_manager
+from lib.modlib import daemon_manager, notify_msg
 
 
 class Negi3Mods():
@@ -37,6 +37,8 @@ class Negi3Mods():
         xdg_config_path = os.environ.get(
             "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
         )
+        self.notification_text = "Wow! It's time to start mods!\n\n"
+        self.msg_prefix = "<span weight='normal' color='#395573'> >> </span>"
         self.i3_path = xdg_config_path + "/i3/"
         self.i3 = i3ipc.Connection()
         self.loop = asyncio.get_event_loop()
@@ -59,10 +61,11 @@ class Negi3Mods():
             i3mod = importlib.import_module(mod + "d")
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             self.manager.add_daemon(mod)
-            print(
-                f'{mod} [{self.mods[mod]}] at {timeit.default_timer() - start_time}',
-                flush=True
-            )
+            time_elapsed = f'{timeit.default_timer() - start_time:4f}s'
+            mod_text = f'[{mod}]'
+            mod_loaded_info = f'Loaded {mod_text:<10s} :: {time_elapsed:>10s}'
+            self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
+            print(mod_loaded_info, flush=True)
 
     def cleanup_on_exit(self):
         def cleanup_everything():
@@ -142,6 +145,7 @@ class Negi3Mods():
         start(Thread(target=self.manager.mainloop,
               args=(self.loop,), daemon=True).start, 'mainloop')
         print('... everything loaded ...')
+        notify_msg(self.notification_text)
         try:
             self.i3.main()
         except KeyboardInterrupt:

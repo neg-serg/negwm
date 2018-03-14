@@ -9,8 +9,8 @@ from gevent.queue import Queue
 from singleton import Singleton
 
 
-def notify_msg(s, prefix=">>"):
-    notify_msg = ['notify-send', prefix, s]
+def notify_msg(s, prefix=" "):
+    notify_msg = ['notify-send', "<span weight='normal' color='#617287'>" + prefix +  s + "</span>"]
     subprocess.run(notify_msg)
 
 
