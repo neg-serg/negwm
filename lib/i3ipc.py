@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/pypy3
 
 import errno
 import struct
@@ -30,8 +30,7 @@ class Event(object):
     BINDING = (1 << 5)
 
 
-class _ReplyType(dict):
-
+class ReplyType(dict):
     def __getattr__(self, name):
         return self[name]
 
@@ -42,28 +41,27 @@ class _ReplyType(dict):
         del self[name]
 
 
-class CommandReply(_ReplyType):
+class CommandReply(ReplyType):
     pass
 
 
-class VersionReply(_ReplyType):
+class VersionReply(ReplyType):
     pass
 
 
-class BarConfigReply(_ReplyType):
+class BarConfigReply(ReplyType):
     pass
 
 
-class OutputReply(_ReplyType):
+class OutputReply(ReplyType):
     pass
 
 
-class WorkspaceReply(_ReplyType):
+class WorkspaceReply(ReplyType):
     pass
 
 
 class WorkspaceEvent(object):
-
     def __init__(self, data, conn):
         self.change = data['change']
         self.current = None
@@ -77,20 +75,17 @@ class WorkspaceEvent(object):
 
 
 class GenericEvent(object):
-
     def __init__(self, data):
         self.change = data['change']
 
 
 class WindowEvent(object):
-
     def __init__(self, data, conn):
         self.change = data['change']
         self.container = Con(data['container'], None, conn)
 
 
 class BarconfigUpdateEvent(object):
-
     def __init__(self, data):
         self.id = data['id']
         self.hidden_state = data['hidden_state']
@@ -98,7 +93,6 @@ class BarconfigUpdateEvent(object):
 
 
 class BindingInfo(object):
-
     def __init__(self, data):
         self.command = data['command']
         self.mods = data['mods']
@@ -108,17 +102,15 @@ class BindingInfo(object):
 
 
 class BindingEvent(object):
-
     def __init__(self, data):
         self.change = data['change']
         self.binding = BindingInfo(data['binding'])
 
 
-class _PubSub(object):
-
+class PubSub(object):
     def __init__(self, conn):
         self.conn = conn
-        self._subscriptions = []
+        self.subscriptions = []
 
     def subscribe(self, detailed_event, handler):
         event = detailed_event.replace('-', '_')
@@ -127,7 +119,7 @@ class _PubSub(object):
         if detailed_event.count('::') > 0:
             [event, detail] = detailed_event.split('::')
 
-        self._subscriptions.append({'event': event, 'detail': detail,
+        self.subscriptions.append({'event': event, 'detail': detail,
                                     'handler': handler})
 
     def emit(self, event, data):
@@ -136,7 +128,7 @@ class _PubSub(object):
         if data and hasattr(data, 'change'):
             detail = data.change
 
-        for s in self._subscriptions:
+        for s in self.subscriptions:
             if s['event'] == event:
                 if not s['detail'] or s['detail'] == detail:
                     if data:
@@ -144,11 +136,9 @@ class _PubSub(object):
                     else:
                         s['handler'](self.conn)
 
+
 # this is for compatability with i3ipc-glib
-
-
-class _PropsObject(object):
-
+class PropsObject(object):
     def __init__(self, obj):
         object.__setattr__(self, "_obj", obj)
 
@@ -164,10 +154,10 @@ class _PropsObject(object):
 
 class Connection(object):
     MAGIC = 'i3-ipc'  # safety string for i3-ipc
-    _chunk_size = 1024  # in bytes
-    _timeout = 0.5  # in seconds
-    _struct_header = '<%dsII' % len(MAGIC.encode('utf-8'))
-    _struct_header_size = struct.calcsize(_struct_header)
+    chunk_size = 1024  # in bytes
+    timeout = 0.5  # in seconds
+    struct_header = '<%dsII' % len(MAGIC.encode('utf-8'))
+    struct_header_size = struct.calcsize(struct_header)
 
     def __init__(self, socket_path=None):
         if not socket_path:
@@ -181,15 +171,15 @@ class Connection(object):
             except:
                 raise Exception('Failed to retrieve the i3 IPC socket path')
 
-        self._pubsub = _PubSub(self)
-        self.props = _PropsObject(self)
+        self.pubsub = PubSub(self)
+        self.props = PropsObject(self)
         self.subscriptions = 0
         self.socket_path = socket_path
         self.cmd_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.cmd_socket.connect(self.socket_path)
         self.sub_socket = None
 
-    def _pack(self, msg_type, payload):
+    def pack(self, msg_type, payload):
         """
         Packs the given message type and payload. Turns the resulting
         message into a byte string.
@@ -198,25 +188,25 @@ class Connection(object):
         s = struct.pack('=II', len(pb), msg_type.value)
         return self.MAGIC.encode() + s + pb
 
-    def _unpack(self, data):
+    def unpack(self, data):
         """
         Unpacks the given byte string and parses the result from JSON.
         Returns None on failure and saves data into "self.buffer".
         """
-        msg_magic, msg_length, msg_type = self._unpack_header(data)
-        msg_size = self._struct_header_size + msg_length
+        msg_magic, msg_length, msg_type = self.unpack_header(data)
+        msg_size = self.struct_header_size + msg_length
         # XXX: Message shouldn't be any longer than the data
-        payload = data[self._struct_header_size:msg_size]
+        payload = data[self.struct_header_size:msg_size]
         return payload.decode('utf-8', 'replace')
 
-    def _unpack_header(self, data):
+    def unpack_header(self, data):
         """
         Unpacks the header of given byte string.
         """
-        return struct.unpack(self._struct_header,
-                             data[:self._struct_header_size])
+        return struct.unpack(self.struct_header,
+                             data[:self.struct_header_size])
 
-    def _recv_robust(self, sock, size):
+    def recv_robust(self, sock, size):
         """
         Receive size from sock, and retry if the recv() call was interrupted.
         (this is only required for python2 compatability)
@@ -228,26 +218,26 @@ class Connection(object):
                 if e.errno != errno.EINTR:
                     raise
 
-    def _ipc_recv(self, sock):
-        data = self._recv_robust(sock, 14)
+    def ipc_recv(self, sock):
+        data = self.recv_robust(sock, 14)
 
         if len(data) == 0:
             # EOF
             return '', 0
 
-        msg_magic, msg_length, msg_type = self._unpack_header(data)
-        msg_size = self._struct_header_size + msg_length
+        msg_magic, msg_length, msg_type = self.unpack_header(data)
+        msg_size = self.struct_header_size + msg_length
         while len(data) < msg_size:
-            data += self._recv_robust(sock, msg_length)
-        return self._unpack(data), msg_type
+            data += self.recv_robust(sock, msg_length)
+        return self.unpack(data), msg_type
 
-    def _ipc_send(self, sock, message_type, payload):
-        sock.sendall(self._pack(message_type, payload))
-        data, msg_type = self._ipc_recv(sock)
+    def ipc_send(self, sock, message_type, payload):
+        sock.sendall(self.pack(message_type, payload))
+        data, msg_type = self.ipc_recv(sock)
         return data
 
     def message(self, message_type, payload):
-        return self._ipc_send(self.cmd_socket, message_type, payload)
+        return self.ipc_send(self.cmd_socket, message_type, payload)
 
     def command(self, payload):
         data = self.message(MessageType.COMMAND, payload)
@@ -299,7 +289,7 @@ class Connection(object):
         if events & Event.BINDING:
             events_obj.append("binding")
 
-        data = self._ipc_send(
+        data = self.ipc_send(
             self.sub_socket, MessageType.SUBSCRIBE, json.dumps(events_obj))
         result = json.loads(data, object_hook=CommandReply)
         self.subscriptions |= events
@@ -313,7 +303,7 @@ class Connection(object):
 
         # special case: ipc-shutdown is not in the protocol
         if event == 'ipc_shutdown':
-            self._pubsub.subscribe(event, handler)
+            self.pubsub.subscribe(event, handler)
             return
 
         event_type = 0
@@ -335,7 +325,7 @@ class Connection(object):
 
         self.subscriptions |= event_type
 
-        self._pubsub.subscribe(detailed_event, handler)
+        self.pubsub.subscribe(detailed_event, handler)
 
     def main(self):
         self.sub_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -347,11 +337,11 @@ class Connection(object):
             if self.sub_socket is None:
                 break
 
-            data, msg_type = self._ipc_recv(self.sub_socket)
+            data, msg_type = self.ipc_recv(self.sub_socket)
 
             if len(data) == 0:
                 # EOF
-                self._pubsub.emit('ipc_shutdown', None)
+                self.pubsub.emit('ipc_shutdown', None)
                 break
 
             data = json.loads(data)
@@ -381,7 +371,7 @@ class Connection(object):
                 # we have not implemented this event
                 continue
 
-            self._pubsub.emit(event_name, event)
+            self.pubsub.emit(event_name, event)
 
     def main_quit(self):
         if self.sub_socket:
@@ -390,7 +380,6 @@ class Connection(object):
 
 
 class Rect(object):
-
     def __init__(self, data):
         self.x = data['x']
         self.y = data['y']
@@ -399,10 +388,9 @@ class Rect(object):
 
 
 class Con(object):
-
     def __init__(self, data, parent, conn):
-        self.props = _PropsObject(self)
-        self._conn = conn
+        self.props = PropsObject(self)
+        self.conn = conn
         self.parent = parent
 
         # set simple properties
@@ -421,19 +409,6 @@ class Con(object):
             self.marks = []
             if 'mark' in data and data['mark']:
                 self.marks.append(data['mark'])
-
-        # XXX this is for compatability with 4.8
-        if isinstance(self.type, int):
-            if self.type == 0:
-                self.type = "root"
-            elif self.type == 1:
-                self.type = "output"
-            elif self.type == 2 or self.type == 3:
-                self.type = "con"
-            elif self.type == 4:
-                self.type = "workspace"
-            elif self.type == 5:
-                self.type = "dockarea"
 
         # set complex properties
         self.nodes = []
@@ -460,6 +435,14 @@ class Con(object):
             self.window_rect = Rect(data['window_rect'])
         if 'deco_rect' in data:
             self.deco_rect = Rect(data['deco_rect'])
+
+        # self.window_class = data.get('window_properties', {}).get('class', None)
+        # self.window_instance = data.get('window_properties', {}).get('instance', None)
+        # self.window_role = data.get('window_properties', {}).get('window_role', None)
+        #
+        # self.rect = Rect(data['rect'])
+        # self.window_rect = Rect(data.get('window_rect', None))
+        # self.deco_rect = Rect(data.get('deco_rect', None))
 
     def root(self):
         if not self.parent:
@@ -496,7 +479,7 @@ class Con(object):
         return leaves
 
     def command(self, command):
-        self._conn.command('[con_id="{}"] {}'.format(self.id, command))
+        self.conn.command('[con_id="{}"] {}'.format(self.id, command))
 
     def command_children(self, command):
         if not len(self.nodes):
@@ -506,7 +489,7 @@ class Con(object):
         for c in self.nodes:
             commands.append('[con_id="{}"] {};'.format(c.id, command))
 
-        self._conn.command(' '.join(commands))
+        self.conn.command(' '.join(commands))
 
     def workspaces(self):
         workspaces = []
@@ -564,9 +547,7 @@ class Con(object):
     def workspace(self):
         if self.type == 'workspace':
             return self
-
         ret = self.parent
-
         while ret:
             if ret.type == 'workspace':
                 break
@@ -602,3 +583,4 @@ class Con(object):
                 break
 
         return scratch
+
