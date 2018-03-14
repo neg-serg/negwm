@@ -43,7 +43,7 @@ class volume_watcher():
         return data.startswith(b'OK')
 
     async def update_mpd_volume(self, loop):
-        prev_volume = 0
+        prev_volume = 'wtf'
         reader, writer = await asyncio.open_connection(
             host=self.addr, port=self.port, loop=loop
         )
@@ -66,6 +66,7 @@ class volume_watcher():
                             else:
                                 self.empty_output()
                     else:
+                        prev_volume = 'wtf'
                         self.empty_output()
 
 
