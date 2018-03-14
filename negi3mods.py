@@ -17,7 +17,7 @@ import shlex
 import cgitb
 import asyncio
 import aionotify
-import lib.i3ipc as i3ipc
+import i3ipc
 from threading import Thread
 from lib.locker import get_lock
 from lib.modlib import daemon_manager

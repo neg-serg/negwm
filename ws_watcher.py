@@ -3,7 +3,7 @@ from gevent import monkey
 monkey.patch_all()
 
 import asyncio
-import lib.i3ipc as i3ipc
+import i3ipc
 import sys
 import re
 from threading import Thread, Event
