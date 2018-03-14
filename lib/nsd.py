@@ -7,10 +7,10 @@ from typing import Callable, List
 import lib.geom as geom
 from modlib import Matcher, notify_msg
 from singleton import Singleton
-from cfg_master import CfgMaster
+from modi3cfg import modi3cfg
 
 
-class ns(CfgMaster, Matcher):
+class ns(modi3cfg, Matcher):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:

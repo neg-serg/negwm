@@ -1,11 +1,11 @@
 import re
 import os
 from modlib import Matcher
-from cfg_master import CfgMaster
+from modi3cfg import modi3cfg
 from singleton import Singleton
 
 
-class circle(CfgMaster, Matcher):
+class circle(modi3cfg, Matcher):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None):

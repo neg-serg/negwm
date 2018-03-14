@@ -4,7 +4,7 @@ import toml
 import traceback
 
 
-class CfgMaster(object):
+class modi3cfg(object):
     def __init__(self, i3, loop=None):
         self.mod = self.__class__.__name__
         self.load_config()

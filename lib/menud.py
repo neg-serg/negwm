@@ -5,10 +5,10 @@ import sys
 import shlex
 import os
 from singleton import Singleton
-from cfg_master import CfgMaster
+from modi3cfg import modi3cfg
 
 
-class menu(CfgMaster):
+class menu(modi3cfg):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None):

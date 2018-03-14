@@ -2,10 +2,10 @@ import subprocess
 import socket
 import asyncio
 from singleton import Singleton
-from cfg_master import CfgMaster
+from modi3cfg import modi3cfg
 
 
-class vol(Singleton, CfgMaster):
+class vol(Singleton, modi3cfg):
     def __init__(self, i3, loop):
         super().__init__(i3, loop)
         self.i3 = i3

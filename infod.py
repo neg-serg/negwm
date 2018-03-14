@@ -3,14 +3,14 @@
 import socket
 import i3ipc
 from lib.singleton import Singleton
-from cfg_master import CfgMaster
+from modi3cfg import modi3cfg
 from threading import Thread
 
 from nsd import ns
 from circled import circle
 
 
-class info(CfgMaster):
+class info(modi3cfg):
     __metaclass__ = Singleton
 
     def __init__(self, i3):

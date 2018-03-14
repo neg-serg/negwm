@@ -2,10 +2,10 @@ import collections
 from itertools import cycle
 from modlib import find_visible_windows, get_screen_resolution
 from singleton import Singleton
-from cfg_master import CfgMaster
+from modi3cfg import modi3cfg
 
 
-class wm3(Singleton, CfgMaster):
+class wm3(Singleton, modi3cfg):
     def __init__(self, i3, loop=None):
         super().__init__(i3)
         self.initialize(i3)
