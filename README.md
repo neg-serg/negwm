@@ -69,7 +69,7 @@ cd ${XDG_CONFIG_HOME}/i3
 ./negi3mods.py
 ```
 
-but I reccomend you to look at my config(_config). It can start / restart automatically,
+but I recommend you to look at my config(_config). It can start / restart automatically,
 because of i3 connection will be closed after i3 restart and then started by
 `exec_always`.
 
