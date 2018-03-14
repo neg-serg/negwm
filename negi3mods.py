@@ -54,6 +54,7 @@ class Negi3Mods():
             pass
 
     def load_modules(self):
+        mod_startup_times = []
         self.manager = daemon_manager(self.mods)
         print()
         for mod in self.mods.keys():
@@ -61,11 +62,15 @@ class Negi3Mods():
             i3mod = importlib.import_module(mod + "d")
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             self.manager.add_daemon(mod)
-            time_elapsed = f'{timeit.default_timer() - start_time:4f}s'
+            mod_startup_times.append(timeit.default_timer() - start_time)
+            time_elapsed = f'{mod_startup_times[-1]:4f}s'
             mod_text = f'[{mod}]'
-            mod_loaded_info = f'Loaded {mod_text:<10s} :: {time_elapsed:>10s}'
+            mod_loaded_info = f'Loaded {mod_text:<10s} ~ {time_elapsed:>10s}'
             self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
             print(mod_loaded_info, flush=True)
+        overall_msg = f'Overall time = {sum(mod_startup_times):6f}s'
+        self.notification_text += overall_msg
+        print(overall_msg)
 
     def cleanup_on_exit(self):
         def cleanup_everything():
