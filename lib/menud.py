@@ -3,9 +3,9 @@ import re
 import subprocess
 import sys
 import shlex
-import os
 from singleton import Singleton
 from modi3cfg import modi3cfg
+from modlib import i3path
 
 
 class menu(modi3cfg):
@@ -13,16 +13,11 @@ class menu(modi3cfg):
 
     def __init__(self, i3, loop=None):
         self.i3 = i3
+        self.i3_path = i3path()
         self.i3cmd = 'i3-msg'
         self.magic_pie = 'sssssnake'
 
         self.possible_mods = ['ns', 'circle']
-
-        user_name = os.environ.get("USER", "neg")
-        xdg_config_path = os.environ.get(
-            "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
-        )
-        self.i3_path = xdg_config_path+"/i3/"
 
         self.need_xprops = [
             "WM_CLASS",
@@ -217,23 +212,26 @@ class menu(modi3cfg):
             return mod.decode('UTF-8').strip()
 
     def autoprop(self):
+        print('HERE')
         mod = self.get_mod()
-        if mod is None or not len(mod):
+        if mod is None or not mod:
             return
+
         aprop_str = self.get_autoprop_as_str(with_title=False)
 
         lst = self.mod_data_list(mod)
         tag_name = self.tag_name(mod, lst)
 
-        for mod in self.possible_mods:
-            add_prop_cmd = f'{self.i3_path}send {mod} add_prop \
-                            {tag_name} {aprop_str}'
-            subprocess.run(shlex.split(add_prop_cmd))
+        if tag_name is not None and tag_name:
+            for mod in self.possible_mods:
+                add_prop_cmd = f'{self.i3_path}send {mod} add_prop \
+                                {tag_name} {aprop_str}'
+                subprocess.run(shlex.split(add_prop_cmd))
+        else:
+            print('[no tag name specified] for props [{aprop_str}]')
 
     def workspaces(self):
-        wslist = [ws.name for ws in self.i3.get_workspaces()]
-        wslist.append("[empty]")
-
+        wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
         ws = subprocess.run(
             self.rofi_args(cnum=len(wslist), width=1200, prompt="[ws] >>"),
             stdout=subprocess.PIPE,
@@ -242,8 +240,7 @@ class menu(modi3cfg):
 
         if ws is not None and ws:
             ws = ws.decode('UTF-8').strip()
-
-        self.i3.command(f'workspace {ws}')
+            self.i3.command(f'workspace {ws}')
 
     def cmd_menu(self):
         # set default menu args for supported menus

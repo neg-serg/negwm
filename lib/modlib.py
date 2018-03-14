@@ -9,6 +9,15 @@ from gevent.queue import Queue
 from singleton import Singleton
 
 
+def i3path():
+    user_name = os.environ.get("USER", "neg")
+    xdg_config_path = os.environ.get(
+        "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
+    )
+    i3_path = xdg_config_path + "/i3/"
+    return i3_path
+
+
 def notify_msg(s, prefix=" "):
     notify_msg = ['notify-send', "<span weight='normal' color='#617287'>" + prefix +  s + "</span>"]
     subprocess.run(notify_msg)

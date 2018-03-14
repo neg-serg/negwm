@@ -291,16 +291,16 @@ class ns(modi3cfg, Matcher):
                     win.rect.height = focused.rect.height
                 break
 
-    def auto_save_geom(self, save=True, with_notification=True):
+    def auto_save_geom(self, save=True, with_notification=False):
         self.geom_auto_save = save
         if with_notification:
             notify_msg(f"geometry autosave={save}")
 
     def autosave_toggle(self):
         if self.geom_auto_save:
-            self.auto_save_geom(False)
+            self.auto_save_geom(False, with_notification=True)
         else:
-            self.auto_save_geom(True)
+            self.auto_save_geom(True, with_notification=True)
 
     def geom_dump_current(self):
         self.apply_to_current_tag(self.geom_dump)

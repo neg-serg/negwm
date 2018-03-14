@@ -1,12 +1,13 @@
-import os
 import sys
 import toml
 import traceback
+from modlib import i3path
 
 
 class modi3cfg(object):
     def __init__(self, i3, loop=None):
         self.mod = self.__class__.__name__
+        self.i3_path = i3path()
         self.load_config()
         self.attr_dict = {}
         self.possible_props = ['class', 'instance', 'window_role', 'title']
@@ -64,19 +65,11 @@ class modi3cfg(object):
                                         list(self.cfg[i][j][k][kk])
 
     def load_config(self):
-        user_name = os.environ.get("USER", "neg")
-        xdg_config_path = os.environ.get("XDG_CONFIG_HOME", "/home/" +
-                                         user_name + "/.config/")
-        self.i3_path = xdg_config_path+"/i3/"
         with open(self.i3_path + "/cfg/" + self.mod + ".cfg", "r") as fp:
             self.cfg = toml.load(fp)
         self.dict_converse()
 
     def dump_config(self):
-        user_name = os.environ.get("USER", "neg")
-        xdg_config_path = os.environ.get("XDG_CONFIG_HOME", "/home/" +
-                                         user_name + "/.config/")
-        self.i3_path = xdg_config_path+"/i3/"
         with open(self.i3_path + "/cfg/" + self.mod + ".cfg", "r+") as fp:
             self.dict_deconverse()
             toml.dump(self.cfg, fp)

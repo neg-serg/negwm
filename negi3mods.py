@@ -19,7 +19,7 @@ import aionotify
 import i3ipc
 from threading import Thread
 from lib.locker import get_lock
-from lib.modlib import daemon_manager, notify_msg
+from lib.modlib import daemon_manager, notify_msg, i3path
 
 
 class Negi3Mods():
@@ -33,13 +33,10 @@ class Negi3Mods():
             intern('wm3'): None,
             intern('vol'): None,
         }
-        user_name = os.environ.get("USER", "neg")
-        xdg_config_path = os.environ.get(
-            "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
-        )
         self.notification_text = "Wow! It's time to start mods!\n\n"
         self.msg_prefix = "<span weight='normal' color='#395573'> >> </span>"
-        self.i3_path = xdg_config_path + "/i3/"
+        self.i3_path = i3path()
+        self.i3_cfg_path = self.i3_path + '/cfg/'
         self.i3 = i3ipc.Connection()
         self.loop = asyncio.get_event_loop()
 
@@ -48,7 +45,7 @@ class Negi3Mods():
         try:
             for mod in self.mods.keys():
                 m = self.mods[mod]
-                with open(self.i3_path + "/cfg/" + mod + ".cfg", "w") as fp:
+                with open(self.i3_cfg_path + mod + ".cfg", "w") as fp:
                     toml.dump(m.cfg, fp)
         except:
             pass
@@ -82,7 +79,7 @@ class Negi3Mods():
 
     def mods_cfg_watcher(self):
         watcher = aionotify.Watcher()
-        watcher.watch(alias='configs', path=self.i3_path + "/cfg/",
+        watcher.watch(alias='configs', path=self.i3_cfg_path,
                       flags=aionotify.Flags.MODIFY)
         return watcher
 
