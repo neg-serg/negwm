@@ -5,9 +5,9 @@ import uuid
 from typing import Callable, List
 
 import lib.geom as geom
-from modlib import Matcher, notify_msg
 from singleton import Singleton
 from modi3cfg import modi3cfg
+from modlib import Matcher, notify_msg
 
 
 class ns(modi3cfg, Matcher):
@@ -77,6 +77,7 @@ class ns(modi3cfg, Matcher):
         for win in focused.workspace().descendents():
             if win.window is not None:
                 wswins.append(win)
+
         xprop = None
         for w in wswins:
             xprop = subprocess.run(
@@ -143,7 +144,7 @@ class ns(modi3cfg, Matcher):
             except:
                 pass
 
-        if self.visible_count(tag) > 0:
+        if self.visible_count_on_tag(tag) > 0:
             self.unfocus(tag)
             return
 
@@ -211,7 +212,7 @@ class ns(modi3cfg, Matcher):
         [win.command('fullscreen toggle') for win in self.fullscreen_list]
         self.fullscreen_list = []
 
-    def visible_count(self, tag: str):
+    def visible_count_on_tag(self, tag: str):
         visible_windows = self.find_visible_windows()
         vmarked = 0
         for w in visible_windows:
