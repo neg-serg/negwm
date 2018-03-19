@@ -88,7 +88,7 @@ class ns(modi3cfg, Matcher):
         self.focus_win_flag = [False, ""]
 
     def make_mark_str(self, tag: str) -> str:
-        """ Generate unique mark for the given tag
+        """ Generate unique mark for the given [tag]
 
             Args:
                 tag: tag string
@@ -96,7 +96,7 @@ class ns(modi3cfg, Matcher):
         return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
     def focus(self, tag: str, hide=True) -> None:
-        """ Show given tag
+        """ Show given [tag]
 
             Args:
                 tag: tag string
@@ -119,7 +119,7 @@ class ns(modi3cfg, Matcher):
                 self.mark_all_tags(hide=False)
 
     def unfocus(self, tag: str) -> None:
-        """ Hide given tag
+        """ Hide given [tag]
 
             Args:
                 tag: tag string
@@ -133,7 +133,7 @@ class ns(modi3cfg, Matcher):
         self.restore_fullscreens()
 
     def unfocus_all_but_current(self, tag: str) -> None:
-        """ Hide all tagged windows except current
+        """ Hide all tagged windows except current.
 
             Args:
                 tag: tag string
@@ -146,14 +146,14 @@ class ns(modi3cfg, Matcher):
                 win.command('move container to workspace current')
 
     def find_visible_windows(self, focused=None):
-        """ Find windows visible on the screen now
+        """ Find windows visible on the screen now.
 
             Unfortunately for now external xprop application used for it,
             because of i3ipc gives no information about what windows
             shown/hidden or about _NET_WM_STATE_HIDDEN attributes
 
             Args:
-                focused: denotes that focused window should be extracted from
+                focused: denotes that [focused] window should be extracted from
                          i3.get_tree() or not
         """
         visible_windows = []
@@ -242,7 +242,7 @@ class ns(modi3cfg, Matcher):
             self.fullscreen_list.append(win)
 
     def toggle(self, tag: str) -> None:
-        """ Toggle scratchpad with given tag.
+        """ Toggle scratchpad with given [tag].
 
             Args:
                 tag (str): denotes the target tag.
@@ -279,6 +279,9 @@ class ns(modi3cfg, Matcher):
 
             Args:
                 tag (str): denotes the target tag.
+                subtag_classes_set (set): subset of classes of target [tag]
+                                          which distinguish one subtag from
+                                          another.
         """
         focused = self.i3.get_tree().find_focused()
 
@@ -495,6 +498,13 @@ class ns(modi3cfg, Matcher):
         self.apply_to_current_tag(self.geom_save)
 
     def add_prop(self, tag, prop_str):
+        """ Add property via [prop_str] to the target [tag].
+
+            Args:
+                tag (str): denotes the target tag.
+                prop_str (str): string in i3-match format used to add/delete
+                                target window in/from scratchpad.
+        """
         if tag in self.cfg:
             self.add_props(tag, prop_str)
 
@@ -507,10 +517,27 @@ class ns(modi3cfg, Matcher):
 
         self.initialize(self.i3)
 
-    def del_prop(self, tag, prop_str, full_reload=False):
+    def del_prop(self, tag, prop_str):
+        """ Delete property via [prop_str] to the target [tag].
+
+            Args:
+                tag (str): denotes the target tag.
+                prop_str (str): string in i3-match format used to add/delete
+                                target window in/from scratchpad.
+        """
         self.del_props(tag, prop_str)
 
     def switch(self, args: List) -> None:
+        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+
+            This function defines bindings to the named_scratchpad methods that
+            can be used by external users as i3-bindings, sxhkd, etc.
+            Need the [send] binary which can send commands to the
+            appropriate FIFO.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
         {
             "show": self.focus,
             "hide": self.unfocus_all_but_current,
@@ -529,12 +556,30 @@ class ns(modi3cfg, Matcher):
         }[args[0]](*args[1:])
 
     def check_win_marked(self, win, tag):
+        """ Delete property via [prop_str] to the target [tag].
+
+            This function used for add_prop/delete_prop methods to not make the
+            same actions twice. We use [tag] as prefix to the unique mark name.
+
+            Args:
+                win: this windows will be checked for mark on/off.
+                tag (str): tag, which used as prefix to the mark name.
+        """
         for mrk in win.marks:
             if tag + "-" in mrk:
                 return True
         return False
 
     def mark(self, tag, hide=True):
+        """ Add unique mark to the target [tag] with optional [hide].
+
+            Args:
+                tag (str): denotes the target tag.
+                hide (bool): hide window or not. Primarly used to cleanup
+                             "garbage" that can appear after i3 (re)start, etc.
+                             Because of I've think that is't better to make
+                             screen clear after (re)start.
+        """
         leaves = self.i3.get_tree().leaves()
         for win in leaves:
             if self.match(win, tag):
@@ -551,6 +596,13 @@ class ns(modi3cfg, Matcher):
         self.dialog_toggle()
 
     def mark_tag(self, i3, event) -> None:
+        """ Add unique mark to the new window.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         win = event.container
         self.winlist = self.i3.get_tree()
         for tag in self.cfg:
@@ -575,6 +627,13 @@ class ns(modi3cfg, Matcher):
             self.focus_win_flag[1] = ""
 
     def unmark_tag(self, i3, event) -> None:
+        """ Delete unique mark from the closed window.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         win_ev = event.container
         self.winlist = self.i3.get_tree()
         for tag in self.cfg:
@@ -589,6 +648,14 @@ class ns(modi3cfg, Matcher):
         self.winlist = self.i3.get_tree()
 
     def mark_all_tags(self, hide: bool=True) -> None:
+        """ Add marks to the all tags.
+
+            Args:
+                hide (bool): hide window or not. Primarly used to cleanup
+                             "garbage" that can appear after i3 (re)start, etc.
+                             Because of I've think that is't better to make
+                             screen clear after (re)start.
+        """
         self.winlist = self.i3.get_tree()
         leaves = self.winlist.leaves()
         for tag in self.cfg:
