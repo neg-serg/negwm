@@ -1,3 +1,6 @@
+"""
+"""
+
 import collections
 from itertools import cycle
 from modlib import find_visible_windows, get_screen_resolution
@@ -7,6 +10,15 @@ from modi3cfg import modi3cfg
 
 class wm3(Singleton, modi3cfg):
     def __init__(self, i3, loop=None):
+        """ Init function
+
+        Main part is in self.initialize, which performs initialization itself.
+
+        Attributes:
+            i3: i3ipc connection
+            loop: asyncio loop. It's need to be given as parameter because of
+                  you need to bypass asyncio-loop to the thread
+        """
         super().__init__(i3)
         self.initialize(i3)
 
@@ -25,10 +37,19 @@ class wm3(Singleton, modi3cfg):
         self.shrink_coeff = self.cfg.get("shrink_coeff", 0.99)
 
     def switch(self, args):
+        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+
+            This function defines bindings to the named_scratchpad methods that
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate FIFO.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
         {
             "reload": self.reload_config,
-            "focus_next_visible": self.focus_next_visible,
-            "focus_prev_visible": self.focus_prev_visible,
+            "focus_next_visible": self.focus_next,
+            "focus_prev_visible": self.focus_next(reversed_order=True),
             "maximize": self.maximize,
             "maxhor": lambda: self.maximize(by='X'),
             "maxvert": lambda: self.maximize(by='Y'),
@@ -42,6 +63,8 @@ class wm3(Singleton, modi3cfg):
         }[args[0]](*args[1:])
 
     def load_useless_gaps(self):
+        """ Load useless gaps settings.
+        """
         try:
             self.useless_gaps = self.cfg.get("useless_gaps", {
                     "w": 12, "a": 12, "s": 12, "d": 12
@@ -54,6 +77,15 @@ class wm3(Singleton, modi3cfg):
             self.useless_gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
 
     def center_geom(self, win, change_geom=False, degrade_coeff=0.82):
+        """ Move window to the center with geometry optional changing.
+
+        Attributes:
+            win: target window.
+            change_geom (bool): predicate to change geom to the [degrade_coeff]
+                                of the screen space in both dimenhions.
+            degrade_coeff (int): coefficient which denotes change geom of the
+                                 target window.
+        """
         geom = {}
         center = {}
 
@@ -118,6 +150,13 @@ class wm3(Singleton, modi3cfg):
         self.set_geom(focused, geom)
 
     def x2(self, mode):
+        """ Move window to the 1st or 2nd half of the screen space with the
+            given orientation.
+
+        Attributes:
+            mode (h1,h2,v1,v2): defines h1,h2,v1 or v2 half of
+                                screen space to move.
+        """
         curr_scr = self.current_resolution
         self.current_win = self.i3.get_tree().find_focused()
 
@@ -173,6 +212,12 @@ class wm3(Singleton, modi3cfg):
             self.set_geom(self.current_win, geom)
 
     def quad(self, mode):
+        """ Move window to the 1,2,3,4 quad of 2D screen space
+
+        Attributes:
+            mode (1,2,3,4): defines 1,2,3 or 4 quad of
+                            screen space to move.
+        """
         try:
             mode = int(mode)
         except TypeError:
@@ -234,6 +279,11 @@ class wm3(Singleton, modi3cfg):
             self.set_geom(self.current_win, geom)
 
     def maximize(self, by='XY'):
+        """ Maximize window by attribute.
+
+        Attributes:
+            by (str): maximize by X, Y or XY.
+        """
         geom = {}
 
         self.current_win = self.i3.get_tree().find_focused()
@@ -262,6 +312,8 @@ class wm3(Singleton, modi3cfg):
             self.set_geom(self.current_win, max_geom)
 
     def revert_maximize(self):
+        """ Revert changed window state.
+        """
         try:
             focused = self.i3.get_tree().find_focused()
             if self.geom_list[-1].get("geom", {}):
@@ -271,6 +323,14 @@ class wm3(Singleton, modi3cfg):
             pass
 
     def maximized_geom(self, geom, gaps={}, byX=False, byY=False):
+        """ Return maximized geom.
+
+        Attributes:
+            geom (dict): var to return maximized geometry.
+            gaps (dict): dict to define useless gaps.
+            byX: maximize by X.
+            byY: maximize by Y.
+        """
         if gaps == {}:
             gaps = self.useless_gaps
         if byX:
@@ -282,10 +342,22 @@ class wm3(Singleton, modi3cfg):
         return geom
 
     def set_geom(self, win, geom):
+        """ Generic function to set geometry.
+
+        Attributes:
+            win: target window to change windows.
+            geom: geometry.
+        """
         win.command(f"move absolute position {geom['x']} {geom['y']}")
         win.command(f"resize set {geom['width']} {geom['height']} px")
 
     def create_geom_from_rect(self, rect):
+        """ Create geometry from the given rectangle.
+
+        Attributes:
+            rect: rect to extract geometry from.
+
+        """
         geom = {}
         geom['x'] = rect.x
         geom['y'] = rect.y
@@ -295,17 +367,30 @@ class wm3(Singleton, modi3cfg):
         return geom
 
     def save_geom(self, target_win=None):
+        """ Save geometry.
+
+        Attributes:
+            target_win: [optional] denotes target window.
+
+        """
         if target_win is None:
             target_win = self.current_win
         return self.create_geom_from_rect(target_win.rect)
 
     def get_windows_on_ws(self):
+        """ Get windows on fullscreen
+        """
         return filter(
             lambda x: x.window,
             self.i3.get_tree().find_focused().workspace().descendents()
         )
 
     def focus_next(self, reversed_order=False):
+        """ Focus next visible window.
+
+        Attributes:
+            reversed_order(bool) : [optional] predicate to change order.
+        """
         visible_windows = find_visible_windows(self.get_windows_on_ws())
         if reversed_order:
             cycle_windows = cycle(reversed(visible_windows))
@@ -316,10 +401,4 @@ class wm3(Singleton, modi3cfg):
                 focus_to = next(cycle_windows)
                 self.i3.command('[id="%d"] focus' % focus_to.window)
                 break
-
-    def focus_prev_visible(self):
-        self.focus_next(reversed_order=True)
-
-    def focus_next_visible(self):
-        self.focus_next()
 
