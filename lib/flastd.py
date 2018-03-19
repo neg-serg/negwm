@@ -1,11 +1,32 @@
+""" Advanced alt-tab module.
+
+This module allows you to focus previous window a-la "alt-tab" not by workspace
+but by window itself. To achieve that I am using self.window_list to store
+information about previous windows. We need this because previously selected
+window may be closed, and then you cannot focus it.
+"""
+
 from modlib import find_visible_windows
 from singleton import Singleton
 
 
 class flast():
+    """ Advanced alt-tab class.
+
+    Metaclass:
+        Use Singleton metaclass from singleton module.
+
+    """
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None):
+        """ Init function
+
+        Args:
+            i3: i3ipc connection
+            loop: asyncio loop. It's need to be given as parameter because of
+                  you need to bypass asyncio-loop to the thread
+        """
         self.i3 = i3
         self.window_list = self.i3.get_tree().leaves()
         self.max_win_history = 64
@@ -13,23 +34,44 @@ class flast():
         self.i3.on('window::close', self.go_back_if_nothing)
 
     def reload_config(self):
+        """ Reloads config. Dummy.
+        """
         self.__init__(self.i3)
 
     def switch(self, args):
+        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+
+            This function defines bindings to the named_scratchpad methods that
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate FIFO.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
         {
             "switch": self.alt_tab,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
     def alt_tab(self):
+        """ Focus previous window.
+        """
+        leaves = self.i3.get_tree().leaves()
         for wid in self.window_list[1:]:
-            if wid not in set(w.id for w in self.i3.get_tree().leaves()):
+            if wid not in set(w.id for w in leaves):
                 self.window_list.remove(wid)
             else:
                 self.i3.command(f'[con_id={wid}] focus')
                 return
 
     def on_window_focus(self, i3, event):
+        """ Store information about current / previous windows.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         wid = event.container.id
 
         if wid in self.window_list:
@@ -40,12 +82,25 @@ class flast():
             del self.window_list[self.max_win_history:]
 
     def get_windows_on_ws(self):
+        """ Get windows on the current workspace.
+        """
         return filter(
             lambda win: win.window,
             self.i3.get_tree().find_focused().workspace().descendents()
         )
 
     def go_back_if_nothing(self, i3, event):
+        """ Go back for temporary tags like pictures or media.
+
+            This function make auto alt-tab for workspaces which should by
+            temporary. This is good if you do not want to see empty workspace
+            after switching to the media content workspace.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         focused = i3.get_tree().find_focused()
         wswins = filter(
             lambda win: win.window,
