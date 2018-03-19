@@ -1,7 +1,7 @@
 """ Advanced alt-tab module.
 
 This module allows you to focus previous window a-la "alt-tab" not by workspace
-but by window itself. To achieve that I am using self.window_list to store
+but by window itself. To achieve that I am using self.window_history to store
 information about previous windows. We need this because previously selected
 window may be closed, and then you cannot focus it.
 """
@@ -27,9 +27,15 @@ class flast():
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
+        # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
-        self.window_list = self.i3.get_tree().leaves()
+
+        # previous / current window list
+        self.window_history = self.i3.get_tree().leaves()
+
+        # depth of history list
         self.max_win_history = 64
+
         self.i3.on('window::focus', self.on_window_focus)
         self.i3.on('window::close', self.go_back_if_nothing)
 
@@ -57,9 +63,9 @@ class flast():
         """ Focus previous window.
         """
         leaves = self.i3.get_tree().leaves()
-        for wid in self.window_list[1:]:
+        for wid in self.window_history[1:]:
             if wid not in set(w.id for w in leaves):
-                self.window_list.remove(wid)
+                self.window_history.remove(wid)
             else:
                 self.i3.command(f'[con_id={wid}] focus')
                 return
@@ -74,12 +80,12 @@ class flast():
         """
         wid = event.container.id
 
-        if wid in self.window_list:
-            self.window_list.remove(wid)
+        if wid in self.window_history:
+            self.window_history.remove(wid)
 
-        self.window_list.insert(0, wid)
-        if len(self.window_list) > self.max_win_history:
-            del self.window_list[self.max_win_history:]
+        self.window_history.insert(0, wid)
+        if len(self.window_history) > self.max_win_history:
+            del self.window_history[self.max_win_history:]
 
     def get_windows_on_ws(self):
         """ Get windows on the current workspace.
