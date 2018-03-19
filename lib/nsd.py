@@ -56,19 +56,38 @@ class ns(modi3cfg, Matcher):
         self.i3.on('window::close', self.unmark_tag)
 
     def initialize(self, i3):
+        # winlist is used to reduce calling i3.get_tree() too many times.
         self.winlist = self.i3.get_tree()
+
+        # fullscreen_list is used to perform fullscreen hacks
         self.fullscreen_list = []
+
+        # nsgeom used to respect current screen resolution in the geometry
+        # settings and scale it
         self.nsgeom = geom.geom(self.cfg)
+
+        # marked used to get the list of currently tagged windows with tag [tag]
         self.marked = {l: [] for l in self.cfg}
+
+        # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
+
+        # transients used to exclude dialogs and another another transient
+        # windows from the usual named-scratchpad-geometry handling method
         self.transients = []
+
+        # Mark all tags from the start
         self.mark_all_tags(hide=True)
+
+        # Do not autosave geometry by default
         self.auto_save_geom(False)
+
+        # focus_win_flag is a helper to perform attach/detach window to the
+        # named scratchpad with add_prop/del_prop routines
         self.focus_win_flag = [False, ""]
 
     def make_mark_str(self, tag: str) -> str:
-        uuid_str = str(str(uuid.uuid4().fields[-1]))
-        return f'mark {tag}-{uuid_str}'
+        return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
     def focus(self, tag: str, hide=True) -> None:
         if not len(self.transients):
