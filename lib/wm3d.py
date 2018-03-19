@@ -30,17 +30,34 @@ class wm3(Singleton, modi3cfg):
         self.initialize(i3)
 
     def initialize(self, i3):
+        # i3ipc connection, bypassed by negi3mods runner.
         self.i3 = i3
+
+        # cache list length
         maxlength = self.cfg["cache_list_size"]
+
+        # create list with the finite number of elements by the [None] * N hack
         self.geom_list = collections.deque(
             [None] * maxlength,
             maxlen=maxlength
         )
+
+        # we need to know current resolution for almost all operations here.
         self.current_resolution = get_screen_resolution()
+
+        # here we load information about useless gaps
         self.load_useless_gaps()
+
+        # config about useless gaps for quad splitting, True by default
         self.quad_use_gaps = self.cfg.get("quad_use_gaps", True)
+
+        # config about useless gaps for half splitting, True by default
         self.x2_use_gaps = self.cfg.get("x2_use_gaps", True)
+
+        # coeff to grow window in all dimensions
         self.grow_coeff = self.cfg.get("grow_coeff", 1.01)
+
+        # coeff to shrink window in all dimensions
         self.shrink_coeff = self.cfg.get("shrink_coeff", 0.99)
 
     def switch(self, args):
@@ -122,7 +139,7 @@ class wm3(Singleton, modi3cfg):
         """ Move window to center.
 
         Args:
-            resize: predicate which denotes to resize target window or not.
+            resize (str): predicate which shows resize target window or not.
 
         """
         focused = self.i3.get_tree().find_focused()
@@ -416,6 +433,7 @@ class wm3(Singleton, modi3cfg):
 
         Args:
             reversed_order(bool) : [optional] predicate to change order.
+
         """
         visible_windows = find_visible_windows(self.get_windows_on_ws())
         if reversed_order:
