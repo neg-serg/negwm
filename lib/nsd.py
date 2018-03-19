@@ -66,7 +66,8 @@ class ns(modi3cfg, Matcher):
         # settings and scale it
         self.nsgeom = geom.geom(self.cfg)
 
-        # marked used to get the list of currently tagged windows with tag [tag]
+        # marked used to get the list of currently tagged windows
+        # with the given tag
         self.marked = {l: [] for l in self.cfg}
 
         # i3ipc connection, bypassed by negi3mods runner
@@ -87,9 +88,22 @@ class ns(modi3cfg, Matcher):
         self.focus_win_flag = [False, ""]
 
     def make_mark_str(self, tag: str) -> str:
+        """Function to generate unique mark for the given tag
+
+            Args:
+                tag: tag string
+        """
         return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
     def focus(self, tag: str, hide=True) -> None:
+        """Function to show given tag
+
+            Args:
+                tag: tag string
+                hide: optional predicate to hide all windows except current.
+                      Should be used in the most cases because of better
+                      performance and visual neatness
+        """
         if not len(self.transients):
             [
                 win.command('move container to workspace current')
@@ -105,6 +119,11 @@ class ns(modi3cfg, Matcher):
                 self.mark_all_tags(hide=False)
 
     def unfocus(self, tag: str) -> None:
+        """Function to hide given tag
+
+            Args:
+                tag: tag string
+        """
         if self.geom_auto_save:
             self.geom_save(tag)
         [
@@ -114,6 +133,11 @@ class ns(modi3cfg, Matcher):
         self.restore_fullscreens()
 
     def unfocus_all_but_current(self, tag: str) -> None:
+        """Function to hide all tagged windows except current
+
+            Args:
+                tag: tag string
+        """
         focused = self.i3.get_tree().find_focused()
         for win in self.marked[tag]:
             if win.id != focused.id:
@@ -122,6 +146,16 @@ class ns(modi3cfg, Matcher):
                 win.command('move container to workspace current')
 
     def find_visible_windows(self, focused=None):
+        """Function to find windows visible on the screen now
+
+            Unfortunately for now external xprop application used for it,
+            because of i3ipc gives no information about what windows
+            shown/hidden or about _NET_WM_STATE_HIDDEN attributes
+
+            Args:
+                focused: denotes that focused window should be extracted from
+                         i3.get_tree() or not
+        """
         visible_windows = []
         wswins = []
 
@@ -148,6 +182,16 @@ class ns(modi3cfg, Matcher):
         return visible_windows
 
     def check_dialog_win(self, w):
+        """Function to check that window [w] is not dialog window
+
+            Unfortunately for now external xprop application used for it,
+            because of i3ipc gives no information about what windows dialog or
+            not, shown/hidden or about _NET_WM_STATE_HIDDEN attribute or
+            "custom" window attributes, etc.
+
+            Args:
+                w : target window to check
+        """
         if w.window_instance == "Places" \
                 or w.window_role == "GtkFileChooserDialog" \
                 or w.window_class == "Dialog":
@@ -176,6 +220,12 @@ class ns(modi3cfg, Matcher):
         return ret
 
     def dialog_toggle(self):
+        """ Function to show dialog windows
+
+            This function using self.check_dialog_win, which use information
+            extracted from xprop application. And because of this it's not so
+            fast. But this operation is pretty rare, so no problem here.
+        """
         wlist = self.i3.get_tree().leaves()
         for win in wlist:
             if not self.check_dialog_win(win):
