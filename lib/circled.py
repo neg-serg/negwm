@@ -272,17 +272,24 @@ class circle(modi3cfg, Matcher):
         """
         self.del_props(tag, prop_str)
 
-    def tag_window(self, tag):
-        self.winlist = self.i3.get_tree()
-        self.tagged[tag] = []
-        self.find_acceptable_windows(tag)
-
     def find_acceptable_windows(self, tag):
+        """ Wrapper over Matcher.match to find acceptable windows and add it to
+            tagged[tag] list.
+
+            Args:
+                tag (str): denotes the target tag.
+        """
         for win in self.winlist.leaves():
             if self.match(win, tag):
                 self.tagged[tag].append(win)
 
     def tag_windows(self):
+        """ Find acceptable windows for the all tags and add it to the
+            tagged[tag] list.
+
+            Args:
+                tag (str): denotes the target tag.
+        """
         self.winlist = self.i3.get_tree()
         self.tagged = {}
 
@@ -293,6 +300,13 @@ class circle(modi3cfg, Matcher):
             self.find_acceptable_windows(tag)
 
     def add_wins(self, i3, event):
+        """ Tag window if it is match defined rules.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         win = event.container
         for tag in self.cfg:
             if self.match(win, tag):
@@ -304,6 +318,13 @@ class circle(modi3cfg, Matcher):
         self.winlist = self.i3.get_tree()
 
     def del_wins(self, i3, event):
+        """ Delete tag from window if it's closed.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         win = event.container
         for tag in self.cfg:
             if self.match(win, tag):
@@ -319,9 +340,27 @@ class circle(modi3cfg, Matcher):
         self.winlist = self.i3.get_tree()
 
     def set_curr_win(self, i3, event):
+        """ Cache the current window.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         self.current_win = event.container
 
     def handle_fullscreen(self, i3, event):
+        """ Performs actions over the restore_fullscreen list.
+
+            This function memorize the current state of the fullscreen property
+            of windows for the future reuse it in functions which need to
+            set/unset fullscreen state of the window correctly.
+
+            Args:
+                i3: i3ipc connection.
+                event: i3ipc event. We can extract window from it using
+                event.container.
+        """
         win = event.container
         if self.need_handle_fullscreen:
             if win.fullscreen_mode:
