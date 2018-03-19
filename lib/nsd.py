@@ -43,7 +43,8 @@ class ns(modi3cfg, Matcher):
     def __init__(self, i3, loop=None) -> None:
         """ Init function
 
-            Main part is in self.initialize.
+        Main part is in self.initialize, which performs initialization itself.
+
         Attributes:
             i3: i3ipc connection
             loop: asyncio loop. It's need to be given as parameter because of
@@ -531,9 +532,8 @@ class ns(modi3cfg, Matcher):
         """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
 
             This function defines bindings to the named_scratchpad methods that
-            can be used by external users as i3-bindings, sxhkd, etc.
-            Need the [send] binary which can send commands to the
-            appropriate FIFO.
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate FIFO.
 
             Args:
                 args (List): argument list for the selected function.
