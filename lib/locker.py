@@ -1,9 +1,12 @@
+""" Create a pid lock with abstract socket.
+
+    Taken from [https://stackoverflow.com/questions/788411/check-to-see-if-python-script-is-running]
+"""
+
 import sys
 import socket
 
 
-# Create a pid lock with abstract socket.
-# Taken from [https://stackoverflow.com/questions/788411/check-to-see-if-python-script-is-running]
 def get_lock(process_name):
     # Without holding a reference to our socket somewhere it gets garbage
     # collected when the function exits
