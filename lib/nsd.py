@@ -45,7 +45,7 @@ class ns(modi3cfg, Matcher):
 
         Main part is in self.initialize, which performs initialization itself.
 
-        Attributes:
+        Args:
             i3: i3ipc connection
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread

@@ -421,7 +421,7 @@ class wm3(Singleton, modi3cfg):
         return self.create_geom_from_rect(target_win.rect)
 
     def get_windows_on_ws(self):
-        """ Get windows on fullscreen
+        """ Get windows on the current workspace.
         """
         return filter(
             lambda x: x.window,
