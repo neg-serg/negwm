@@ -41,7 +41,7 @@ class circle(modi3cfg, Matcher):
 
         Main part is in self.initialize, which performs initialization itself.
 
-        Attributes:
+        Args:
             i3: i3ipc connection
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
@@ -95,7 +95,7 @@ class circle(modi3cfg, Matcher):
     def run_prog(self, tag, subtag=None):
         """ Run the appropriate application for the current tag/subtag.
 
-        Attributes:
+        Args:
             tag (str): denotes target [tag]
             subtag (str): denotes the target [subtag], optional.
         """
@@ -124,7 +124,7 @@ class circle(modi3cfg, Matcher):
 
             TODO: need refactoring.
 
-        Attributes:
+        Args:
             tag (str): denotes target [tag]
         """
         self.counters[tag] += 1
@@ -139,7 +139,7 @@ class circle(modi3cfg, Matcher):
 
             TODO: need refactoring to reduce cyclomatic complexity.
 
-        Attributes:
+        Args:
             tag (str): denotes target [tag]
             subtag (str): denotes the target [subtag], optional.
         """
