@@ -1,3 +1,18 @@
+""" Named scratchpad i3 module
+
+This is a module about ion3/notion-like named scratchpad implementation.
+You can think about it as floating "tabs" for windows, which can be
+shown/hidden by request, with next "tab" navigation.
+
+The foundation of it is a i3 mark function, you can create a mark with
+tag+'-'+uuid format. And then this imformation used to performs all
+actions.
+
+Also I've hacked fullscreen behaviour for it, so you can always get
+your scratchpad from fullscreen and also restore fullsreen state of the
+window when needed.
+"""
+
 import os
 import re
 import subprocess
@@ -11,9 +26,29 @@ from modlib import Matcher, notify_msg
 
 
 class ns(modi3cfg, Matcher):
+    """Named scratchpad class
+
+    Parents:
+        modi3cfg: configuration manager to autosave/autoload
+                  TOML-configutation with inotify
+        Matcher: class to check that window can be tagged with given tag by
+                 WM_CLASS, WM_INSTANCE, regexes, etc
+
+    Metaclass:
+        Use Singleton metaclass from singleton module.
+
+    """
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:
+        """Init function
+
+            Main part is in self.initialize.
+        Attributes:
+            i3: i3ipc connection
+            loop: asyncio loop. It's need to be given as parameter because of
+                  you need to bypass asyncio-loop to the thread
+        """
         super().__init__(i3)
         self.initialize(i3)
 
