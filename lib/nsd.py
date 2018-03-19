@@ -26,7 +26,7 @@ from modlib import Matcher, notify_msg
 
 
 class ns(modi3cfg, Matcher):
-    """Named scratchpad class
+    """ Named scratchpad class
 
     Parents:
         modi3cfg: configuration manager to autosave/autoload
@@ -41,7 +41,7 @@ class ns(modi3cfg, Matcher):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:
-        """Init function
+        """ Init function
 
             Main part is in self.initialize.
         Attributes:
@@ -66,7 +66,7 @@ class ns(modi3cfg, Matcher):
         # settings and scale it
         self.nsgeom = geom.geom(self.cfg)
 
-        # marked used to get the list of currently tagged windows
+        # marked used to get the list of current tagged windows
         # with the given tag
         self.marked = {l: [] for l in self.cfg}
 
@@ -88,7 +88,7 @@ class ns(modi3cfg, Matcher):
         self.focus_win_flag = [False, ""]
 
     def make_mark_str(self, tag: str) -> str:
-        """Function to generate unique mark for the given tag
+        """ Generate unique mark for the given tag
 
             Args:
                 tag: tag string
@@ -96,7 +96,7 @@ class ns(modi3cfg, Matcher):
         return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
     def focus(self, tag: str, hide=True) -> None:
-        """Function to show given tag
+        """ Show given tag
 
             Args:
                 tag: tag string
@@ -119,7 +119,7 @@ class ns(modi3cfg, Matcher):
                 self.mark_all_tags(hide=False)
 
     def unfocus(self, tag: str) -> None:
-        """Function to hide given tag
+        """ Hide given tag
 
             Args:
                 tag: tag string
@@ -133,7 +133,7 @@ class ns(modi3cfg, Matcher):
         self.restore_fullscreens()
 
     def unfocus_all_but_current(self, tag: str) -> None:
-        """Function to hide all tagged windows except current
+        """ Hide all tagged windows except current
 
             Args:
                 tag: tag string
@@ -146,7 +146,7 @@ class ns(modi3cfg, Matcher):
                 win.command('move container to workspace current')
 
     def find_visible_windows(self, focused=None):
-        """Function to find windows visible on the screen now
+        """ Find windows visible on the screen now
 
             Unfortunately for now external xprop application used for it,
             because of i3ipc gives no information about what windows
@@ -182,7 +182,7 @@ class ns(modi3cfg, Matcher):
         return visible_windows
 
     def check_dialog_win(self, w):
-        """Function to check that window [w] is not dialog window
+        """ Check that window [w] is not dialog window
 
             Unfortunately for now external xprop application used for it,
             because of i3ipc gives no information about what windows dialog or
@@ -220,7 +220,7 @@ class ns(modi3cfg, Matcher):
         return ret
 
     def dialog_toggle(self):
-        """ Function to show dialog windows
+        """ Show dialog windows
 
             This function using self.check_dialog_win, which use information
             extracted from xprop application. And because of this it's not so
@@ -232,11 +232,21 @@ class ns(modi3cfg, Matcher):
                 win.command('move container to workspace current')
 
     def toggle_fs(self, win):
+        """ Toggles fullscreen on/off and show/hide requested scratchpad after.
+
+            Args:
+                w : window that fullscreen state should be on/off.
+        """
         if win.fullscreen_mode:
             win.command('fullscreen toggle')
             self.fullscreen_list.append(win)
 
     def toggle(self, tag: str) -> None:
+        """ Toggle scratchpad with given tag.
+
+            Args:
+                tag (str): denotes the target tag.
+        """
         if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
             try:
                 prog_str = re.sub(
@@ -265,6 +275,11 @@ class ns(modi3cfg, Matcher):
         self.focus(tag)
 
     def focus_sub_tag(self, tag: str, subtag_classes_set):
+        """ Cycle over the subtag windows.
+
+            Args:
+                tag (str): denotes the target tag.
+        """
         focused = self.i3.get_tree().find_focused()
 
         self.toggle_fs(focused)
@@ -285,11 +300,17 @@ class ns(modi3cfg, Matcher):
             if focused.window_class not in subtag_classes_set:
                 self.next_win()
 
-    def run_subtag(self, tag: str, app: str) -> None:
-        if app in self.cfg[tag].get("prog_dict", {}):
+    def run_subtag(self, tag: str, subtag: str) -> None:
+        """ Run-or-focus the application for subtag
+
+            Args:
+                tag (str): denotes the target tag.
+                subtag (str): denotes the target subtag.
+        """
+        if subtag in self.cfg[tag].get("prog_dict", {}):
             class_list = [win.window_class for win in self.marked[tag]]
             subtag_classes_set = self.cfg[tag].get("prog_dict", {}) \
-                .get(app, {}) \
+                .get(subtag, {}) \
                 .get("includes", {})
             subtag_classes_matched = [
                 w for w in class_list if w in subtag_classes_set
@@ -300,7 +321,7 @@ class ns(modi3cfg, Matcher):
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
                         self.cfg[tag]
                             .get("prog_dict", {})
-                            .get(app, {})
+                            .get(subtag, {})
                             .get("prog", {})
                     )
                     self.i3.command(f'exec {prog_str}')
@@ -313,10 +334,17 @@ class ns(modi3cfg, Matcher):
             self.toggle(tag)
 
     def restore_fullscreens(self) -> None:
+        """ Restore all fullscreen windows
+        """
         [win.command('fullscreen toggle') for win in self.fullscreen_list]
         self.fullscreen_list = []
 
     def visible_count_on_tag(self, tag: str):
+        """ Counts visible windows for given tag
+
+            Args:
+                tag (str): denotes the target tag.
+        """
         visible_windows = self.find_visible_windows()
         vmarked = 0
         for w in visible_windows:
@@ -325,12 +353,27 @@ class ns(modi3cfg, Matcher):
         return vmarked
 
     def get_current_tag(self, focused) -> str:
+        """ Get the current tag
+
+            This function use focused window to determine the current tag.
+
+            Args:
+                focused : focused window.
+        """
         for tag in self.cfg:
             for i in self.marked[tag]:
                 if focused.id == i.id:
                     return tag
 
     def apply_to_current_tag(self, func: Callable) -> bool:
+        """ Apply function [func] to the current tag
+
+            This is the generic function used in next_win, hide_current
+            and another to perform actions on the currently selected tag.
+
+            Args:
+                func(Callable) : function to apply.
+        """
         curr_tag = self.get_current_tag(self.i3.get_tree().find_focused())
         curr_tag_exits = (curr_tag is not None)
         if curr_tag_exits:
@@ -338,6 +381,11 @@ class ns(modi3cfg, Matcher):
         return curr_tag_exits
 
     def next_win(self, hide=True) -> None:
+        """ Show the next window for the currently selected tag.
+
+            Args:
+                hide(bool) : hide another windows for the current tag or not.
+        """
         def next_win_(tag: str) -> None:
             self.focus(tag, Hide)
             for idx, win in enumerate(self.marked[tag]):
@@ -356,10 +404,17 @@ class ns(modi3cfg, Matcher):
         self.apply_to_current_tag(next_win_)
 
     def hide_current(self) -> None:
+        """ Hide the currently selected tag.
+        """
         if not self.apply_to_current_tag(self.unfocus):
             self.i3.command('[con_id=__focused__] scratchpad show')
 
     def geom_restore(self, tag: str) -> None:
+        """ Show the next window for the current selected tag.
+
+            Args:
+                tag(str) : hide another windows for the current tag or not.
+        """
         for idx, win in enumerate(self.marked[tag]):
             # delete previous mark
             del self.marked[tag][idx]
@@ -370,9 +425,16 @@ class ns(modi3cfg, Matcher):
             self.marked[tag].append(win)
 
     def geom_restore_current(self) -> None:
+        """ Restore geometry for the current selected tag.
+        """
         self.apply_to_current_tag(self.geom_restore)
 
     def geom_dump(self, tag: str) -> None:
+        """ Dump geometry for the given tag
+
+            Args:
+                tag(str) : denotes target tag.
+        """
         focused = self.i3.get_tree().find_focused()
         for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
@@ -381,6 +443,11 @@ class ns(modi3cfg, Matcher):
                 break
 
     def geom_save(self, tag: str) -> None:
+        """ Save geometry for the given tag
+
+            Args:
+                tag(str) : denotes target tag.
+        """
         focused = self.i3.get_tree().find_focused()
         for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
@@ -397,20 +464,34 @@ class ns(modi3cfg, Matcher):
                 break
 
     def auto_save_geom(self, save=True, with_notification=False):
+        """ Set geometry autosave option with optional notification.
+
+            Args:
+                save(bool): predicate that shows that want to enable/disable
+                             autosave mode.
+                with_notification(bool): to create notify-osd-based
+                                         notification or not.
+        """
         self.geom_auto_save = save
         if with_notification:
             notify_msg(f"geometry autosave={save}")
 
     def autosave_toggle(self):
+        """ Toggle autosave mode.
+        """
         if self.geom_auto_save:
             self.auto_save_geom(False, with_notification=True)
         else:
             self.auto_save_geom(True, with_notification=True)
 
     def geom_dump_current(self):
+        """ Dump geometry for the current selected tag.
+        """
         self.apply_to_current_tag(self.geom_dump)
 
     def geom_save_current(self):
+        """ Save geometry for the current selected tag.
+        """
         self.apply_to_current_tag(self.geom_save)
 
     def add_prop(self, tag, prop_str):
