@@ -50,7 +50,10 @@ class ns(modi3cfg, Matcher):
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
+        # Initialize modi3cfg.
         super().__init__(i3)
+
+        # most of initialization doing here.
         self.initialize(i3)
 
         self.i3.on('window::new', self.mark_tag)
