@@ -1,3 +1,21 @@
+""" Module contains routines used by several another modules.
+
+There are several superclasses and generic modules here.
+The main reason is "don't repeat yourself", DRY.
+
+Matcher:
+    Matcher: class to check that window can be tagged with given tag by
+    WM_CLASS, WM_INSTANCE, regexes, etc. It can be used by named scrachpad,
+    circle run-or-raise, etc.
+
+Daemon manager and mod daemon:
+    Mod daemon creates appropriate fifos in the ~/tmp directory.
+
+    Daemon manager handles all requests to this named pipe based API with help
+    of asyncio.
+
+"""
+
 import os
 import sys
 import subprocess
@@ -10,6 +28,8 @@ from singleton import Singleton
 
 
 def i3path():
+    """ Easy way to return i3 config path. May be improved.
+    """
     user_name = os.environ.get("USER", "neg")
     xdg_config_path = os.environ.get(
         "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
@@ -18,12 +38,25 @@ def i3path():
     return i3_path
 
 
-def notify_msg(s, prefix=" "):
-    notify_msg = ['notify-send', "<span weight='normal' color='#617287'>" + prefix +  s + "</span>"]
+def notify_msg(msg, prefix=" "):
+    """ Send messages via notify-osd based notifications.
+
+        Args:
+            msg: message string.
+            prefix: optional prefix for message string.
+    """
+    notify_msg = [
+        'notify-send',
+        "<span weight='normal' color='#617287'>" +
+        prefix +  msg +
+        "</span>"
+    ]
     subprocess.run(notify_msg)
 
 
 def get_screen_resolution():
+    """ Return current screen resolution with help of xrandr.
+    """
     out = subprocess.run(
         'xrandr | awk \'/*/{print $1}\'',
         shell=True,
@@ -38,6 +71,16 @@ def get_screen_resolution():
 
 
 def find_visible_windows(windows_on_ws):
+    """ Find windows visible on the screen now.
+
+    Unfortunately for now external xprop application used for it,
+    because of i3ipc gives no information about what windows
+    shown/hidden or about _NET_WM_STATE_HIDDEN attributes
+
+    Args:
+        windows_on_ws: windows list which going to be filtered with this
+                       function.
+    """
     visible_windows = []
     for w in windows_on_ws:
         xprop = None
@@ -57,6 +100,20 @@ def find_visible_windows(windows_on_ws):
 
 
 class Matcher(object):
+    """ Generic matcher class
+
+    Used by several classes. It can match windows by several criteria, which
+    I am calling "factor", including:
+        - by class, by class regex
+        - by instance, by instance regex
+        - by role, by role regex
+        - by name regex
+
+    Of course this list can by expanded. It uses sys.intern hack for better
+    performance and simple caching. One of the most resource intensive part of
+    negi3mods.
+
+    """
     def find_classed(self, wlist, pattern):
         return [c for c in wlist
                 if c.window_class and re.search(pattern, c.window_class)]
@@ -154,16 +211,33 @@ class Matcher(object):
 
 
 class daemon_manager():
+    """ Daemon manager. Rules by negi3mods, dispatch messages.
+
+        Every module has indivisual main loop with indivisual named-pipe(FIFO).
+
+    Metaclass:
+        Use Singleton metaclass from singleton module.
+    """
     __metaclass__ = Singleton
 
     def __init__(self, mods):
+        # daemon_i3 instances, addressed by mod name.
         self.daemons = {}
+
+        # mods list
         self.mods = mods
+
+        # mainloop Queue dict, addressed by mod name.
         self.Q = {}
         for m in self.mods:
             self.Q[sys.intern(m)] = Queue()
 
     async def fifo_listner(self, name):
+        """ Async FIFO(named-pipe) listner
+
+            Args:
+                name(str): module name.
+        """
         while True:
             async with aiofiles.open(self.daemons[name].fifo, mode='r') as fifo:
                 while True:
@@ -178,23 +252,33 @@ class daemon_manager():
                         print(traceback.format_exc())
 
     def add_daemon(self, name):
+        """ Add negi3mods daemon.
+
+            For now it is legacy code, needed only to create named-pipe.
+        """
         d = daemon_i3()
         if d not in self.daemons.keys():
             self.daemons[name] = d
             self.daemons[name].create_fifo(name)
 
     def mainloop(self, loop):
+        """ Mainloop for module. Started by negi3mods in separated thread.
+
+            Args:
+                loop: asyncio.loop should be bypassed to function if you are
+                using new thread.
+        """
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
             asyncio.wait([self.fifo_listner(m) for m in self.mods])
         )
 
-    def worker(self, name):
-        while not self.Q[name].empty():
-            self.Q[name].get()
-
 
 class daemon_i3():
+    """ The main purpose of this class is creating / deleting of the FIFO for negi3mod.
+
+        TODO: merge it with daemon_manager.
+    """
     __metaclass__ = Singleton
 
     def __init__(self):
