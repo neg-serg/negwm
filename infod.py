@@ -1,5 +1,13 @@
 #!/usr/bin/pypy3
 
+""" This is an application which supposed to be run separately from negi3mods.
+
+This application can extract some info about negi3mod state and return it as
+echo server. It is very simple, but fast enough. Maybe I will improve this code
+with asyncio or something like this in the future.
+
+"""
+
 import socket
 import i3ipc
 from lib.singleton import Singleton
@@ -14,22 +22,44 @@ class info(modi3cfg):
     __metaclass__ = Singleton
 
     def __init__(self, i3):
-        super().__init__(i3)
-        self.i3 = i3
+        """ Init function
 
+        Args:
+            i3: i3ipc connection.
+        """
+
+        # modi3cfg init.
+        super().__init__(i3)
+
+        # echo server address.
         self.addr = self.cfg.get("addr", '0.0.0.0')
+
+        # echo server port.
         self.port = int(self.cfg.get("port", '31888'))
+
+        # default connection count.
         self.conn_count = int(self.cfg.get("conn_count", 10))
+
+        # buffer size.
         self.buf_size = int(self.cfg.get('buf_size', 2048))
 
-        self.ns_instance = ns(self.i3)
-        self.circle_instance = circle(self.i3)
+        # nsd instance. We need it to extract info
+        self.ns_instance = ns(i3)
+
+        # circled instance. We need it to extract info
+        self.circle_instance = circle(i3)
 
     def close_conn(self):
+        """ Close connection.
+
+            This function is just for DRY principle and convinience.
+        """
         self.curr_conn.shutdown(1)
         self.curr_conn.close()
 
-    def listen(self):
+    def mainloop(self):
+        """ Mainloop function, listen to request, returns echo, very stupid.
+        """
         conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         conn.bind((self.addr, self.port))
@@ -57,6 +87,6 @@ class info(modi3cfg):
 if __name__ == '__main__':
     i3 = i3ipc.Connection()
     loop = info(i3)
-    Thread(target=loop.listen, daemon=True).start()
+    Thread(target=loop.mainloop, daemon=True).start()
     loop.i3.main()
 
