@@ -1,3 +1,14 @@
+""" Menu manager module.
+
+    This module is about creating various menu.
+
+    For now it contains following menus:
+        - Goto workspace.
+        - Add window to named scratchpad or circle group.
+        - xprop menu to get X11-atom parameters of selected window.
+        - i3-cmd menu with autocompletion.
+"""
+
 import json
 import socket
 import re
@@ -13,18 +24,34 @@ class menu(modi3cfg):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None):
+        # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
+
+        # i3 path used to get "send" binary path
         self.i3_path = i3path()
+
+        # i3-msg application name
         self.i3cmd = 'i3-msg'
+
+        # magic pie to spawn error, used for autocomplete.
         self.magic_pie = 'sssssnake'
 
+        # default echo server host
         self.host = '0.0.0.0'
+
+        # default echo server port
         self.port = 31888
+
+        # create echo server socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+        # negi3mods which allows add / delete property.
+        # For example this feature can be used to move / delete window
+        # to / from named scratchpad.
         self.possible_mods = ['ns', 'circle']
 
-        self.need_xprops = [
+        # Window properties shown by xprop menu.
+        self.xprops_list = [
             "WM_CLASS",
             "WM_NAME",
             "WM_WINDOW_ROLE",
@@ -34,6 +61,7 @@ class menu(modi3cfg):
             "_NET_WM_PID"
         ]
 
+        # Window properties used by i3 to match windows.
         self.i3rule_xprops = {
             "WM_CLASS",
             "WM_WINDOW_ROLE",
@@ -41,9 +69,18 @@ class menu(modi3cfg):
             "_NET_WM_NAME"
         }
 
+        # Magic delimiter used by add_prop / del_prop routines.
         self.delim = "@"
 
     def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=1900):
+        """ Returns arguments list for rofi runner.
+
+        Args:
+            prompt (str): rofi prompt, optional.
+            cnum (int): number of columns, optional.
+            lnum (int): number of lines, optional.
+            width (int): width of rofi menu.
+        """
         return [
             'rofi', '-show', '-dmenu',
             '-columns', str(cnum), '-lines', str(lnum),
@@ -57,6 +94,8 @@ class menu(modi3cfg):
         ]
 
     def i3_cmds(self):
+        """ Return the list of i3 commands with magic_pie hack autocompletion.
+        """
         try:
             out = subprocess.run(
                 [self.i3cmd, self.magic_pie],
@@ -81,16 +120,27 @@ class menu(modi3cfg):
             return ""
 
     def switch(self, args):
+        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+
+            This function defines bindings to the named_scratchpad methods that
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate FIFO.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
         {
             "run": self.cmd_menu,
             "xprop": self.xprop_menu,
             "autoprop": self.autoprop,
             "show_props": self.show_props,
-            "ws": self.workspaces,
+            "ws": self.goto_ws,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
     def show_props(self):
+        """ Send notify-osd message about current properties.
+        """
         aprop_str = self.get_autoprop_as_str(with_title=False)
         print(aprop_str)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
@@ -114,10 +164,12 @@ class menu(modi3cfg):
             return None
 
     def xprop_menu(self):
+        """ Menu to show X11 atom attributes for current window.
+        """
         xprops = []
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.run(
-            ['xprop', '-id', str(w.window)] + self.need_xprops,
+            ['xprop', '-id', str(w.window)] + self.xprops_list,
             stdout=subprocess.PIPE
         ).stdout
         if xprop is not None:
@@ -144,10 +196,16 @@ class menu(modi3cfg):
             )
 
     def get_autoprop_as_str(self, with_title=False, with_role=False):
+        """ Convert xprops list to i3 commands format.
+
+        Args:
+            with_title (bool): add WM_NAME attribute, to the list, optional.
+            with_role (bool): add WM_WINDOW_ROLE attribute to the list, optional.
+        """
         xprops = []
         w = self.i3.get_tree().find_focused()
         xprop = subprocess.run(
-            ['xprop', '-id', str(w.window)] + self.need_xprops,
+            ['xprop', '-id', str(w.window)] + self.xprops_list,
             stdout=subprocess.PIPE
         ).stdout
         if xprop is not None:
@@ -173,6 +231,11 @@ class menu(modi3cfg):
         return "[" + ''.join(sorted(ret)) + "]"
 
     def mod_data_list(self, mod):
+        """ Extract list of module tags. Used by add_prop menus.
+
+        Args:
+            mod (str): negi3mod name.
+        """
         self.sock.connect((self.host, self.port))
         self.sock.send(bytes(f'{mod}_list\n', 'UTF-8'))
         out = self.sock.recv(1024)
@@ -185,6 +248,12 @@ class menu(modi3cfg):
         return lst
 
     def tag_name(self, mod, lst):
+        """ Returns tag name, selected by rofi.
+
+        Args:
+            mod (str): module name string.
+            lst (List): list of rofi input.
+        """
         rofi_tag = subprocess.run(
             self.rofi_args(
                 cnum=len(lst),
@@ -199,6 +268,8 @@ class menu(modi3cfg):
             return rofi_tag.decode('UTF-8').strip()
 
     def get_mod(self):
+        """ Select negi3mod for add_prop by rofi.
+        """
         mod = subprocess.run(
             self.rofi_args(
                 cnum=len(self.possible_mods),
@@ -214,6 +285,8 @@ class menu(modi3cfg):
             return mod.decode('UTF-8').strip()
 
     def autoprop(self):
+        """ Start autoprop menu to move current module to smth.
+        """
         mod = self.get_mod()
         if mod is None or not mod:
             return
@@ -231,7 +304,9 @@ class menu(modi3cfg):
         else:
             print('[no tag name specified] for props [{aprop_str}]')
 
-    def workspaces(self):
+    def goto_ws(self):
+        """ Go to workspace menu.
+        """
         wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
         ws = subprocess.run(
             self.rofi_args(cnum=len(wslist), width=1200, prompt="[ws] >>"),
@@ -244,6 +319,8 @@ class menu(modi3cfg):
             self.i3.command(f'workspace {ws}')
 
     def cmd_menu(self):
+        """ Menu for i3 commands with hackish autocompletion.
+        """
         # set default menu args for supported menus
         cmd = ''
 
