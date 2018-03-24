@@ -132,6 +132,10 @@ class Negi3Mods():
         watcher.close()
 
     def check_i3_config(self):
+        """ Checks i3 config.
+
+            TODO: add this check to the i3 watcher again.
+        """
         check_config = subprocess.run(
             ['i3', '-C'],
             stdout=subprocess.PIPE
@@ -193,6 +197,7 @@ if __name__ == '__main__':
     get_lock('negi3mods.py')
     cgitb.enable(format='text')
 
+    # We need it because of thread_wait on Ctrl-C.
     atexit.register(lambda: os._exit(0))
 
     daemon = Negi3Mods()
