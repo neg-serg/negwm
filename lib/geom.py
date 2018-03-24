@@ -1,43 +1,84 @@
+""" Module to convert from 16:10 1080p geometry to target screen geometry.
+
+    This module contains geometry converter and also i3-rules generator. Also
+    in this module geometry is parsed from config X11 internal format to the i3
+    commands.
+"""
 import re
 from modlib import get_screen_resolution
 
 
 class geom():
-    def __init__(self, settings):
-        self.cmd_list = []
-        self.parsed_geom = {}
-        self.current_resolution = get_screen_resolution()
-        self.settings = settings
-        for tag in self.settings:
-            self.parsed_geom[tag] = self.__parse_geom(tag)
+    def __init__(self, cfg):
+        """ Init function
 
-    def scratchpad_hide(self, hide):
+        Args:
+            cfg: config bypassed from target module, nsd for example.
+        """
+        # generated command list for i3 config
+        self.cmd_list = []
+
+        # geometry in the i3-commands format.
+        self.parsed_geom = {}
+
+        # set current screen resolution
+        self.current_resolution = get_screen_resolution()
+
+        # external config
+        self.cfg = cfg
+
+        # fill self.parsed_geom with self.parse_geom function.
+        for tag in self.cfg:
+            self.parsed_geom[tag] = self.parse_geom(tag)
+
+    def scratchpad_hide_cmd(self, hide):
+        """ Returns cmd needed to hide scratchpad.
+
+            Args:
+                hide (bool): to hide target or not.
+        """
         ret = ""
         if hide:
             ret = ", [con_id=__focused__] scratchpad show"
         return ret
 
-    def ret_info(self, tag, attr, key, dprefix, hide):
-        if key in attr:
-            lst = [item for item in self.settings[tag][key] if item != '']
+    def ret_info(self, tag, attr, target_attr, dprefix, hide):
+        """ Create rule in i3 commands format
+
+        Args:
+            tag (str): target tag.
+            attr (str): tag attrubutes.
+            target_attr (str): attribute to fill.
+            dprefix (str): rule prefix.
+            hide (str): to hide target or not.
+        """
+        if target_attr in attr:
+            lst = [item for item in self.cfg[tag][target_attr] if item != '']
             if lst != []:
                 pref = dprefix+"[" + '{}="'.format(attr) + \
-                    self.ch(self.settings[tag][attr], '^')
-                for_win_cmd = pref + self.parse_attr(tag, key) + \
+                    self.ch(self.cfg[tag][attr], '^')
+                for_win_cmd = pref + self.parse_attr(tag, target_attr) + \
                     "move scratchpad, " + self.get_geom(tag) \
-                                        + self.scratchpad_hide(hide)
+                                        + self.scratchpad_hide_cmd(hide)
                 return for_win_cmd
         return ''
 
     def ch(self, lst, ch):
+        """ Return char is list is not empty to prevent stupid commands.
+        """
         ret = ''
         if len(lst) > 1:
             ret = ch
         return ret
 
     def parse_attr(self, tag, attr):
+        """ Create attribute matching string.
+
+            tag (str): target tag.
+            attr (str): target attrubute.
+        """
         ret = ''
-        attrib_list = self.settings[tag][attr]
+        attrib_list = self.cfg[tag][attr]
         if len(attrib_list) > 1:
             ret += '('
         for iter, item in enumerate(attrib_list):
@@ -51,9 +92,15 @@ class geom():
         return ret
 
     def create_i3_match_rules(self, hide=True, dprefix="for_window "):
+        """ Create i3 match rules for all tags.
+
+        Args:
+            hide (bool): to hide target or not, optional.
+            dprefix (str): i3-cmd prefix is "for_window " by default, optional.
+        """
         cmd_list = []
-        for tag in self.settings:
-            for attr in self.settings[tag]:
+        for tag in self.cfg:
+            for attr in self.cfg[tag]:
                 cmd_list.append(self.ret_info(
                     tag, attr, 'class', dprefix, hide)
                 )
@@ -64,13 +111,20 @@ class geom():
 
     # nsd need this function
     def get_geom(self, tag):
+        """ External function used by nsd
+        """
         return self.parsed_geom[tag]
 
-    def __parse_geom(self, group):
+    def parse_geom(self, tag):
+        """ Convert geometry from self.cfg format to i3 commands.
+
+        Args:
+            tag (str): target self.cfg tag
+        """
         rd = {'width': 1920, 'height': 1200}  # resolution_default
         cr = self.current_resolution          # current resolution
 
-        g = re.split(r'[x+]', self.settings[group]["geom"])
+        g = re.split(r'[x+]', self.cfg[tag]["geom"])
         cg = []  # converted_geom
 
         cg.append(int(int(g[0])*cr['width'] / rd['width']))
