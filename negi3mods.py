@@ -2,9 +2,11 @@
 """ i3 negi3mods daemon script.
 
 This module loads all negi3mods an start it via modlib's daemon_manager
-mailoop. Also inotify-based watchers for all negi3mods TOML-based configuration
-also spawned here, to use it just start it from any place without parameters.
-Also it contains pid-lock which prevents running several times.
+mailoop. Inotify-based watchers for all negi3mods TOML-based configuration
+spawned here, to use it just start it from any place without parameters. Also
+there is i3 config watcher to convert it from ppi3 format to plain i3
+automatically. Moreover it contains pid-lock which prevents running several
+times.
 
 Usage:
     negi3mods.py
@@ -33,6 +35,11 @@ from lib.modlib import daemon_manager, notify_msg, i3path
 
 class Negi3Mods():
     def __init__(self):
+        """ Init function
+
+            Using of self.intern for better performance, create i3ipc
+            connection, connects to the asyncio eventloop.
+        """
         self.mods = {
             intern('circle'): None,
             intern('ns'): None,
@@ -49,17 +56,13 @@ class Negi3Mods():
         self.i3 = i3ipc.Connection()
         self.loop = asyncio.get_event_loop()
 
-    def dump_configs(self):
-        import toml
-        try:
-            for mod in self.mods.keys():
-                m = self.mods[mod]
-                with open(self.i3_cfg_path + mod + ".cfg", "w") as fp:
-                    toml.dump(m.cfg, fp)
-        except:
-            pass
-
     def load_modules(self):
+        """ Load modules.
+
+            This function init daemon_manager, use importlib to load all the
+            stuff, then add_daemon and update notification with startup
+            benchmarks.
+        """
         mod_startup_times = []
         self.manager = daemon_manager(self.mods)
         print()
@@ -78,21 +81,17 @@ class Negi3Mods():
         self.notification_text += overall_msg
         print(overall_msg)
 
-    def cleanup_on_exit(self):
-        def cleanup_everything():
-            for mod in self.mods.keys():
-                fifo = self.mods[mod]["manager"].daemons[mod].fifos[mod]
-                if os.path.exists(fifo):
-                    os.remove(fifo)
-        atexit.register(cleanup_everything)
-
     def mods_cfg_watcher(self):
+        """ modi3cfg watcher to update modules config in realtime.
+        """
         watcher = aionotify.Watcher()
         watcher.watch(alias='configs', path=self.i3_cfg_path,
                       flags=aionotify.Flags.MODIFY)
         return watcher
 
     def i3_config_watcher(self):
+        """ i3 config watcher to run ppi3 on write.
+        """
         watcher = aionotify.Watcher()
         watcher.watch(
             alias='i3cfg',
@@ -102,6 +101,11 @@ class Negi3Mods():
         return watcher
 
     async def mods_cfg_worker(self, watcher):
+        """ Reloading of all negi3mods on change of any config.
+
+            Args:
+                watcher: watcher for modi3cfg.
+        """
         await watcher.setup(self.loop)
         while True:
             event = await watcher.get_event()
@@ -111,6 +115,11 @@ class Negi3Mods():
         watcher.close()
 
     async def i3_config_worker(self, watcher):
+        """ Run ppi3 when config is changed
+
+            Args:
+                watcher: watcher for i3 config.
+        """
         await watcher.setup(self.loop)
         while True:
             event = await watcher.get_event()
@@ -134,11 +143,22 @@ class Negi3Mods():
         check_config = ""
 
     def run_inotify_watchers(self):
+        """ Start all watchers here via ensure_future to run it in background.
+        """
         asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
         asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
 
     def run(self):
+        """ Run negi3mods here.
+        """
         def start(func, name, args=None):
+            """ Helper for pretty-printing of loading process.
+
+                Args:
+                    func (callable): callable routine to run.
+                    name: routine name.
+                    args: routine args, optional.
+            """
             print(f'[{name} loading ', end='', flush=True)
             if args is None:
                 func()
@@ -146,15 +166,20 @@ class Negi3Mods():
                 func(*args)
             print(f'... {name} loaded]', flush=True)
 
+        # Start inotify watchers
         use_inotify = True
         start(self.load_modules, 'modules')
         if use_inotify:
             start(self.run_inotify_watchers, 'inotify watchers')
 
+        # Start echo server as separated process
         subprocess.run(['pkill', '-f', 'infod.py'])
         subprocess.run([self.i3_path + 'infod.py &'], shell=True)
+
+        # Start modules mainloop.
         start(Thread(target=self.manager.mainloop,
               args=(self.loop,), daemon=True).start, 'mainloop')
+
         print('... everything loaded ...')
         notify_msg(self.notification_text)
         try:
