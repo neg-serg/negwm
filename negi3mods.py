@@ -1,11 +1,20 @@
 #!/usr/bin/pypy3
-""" i3 negi3mods daemon script Usage:
+""" i3 negi3mods daemon script.
+
+This module loads all negi3mods an start it via modlib's daemon_manager
+mailoop. Also inotify-based watchers for all negi3mods TOML-based configuration
+also spawned here, to use it just start it from any place without parameters.
+Also it contains pid-lock which prevents running several times.
+
+Usage:
     negi3mods.py
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
 github :: https://github.com/neg-serg?tab=repositories
-year :: 2018 """
+year :: 2018
+
+"""
 
 import os
 import timeit
