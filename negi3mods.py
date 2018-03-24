@@ -49,11 +49,22 @@ class Negi3Mods():
             intern('wm3'): None,
             intern('vol'): None,
         }
+
+        # stuff for startup notifications
         self.notification_text = "Wow! It's time to start mods!\n\n"
         self.msg_prefix = "<span weight='normal' color='#395573'> >> </span>"
+
+        # i3 path used to get i3 config path for "send" binary, _config needed
+        # by ppi3 path and another configs.
         self.i3_path = i3path()
+
+        # i3 path used to get "send" binary path
         self.i3_cfg_path = self.i3_path + '/cfg/'
+
+        # main i3ipc connection created here and can be bypassed to the most of modules here.
         self.i3 = i3ipc.Connection()
+
+        # setup asyncio loop
         self.loop = asyncio.get_event_loop()
 
     def load_modules(self):
