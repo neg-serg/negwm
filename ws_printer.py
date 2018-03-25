@@ -1,4 +1,40 @@
 #!/usr/bin/pypy3 -u
+
+""" Current workspace printing daemon.
+
+This daemon prints current i3 workspace. You need this because of bugs inside
+of polybar's i3 current workspace implementation: you will get race condition
+leading to i3 wm dead-lock.
+
+Also it print current keybinding mode.
+
+Usage:
+    ./ws_printer.py
+
+Suppoused to be used inside polybar.
+
+Config example:
+
+[module/ws]
+type = custom/script
+exec = ~/.config/i3/ws_printer.py
+exec-if = sleep 1
+format = <label>
+tail = true
+
+Also you need to use unbuffered output for polybar, otherwise you will see no
+output at all. I've considered that pypy3 is better choise here, because of
+this application run pretty long time to get advantages of JIT compilation.
+
+Created by :: Neg
+email :: <serg.zorg@gmail.com>
+github :: https://github.com/neg-serg?tab=repositories
+year :: 2018
+
+"""
+
+# Use gevent monkey patching for the better performance.
+# I think that the most of improvements come from threading patching here.
 from gevent import monkey
 monkey.patch_all()
 
@@ -19,21 +55,25 @@ class ws_watcher():
         self.i3.on('binding', self.on_eventent)
 
         self.loop = asyncio.get_event_loop()
-        self.ws_str = "ws"
         self.ws_name = ""
 
         self.binding_mode = ""
+
+        # regexes used to extract current binding mode.
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
         self.ws_color = "#8FA8C7"
         self.ws_name = ""
+
         for ws in self.i3.get_workspaces():
             if ws.focused:
                 self.ws_name = ws.name
                 break
 
     def on_ws_focus(self, i3, event):
+        """ Get workspace name and throw event.
+        """
         self.ws_name = event.current.name
         self.event.set()
 
@@ -54,12 +94,16 @@ class ws_watcher():
                     self.event.set()
 
     def main(self):
+        """ Mainloop starting here.
+        """
         asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(
             self.update_status(self.loop),
         )
 
     async def update_status(self, loop):
+        """ Print workspace information here. Event-based.
+        """
         while True:
             if self.event.wait():
                 ws = self.ws_name
