@@ -1,11 +1,12 @@
 #!/usr/bin/pypy3 -u
-""" Volume printer script
 
-This script print current MPD volume like `tail -f` echo server, so you do not
+""" Volume printing daemon.
+
+This daemon prints current MPD volume like `tail -f` echo server, so you do not
 need to use busy waiting to extract information from it.
 
 Usage:
-    ./vol_printer
+    ./vol_printer.py
 
 Suppoused to be used inside polybar.
 
