@@ -14,7 +14,7 @@ Config example:
 [module/volume]
 type = custom/script
 interval = 0
-exec = /home/neg/.config/i3/vol_printer.py
+exec = ~/.config/i3/vol_printer.py
 exec-if = sleep 1
 tail = true
 
