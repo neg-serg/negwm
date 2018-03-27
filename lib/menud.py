@@ -102,22 +102,22 @@ class menu(modi3cfg):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL
             ).stdout
-
-            lst = [
-                t.replace("'", '')
-                for t in re.split('\s*,\s*', json.loads(
-                    out.decode('UTF-8')
-                )[0]['error'])[2:]
-            ]
-
-            lst.remove('nop')
-            lst.append('splitv')
-            lst.append('splith')
-            lst.sort()
-
-            return lst
         except:
             return ""
+
+        lst = [
+            t.replace("'", '')
+            for t in re.split('\s*,\s*', json.loads(
+                out.decode('UTF-8')
+            )[0]['error'])[2:]
+        ]
+
+        lst.remove('nop')
+        lst.append('splitv')
+        lst.append('splith')
+        lst.sort()
+
+        return lst
 
     def switch(self, args):
         """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
@@ -189,10 +189,9 @@ class menu(modi3cfg):
 
         # Copy to the clipboard
         if ret is not None and ret != '':
-            ret.strip()
             subprocess.run(
                 ['xsel', '-i'],
-                input=bytes(ret, 'UTF-8')
+                input=bytes(ret.strip(), 'UTF-8')
             )
 
     def get_autoprop_as_str(self, with_title=False, with_role=False):
