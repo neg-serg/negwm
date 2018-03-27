@@ -130,6 +130,7 @@ for_window [instance="^(subl3|sublime_text)$"] move container to workspace $dev,
 # ░░▀░░▀░▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░▀▀▀
 for_window [class="^(caja|Pavucontrol|Awf-gtk3|lxappearance|stardict|Conky|zazu)$"] floating enable
 for_window [class="cool-retro-term"] floating enable
+for_window [class="NamedScratchpadPlaceholder"] floating enable
 for_window [class="(feh|qiv)"] floating enable
 for_window [class="Nicotine.*" instance="nicotine"] floating enable
 for_window [class="rdesktop" instance="rdesktop"] floating enable
