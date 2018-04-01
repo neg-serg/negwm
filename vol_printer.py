@@ -56,6 +56,13 @@ class volume_watcher():
         # command to get status from MPD
         self.status_cmd_str = "status\n"
 
+        # various MPD // Volume printer delimiters
+        delim0 = f" || "
+        delim1 = f"%{{O12}} ⃦%{{O8}}"
+        delim2 = f" ║ "
+
+        self.delimiter = delim2
+
     def main(self):
         """ Mainloop starting here.
         """
@@ -67,7 +74,7 @@ class volume_watcher():
     def pretty_printing(self, string):
         """ Create nice and shiny output for polybar.
         """
-        return f'%{{F#395573}} || %{{F-}}%{{F#cccccc}}' + \
+        return f'%{{F#395573}}{self.delimiter}%{{F-}}%{{F#cccccc}}' + \
             f'Vol: {string}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
 
     def empty_output(self):
