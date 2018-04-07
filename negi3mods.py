@@ -123,6 +123,7 @@ class Negi3Mods():
             if event.name[:-4] in self.mods:
                 for mod in self.mods.keys():
                     subprocess.run([self.i3_path + 'send', mod, 'reload'])
+            notify_msg('[Reloaded {' + ','.join(self.mods.keys()) + '} ]')
         watcher.close()
 
     async def i3_config_worker(self, watcher):
