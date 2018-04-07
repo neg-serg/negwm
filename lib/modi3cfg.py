@@ -16,7 +16,7 @@ class modi3cfg(object):
         # detect current negi3mod
         self.mod = self.__class__.__name__
 
-        # negi3mod cfg directory path
+        # negi3mod config path
         self.i3_cfg_mod_path = i3path() + '/cfg/' + self.mod + '.cfg'
 
         # load current config
