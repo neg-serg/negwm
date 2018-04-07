@@ -18,6 +18,7 @@ import shlex
 from singleton import Singleton
 from modi3cfg import modi3cfg
 from modlib import i3path
+from functools import partial
 
 
 class menu(modi3cfg):
@@ -68,6 +69,24 @@ class menu(modi3cfg):
             "WM_NAME",
             "_NET_WM_NAME"
         }
+
+        self.all_ws = [
+            " α:term",
+            " β:web",
+            " γ:doc",
+            " δ:dev",
+            " ε:media",
+            "ζ:gimp",
+            "η:admin",
+            " θ:ide",
+            " ι:steam",
+            " κ:torrent",
+            "λ:vm",
+            "μ:wine",
+            " ν:spotify",
+            " ξ: [pic]",
+            " ο: [graph]",
+        ]
 
         # Magic delimiter used by add_prop / del_prop routines.
         self.delim = "@"
@@ -135,6 +154,7 @@ class menu(modi3cfg):
             "autoprop": self.autoprop,
             "show_props": self.show_props,
             "ws": self.goto_ws,
+            "movews": self.move_to_ws,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
@@ -303,19 +323,42 @@ class menu(modi3cfg):
         else:
             print('[no tag name specified] for props [{aprop_str}]')
 
-    def goto_ws(self):
-        """ Go to workspace menu.
+    def select_ws(self, use_all_ws):
+        """ Apply target function to workspace.
         """
-        wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
+        if use_all_ws:
+            wslist = self.all_ws
+        else:
+            wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
         ws = subprocess.run(
             self.rofi_args(cnum=len(wslist), width=1200, prompt="[ws] >>"),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(wslist), 'UTF-8')
         ).stdout
 
+        ws = ws.decode('UTF-8').strip()
+        return ws
+
+    def apply_to_ws(self, func):
+        func()
+
+    def goto_ws(self, use_all_ws=True):
+        """ Go to workspace menu.
+        """
+        ws = self.select_ws(use_all_ws)
         if ws is not None and ws:
-            ws = ws.decode('UTF-8').strip()
-            self.i3.command(f'workspace {ws}')
+            self.apply_to_ws(
+                partial(self.i3.command, f'workspace {ws}')
+            )
+
+    def move_to_ws(self, use_all_ws=True):
+        """ Move current window to the selected workspace
+        """
+        ws = self.select_ws(use_all_ws)
+        if ws is not None and ws:
+            self.apply_to_ws(
+                partial(self.i3.command, f'[con_id=__focused__] move to workspace {ws}')
+            )
 
     def cmd_menu(self):
         """ Menu for i3 commands with hackish autocompletion.
