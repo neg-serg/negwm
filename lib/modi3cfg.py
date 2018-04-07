@@ -13,24 +13,46 @@ from modlib import i3path
 
 class modi3cfg(object):
     def __init__(self, i3, loop=None):
+        # detect current negi3mod
         self.mod = self.__class__.__name__
-        self.i3_path = i3path()
+
+        # negi3mod cfg directory path
+        self.i3_cfg_mod_path = i3path() + '/cfg/' + self.mod
+
+        # load current config
         self.load_config()
-        self.attr_dict = {}
+
+        # used for props add / del hacks
+        self.win_attrs = {}
+
+        # windows properties used for props add / del
         self.possible_props = ['class', 'instance', 'window_role', 'title']
+
+        # basic cfg properties, without regexes
         self.cfg_props = ['class', 'instance', 'role']
+
+        # regex cfg properties
         self.cfg_regex_props = ["class_r", "instance_r", "name_r", "role_r"]
+
+        # basic + regex props
+        self.win_all_props = set(self.cfg_props) | set(self.cfg_regex_props)
+
+        # bind numbers to cfg names
         self.conv_props = {
             'class': self.cfg_props[0],
             'instance': self.cfg_props[1],
             'window_role': self.cfg_props[2],
         }
+
         self.i3 = i3
         self.loop = None
         if loop is not None:
             self.loop = loop
 
     def reload_config(self):
+        """ Reload config for current selected module.
+            Call load_config, print debug messages and reinit all stuff.
+        """
         prev_conf = self.cfg
         try:
             self.load_config()
@@ -46,10 +68,12 @@ class modi3cfg(object):
             self.__init__()
 
     def dict_converse(self):
+        """ Convert list attributes to set for the better performance.
+        """
         for i in self.cfg:
             if type(i) is list:
                 for j in self.cfg[i]:
-                    if j in {"class", "class_r", "instance"}:
+                    if j in self.win_all_props:
                         self.cfg[i][j] = set(self.cfg[i][sys.intern(j)])
                     if j == "prog_dict":
                         for k in self.cfg[i][j]:
@@ -59,10 +83,13 @@ class modi3cfg(object):
                                         set(self.cfg[i][j][k][sys.intern(kk)])
 
     def dict_deconverse(self):
+        """ Convert set attributes to list, because of set cannot be saved
+            / restored to / from TOML-files corretly.
+        """
         for i in self.cfg:
             if type(i) is dict:
                 for j in self.cfg[i]:
-                    if j in {"class", "class_r", "instance"}:
+                    if j in self.win_all_props:
                         self.cfg[i][j] = list(self.cfg[i][j])
                     if j == "prog_dict":
                         for k in self.cfg[i][j]:
@@ -72,19 +99,28 @@ class modi3cfg(object):
                                         list(self.cfg[i][j][k][kk])
 
     def load_config(self):
-        with open(self.i3_path + "/cfg/" + self.mod + ".cfg", "r") as fp:
+        """ Reload config itself and convert lists in it to sets for the better
+            performance.
+        """
+        with open(self.i3_cfg_mod_path, "r") as fp:
             self.cfg = toml.load(fp)
         self.dict_converse()
 
     def dump_config(self):
-        with open(self.i3_path + "/cfg/" + self.mod + ".cfg", "r+") as fp:
+        """ Dump current config, can be used for debugging.
+        """
+        with open(self.i3_cfg_mod_path, "r+") as fp:
             self.dict_deconverse()
             toml.dump(self.cfg, fp)
             self.cfg = toml.load(fp)
         self.dict_converse()
 
-    def fill_attr_dict(self, prop_str):
-        self.attr_dict = {}
+    def property_to_winattrib(self, prop_str):
+        """ Parse property string to create win_attrs dict.
+            Args:
+                prop_str (str): property string in special format.
+        """
+        self.win_attrs = {}
         prop_str = prop_str[1:-1]
         for t in prop_str.split('@'):
             if len(t):
@@ -94,60 +130,38 @@ class modi3cfg(object):
                 if value[0] == value[-1] and value[0] in {'"', "'"}:
                     value = value[1:-1]
                 if attr in self.possible_props:
-                    self.attr_dict[self.conv_props.get(attr, {})] = value
-
-    def get_prev_tag(self, prop_str):
-        self.fill_attr_dict(prop_str)
-        for tag in self.cfg:
-            for t in self.cfg[tag]:
-                # Look by ordinary props
-                if t in self.cfg_props:
-                    for val in self.cfg[tag][t]:
-                        if t == 'class':
-                            if self.attr_dict['class'] == val:
-                                return tag
-                        if t == 'instance':
-                            if self.attr_dict['instance'] == val:
-                                return tag
-                        if t == 'role':
-                            if self.attr_dict['role'] == val:
-                                return tag
-                # Look for regex props
-                if t in self.cfg_regex_props:
-                    if t == "class_r":
-                        for reg in self.cfg[tag][t]:
-                            lst_by_reg = self.i3.get_tree().find_classed(reg)
-                            for l in lst_by_reg:
-                                if self.attr_dict[t[:-2]] == l.window_class \
-                                        or self.attr_dict[t[:-2]] == l.window_instance:
-                                    return tag
-                    if t == "role_r":
-                        for reg in self.cfg[tag][t]:
-                            lst_by_reg = self.i3.get_tree().find_by_role(reg)
-                            for l in lst_by_reg:
-                                if self.attr_dict[t[:-2]] == l.window_role:
-                                    return tag
+                    self.win_attrs[self.conv_props.get(attr, {})] = value
 
     def add_props(self, tag, prop_str):
-        self.fill_attr_dict(prop_str)
-        ftors = set(self.cfg_props) & set(self.attr_dict.keys())
+        """ Move window to some tag.
+            Args:
+                tag (str): target tag
+                prop_str (str): property string in special format.
+        """
+        self.property_to_winattrib(prop_str)
+        ftors = set(self.cfg_props) & set(self.win_attrs.keys())
         if tag in self.cfg:
             for t in ftors:
-                if self.attr_dict[t] not in self.cfg.get(tag, {}).get(t, {}):
+                if self.win_attrs[t] not in self.cfg.get(tag, {}).get(t, {}):
                     if t in self.cfg[tag]:
                         if type(self.cfg[tag][t]) == str:
-                            self.cfg[tag][t] = {self.attr_dict[t]}
+                            self.cfg[tag][t] = {self.win_attrs[t]}
                         elif type(self.cfg[tag][t]) == set:
-                            self.cfg[tag][t].add(self.attr_dict[t])
+                            self.cfg[tag][t].add(self.win_attrs[t])
                     else:
-                        self.cfg[tag].update({t: self.attr_dict[t]})
+                        self.cfg[tag].update({t: self.win_attrs[t]})
                     # special fix for the case where attr
                     # is just attr not {attr}
                     if type(self.cfg[tag][t]) == str:
-                        self.cfg[tag][t] = {self.attr_dict[t]}
+                        self.cfg[tag][t] = {self.win_attrs[t]}
 
     def del_props(self, tag, prop_str):
-        self.fill_attr_dict(prop_str)
+        """ Remove window from some tag.
+            Args:
+                tag (str): target tag
+                prop_str (str): property string in special format.
+        """
+        self.property_to_winattrib(prop_str)
         # Delete 'direct' props:
         for t in self.cfg[tag].copy():
             if t in self.cfg_props:
@@ -155,7 +169,7 @@ class modi3cfg(object):
                     del self.cfg[tag][t]
                 elif type(self.cfg[tag][t]) is set:
                     for tok in self.cfg[tag][t].copy():
-                        if self.attr_dict[t] == tok:
+                        if self.win_attrs[t] == tok:
                             self.cfg[tag][t].remove(tok)
         # Delete appropriate regexes
         for t in self.cfg[tag].copy():
@@ -164,19 +178,19 @@ class modi3cfg(object):
                     for reg in self.cfg[tag][t].copy():
                         lst_by_reg = self.i3.get_tree().find_classed(reg)
                         for l in lst_by_reg:
-                            if self.attr_dict[t[:-2]] == l.window_class:
+                            if self.win_attrs[t[:-2]] == l.window_class:
                                 self.cfg[tag][t].remove(reg)
                 if t == "instance_r":
                     for reg in self.cfg[tag][t].copy():
                         lst_by_reg = self.i3.get_tree().find_classed(reg)
                         for l in lst_by_reg:
-                            if self.attr_dict[t[:-2]] == l.window_instance:
+                            if self.win_attrs[t[:-2]] == l.window_instance:
                                 self.cfg[tag][t].remove(reg)
                 if t == "role_r":
                     for reg in self.cfg[tag][t].copy():
                         lst_by_reg = self.i3.get_tree().find_by_role(reg)
                         for l in lst_by_reg:
-                            if self.attr_dict[t[:-2]] == l.window_role:
+                            if self.win_attrs[t[:-2]] == l.window_role:
                                 self.cfg[tag][t].remove(reg)
 
         # Cleanup
