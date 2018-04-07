@@ -317,9 +317,13 @@ class menu(modi3cfg):
 
         if tag_name is not None and tag_name:
             for mod in self.possible_mods:
-                add_prop_cmd = f'{self.i3_path}send {mod} add_prop \
-                                {tag_name} {aprop_str}'
-                subprocess.run(shlex.split(add_prop_cmd))
+                cmdl = [
+                    f'{self.i3_path}send',
+                    f'{mod}', 'add_prop',
+                    f'{tag_name}', f'{aprop_str}'
+                ]
+                print(cmdl)
+                subprocess.run(cmdl)
         else:
             print('[no tag name specified] for props [{aprop_str}]')
 
@@ -339,8 +343,10 @@ class menu(modi3cfg):
         ws = ws.decode('UTF-8').strip()
         return ws
 
-    def apply_to_ws(self, func):
-        func()
+    def apply_to_ws(self, ws_func):
+        """ Partial apply function to workspace.
+        """
+        ws_func()
 
     def goto_ws(self, use_all_ws=True):
         """ Go to workspace menu.
