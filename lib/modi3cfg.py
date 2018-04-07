@@ -175,8 +175,10 @@ class modi3cfg(object):
         for t in self.cfg[tag].copy():
             if t in self.cfg_regex_props:
                 for reg in self.cfg[tag][t].copy():
-                    if t in {"class_r", "instance_r"}:
+                    if t == "class_r":
                         lst_by_reg = self.i3.get_tree().find_classed(reg)
+                    if t == "instance_r":
+                        lst_by_reg = self.i3.get_tree().find_instanced(reg)
                     if t == "role_r":
                         lst_by_reg = self.i3.get_tree().find_by_role(reg)
                     for l in lst_by_reg:
