@@ -64,6 +64,7 @@ const char *docstr =
     "  send menu xprop\n"
     "  send menu autoprop\n"
     "  send menu ws\n"
+    "  send menu movews\n"
     "  send wm3 focus_next_visible\n"
     "  send wm3 focus_prev_visible\n"
     "  send wm3 maximize\n"
@@ -141,6 +142,7 @@ Args ArgMap[] = {
             {"reload", 0},
             {"autoprop", 0},
             {"ws", 0},
+            {"movews", 0},
             {NULL, 0},
         },
     [WM3] =

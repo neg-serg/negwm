@@ -221,6 +221,7 @@ bindsym --release Print exec --no-startup-id ~/bin/scripts/screenshot
 bindsym --release $S+Print --no-startup-id ~/bin/scripts/screenshot current
 bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
 bindsym $m4+g $menu ws
+bindsym $m4+$c+g $menu movews
 #----------------------------------------------
 # ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
 # ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
