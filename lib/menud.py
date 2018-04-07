@@ -154,6 +154,7 @@ class menu(modi3cfg):
             "autoprop": self.autoprop,
             "show_props": self.show_props,
             "ws": self.goto_ws,
+            "attach": self.attach_to_ws,
             "movews": self.move_to_ws,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
@@ -347,6 +348,23 @@ class menu(modi3cfg):
         """ Partial apply function to workspace.
         """
         ws_func()
+
+    def attach_to_ws(self):
+        """ Attach window to the current workspace.
+        """
+        leaves = self.i3.get_tree().leaves()
+        winlist = [win.name for win in leaves]
+        win_name = subprocess.run(
+            self.rofi_args(cnum=len(winlist), width=1200, prompt="[ws] >>"),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(winlist), 'UTF-8')
+        ).stdout
+
+        if win_name is not None and win_name:
+            win_name = win_name.decode('UTF-8').strip()
+            for w in leaves:
+                if w.name == win_name:
+                    w.command('move window to workspace current')
 
     def goto_ws(self, use_all_ws=True):
         """ Go to workspace menu.
