@@ -17,7 +17,7 @@ class modi3cfg(object):
         self.mod = self.__class__.__name__
 
         # negi3mod cfg directory path
-        self.i3_cfg_mod_path = i3path() + '/cfg/' + self.mod
+        self.i3_cfg_mod_path = i3path() + '/cfg/' + self.mod + '.cfg'
 
         # load current config
         self.load_config()
@@ -174,24 +174,16 @@ class modi3cfg(object):
         # Delete appropriate regexes
         for t in self.cfg[tag].copy():
             if t in self.cfg_regex_props:
-                if t == "class_r":
-                    for reg in self.cfg[tag][t].copy():
+                for reg in self.cfg[tag][t].copy():
+                    if t in {"class_r", "instance_r"}:
                         lst_by_reg = self.i3.get_tree().find_classed(reg)
-                        for l in lst_by_reg:
-                            if self.win_attrs[t[:-2]] == l.window_class:
-                                self.cfg[tag][t].remove(reg)
-                if t == "instance_r":
-                    for reg in self.cfg[tag][t].copy():
-                        lst_by_reg = self.i3.get_tree().find_classed(reg)
-                        for l in lst_by_reg:
-                            if self.win_attrs[t[:-2]] == l.window_instance:
-                                self.cfg[tag][t].remove(reg)
-                if t == "role_r":
-                    for reg in self.cfg[tag][t].copy():
+                    if t == "role_r":
                         lst_by_reg = self.i3.get_tree().find_by_role(reg)
-                        for l in lst_by_reg:
-                            if self.win_attrs[t[:-2]] == l.window_role:
-                                self.cfg[tag][t].remove(reg)
+                    for l in lst_by_reg:
+                        if (t == "class_r" and self.win_attrs[t[:-2]] == l.window_class) \
+                            or (t == "instance_r" and self.win_attrs[t[:-2]] == l.window_instance) \
+                                or (t == "role_r" and self.win_attrs[t[:-2]] == l.window_role):
+                                    self.cfg[tag][t].remove(reg)
 
         # Cleanup
         for t in set(self.cfg_regex_props) | set(self.cfg_props):
