@@ -68,11 +68,11 @@ class volume_watcher():
             self.update_mpd_volume(self.loop),
         )
 
-    def pretty_printing(self, string):
+    def print_volume(self):
         """ Create nice and shiny output for polybar.
         """
         return f'%{{F#395573}}{self.delimiter}%{{F-}}%{{F#cccccc}}' + \
-            f'Vol: {string}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
+            f'Vol: {self.volume}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
 
     def empty_output(self):
         """ This output will be used if no information about volume.
@@ -115,7 +115,7 @@ class volume_watcher():
                             self.volume = parsed[0][8:]
                             if int(self.volume) >= 0:
                                 if prev_volume != self.volume:
-                                    self.volume = self.pretty_printing(self.volume)
+                                    self.volume = self.print_volume()
                                     sys.stdout.write(f"{self.volume}\n")
                                 prev_volume = parsed[0][8:]
                             else:
