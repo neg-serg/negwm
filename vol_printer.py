@@ -2,8 +2,8 @@
 
 """ Volume printing daemon.
 
-This daemon prints current MPD volume like `tail -f` echo server, so you do not
-need to use busy waiting to extract information from it.
+This daemon prints current MPD volume like `tail -f` echo server, so there is
+no need to use busy waiting to extract information from it.
 
 Usage:
     ./vol_printer.py
@@ -57,11 +57,8 @@ class volume_watcher():
         self.status_cmd_str = "status\n"
 
         # various MPD // Volume printer delimiters
-        delim0 = f" || "
-        delim1 = f"%{{O12}} ⃦%{{O8}}"
-        delim2 = f" ║ "
-
-        self.delimiter = delim2
+        delims = [f" || ", f"%{{O12}} ⃦%{{O8}}", f" ║ "]
+        self.delimiter = delims[2]
 
     def main(self):
         """ Mainloop starting here.
