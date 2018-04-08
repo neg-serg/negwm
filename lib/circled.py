@@ -134,45 +134,54 @@ class circle(modi3cfg, Matcher):
         else:
             self.repeats = 0
 
+    def prefullscreen(self, tag):
+        """ Prepare to go fullscreen.
+        """
+        fullscreened = self.i3.get_tree().find_fullscreen()
+        for win in fullscreened:
+            if self.current_win.window_class in set(self.cfg[tag]["class"]) \
+                    and self.current_win.id == win.id:
+                self.need_handle_fullscreen = False
+                win.command('fullscreen disable')
+
+    def postfullscreen(self, tag, idx):
+        """ Exit from fullscreen.
+        """
+        now_focused = self.twin(tag, idx).id
+        for id in self.restore_fullscreen:
+            if id == now_focused:
+                self.need_handle_fullscreen = False
+                self.i3.command(
+                    f'[con_id={now_focused}] fullscreen enable'
+                )
+
     def focus_next(self, tag, idx,
                    inc_counter=True,
                    fullscreen_handler=True,
-                   with_subtag=bool):
+                   subtagged=False):
         """ Focus next window. Used by go_next function.
         Tag list is a list of windows by some factor, which determined by
         config settings.
 
-            Args:
-                tag (str): target tag.
-                idx (int): index inside tag list.
-                inc_counter (bool): increase counter or not.
-                fullscreen_handler (bool): for manual set / unset fullscreen,
-                                           because of i3 is not perfect in it.
-                                           For example you need it for different
-                                           workspaces.
-                with_subtag (bool): focus with subtag or not.
+        Args:
+            tag (str): target tag.
+            idx (int): index inside tag list.
+            inc_counter (bool): increase counter or not.
+            fullscreen_handler (bool): for manual set / unset fullscreen,
+                                        because of i3 is not perfect in it.
+                                        For example you need it for different
+                                        workspaces.
         """
         if fullscreen_handler:
-            fullscreened = self.i3.get_tree().find_fullscreen()
-            for win in fullscreened:
-                if self.current_win.window_class in set(self.cfg[tag]["class"]) \
-                        and self.current_win.id == win.id:
-                    self.need_handle_fullscreen = False
-                    win.command('fullscreen disable')
+            self.prefullscreen(tag)
 
-        self.twin(tag, idx, with_subtag).command('focus')
+        self.twin(tag, idx, subtagged).command('focus')
 
         if inc_counter:
             self.counters[tag] += 1
 
         if fullscreen_handler:
-            now_focused = self.twin(tag, idx).id
-            for id in self.restore_fullscreen:
-                if id == now_focused:
-                    self.need_handle_fullscreen = False
-                    self.i3.command(
-                        f'[con_id={now_focused}] fullscreen enable'
-                    )
+            self.postfullscreen(tag, idx)
 
         self.need_handle_fullscreen = True
 
@@ -244,12 +253,12 @@ class circle(modi3cfg, Matcher):
         """
         self.subtag_info = \
             self.cfg[tag].get("prog_dict", {}).get(subtag, {})
-        if not len(set(self.subtag_info.get("includes", {})) &
-            {w.window_class for w in self.tagged[tag]}):
+        if not set(self.subtag_info.get("includes", {})) & \
+                {w.window_class for w in self.tagged.get(tag, {})}:
             self.run_prog(tag, subtag)
         else:
             idx = 0
-            self.focus_next(tag, idx, fullscreen_handler=False, with_subtag=True)
+            self.focus_next(tag, idx, subtagged=True)
 
     def switch(self, args):
         """ Defines pipe-based IPC for cirled module. With appropriate
@@ -362,6 +371,7 @@ class circle(modi3cfg, Matcher):
                 except KeyError:
                     self.tag_windows()
                     self.del_wins(i3, event)
+        self.subtag_info = {}
         self.winlist = self.i3.get_tree()
 
     def set_curr_win(self, i3, event):
