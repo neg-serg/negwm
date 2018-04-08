@@ -27,6 +27,10 @@ from gevent.queue import Queue
 from singleton import Singleton
 
 
+def print_traceback():
+    print(traceback.format_exc())
+
+
 def i3path():
     """ Easy way to return i3 config path. May be improved.
     """
@@ -249,7 +253,7 @@ class daemon_manager():
                     try:
                         self.mods[name].switch(args)
                     except TypeError:
-                        print(traceback.format_exc())
+                        print_traceback()
 
     def add_fifo(self, name):
         """ Add negi3mods FIFO.
