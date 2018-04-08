@@ -92,7 +92,7 @@ class circle(modi3cfg, Matcher):
         # store the current window here to cache get_tree().find_focused value.
         self.current_win = self.i3.get_tree().find_focused()
 
-    def run_prog(self, tag, subtag=None):
+    def run_prog(self, tag, subtag=''):
         """ Run the appropriate application for the current tag/subtag.
 
         Args:
@@ -100,7 +100,7 @@ class circle(modi3cfg, Matcher):
             subtag (str): denotes the target [subtag], optional.
         """
         try:
-            if subtag is None:
+            if not subtag:
                 prog_str = re.sub(
                     "~", os.path.realpath(os.path.expandvars("$HOME")),
                     self.cfg[tag]
@@ -134,7 +134,10 @@ class circle(modi3cfg, Matcher):
         else:
             self.repeats = 0
 
-    def focus_next(self, tag, idx, inc_counter=True, fullscreen_handler=True, subtag=None):
+    def focus_next(self, tag, idx,
+                   inc_counter=True,
+                   fullscreen_handler=True,
+                   with_subtag=bool):
         """ Focus next window. Used by go_next function.
         Tag list is a list of windows by some factor, which determined by
         config settings.
@@ -147,7 +150,7 @@ class circle(modi3cfg, Matcher):
                                            because of i3 is not perfect in it.
                                            For example you need it for different
                                            workspaces.
-                subtag (str): subtag name passed here.
+                with_subtag (bool): focus with subtag or not.
         """
         if fullscreen_handler:
             fullscreened = self.i3.get_tree().find_fullscreen()
@@ -157,7 +160,7 @@ class circle(modi3cfg, Matcher):
                     self.need_handle_fullscreen = False
                     win.command('fullscreen disable')
 
-        self.twin(tag, idx, subtag is not None).command('focus')
+        self.twin(tag, idx, with_subtag).command('focus')
 
         if inc_counter:
             self.counters[tag] += 1
@@ -188,63 +191,65 @@ class circle(modi3cfg, Matcher):
                 if win.window_class in subtag_win_classes:
                     return self.tagged[tag][subidx]
 
-    def go_next(self, tag, subtag=None):
+    def go_next(self, tag):
         """ Circle over windows. Function "called" from the user-side.
-
-            TODO: need refactoring to reduce cyclomatic complexity.
 
         Args:
             tag (str): denotes target [tag]
-            subtag (str): denotes the target [subtag], optional.
         """
         try:
-            if subtag is None:
-                if len(self.tagged[tag]) == 0:
-                    self.run_prog(tag)
-                elif len(self.tagged[tag]) <= 1:
-                    idx = 0
-                    self.focus_next(tag, idx, fullscreen_handler=False)
-                else:
-                    idx = self.counters[tag] % len(self.tagged[tag])
-
-                    if ("priority" in self.cfg[tag]) \
-                            and self.current_win.window_class \
-                            not in set(self.cfg[tag]["class"]):
-
-                        if not len([win for win in self.tagged[tag]
-                                    if win.window_class ==
-                                    self.cfg[tag]["priority"]]):
-                            self.run_prog(tag)
-                            return
-
-                        for idx, item in enumerate(self.tagged[tag]):
-                            if item.window_class == self.cfg[tag]["priority"]:
-                                fullscreened = \
-                                    self.i3.get_tree().find_fullscreen()
-                                for win in fullscreened:
-                                    tgt = self.cfg[tag]
-                                    if win.window_class in tgt["class"] \
-                                            and win.window_class != tgt["priority"]:
-                                        self.interactive = False
-                                        win.command('fullscreen disable')
-                                self.focus_next(tag, idx, inc_counter=False)
-                                return
-                    elif self.current_win.id == self.twin(tag, idx).id:
-                        self.find_prioritized_win(tag)
-                    else:
-                        self.focus_next(tag, idx)
+            if len(self.tagged[tag]) == 0:
+                self.run_prog(tag)
+            elif len(self.tagged[tag]) <= 1:
+                idx = 0
+                self.focus_next(tag, idx, fullscreen_handler=False)
             else:
-                self.subtag_info = \
-                    self.cfg[tag].get("prog_dict", {}).get(subtag, {})
-                if not len(set(self.subtag_info.get("includes", {})) &
-                           {w.window_class for w in self.tagged[tag]}):
-                    self.run_prog(tag, subtag)
+                idx = self.counters[tag] % len(self.tagged[tag])
+                if ("priority" in self.cfg[tag]) \
+                        and self.current_win.window_class \
+                        not in set(self.cfg[tag]["class"]):
+
+                    if not len([win for win in self.tagged[tag]
+                                if win.window_class ==
+                                self.cfg[tag]["priority"]]):
+                        self.run_prog(tag)
+                        return
+
+                    for idx, item in enumerate(self.tagged[tag]):
+                        if item.window_class == self.cfg[tag]["priority"]:
+                            fullscreened = \
+                                self.i3.get_tree().find_fullscreen()
+                            for win in fullscreened:
+                                tgt = self.cfg[tag]
+                                if win.window_class in tgt["class"] \
+                                        and win.window_class != tgt["priority"]:
+                                    self.interactive = False
+                                    win.command('fullscreen disable')
+                            self.focus_next(tag, idx, inc_counter=False)
+                            return
+                elif self.current_win.id == self.twin(tag, idx).id:
+                    self.find_prioritized_win(tag)
                 else:
-                    idx = 0
-                    self.focus_next(tag, idx, fullscreen_handler=False, subtag=subtag)
+                    self.focus_next(tag, idx)
         except KeyError:
             self.tag_windows()
             self.go_next(tag)
+
+    def go_subtag(self, tag, subtag):
+        """ Circle over subtag windows. Function "called" from the user-side.
+
+        Args:
+            tag (str): denotes target [tag]
+            subtag (str): denotes the target [subtag].
+        """
+        self.subtag_info = \
+            self.cfg[tag].get("prog_dict", {}).get(subtag, {})
+        if not len(set(self.subtag_info.get("includes", {})) &
+            {w.window_class for w in self.tagged[tag]}):
+            self.run_prog(tag, subtag)
+        else:
+            idx = 0
+            self.focus_next(tag, idx, fullscreen_handler=False, with_subtag=True)
 
     def switch(self, args):
         """ Defines pipe-based IPC for cirled module. With appropriate
@@ -259,7 +264,7 @@ class circle(modi3cfg, Matcher):
         """
         {
             "next": self.go_next,
-            "run": self.go_next,
+            "run": self.go_subtag,
             "add_prop": self.add_prop,
             "del_prop": self.del_prop,
             "reload": self.reload_config,
