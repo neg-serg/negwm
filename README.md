@@ -16,7 +16,7 @@ ppi3+i3 and modules on python. Also handles toml-configs updating.
 
 *menud* : menu module including i3-menu with hackish autocompletion, menu to
 attach window to window group(circled) or target named scratchpad(nsd) and
-more.
+more. 
 
 *fsmpmsd* : module to disable dpms, when fullscreen mode are toggled on.
 
@@ -96,8 +96,7 @@ scratchpad or navigation very useful.
 # Bugs
 
 For now here can be dragons, so add bug report to github if you get
-problems. I know that some things like the subtag support need to be slightly
-improved.
+problems.
 
 # Video Demonstration
 [![i3pluginsdemo](https://img.youtube.com/vi/U7eJMP0zvKc/0.jpg)](https://www.youtube.com/embed/U7eJMP0zvKc)
