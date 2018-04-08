@@ -221,8 +221,8 @@ class daemon_manager():
     __metaclass__ = Singleton
 
     def __init__(self, mods):
-        # daemon_i3 instances, addressed by mod name.
-        self.daemons = {}
+        # FIFO list
+        self.fifos = {}
 
         # mods list
         self.mods = mods
@@ -239,7 +239,7 @@ class daemon_manager():
                 name(str): module name.
         """
         while True:
-            async with aiofiles.open(self.daemons[name].fifo, mode='r') as fifo:
+            async with aiofiles.open(self.fifos[name], mode='r') as fifo:
                 while True:
                     data = await fifo.read()
                     if not len(data):
@@ -251,15 +251,24 @@ class daemon_manager():
                     except TypeError:
                         print(traceback.format_exc())
 
-    def add_daemon(self, name):
-        """ Add negi3mods daemon.
-
-            For now it is legacy code, needed only to create named-pipe.
+    def add_fifo(self, name):
+        """ Add negi3mods FIFO.
         """
-        d = daemon_i3()
-        if d not in self.daemons.keys():
-            self.daemons[name] = d
-            self.daemons[name].create_fifo(name)
+        self.fifos[name] = self.create_fifo(name)
+
+    def create_fifo(self, name):
+        """ Create FIFO for the given name
+        """
+        fifo = os.path.realpath(os.path.expandvars('$HOME/tmp/' + name + '.fifo'))
+        if os.path.exists(fifo):
+            os.remove(fifo)
+        try:
+            os.mkfifo(fifo)
+        except OSError as oe:
+            if oe.errno != os.errno.EEXIST:
+                raise
+        finally:
+            return fifo
 
     def mainloop(self, loop):
         """ Mainloop for module. Started by negi3mods in separated thread.
@@ -272,26 +281,4 @@ class daemon_manager():
         loop.run_until_complete(
             asyncio.wait([self.fifo_listner(m) for m in self.mods])
         )
-
-
-class daemon_i3():
-    """ The main purpose of this class is creating / deleting of the FIFO for negi3mod.
-
-        TODO: merge it with daemon_manager.
-    """
-    __metaclass__ = Singleton
-
-    def __init__(self):
-        self.fifo = None
-
-    def create_fifo(self, name):
-        self.fifo = \
-            os.path.realpath(os.path.expandvars('$HOME/tmp/' + name + '.fifo'))
-        if os.path.exists(self.fifo):
-            os.remove(self.fifo)
-        try:
-            os.mkfifo(self.fifo)
-        except OSError as oe:
-            if oe.errno != os.errno.EEXIST:
-                raise
 

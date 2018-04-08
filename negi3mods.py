@@ -71,7 +71,7 @@ class Negi3Mods():
         """ Load modules.
 
             This function init daemon_manager, use importlib to load all the
-            stuff, then add_daemon and update notification with startup
+            stuff, then add_fifo and update notification with startup
             benchmarks.
         """
         mod_startup_times = []
@@ -81,7 +81,7 @@ class Negi3Mods():
             start_time = timeit.default_timer()
             i3mod = importlib.import_module(mod + "d")
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
-            self.manager.add_daemon(mod)
+            self.manager.add_fifo(mod)
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}s'
             mod_text = f'[{mod}]'
