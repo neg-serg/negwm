@@ -8,31 +8,40 @@ There are no external dependecies like i3 or asyncio.
 import sys
 import toml
 import traceback
-from modlib import i3path
+import asyncio
+import aionotify
+from modlib import i3path, notify_msg
 
 
 class modconfig(object):
-    def __init__(self):
+    def __init__(self, loop):
+        # set asyncio loop
+        self.loop = loop
+
         # detect current negi3mod
         self.mod = self.__class__.__name__
 
+        # config dir path
+        self.i3_cfg_path = i3path() + '/cfg/'
+
         # negi3mod config path
-        self.mod_cfg_path = i3path() + '/cfg/' + self.mod + '.cfg'
+        self.mod_cfg_path = self.i3_cfg_path + self.mod + '.cfg'
 
         # load current config
         self.load_config()
 
+        # run inotify watcher to update config on change.
+        self.run_inotify_watchers()
+
     def reload_config(self):
-        """ Reload config for current selected module.
-            Call load_config, print debug messages and reinit all stuff.
+        """ Reload config.
+            Call load_config and reinit all stuff.
         """
         prev_conf = self.cfg
         try:
             self.load_config()
-            self.__init__(self.i3)
-            print(f"[{self.mod}] config reloaded")
+            self.__init__()
         except:
-            print(f"[{self.mod}] config reload failed")
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
             self.__init__()
@@ -50,4 +59,31 @@ class modconfig(object):
         with open(self.mod_cfg_path, "r+") as fp:
             toml.dump(self.cfg, fp)
             self.cfg = toml.load(fp)
+
+    def cfg_watcher(self):
+        """ modi3cfg watcher to update modules config in realtime.
+        """
+        watcher = aionotify.Watcher()
+        watcher.watch(alias='cfg', path=self.i3_cfg_path,
+                      flags=aionotify.Flags.MODIFY)
+        return watcher
+
+    async def cfg_worker(self, watcher):
+        """ Reload target config
+
+            Args:
+                watcher: watcher for cfg.
+        """
+        await watcher.setup(self.loop)
+        while True:
+            event = await watcher.get_event()
+            if event.name == self.mod + '.cfg':
+                self.reload_config()
+                notify_msg(f'[Reloaded {self.mod} ]')
+        watcher.close()
+
+    def run_inotify_watchers(self):
+        """ Start all watchers here via ensure_future to run it in background.
+        """
+        asyncio.ensure_future(self.cfg_worker(self.cfg_watcher()))
 

@@ -37,10 +37,10 @@ from lib.basic_config import modconfig
 
 class vol_printer(modconfig):
     def __init__(self):
-        # Initialize modcfg.
-        super().__init__()
-
         self.loop = asyncio.get_event_loop()
+
+        # Initialize modcfg.
+        super().__init__(self.loop)
 
         # default MPD address
         self.addr = self.cfg.get("mpdaddr", "127.0.0.1")
@@ -62,6 +62,9 @@ class vol_printer(modconfig):
 
         # various MPD // Volume printer delimiters
         self.delimiter = self.cfg.get("delimiter", "||")
+
+        # run mainloop
+        self.main()
 
     def main(self):
         """ Mainloop starting here.
@@ -130,5 +133,4 @@ class vol_printer(modconfig):
 
 if __name__ == '__main__':
     loop = vol_printer()
-    loop.main()
 
