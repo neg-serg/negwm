@@ -35,8 +35,11 @@ year :: 2018
 
 # Use gevent monkey patching for the better performance.
 # I think that the most of improvements come from threading patching here.
+
 from gevent import monkey
 monkey.patch_all()
+
+from lib.basic_config import modconfig
 
 import asyncio
 import i3ipc
@@ -45,8 +48,14 @@ import re
 from threading import Thread, Event
 
 
-class ws_watcher():
+class ws_printer(modconfig):
     def __init__(self):
+        # initialize asyncio loop
+        self.loop = asyncio.get_event_loop()
+
+        # Initialize modcfg.
+        super().__init__(self.loop)
+
         self.event = Event()
         self.event.set()
 
@@ -54,16 +63,14 @@ class ws_watcher():
         self.i3.on('workspace::focus', self.on_ws_focus)
         self.i3.on('binding', self.on_eventent)
 
-        self.loop = asyncio.get_event_loop()
         self.ws_name = ""
-
         self.binding_mode = ""
 
         # regexes used to extract current binding mode.
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.ws_color = "#8FA8C7"
+        self.ws_color = self.cfg.get("ws_color", "#8FA8C7")
         self.ws_name = ""
 
         for ws in self.i3.get_workspaces():
@@ -93,6 +100,13 @@ class ws_watcher():
                         self.binding_mode = self.colorize(ret) + ' '
                     self.event.set()
 
+    def special_reload(self):
+        """ Reload mainloop here.
+        """
+        asyncio.get_event_loop().close()
+        self.loop = asyncio.get_event_loop()
+        self.main()
+
     def main(self):
         """ Mainloop starting here.
         """
@@ -108,14 +122,14 @@ class ws_watcher():
             if self.event.wait():
                 ws = self.ws_name
                 if not ws[0].isalpha():
-                    ws = self.colorize(ws[0], color="#8FA8C7") + ws[1:]
+                    ws = self.colorize(ws[0], color=self.ws_color) + ws[1:]
                 sys.stdout.write(f"{self.binding_mode + ws}\n")
                 self.event.clear()
                 await asyncio.sleep(0)
 
 
 if __name__ == '__main__':
-    loop = ws_watcher()
+    loop = ws_printer()
     Thread(target=loop.main, daemon=False).start()
     loop.i3.main()
 

@@ -41,6 +41,7 @@ class modconfig(object):
         try:
             self.load_config()
             self.__init__()
+            self.special_reload()
         except:
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
