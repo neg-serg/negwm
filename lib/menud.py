@@ -4,6 +4,7 @@
 
     For now it contains following menus:
         - Goto workspace.
+        - Attach to workspace.
         - Add window to named scratchpad or circle group.
         - xprop menu to get X11-atom parameters of selected window.
         - i3-cmd menu with autocompletion.
@@ -14,7 +15,6 @@ import socket
 import re
 import subprocess
 import sys
-import shlex
 from singleton import Singleton
 from modi3cfg import modi3cfg
 from modlib import i3path
@@ -25,6 +25,9 @@ class menu(modi3cfg):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None):
+        # Initialize modi3cfg.
+        super().__init__(i3)
+
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
 
@@ -32,16 +35,16 @@ class menu(modi3cfg):
         self.i3_path = i3path()
 
         # i3-msg application name
-        self.i3cmd = 'i3-msg'
+        self.i3cmd = self.cfg.get("i3cmd", 'i3-msg')
 
         # magic pie to spawn error, used for autocomplete.
-        self.magic_pie = 'sssssnake'
+        self.magic_pie = self.cfg.get('magic_pie', 'sssssnake')
 
         # default echo server host
-        self.host = '0.0.0.0'
+        self.host = self.cfg.get("host", "0.0.0.0")
 
         # default echo server port
-        self.port = 31888
+        self.port = int(self.cfg.get("port", 31888))
 
         # create echo server socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -52,41 +55,12 @@ class menu(modi3cfg):
         self.possible_mods = ['ns', 'circle']
 
         # Window properties shown by xprop menu.
-        self.xprops_list = [
-            "WM_CLASS",
-            "WM_NAME",
-            "WM_WINDOW_ROLE",
-            "WM_TRANSIENT_FOR",
-            "_NET_WM_WINDOW_TYPE",
-            "_NET_WM_STATE",
-            "_NET_WM_PID"
-        ]
+        self.xprops_list = self.cfg.get("xprops_list", {})
 
         # Window properties used by i3 to match windows.
-        self.i3rule_xprops = {
-            "WM_CLASS",
-            "WM_WINDOW_ROLE",
-            "WM_NAME",
-            "_NET_WM_NAME"
-        }
+        self.i3rules_xprop = set(self.cfg.get("rules_xprop", {}))
 
-        self.all_ws = [
-            " α:term",
-            " β:web",
-            " γ:doc",
-            " δ:dev",
-            " ε:media",
-            "ζ:gimp",
-            "η:admin",
-            " θ:ide",
-            " ι:steam",
-            " κ:torrent",
-            "λ:vm",
-            "μ:wine",
-            " ν:spotify",
-            " ξ: [pic]",
-            " ο: [graph]",
-        ]
+        self.wslist = self.cfg.get("wslist", {})
 
         # Magic delimiter used by add_prop / del_prop routines.
         self.delim = "@"
@@ -163,7 +137,6 @@ class menu(modi3cfg):
         """ Send notify-osd message about current properties.
         """
         aprop_str = self.get_autoprop_as_str(with_title=False)
-        print(aprop_str)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
         subprocess.run(notify_msg)
 
@@ -231,7 +204,7 @@ class menu(modi3cfg):
         if xprop is not None:
             xprop = xprop.decode('UTF-8').split('\n')
         ret = []
-        for attr in self.i3rule_xprops:
+        for attr in self.i3rules_xprop:
             for xattr in xprop:
                 xprops.append(xattr)
                 if attr in xattr and 'not found' not in xattr:
@@ -323,16 +296,15 @@ class menu(modi3cfg):
                     f'{mod}', 'add_prop',
                     f'{tag_name}', f'{aprop_str}'
                 ]
-                print(cmdl)
                 subprocess.run(cmdl)
         else:
             print('[no tag name specified] for props [{aprop_str}]')
 
-    def select_ws(self, use_all_ws):
+    def select_ws(self, use_wslist):
         """ Apply target function to workspace.
         """
-        if use_all_ws:
-            wslist = self.all_ws
+        if use_wslist:
+            wslist = self.wslist
         else:
             wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
         ws = subprocess.run(
@@ -366,19 +338,19 @@ class menu(modi3cfg):
                 if w.name == win_name:
                     w.command('move window to workspace current')
 
-    def goto_ws(self, use_all_ws=True):
+    def goto_ws(self, use_wslist=True):
         """ Go to workspace menu.
         """
-        ws = self.select_ws(use_all_ws)
+        ws = self.select_ws(use_wslist)
         if ws is not None and ws:
             self.apply_to_ws(
                 partial(self.i3.command, f'workspace {ws}')
             )
 
-    def move_to_ws(self, use_all_ws=True):
+    def move_to_ws(self, use_wslist=True):
         """ Move current window to the selected workspace
         """
-        ws = self.select_ws(use_all_ws)
+        ws = self.select_ws(use_wslist)
         if ws is not None and ws:
             self.apply_to_ws(
                 partial(self.i3.command, f'[con_id=__focused__] move to workspace {ws}')
