@@ -89,7 +89,7 @@ class volume_watcher():
         if 'volume' in parsed[0]:
             self.volume = parsed[0][8:]
             if int(self.volume) >= 0:
-                self.volume = self.pretty_printing(self.volume)
+                self.volume = self.print_volume()
                 sys.stdout.write(f"{self.volume}\n")
             else:
                 sys.stdout.write(f" \n")
