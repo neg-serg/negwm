@@ -32,20 +32,24 @@ year :: 2018
 
 import asyncio
 import sys
+from lib.basic_config import modconfig
 
 
-class volume_watcher():
+class vol_printer(modconfig):
     def __init__(self):
+        # Initialize modcfg.
+        super().__init__()
+
         self.loop = asyncio.get_event_loop()
 
         # default MPD address
-        self.addr = "127.0.0.1"
+        self.addr = self.cfg.get("mpdaddr", "127.0.0.1")
 
         # default MPD port
-        self.port = "6600"
+        self.port = self.cfg.get("mpdport", "6600")
 
         # buffer size
-        self.buf_size = 1024
+        self.buf_size = self.cfg.get("bufsize", 1024)
 
         # output string
         self.volume = ""
@@ -57,8 +61,7 @@ class volume_watcher():
         self.status_cmd_str = "status\n"
 
         # various MPD // Volume printer delimiters
-        delims = [f" || ", f"%{{O12}} ⃦%{{O8}}", f" ║ "]
-        self.delimiter = delims[2]
+        self.delimiter = self.cfg.get("delimiter", "||")
 
     def main(self):
         """ Mainloop starting here.
@@ -126,6 +129,6 @@ class volume_watcher():
 
 
 if __name__ == '__main__':
-    loop = volume_watcher()
+    loop = vol_printer()
     loop.main()
 
