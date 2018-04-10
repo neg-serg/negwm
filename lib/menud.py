@@ -229,10 +229,15 @@ class menu(modi3cfg):
         Args:
             mod (str): negi3mod name.
         """
+        self.sock = socket.socket()
         self.sock.connect((self.host, self.port))
         self.sock.send(bytes(f'{mod}_list\n', 'UTF-8'))
+
         out = self.sock.recv(1024)
+
+        self.sock.shutdown(1)
         self.sock.close()
+
         lst = []
         if out is not None:
             lst = out.decode('UTF-8').strip()[1:-1].split(', ')
@@ -276,6 +281,8 @@ class menu(modi3cfg):
 
         if mod is not None and mod:
             return mod.decode('UTF-8').strip()
+        else:
+            return ""
 
     def autoprop(self):
         """ Start autoprop menu to move current module to smth.
@@ -298,7 +305,7 @@ class menu(modi3cfg):
                 ]
                 subprocess.run(cmdl)
         else:
-            print('[no tag name specified] for props [{aprop_str}]')
+            print(f'[no tag name specified] for props [{aprop_str}]')
 
     def select_ws(self, use_wslist):
         """ Apply target function to workspace.
