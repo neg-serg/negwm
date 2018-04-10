@@ -111,8 +111,9 @@ class Negi3Mods():
         )
         return watcher
 
-    async def mods_cfg_worker(self, watcher):
-        """ Reloading of all negi3mods on change of any config.
+    async def mods_cfg_worker(self, watcher, reload_one=True):
+        """ Reloading configs on change. Reload only appropriate config by
+            default.
 
             Args:
                 watcher: watcher for modi3cfg.
@@ -120,10 +121,15 @@ class Negi3Mods():
         await watcher.setup(self.loop)
         while True:
             event = await watcher.get_event()
-            if event.name[:-4] in self.mods:
-                for mod in self.mods.keys():
-                    subprocess.run([self.i3_path + 'send', mod, 'reload'])
-            notify_msg('[Reloaded {' + ','.join(self.mods.keys()) + '} ]')
+            changed_mod = event.name[:-4]
+            if changed_mod in self.mods:
+                if reload_one:
+                    subprocess.run([self.i3_path + 'send', changed_mod, 'reload'])
+                    notify_msg(f'[Reloaded {changed_mod}]')
+                else:
+                    for mod in self.mods.keys():
+                        subprocess.run([self.i3_path + 'send', mod, 'reload'])
+                    notify_msg('[Reloaded {' + ','.join(self.mods.keys()) + '} ]')
         watcher.close()
 
     async def i3_config_worker(self, watcher):
