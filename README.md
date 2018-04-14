@@ -48,6 +48,8 @@ pip install inotify
 pip install gevent
 pip install i3ipc
 pip install toml
+pip install aionotify
+pip install aiofiles
 ```
 
 In case of pypy it may be something like
