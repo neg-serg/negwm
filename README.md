@@ -36,10 +36,10 @@ TOML-files with inotify-based autoreload.
 
 ## Modern python3 with modules:
 
-1) i3ipc -- for i3 ipc interaction.
-2) toml -- to save/load human-readable configuration files.
-3) inotify -- to reload configs in realtime without reloading.
-4) gevent -- for the mainloop queue, greenlets.
++ i3ipc -- for i3 ipc interaction.
++ toml -- to save/load human-readable configuration files.
++ inotify -- to reload configs in realtime without reloading.
++ gevent -- for the mainloop queue, greenlets.
 
 To install it you may use pip:
 
