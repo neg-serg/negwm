@@ -79,7 +79,7 @@ class Negi3Mods():
         print()
         for mod in self.mods.keys():
             start_time = timeit.default_timer()
-            i3mod = importlib.import_module(mod + "d")
+            i3mod = importlib.import_module(mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             self.manager.add_fifo(mod)
             mod_startup_times.append(timeit.default_timer() - start_time)
@@ -195,8 +195,8 @@ class Negi3Mods():
             start(self.run_inotify_watchers, 'inotify watchers')
 
         # Start echo server as separated process
-        subprocess.run(['pkill', '-f', 'infod.py'])
-        subprocess.run([self.i3_path + 'infod.py &'], shell=True)
+        subprocess.run(['pkill', '-f', 'info.py'])
+        subprocess.run([self.i3_path + 'info.py &'], shell=True)
 
         # Start modules mainloop.
         start(Thread(target=self.manager.mainloop,

@@ -14,8 +14,8 @@ from lib.singleton import Singleton
 from modi3cfg import modi3cfg
 from threading import Thread
 
-from nsd import ns
-from circled import circle
+from ns import ns
+from circle import circle
 
 
 class info(modi3cfg):

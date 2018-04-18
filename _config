@@ -64,7 +64,6 @@ font pango: $myfont
 # ░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░░░▀░░░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 focus_follows_mouse no
 focus_on_window_activation smart
-focus_follows_mouse no
 # warp the mouse to the middle of the window when changing to a different screen
 mouse_warping none
 
