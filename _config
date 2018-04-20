@@ -106,7 +106,6 @@ set ${spotify,ws13} " ν:spotify"
 set ${sxiv,ws14} " ξ: [pic]"
 set ${graph,ws15} " ο: [graph]"
 
-#---------------------------------
 # ░█░█░█▄█░░░░░█▀▄░█░█░█░░░█▀▀░█▀▀
 # ░█▄█░█░█░░░░░█▀▄░█░█░█░░░█▀▀░▀▀█
 # ░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
@@ -173,7 +172,7 @@ for_window $sclient move container to workspace $steam, workspace $steam, focus
 for_window $steam_games move container to workspace $steam, workspace $steam, fullscreen enable, focus
 for_window [class="(?i)dota.*"] floating enable, move container to workspace $wine, workspace $wine, focus
 for_window [class="^(XRebirth|UE4Editor)$"] floating enable, move container to workspace $wine, workspace $wine, focus
-for_window $steam_all mark steam_all, move container to workspace $steam, workspace $steam, focus
+for_window $steam_all move container to workspace $steam, workspace $steam, focus
 for_window [title="^.*.exe$"] floating enable, move container to workspace $wine, workspace $wine, focus
 
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
@@ -248,6 +247,7 @@ bindsym $m4+F3 $circle next emacs
 bindsym $m4+$c+{v,e} $circle next {vm,steam}
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
+bindsym $m4+$c+f $circle next discord
 
 # ░█░█░█▄█░▀▀█
 # ░█▄█░█░█░░▀▄
