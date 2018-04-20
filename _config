@@ -47,9 +47,9 @@ client.background              #000000
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
 set $browsers [class="^(Firefox|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
-set $steam_games [class="^(dota2|darkest.bin.x86_64)$"]
-set $sclient [class="^(Steam|steam|explorer.exe)$"]
-set $steam_all [class="^(wine|dota2|darkest.bin.x86_64|Steam|steam|explorer.exe)$"]
+set $sclient [class="^(Steam|steam)$"]
+set $games [class="^(dota2|darkest.bin.x86_64)$"]
+set $wine_apps [class="^(wine|Crossover)$"]
 
 #-----------------
 # ░█▀▀░█▀█░█▀█░▀█▀
@@ -167,13 +167,11 @@ for_window [class="com-sun-javaws-Main" instance="sun-awt-X11-XFramePeer"] float
 # ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀
-for_window [class="(?i)(Wine|Crossover)"] floating enable, move container to workspace $wine, workspace $wine, focus
-for_window $sclient move container to workspace $steam, workspace $steam, focus
-for_window $steam_games move container to workspace $steam, workspace $steam, fullscreen enable, focus
-for_window [class="(?i)dota.*"] floating enable, move container to workspace $wine, workspace $wine, focus
-for_window [class="^(XRebirth|UE4Editor)$"] floating enable, move container to workspace $wine, workspace $wine, focus
-for_window $steam_all move container to workspace $steam, workspace $steam, focus
+for_window $sclient move container to workspace $steam
+for_window $games move container to workspace $steam, workspace $steam, focus
+for_window $wine_apps floating enable, move container to workspace $wine, workspace $wine, focus
 for_window [title="^.*.exe$"] floating enable, move container to workspace $wine, workspace $wine, focus
+for_window [class="discord"] move container to workspace $steam
 
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
