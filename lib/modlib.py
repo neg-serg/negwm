@@ -119,20 +119,20 @@ class Matcher(object):
 
     """
     def find_classed(self, wlist, pattern):
-        return [c for c in wlist
-                if c.window_class and re.search(pattern, c.window_class)]
+        return (c for c in wlist
+                if c.window_class and re.search(pattern, c.window_class))
 
     def find_instanced(self, wlist, pattern):
-        return [c for c in wlist
-                if c.window_instance and re.search(pattern, c.window_instance)]
+        return (c for c in wlist
+                if c.window_instance and re.search(pattern, c.window_instance))
 
     def find_by_role(self, wlist, pattern):
-        return [c for c in wlist
-                if c.window_role and re.search(pattern, c.window_role)]
+        return (c for c in wlist
+                if c.window_role and re.search(pattern, c.window_role))
 
     def find_named(self, wlist, pattern):
-        return [c for c in wlist
-                if c.name and re.search(pattern, c.name)]
+        return (c for c in wlist
+                if c.name and re.search(pattern, c.name))
 
     def class_r(self):
         for pattern in self.matched_list:
