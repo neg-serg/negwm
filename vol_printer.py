@@ -70,9 +70,13 @@ class vol_printer(modconfig):
         """ Mainloop starting here.
         """
         asyncio.set_event_loop(self.loop)
-        self.loop.run_until_complete(
-            self.update_mpd_volume(self.loop),
-        )
+        try:
+            self.loop.run_until_complete(
+                self.update_mpd_volume(self.loop)
+            )
+        except ConnectionError:
+            sys.stdout.write("\n")
+            pass
 
     def print_volume(self):
         """ Create nice and shiny output for polybar.
@@ -128,7 +132,12 @@ class vol_printer(modconfig):
                                 self.empty_output()
                     else:
                         prev_volume = 'wtf'
+                        writer.close()
                         self.empty_output()
+                        return
+                else:
+                    writer.close()
+                    return
 
 
 if __name__ == '__main__':

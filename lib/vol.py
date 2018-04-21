@@ -105,6 +105,9 @@ class vol(Singleton, modi3cfg):
                         self.mpd_status = "play"
                     else:
                         self.mpd_status = "none"
+                else:
+                    writer.close()
+                    return
 
     def switch(self, args) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
