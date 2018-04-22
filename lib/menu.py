@@ -26,7 +26,7 @@ class menu(modi3cfg):
 
     def __init__(self, i3, loop=None):
         # Initialize modi3cfg.
-        super().__init__(i3)
+        modi3cfg.__init__(self, i3)
 
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3

@@ -50,8 +50,9 @@ class ns(modi3cfg, Matcher):
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
-        # Initialize modi3cfg.
-        super().__init__(i3)
+        # Initialize superclasses.
+        modi3cfg.__init__(self, i3, convert_me=True)
+        Matcher.__init__(self)
 
         # most of initialization doing here.
         self.initialize(i3)

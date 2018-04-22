@@ -46,8 +46,13 @@ class circle(modi3cfg, Matcher):
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
-        super().__init__(i3)
+        # Initialize superclasses.
+        modi3cfg.__init__(self, i3, convert_me=True)
+        Matcher.__init__(self)
+
+        # most of initialization doing here.
         self.initialize(i3)
+
         self.i3.on('window::new', self.add_wins)
         self.i3.on('window::close', self.del_wins)
         self.i3.on("window::focus", self.set_curr_win)

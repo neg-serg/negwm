@@ -26,7 +26,8 @@ class wm3(Singleton, modi3cfg):
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
-        super().__init__(i3)
+        # Initialize modi3cfg.
+        modi3cfg.__init__(self, i3)
         self.initialize(i3)
 
     def initialize(self, i3):

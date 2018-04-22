@@ -23,7 +23,7 @@ class vol(Singleton, modi3cfg):
                   you need to bypass asyncio-loop to the thread
         """
         # Initialize modi3cfg.
-        super().__init__(i3, loop)
+        modi3cfg.__init__(self, i3, loop=loop)
 
         # i3ipc connection, bypassed by negi3mods runner.
         self.i3 = i3
@@ -106,7 +106,7 @@ class vol(Singleton, modi3cfg):
                     else:
                         self.mpd_status = "none"
                 else:
-                    writer.close()
+                    self.mpd_status = "none"
                     return
 
     def switch(self, args) -> None:
