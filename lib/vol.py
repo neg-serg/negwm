@@ -107,7 +107,9 @@ class vol(Singleton, modi3cfg):
                         self.mpd_status = "none"
                 else:
                     self.mpd_status = "none"
-                    return
+                if writer.transport._conn_lost:
+                    # TODO: add function to wait for MPD port here.
+                    break
 
     def switch(self, args) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
