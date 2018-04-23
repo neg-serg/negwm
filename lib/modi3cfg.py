@@ -84,7 +84,7 @@ class modi3cfg(object):
             for key in string:
                 if key in self.win_all_props():
                     string[key] = set(string[sys.intern(key)])
-                elif key == "prog_dict":
+                elif key == "subgroup":
                     self.convert_subgroup(string[key])
 
     def convert_subgroup(self, subgroup):
@@ -112,7 +112,7 @@ class modi3cfg(object):
             for key in string:
                 if key in self.win_all_props():
                     string[key] = list(string[sys.intern(key)])
-                elif key == "prog_dict":
+                elif key == "subgroup":
                     self.deconvert_subgroup(string[key])
 
     def load_config(self):

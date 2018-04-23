@@ -315,9 +315,9 @@ class ns(modi3cfg, Matcher):
                 tag (str): denotes the target tag.
                 subtag (str): denotes the target subtag.
         """
-        if subtag in self.cfg[tag].get("prog_dict", {}):
+        if subtag in self.cfg[tag].get("subgroup", {}):
             class_list = [win.window_class for win in self.marked[tag]]
-            subtag_classes_set = self.cfg[tag].get("prog_dict", {}) \
+            subtag_classes_set = self.cfg[tag].get("subgroup", {}) \
                 .get(subtag, {}) \
                 .get("includes", {})
             subtag_classes_matched = [
@@ -328,7 +328,7 @@ class ns(modi3cfg, Matcher):
                     prog_str = re.sub(
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
                         self.cfg[tag]
-                            .get("prog_dict", {})
+                            .get("subgroup", {})
                             .get(subtag, {})
                             .get("prog", {})
                     )
