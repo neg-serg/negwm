@@ -8,7 +8,7 @@ For now this collection of modules for i3 includes:
 
 *flastd* : alt-tab to the previous window, not the workspace.
 
-*circled* : better run-or-raise, with jump in a circle, subgroups, priorities
+*circled* : better run-or-raise, with jump in a circle, subtags, priorities
 and more.
 
 *negi3mods* : application that run all modules and handle configuration of

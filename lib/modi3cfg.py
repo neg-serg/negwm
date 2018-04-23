@@ -56,7 +56,7 @@ class modi3cfg(object):
         # basic cfg properties, without regexes
         return ['class', 'instance', 'role']
 
-    def subgroup_attr_list(self):
+    def subtag_attr_list(self):
         return {'includes'}
 
     def reload_config(self):
@@ -84,24 +84,24 @@ class modi3cfg(object):
             for key in string:
                 if key in self.win_all_props():
                     string[key] = set(string[sys.intern(key)])
-                elif key == "subgroup":
-                    self.convert_subgroup(string[key])
+                elif key == "subtag":
+                    self.convert_subtag(string[key])
 
-    def convert_subgroup(self, subgroup):
-        """ Convert subgroup attributes to set for the better performance.
+    def convert_subtag(self, subtag):
+        """ Convert subtag attributes to set for the better performance.
         """
-        for val in subgroup.values():
+        for val in subtag.values():
             for key in val:
-                if key in self.subgroup_attr_list():
+                if key in self.subtag_attr_list():
                     val[key] = set(val[key])
 
-    def deconvert_subgroup(self, subgroup):
+    def deconvert_subtag(self, subtag):
         """ Convert set attributes to list, because of set cannot be saved
         / restored to / from TOML-files corretly.
         """
-        for val in subgroup.values():
+        for val in subtag.values():
             for key in val:
-                if key in self.subgroup_attr_list():
+                if key in self.subtag_attr_list():
                     val[key] = list(val[key])
 
     def dict_deconverse(self):
@@ -112,8 +112,8 @@ class modi3cfg(object):
             for key in string:
                 if key in self.win_all_props():
                     string[key] = list(string[sys.intern(key)])
-                elif key == "subgroup":
-                    self.deconvert_subgroup(string[key])
+                elif key == "subtag":
+                    self.deconvert_subtag(string[key])
 
     def load_config(self):
         """ Reload config itself and convert lists in it to sets for the better

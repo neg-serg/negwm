@@ -115,7 +115,7 @@ class circle(modi3cfg, Matcher):
                 prog_str = re.sub(
                     "~", os.path.realpath(os.path.expandvars("$HOME")),
                     self.cfg[tag]
-                        .get("subgroup", {})
+                        .get("subtag", {})
                         .get(subtag, {})
                         .get("prog", {})
                 )
@@ -257,7 +257,7 @@ class circle(modi3cfg, Matcher):
             subtag (str): denotes the target [subtag].
         """
         self.subtag_info = \
-            self.cfg[tag].get("subgroup", {}).get(subtag, {})
+            self.cfg[tag].get("subtag", {}).get(subtag, {})
         if not set(self.subtag_info.get("includes", {})) & \
                 {w.window_class for w in self.tagged.get(tag, {})}:
             self.run_prog(tag, subtag)
