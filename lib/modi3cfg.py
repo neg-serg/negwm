@@ -30,9 +30,9 @@ class modi3cfg(object):
 
         # bind numbers to cfg names
         self.conv_props = {
-            'class': self.cfg_props()[0],
-            'instance': self.cfg_props()[1],
-            'window_role': self.cfg_props()[2],
+            'class': 'class',
+            'instance': 'instance',
+            'window_role': 'window_role',
         }
 
         self.i3 = i3
@@ -42,22 +42,22 @@ class modi3cfg(object):
 
     def cfg_regex_props(self):
         # regex cfg properties
-        return ["class_r", "instance_r", "name_r", "role_r"]
+        return {"class_r", "instance_r", "name_r", "role_r"}
 
     def win_all_props(self):
         # basic + regex props
-        return set(self.cfg_props()) | set(self.cfg_regex_props())
+        return self.cfg_props() | self.cfg_regex_props()
 
     def possible_props(self):
         # windows properties used for props add / del
-        return ['class', 'instance', 'window_role', 'title']
+        return {'class', 'instance', 'window_role', 'title'}
 
     def cfg_props(self):
         # basic cfg properties, without regexes
-        return ['class', 'instance', 'role']
+        return {'class', 'instance', 'role'}
 
     def subtag_attr_list(self):
-        return {'class'}
+        return self.possible_props()
 
     def reload_config(self):
         """ Reload config for current selected module.
@@ -159,7 +159,7 @@ class modi3cfg(object):
                 prop_str (str): property string in special format.
         """
         self.property_to_winattrib(prop_str)
-        ftors = set(self.cfg_props()) & set(self.win_attrs.keys())
+        ftors = self.cfg_props() & set(self.win_attrs.keys())
         if tag in self.cfg:
             for t in ftors:
                 if self.win_attrs[t] not in self.cfg.get(tag, {}).get(t, {}):
@@ -208,7 +208,7 @@ class modi3cfg(object):
                                     self.cfg[tag][t].remove(reg)
 
         # Cleanup
-        for t in set(self.cfg_regex_props()) | set(self.cfg_props()):
+        for t in self.cfg_regex_props() | self.cfg_props():
             if t in self.cfg[tag] and self.cfg[tag][t] == set():
                 del self.cfg[tag][t]
 
