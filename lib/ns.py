@@ -319,7 +319,7 @@ class ns(modi3cfg, Matcher):
             class_list = [win.window_class for win in self.marked[tag]]
             subtag_classes_set = self.cfg[tag].get("subtag", {}) \
                 .get(subtag, {}) \
-                .get("includes", {})
+                .get("class", {})
             subtag_classes_matched = [
                 w for w in class_list if w in subtag_classes_set
             ]

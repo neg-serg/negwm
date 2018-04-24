@@ -200,7 +200,7 @@ class circle(modi3cfg, Matcher):
         if not with_subtag:
             return self.tagged[tag][idx]
         else:
-            subtag_win_classes = self.subtag_info.get("includes", {})
+            subtag_win_classes = self.subtag_info.get("class", {})
             for subidx, win in enumerate(self.tagged[tag]):
                 if win.window_class in subtag_win_classes:
                     return self.tagged[tag][subidx]
@@ -258,7 +258,7 @@ class circle(modi3cfg, Matcher):
         """
         self.subtag_info = \
             self.cfg[tag].get("subtag", {}).get(subtag, {})
-        if not set(self.subtag_info.get("includes", {})) & \
+        if not set(self.subtag_info.get("class", {})) & \
                 {w.window_class for w in self.tagged.get(tag, {})}:
             self.run_prog(tag, subtag)
         else:

@@ -57,7 +57,7 @@ class modi3cfg(object):
         return ['class', 'instance', 'role']
 
     def subtag_attr_list(self):
-        return {'includes'}
+        return {'class'}
 
     def reload_config(self):
         """ Reload config for current selected module.
