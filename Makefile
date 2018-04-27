@@ -8,8 +8,9 @@ all: placeholder
 generate: clean
 
 clean:
-	@rm -rf placeholder
+	@rm -rf placeholder wm_class
 
 placeholder: generate
 	$(CC) $(CFLAGS) -o placeholder placeholder.c $(LIBS)
+	$(CC) $(CFLAGS) -lX11 wm_class.c -o wm_class
 
