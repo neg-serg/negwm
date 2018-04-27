@@ -1,16 +1,28 @@
-CFLAGS += -std=c11 -pedantic -O2
-LIBS :=
+CFLAGS += -std=gnu11 -march=native -Os -pedantic -D_FORCE_OCLOEXEC
 GLFW3 := $(shell pkg-config --libs glfw3)
 LIBS := $(GLFW3) -lGL -lm -lGLU -lGLEW
 
-all: placeholder
+.PHONY: all 
+
+all:  \
+	placeholder \
+	wm_class \
+	send
 
 generate: clean
 
 clean:
-	@rm -rf placeholder wm_class
+	@rm -rfv \
+	    placeholder \
+	    wm_class \
+	    send 
 
-placeholder: generate
-	$(CC) $(CFLAGS) -o placeholder placeholder.c $(LIBS)
-	$(CC) $(CFLAGS) -lX11 wm_class.c -o wm_class
+placeholder: placeholder.c 
+	$(CC) $(CFLAGS) $(LIBS) $@.c -o $@
+
+wm_class: wm_class.c 
+	$(CC) $(CFLAGS) -lX11 $@.c -o $@
+
+send: send.c 
+	$(CC) $(CFLAGS) $@.c -o $@
 
