@@ -17,7 +17,7 @@ import subprocess
 import sys
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from modlib import i3path
+from modlib import i3path, get_screen_resolution
 from functools import partial
 
 
@@ -65,7 +65,13 @@ class menu(modi3cfg):
         # Magic delimiter used by add_prop / del_prop routines.
         self.delim = "@"
 
-    def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=1900):
+        # cache screen width
+        self.screen_width = get_screen_resolution()["width"]
+
+    def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=None):
+        if width is None:
+            width = self.screen_width - 20
+
         """ Returns arguments list for rofi runner.
 
         Args:
@@ -81,7 +87,7 @@ class menu(modi3cfg):
             '-p', prompt,
             '-nocase-sensitive',
             '-matching', 'fuzzy',
-            '-theme-str', '* { font: "Iosevka Term Medium 14"; }',
+            '-theme-str', '* { font: "Iosevka Term Bold 14"; }',
             '-theme-str', f'#window {{ width:{width}; y-offset: -32; \
             location: south; anchor: south; }}',
         ]
@@ -255,7 +261,7 @@ class menu(modi3cfg):
         rofi_tag = subprocess.run(
             self.rofi_args(
                 cnum=len(lst),
-                width=1200,
+                width=int(self.screen_width * 0.75),
                 prompt=f"[{mod}] >>"
             ),
             stdout=subprocess.PIPE,
@@ -272,7 +278,7 @@ class menu(modi3cfg):
             self.rofi_args(
                 cnum=len(self.possible_mods),
                 lnum=1,
-                width=1200,
+                width=int(self.screen_width * 0.75),
                 prompt=f"[selmod] >>"
             ),
             stdout=subprocess.PIPE,
@@ -315,7 +321,7 @@ class menu(modi3cfg):
         else:
             wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
         ws = subprocess.run(
-            self.rofi_args(cnum=len(wslist), width=1200, prompt="[ws] >>"),
+            self.rofi_args(cnum=len(wslist), width=int(self.screen_width * 0.66), prompt="[ws] >>"),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(wslist), 'UTF-8')
         ).stdout
@@ -334,7 +340,11 @@ class menu(modi3cfg):
         leaves = self.i3.get_tree().leaves()
         winlist = [win.name for win in leaves]
         win_name = subprocess.run(
-            self.rofi_args(cnum=len(winlist), width=1200, prompt="[ws] >>"),
+            self.rofi_args(
+                cnum=len(winlist),
+                width=int(self.screen_width * 0.75),
+                prompt="[ws] >>"
+            ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(winlist), 'UTF-8')
         ).stdout
