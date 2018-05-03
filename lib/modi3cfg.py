@@ -80,40 +80,42 @@ class modi3cfg(object):
     def dict_converse(self):
         """ Convert list attributes to set for the better performance.
         """
-        for string in self.cfg.values():
-            for key in string:
-                if key in self.win_all_props():
-                    string[key] = set(string[sys.intern(key)])
-                elif key == "subtag":
-                    self.convert_subtag(string[key])
-
-    def convert_subtag(self, subtag):
-        """ Convert subtag attributes to set for the better performance.
-        """
-        for val in subtag.values():
-            for key in val:
-                if key in self.subtag_attr_list():
-                    val[key] = set(val[key])
-
-    def deconvert_subtag(self, subtag):
-        """ Convert set attributes to list, because of set cannot be saved
-        / restored to / from TOML-files corretly.
-        """
-        for val in subtag.values():
-            for key in val:
-                if key in self.subtag_attr_list():
-                    val[key] = list(val[key])
+        self.dict_apply(lambda key: set(key), self.convert_subtag)
 
     def dict_deconverse(self):
         """ Convert set attributes to list, because of set cannot be saved
             / restored to / from TOML-files corretly.
         """
+        self.dict_apply(lambda key: list(key), self.deconvert_subtag)
+
+    def convert_subtag(self, subtag):
+        """ Convert subtag attributes to set for the better performance.
+        """
+        self.subtag_apply(subtag, lambda key: set(key))
+
+    def deconvert_subtag(self, subtag):
+        """ Convert set attributes to list, because of set cannot be saved
+        / restored to / from TOML-files corretly.
+        """
+        self.subtag_apply(subtag, lambda key: list(key))
+
+    def dict_apply(self, field_conv, subtag_conv):
+        """ Convert list attributes to set for the better performance.
+        """
         for string in self.cfg.values():
             for key in string:
                 if key in self.win_all_props():
-                    string[key] = list(string[sys.intern(key)])
+                    string[sys.intern(key)] = field_conv(string[sys.intern(key)])
                 elif key == "subtag":
-                    self.deconvert_subtag(string[key])
+                    subtag_conv(string[sys.intern(key)])
+
+    def subtag_apply(self, subtag, field_conv):
+        """ Convert subtag attributes to set for the better performance.
+        """
+        for val in subtag.values():
+            for key in val:
+                if key in self.subtag_attr_list():
+                    val[sys.intern(key)] = field_conv(val[sys.intern(key)])
 
     def load_config(self):
         """ Reload config itself and convert lists in it to sets for the better
