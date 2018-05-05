@@ -33,6 +33,7 @@ class modi3cfg(object):
             'class': 'class',
             'instance': 'instance',
             'window_role': 'window_role',
+            'title': 'name',
         }
 
         self.i3 = i3
@@ -54,7 +55,7 @@ class modi3cfg(object):
 
     def cfg_props(self):
         # basic cfg properties, without regexes
-        return {'class', 'instance', 'role'}
+        return {'class', 'instance', 'name', 'role'}
 
     def subtag_attr_list(self):
         return self.possible_props()
@@ -90,17 +91,27 @@ class modi3cfg(object):
 
     def convert_subtag(self, subtag):
         """ Convert subtag attributes to set for the better performance.
+
+            Args:
+                subtag (str): target subtag.
         """
         self.subtag_apply(subtag, lambda key: set(key))
 
     def deconvert_subtag(self, subtag):
         """ Convert set attributes to list, because of set cannot be saved
         / restored to / from TOML-files corretly.
+
+            Args:
+                subtag (str): target subtag.
         """
         self.subtag_apply(subtag, lambda key: list(key))
 
     def dict_apply(self, field_conv, subtag_conv):
         """ Convert list attributes to set for the better performance.
+
+            Args:
+                field_conv (Callable): function to convert dict field.
+                subtag_conv (Callable): function to convert subtag inside dict.
         """
         for string in self.cfg.values():
             for key in string:
@@ -111,6 +122,10 @@ class modi3cfg(object):
 
     def subtag_apply(self, subtag, field_conv):
         """ Convert subtag attributes to set for the better performance.
+
+            Args:
+                subtag (str): target subtag name.
+                field_conv (Callable): function to convert dict field.
         """
         for val in subtag.values():
             for key in val:
@@ -177,13 +192,11 @@ class modi3cfg(object):
                     if type(self.cfg[tag][t]) == str:
                         self.cfg[tag][t] = {self.win_attrs[t]}
 
-    def del_props(self, tag, prop_str):
-        """ Remove window from some tag.
+    def del_direct_props(self, tag):
+        """ Remove basic(non-regex) properties of window from target tag.
             Args:
                 tag (str): target tag
-                prop_str (str): property string in special format.
         """
-        self.property_to_winattrib(prop_str)
         # Delete 'direct' props:
         for t in self.cfg[tag].copy():
             if t in self.cfg_props():
@@ -193,6 +206,12 @@ class modi3cfg(object):
                     for tok in self.cfg[tag][t].copy():
                         if self.win_attrs[t] == tok:
                             self.cfg[tag][t].remove(tok)
+
+    def del_regex_props(self, tag):
+        """ Remove regex properties of window from target tag.
+            Args:
+                tag (str): target tag
+        """
         # Delete appropriate regexes
         for t in self.cfg[tag].copy():
             if t in self.cfg_regex_props():
@@ -208,6 +227,16 @@ class modi3cfg(object):
                             or (t == "instance_r" and self.win_attrs[t[:-2]] == l.window_instance) \
                                 or (t == "role_r" and self.win_attrs[t[:-2]] == l.window_role):
                                     self.cfg[tag][t].remove(reg)
+
+    def del_props(self, tag, prop_str):
+        """ Remove window from some tag.
+            Args:
+                tag (str): target tag
+                prop_str (str): property string in special format.
+        """
+        self.property_to_winattrib(prop_str)
+        self.del_direct_props(tag)
+        self.del_regex_props(tag)
 
         # Cleanup
         for t in self.cfg_regex_props() | self.cfg_props():
