@@ -48,7 +48,7 @@ client.background              #000000
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
 set $browsers [class="^(Firefox|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
-set $games [class="^(dota2|darkest.bin.x86_64)$"]
+set $games [class="^(dota2|darkest.bin.x86_64|PillarsOfEternityII)$"]
 set $wine_apps [class="^(wine|Crossover)$"]
 
 #-----------------
@@ -253,7 +253,7 @@ bindsym $m4+$c+f $circle next discord
 bindsym $m4+grave exec $wm3 focus_next_visible
 bindsym $m4+$S+grave exec $wm3 focus_prev_visible
 
-bindsym $alt+g exec --no-startup-id rofi -sort -matching fuzzy -show window
+bindsym $alt+g exec --no-startup-id rofi -sort -case-sensitive=false -matching fuzzy -show window
 bindsym $m4+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
 bindsym $m4+$c+grave $menu run
