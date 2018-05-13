@@ -68,7 +68,17 @@ class menu(modi3cfg):
         # cache screen width
         self.screen_width = get_screen_resolution()["width"]
 
-    def rofi_args(self, prompt=">>", cnum=16, lnum=2, width=None):
+        # set up settings for rofi, dmenu, whatever
+        self.launcher_font = self.cfg.get("font", "sans") + " " + \
+            str(self.cfg.get("font_size", "14"))
+        self.location = self.cfg.get("location", "south")
+        self.anchor = self.cfg.get("anchor", "south")
+        self.matching = self.cfg.get("matching", "fuzzy")
+        self.prompt = self.cfg.get("prompt", ">>")
+
+    def rofi_args(self, prompt=None, cnum=16, lnum=2, width=None):
+        if prompt is None:
+            prompt = self.prompt
         if width is None:
             width = self.screen_width - 20
 
@@ -86,10 +96,11 @@ class menu(modi3cfg):
             '-disable-history',
             '-p', prompt,
             '-nocase-sensitive',
-            '-matching', 'fuzzy',
-            '-theme-str', '* { font: "Iosevka Term Bold 14"; }',
+            '-matching', f'{self.matching}',
+            '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
             '-theme-str', f'#window {{ width:{width}; y-offset: -32; \
-            location: south; anchor: south; }}',
+            location: {self.location}; \
+            anchor: {self.anchor}; }}',
         ]
 
     def i3_cmds(self):
@@ -262,7 +273,7 @@ class menu(modi3cfg):
             self.rofi_args(
                 cnum=len(lst),
                 width=int(self.screen_width * 0.75),
-                prompt=f"[{mod}] >>"
+                prompt=f"[{mod}] {self.prompt}"
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(lst), 'UTF-8')
@@ -279,7 +290,7 @@ class menu(modi3cfg):
                 cnum=len(self.possible_mods),
                 lnum=1,
                 width=int(self.screen_width * 0.75),
-                prompt=f"[selmod] >>"
+                prompt=f"[selmod] {self.prompt}"
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.possible_mods), 'UTF-8')
@@ -321,7 +332,11 @@ class menu(modi3cfg):
         else:
             wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
         ws = subprocess.run(
-            self.rofi_args(cnum=len(wslist), width=int(self.screen_width * 0.66), prompt="[ws] >>"),
+            self.rofi_args(
+                cnum=len(wslist),
+                width=int(self.screen_width * 0.66),
+                prompt=f"[ws] {self.prompt}"
+            ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(wslist), 'UTF-8')
         ).stdout
@@ -343,7 +358,7 @@ class menu(modi3cfg):
             self.rofi_args(
                 cnum=len(winlist),
                 width=int(self.screen_width * 0.75),
-                prompt="[ws] >>"
+                prompt=f"[ws] {self.prompt}"
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(winlist), 'UTF-8')
@@ -421,7 +436,7 @@ class menu(modi3cfg):
                         if args == prev_args:
                             return 0
                         cmd_rerun = subprocess.run(
-                            self.rofi_args(">> " + cmd),
+                            self.rofi_args(f"{self.prompt} " + cmd),
                             stdout=subprocess.PIPE,
                             input=bytes('\n'.join(args), 'UTF-8')
                         ).stdout
