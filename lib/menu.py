@@ -95,7 +95,7 @@ class menu(modi3cfg):
             '-columns', str(cnum), '-lines', str(lnum),
             '-disable-history',
             '-p', prompt,
-            '-nocase-sensitive',
+            '-i', # non case-sensitive
             '-matching', f'{self.matching}',
             '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
             '-theme-str', f'#window {{ width:{width}; y-offset: -32; \
@@ -145,10 +145,36 @@ class menu(modi3cfg):
             "autoprop": self.autoprop,
             "show_props": self.show_props,
             "ws": self.goto_ws,
+            "goto_win": self.goto_win,
             "attach": self.attach_to_ws,
             "movews": self.move_to_ws,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
+
+    def goto_win(self):
+        """ Run rofi goto selection dialog
+        """
+        leaves = self.i3.get_tree().leaves()
+        winlist = [win.name for win in leaves]
+
+        if len(winlist) <= 1:
+            return
+
+        win_name = subprocess.run(
+            self.rofi_args(
+                cnum=len(winlist),
+                width=int(self.screen_width * 0.75),
+                prompt=f"[goto] {self.prompt}"
+            ),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(winlist), 'UTF-8')
+        ).stdout
+
+        if win_name is not None and win_name:
+            win_name = win_name.decode('UTF-8').strip()
+            for w in leaves:
+                if w.name == win_name:
+                    w.command('focus')
 
     def show_props(self):
         """ Send notify-osd message about current properties.
@@ -190,7 +216,11 @@ class menu(modi3cfg):
                     xprops.append(line)
 
         xprop_sel = subprocess.run(
-            self.rofi_args(cnum=1, lnum=len(xprops), width=900),
+            self.rofi_args(
+                cnum=1,
+                lnum=len(xprops),
+                width=int(self.screen_width * 0.75)
+            ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(xprops), 'UTF-8')
         ).stdout
@@ -358,7 +388,7 @@ class menu(modi3cfg):
             self.rofi_args(
                 cnum=len(winlist),
                 width=int(self.screen_width * 0.75),
-                prompt=f"[ws] {self.prompt}"
+                prompt=f"[attach win] {self.prompt}"
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(winlist), 'UTF-8')

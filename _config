@@ -253,7 +253,7 @@ bindsym $m4+$c+f $circle next discord
 bindsym $m4+grave exec $wm3 focus_next_visible
 bindsym $m4+$S+grave exec $wm3 focus_prev_visible
 
-bindsym $alt+g exec --no-startup-id rofi -sort -case-sensitive=false -matching fuzzy -show window
+bindsym $alt+g exec $menu goto_win
 bindsym $m4+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
 bindsym $m4+$c+grave $menu run

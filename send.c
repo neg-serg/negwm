@@ -66,6 +66,7 @@ const char *docstr =
     "  send menu attach\n"
     "  send menu movews\n"
     "  send menu ws\n"
+    "  send menu goto_win\n"
     "  send wm3 center\n"
     "  send wm3 focus_next_visible\n"
     "  send wm3 focus_prev_visible\n"
@@ -145,6 +146,7 @@ Args ArgMap[] = {
             {"ws", 0},
             {"movews", 0},
             {"attach", 0},
+            {"goto_win", 0},
             {NULL, 0},
         },
     [WM3] =
