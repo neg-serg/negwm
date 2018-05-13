@@ -154,8 +154,14 @@ class menu(modi3cfg):
     def goto_win(self):
         """ Run rofi goto selection dialog
         """
-        leaves = self.i3.get_tree().leaves()
-        winlist = [win.name for win in leaves]
+        tree = self.i3.get_tree()
+        leaves = tree.leaves()
+        focused = tree.find_focused()
+
+        winlist = []
+        for win in leaves:
+            if win.id != focused.id:
+                winlist.append(win.name)
 
         if len(winlist) <= 1:
             return
