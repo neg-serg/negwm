@@ -76,7 +76,13 @@ class menu(modi3cfg):
         self.matching = self.cfg.get("matching", "fuzzy")
         self.prompt = self.cfg.get("prompt", ">>")
 
-    def rofi_args(self, prompt=None, cnum=16, lnum=2, width=None):
+    def rofi_args(
+            self,
+            prompt=None,
+            cnum=16,
+            lnum=2,
+            width=None,
+            markup_rows='-nomarkup-rows'):
         if prompt is None:
             prompt = self.prompt
         if width is None:
@@ -95,8 +101,8 @@ class menu(modi3cfg):
             '-columns', str(cnum), '-lines', str(lnum),
             '-disable-history',
             '-p', prompt,
-            '-i', # non case-sensitive
-            '-markup-rows',
+            '-i',  # non case-sensitive
+            f'{markup_rows}'
             '-matching', f'{self.matching}',
             '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
             '-theme-str', f'#window {{ width:{width}; y-offset: -32; \
@@ -147,17 +153,42 @@ class menu(modi3cfg):
             "show_props": self.show_props,
             "ws": self.goto_ws,
             "goto_win": self.goto_win,
-            "attach": self.attach_to_ws,
+            "attach": self.attach_win,
             "movews": self.move_to_ws,
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def goto_win(self):
-        """ Run rofi goto selection dialog
+    def menu_action_simple(self, cmd, prompt):
+        """ Run simple and fast selection dialog for window with given action.
+            Args:
+                cmd (string): action for window to run.
         """
-        def colorize(s, color, weight='normal'):
-            return f"<span weight='{weight}' color='{color}'>{s}</span>"
+        leaves = self.i3.get_tree().leaves()
+        winlist = [win.name for win in leaves]
+        win_name = subprocess.run(
+            self.rofi_args(
+                cnum=len(winlist),
+                width=int(self.screen_width * 0.75),
+                prompt=f"{prompt} {self.prompt}"
+            ),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(winlist), 'UTF-8')
+        ).stdout
 
+        if win_name is not None and win_name:
+            win_name = win_name.decode('UTF-8').strip()
+            for w in leaves:
+                if w.name == win_name:
+                    w.command(cmd)
+
+    def colorize(self, s, color, weight='normal'):
+        return f"<span weight='{weight}' color='{color}'>{s}</span>"
+
+    def menu_action_rich(self, cmd, prompt):
+        """ Run beautiful selection dialog for window with given action
+            Args:
+                cmd (string): action for window to run.
+        """
         tree = self.i3.get_tree()
         leaves = tree.leaves()
         focused = tree.find_focused()
@@ -169,16 +200,19 @@ class menu(modi3cfg):
             if win.id != focused.id:
                 ws_name = win.parent.parent.name
                 if ws_name == '__i3_scratch':
-                    ws_name = colorize(' scratchpad', '#395573')
+                    ws_name = self.colorize(' scratchpad', '#395573')
                     scratchlist.append(
-                        f'{ws_name:<58} {colorize(win.window_class, "#228888"):<64} {re.sub("<[^<]+?>", "", win.name)}'
+                        f'{ws_name:<58} \
+                        {self.colorize(win.window_class, "#228888"):<64} \
+                        {re.sub("<[^<]+?>", "", win.name)}'
                     )
                 else:
-                    ws_name = colorize(ws_name, '#4779B3')
+                    ws_name = self.colorize(ws_name, '#4779B3')
                     wlist.append(
-                        f'{ws_name:<58} {colorize(win.window_class, "#228888"):<64} {re.sub("<[^<]+?>", "", win.name)}'
+                        f'{ws_name:<58} \
+                        {self.colorize(win.window_class, "#228888"):<64} \
+                        {re.sub("<[^<]+?>", "", win.name)}'
                     )
-
         winlist = wlist + scratchlist
 
         if len(winlist) <= 1:
@@ -188,7 +222,8 @@ class menu(modi3cfg):
             self.rofi_args(
                 lnum=len(winlist),
                 width=int(self.screen_width * 0.6),
-                prompt=f"[goto] {self.prompt}"
+                prompt=f"{prompt} {self.prompt}",
+                markup_rows='-markup-rows'
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(winlist), 'UTF-8')
@@ -198,7 +233,19 @@ class menu(modi3cfg):
             win_name = win_name.decode('UTF-8').strip()
             for w in leaves:
                 if w.name in win_name:
-                    w.command('focus')
+                    w.command(cmd)
+
+    def goto_win(self):
+        """ Run rofi goto selection dialog
+        """
+        self.menu_action_simple('focus', '[goto]')
+
+    def attach_win(self):
+        """ Attach window to the current workspace.
+        """
+        self.menu_action_simple(
+            'move window to workspace current', '[attach win]'
+        )
 
     def show_props(self):
         """ Send notify-osd message about current properties.
@@ -402,27 +449,6 @@ class menu(modi3cfg):
         """ Partial apply function to workspace.
         """
         ws_func()
-
-    def attach_to_ws(self):
-        """ Attach window to the current workspace.
-        """
-        leaves = self.i3.get_tree().leaves()
-        winlist = [win.name for win in leaves]
-        win_name = subprocess.run(
-            self.rofi_args(
-                cnum=len(winlist),
-                width=int(self.screen_width * 0.75),
-                prompt=f"[attach win] {self.prompt}"
-            ),
-            stdout=subprocess.PIPE,
-            input=bytes('\n'.join(winlist), 'UTF-8')
-        ).stdout
-
-        if win_name is not None and win_name:
-            win_name = win_name.decode('UTF-8').strip()
-            for w in leaves:
-                if w.name == win_name:
-                    w.command('move window to workspace current')
 
     def goto_ws(self, use_wslist=True):
         """ Go to workspace menu.
