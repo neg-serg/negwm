@@ -96,6 +96,7 @@ class menu(modi3cfg):
             '-disable-history',
             '-p', prompt,
             '-i', # non case-sensitive
+            '-markup-rows',
             '-matching', f'{self.matching}',
             '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
             '-theme-str', f'#window {{ width:{width}; y-offset: -32; \
@@ -154,22 +155,39 @@ class menu(modi3cfg):
     def goto_win(self):
         """ Run rofi goto selection dialog
         """
+        def colorize(s, color, weight='normal'):
+            return f"<span weight='{weight}' color='{color}'>{s}</span>"
+
         tree = self.i3.get_tree()
         leaves = tree.leaves()
         focused = tree.find_focused()
 
         winlist = []
+        scratchlist = []
+        wlist = []
         for win in leaves:
             if win.id != focused.id:
-                winlist.append(win.name)
+                ws_name = win.parent.parent.name
+                if ws_name == '__i3_scratch':
+                    ws_name = colorize(' scratchpad', '#395573')
+                    scratchlist.append(
+                        f'{ws_name:<58} {colorize(win.window_class, "#228888"):<64} {re.sub("<[^<]+?>", "", win.name)}'
+                    )
+                else:
+                    ws_name = colorize(ws_name, '#4779B3')
+                    wlist.append(
+                        f'{ws_name:<58} {colorize(win.window_class, "#228888"):<64} {re.sub("<[^<]+?>", "", win.name)}'
+                    )
+
+        winlist = wlist + scratchlist
 
         if len(winlist) <= 1:
             return
 
         win_name = subprocess.run(
             self.rofi_args(
-                cnum=len(winlist),
-                width=int(self.screen_width * 0.75),
+                lnum=len(winlist),
+                width=int(self.screen_width * 0.6),
                 prompt=f"[goto] {self.prompt}"
             ),
             stdout=subprocess.PIPE,
@@ -179,7 +197,7 @@ class menu(modi3cfg):
         if win_name is not None and win_name:
             win_name = win_name.decode('UTF-8').strip()
             for w in leaves:
-                if w.name == win_name:
+                if w.name in win_name:
                     w.command('focus')
 
     def show_props(self):
