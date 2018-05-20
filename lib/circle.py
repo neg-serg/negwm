@@ -206,6 +206,7 @@ class circle(modi3cfg, Matcher):
             tag (str): denotes target [tag]
         """
         try:
+            self.sort_by_parent(tag)
             if len(self.tagged[tag]) == 0:
                 self.run_prog(tag)
             elif len(self.tagged[tag]) <= 1:
@@ -331,6 +332,37 @@ class circle(modi3cfg, Matcher):
 
         for tag in self.cfg:
             self.find_acceptable_windows(tag)
+
+    def sort_by_parent(self, tag):
+        """
+            Sort windows by some infernal logic: At first sort by parent
+            container order, than in any order.
+
+            Args:
+                tag (str): target tag to sort.
+        """
+        parent_lst = []
+        idx = 0
+
+        try:
+            for tag in self.cfg:
+                if self.tagged[tag]:
+                    for tagged_win in self.tagged[tag]:
+                        if tagged_win.parent not in parent_lst:
+                            for container_win in tagged_win.parent:
+                                if container_win in self.tagged[tag]:
+                                    oldidx = self.tagged[tag].index(
+                                        container_win
+                                    )
+                                    self.tagged[tag].insert(
+                                        idx, self.tagged[tag].pop(oldidx)
+                                    )
+                                    idx += 1
+                        parent_lst.append(tagged_win.parent)
+                else:
+                    break
+        except TypeError:
+            pass
 
     def add_wins(self, i3, event):
         """ Tag window if it is match defined rules.
