@@ -124,20 +124,14 @@ class circle(modi3cfg, Matcher):
         except:
             pass
 
-    def find_prioritized_win(self, tag):
+    def find_next_not_the_same_win(self, tag):
         """ It was used as the guard to infinite loop in the past.
-
-            TODO: need refactoring.
-
         Args:
             tag (str): denotes target [tag]
         """
-        self.counters[tag] += 1
-        self.repeats += 1
-        if self.repeats < 8:
+        if len(self.tagged[tag]) > 1:
+            self.counters[tag] += 1
             self.go_next(tag)
-        else:
-            self.repeats = 0
 
     def prefullscreen(self, tag):
         """ Prepare to go fullscreen.
@@ -242,7 +236,7 @@ class circle(modi3cfg, Matcher):
                             self.focus_next(tag, idx, inc_counter=False)
                             return
                 elif self.current_win.id == self.twin(tag, idx).id:
-                    self.find_prioritized_win(tag)
+                    self.find_next_not_the_same_win(tag)
                 else:
                     self.focus_next(tag, idx)
         except KeyError:
