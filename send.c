@@ -43,7 +43,7 @@ const char *docstr =
     "  send circle info <name>\n"
     "  send circle next <name>\n"
     "  send circle reload\n"
-    "  send circle run <name> <subtag>\n"
+    "  send circle subtag <name> <subtag>\n"
     "  send ns add_prop <tag> <rule>\n"
     "  send ns del_prop <tag> <rule>\n"
     "  send ns dialog\n"
@@ -55,7 +55,7 @@ const char *docstr =
     "  send ns hide <name>\n"
     "  send ns next\n"
     "  send ns reload\n"
-    "  send ns run <name> <prog>\n"
+    "  send ns subtag <name> <prog>\n"
     "  send ns show <name>\n"
     "  send ns toggle <name>\n"
     "  send flast reload\n"
@@ -108,7 +108,7 @@ Args ArgMap[] = {
             {"reload", 0},
             {"next", 1},
             {"info", 1},
-            {"run", 2},
+            {"subtag", 2},
             {"add_prop", 2},
             {"del_prop", 2},
             {NULL, 0},
@@ -118,7 +118,7 @@ Args ArgMap[] = {
             {"show", 1},
             {"hide", 1},
             {"toggle", 1},
-            {"run", 2},
+            {"subtag", 2},
             {"next", 0},
             {"reload", 0},
             {"geom_restore", 0},

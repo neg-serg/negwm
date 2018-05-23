@@ -259,6 +259,7 @@ class circle(modi3cfg, Matcher):
         else:
             idx = 0
             self.focus_next(tag, idx, subtagged=True)
+        self.tag_windows()
 
     def switch(self, args):
         """ Defines pipe-based IPC for cirled module. With appropriate
@@ -273,7 +274,7 @@ class circle(modi3cfg, Matcher):
         """
         {
             "next": self.go_next,
-            "run": self.go_subtag,
+            "subtag": self.go_subtag,
             "add_prop": self.add_prop,
             "del_prop": self.del_prop,
             "reload": self.reload_config,

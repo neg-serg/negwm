@@ -552,7 +552,7 @@ class ns(modi3cfg, Matcher):
             "geom_dump": self.geom_dump_current,
             "geom_save": self.geom_save_current,
             "geom_autosave_mode": self.autosave_toggle,
-            "run": self.run_subtag,
+            "subtag": self.run_subtag,
             "add_prop": self.add_prop,
             "del_prop": self.del_prop,
             "reload": self.reload_config,
