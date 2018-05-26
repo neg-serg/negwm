@@ -238,7 +238,7 @@ class menu(modi3cfg):
     def goto_win(self):
         """ Run rofi goto selection dialog
         """
-        self.menu_action_simple('focus', '[goto]')
+        self.menu_action_simple('focus', '[go]')
 
     def attach_win(self):
         """ Attach window to the current workspace.
