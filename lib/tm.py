@@ -18,14 +18,26 @@ class env():
         # get terminal from config, use Alacritty by default
         self.term = cfg.get(name, {}).get("term", "alacritty").lower()
 
+        self.font = cfg.get("default_font", "")
+        if not self.font:
+            self.font = cfg.get(name, {}).get("font", "Iosevka Term")
+        self.font_size = cfg.get("default_font_size", "")
+        if not self.font_size:
+            self.font_size = cfg.get(name, {}).get("font_size", "18")
+
         self.tmux_session_attach = \
             f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = \
             f"tmux -S {self.sockpath} new-session -s {name}"
-        self.params = {
+        self.term_params = {
             "alacritty": ["alacritty"] + [
                 "-t", self.window_class,
                 "-e", "dash", "-c"
+            ],
+            "st": ["st"] + [
+                "-c", self.window_class,
+                "-f", self.font + ":size=" + str(self.font_size),
+                "-e", "dash", "-c",
             ]
         }
         self.prefix = f"{expanduser('~/bin/dynamic-colors')} switch dark3;"
@@ -73,7 +85,7 @@ class tm(modi3cfg):
 
     def attach_to_session(self):
         self.run_app(
-            self.env.params[self.env.term] +
+            self.env.term_params[self.env.term] +
             [f"{self.env.prefix} {self.env.tmux_session_attach}"]
         )
 
@@ -85,7 +97,7 @@ class tm(modi3cfg):
 
     def create_new_session(self):
         self.run_app(
-            self.env.params[self.env.term] +
+            self.env.term_params[self.env.term] +
             [f"{self.env.prefix} {self.env.tmux_new_session} && \
                 {self.env.tmux_session_attach}"]
         )
