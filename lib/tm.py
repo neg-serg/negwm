@@ -1,5 +1,11 @@
-#!/usr/bin/python3
+""" Tmux Manager.
 
+Give simple and consistent way for user to create tmux sessions on dedicated
+sockets. Also it can run simply run applications without Tmux. The main
+advantage is dynamic config reloading and simplicity of adding or modifing of
+various parameters, also it works is faster then dedicated scripts, because
+there is no parsing / translation phase here in runtime.
+"""
 import subprocess
 import shlex
 from os.path import expanduser
@@ -8,6 +14,18 @@ from singleton import Singleton
 
 
 class env():
+    """ Environment class. It is a helper for tmux manager to store info about
+        currently selected application. This class rules over parameters and
+        settings of application, like used terminal enumator, fonts, all path
+        settings, etc.
+    Parents:
+        modi3cfg: configuration manager to autosave/autoload
+                  TOML-configutation with inotify
+
+    Metaclass:
+        Use Singleton metaclass from singleton module.
+
+    """
     def __init__(self, name, cfg):
         self.name = name
         self.sockpath = expanduser(
@@ -76,15 +94,40 @@ class env():
 
 
 class tm(modi3cfg):
+    """ Tmux Manager class. Easy and consistent way to create tmux sessions on
+        dedicated sockets. Also it can run simply run applications without
+        Tmux. The main advantage is dynamic config reloading and simplicity of
+        adding or modifing of various parameters.
+
+    Parents:
+        modi3cfg: configuration manager to autosave/autoload
+                  TOML-configutation with inotify
+
+    Metaclass:
+        Use Singleton metaclass from singleton module.
+
+    """
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None):
-        modi3cfg.__init__(self, i3, convert_me=False)
+        """ Init function.
+
+        Arguments for this constructor used only for compatibility.
+
+        Args:
+            i3: i3ipc connection(not used).
+            loop: asyncio loop. It's need to be given as parameter because of
+                  you need to bypass asyncio-loop to the thread(not used).
+        """        modi3cfg.__init__(self, i3, convert_me=False)
         self.envs = {}
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)
 
     def run_app(self, args):
+        """ Wrapper to run selected application in background.
+            Args:
+                args (List): arguments list.
+        """
         subprocess.Popen(args)
 
     def switch(self, args):
@@ -104,6 +147,8 @@ class tm(modi3cfg):
         }[args[0]](*args[1:])
 
     def detect_session_bind(self):
+        """ Find target session for given socket.
+        """
         session_list = subprocess.run(
             shlex.split(f"tmux -S {self.env.sockpath} list-sessions"),
             stdout=subprocess.PIPE
@@ -117,18 +162,24 @@ class tm(modi3cfg):
         ).stdout.decode()
 
     def attach_to_session(self):
+        """ Run tmux to attach to given socket.
+        """
         self.run_app(
             self.env.term_params[self.env.term] +
             [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
         )
 
     def search_classname(self):
+        """ Search for selected window class.
+        """
         return subprocess.run(
             shlex.split(f"xdotool search --classname {self.env.window_class}"),
             stdout=subprocess.PIPE
         ).stdout
 
     def create_new_session(self):
+        """ Run tmux to create the new session on given socket.
+        """
         self.run_app(
             self.env.term_params[self.env.term] +
             [f"{self.env.set_colorscheme} {self.env.tmux_new_session} {self.env.postfix} && \
@@ -136,6 +187,12 @@ class tm(modi3cfg):
         )
 
     def run(self, name):
+        """ Entry point, run application with Tmux on dedicated socket(in most
+            cases), or without tmux, if config value tmuxed=0.
+            Args:
+                name (str): target application name, with configuration taken
+                            from TOML.
+        """
         self.env = self.envs[name]
         if self.env.tmuxed:
             if self.env.name in self.detect_session_bind():
