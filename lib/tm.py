@@ -34,6 +34,14 @@ class env():
                 "-t", self.window_class,
                 "-e", "dash", "-c"
             ],
+            "alacritty-ncmpcpp": [
+                "alacritty",
+                "--config-file",
+                expanduser("~/.config/alacritty/ncmpcpp.yml")
+            ] + [
+                "-t", self.window_class,
+                "-e", "dash", "-c"
+            ],
             "st": ["st"] + [
                 "-c", self.window_class,
                 "-f", self.font + ":size=" + str(self.font_size),
@@ -62,6 +70,9 @@ class env():
         self.postfix = cfg.get(name, {}).get("postfix", '')
         if self.postfix and self.postfix[0] != '-':
             self.postfix = '\\; ' + self.postfix
+        self.tmuxed = int(cfg.get(name, {}).get("tmuxed", 1))
+        if not self.tmuxed:
+            self.prog = cfg.get(name, {}).get('prog', 'true')
 
 
 class tm(modi3cfg):
@@ -69,11 +80,9 @@ class tm(modi3cfg):
 
     def __init__(self, i3, loop=None):
         modi3cfg.__init__(self, i3, convert_me=False)
-        self.envs = {
-            'term': env('term', self.cfg),
-            'ranger': env('ranger', self.cfg),
-            'teardrop': env('teardrop', self.cfg),
-        }
+        self.envs = {}
+        for app in self.cfg:
+            self.envs[app] = env(app, self.cfg)
 
     def run_app(self, args):
         subprocess.Popen(args)
@@ -128,13 +137,20 @@ class tm(modi3cfg):
 
     def run(self, name):
         self.env = self.envs[name]
-        if self.env.name in self.detect_session_bind():
-            wid = self.search_classname()
-            try:
-                if int(wid.decode()):
-                    pass
-            except ValueError:
-                self.attach_to_session()
+        if self.env.tmuxed:
+            if self.env.name in self.detect_session_bind():
+                wid = self.search_classname()
+                try:
+                    if int(wid.decode()):
+                        pass
+                except ValueError:
+                    self.attach_to_session()
+            else:
+                self.create_new_session()
         else:
-            self.create_new_session()
+            self.run_app(
+                self.env.term_params[self.env.term] + [
+                    self.env.set_colorscheme + self.env.prog
+                ]
+            )
 
