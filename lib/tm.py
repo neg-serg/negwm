@@ -43,7 +43,12 @@ class env():
                 "-name", self.window_class,
                 "-fn", "xft:" + self.font + ":size=" + str(self.font_size),
                 "-e", "dash", "-c",
-            ]
+            ],
+            "xterm": ["xterm"] + [
+                '-class', self.window_class,
+                '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
+                "-e", "dash", "-c",
+            ],
         }
         self.prefix = f"{expanduser('~/bin/dynamic-colors')} switch dark3;"
 
