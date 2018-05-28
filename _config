@@ -114,7 +114,7 @@ for_window $browsers  move container to workspace $web, workspace $web, focus
 for_window [class="guncharmap"] move container to workspace $doc
 for_window [class="(?i)^(VirtualBox|vmware|[Qq]emu.*|spic).*$"] move container to workspace $vm, focus
 for_window [class="^(libreoffice|abiword).*$"]  move container to workspace $doc
-for_window [class="^MainTerminal$"] move container to workspace $term, focus
+for_window [class="^term$"] move container to workspace $term, focus
 for_window [class="^(MPlayer|mplayer2|mpv|cheese|obs)$"] move container to workspace $media, workspace $media, focus
 for_window [class="^lollypop$"] move container to workspace $media, workspace $media, focus
 for_window [class="spotify"] move container to workspace $spotify
