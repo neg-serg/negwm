@@ -34,7 +34,7 @@ signed int in_arr(const char *arg, const char *arr[], size_t len) {
 
 enum { CMD_ITSELF = 0, MOD_NAME = 1, MOD_FUNC = 2 };
 
-enum { CIRCLE = 0, NS = 1, FLAST = 2, MENU = 3, WM3 = 4, VOL = 5 };
+enum { CIRCLE = 0, NS = 1, FLAST = 2, MENU = 3, WM3 = 4, VOL = 5, TM = 6, };
 
 const char *docstr =
     "Usage:\n"
@@ -82,6 +82,7 @@ const char *docstr =
     "  send wm3 x4\n"
     "  send vol d\n"
     "  send vol u\n"
+    "  send tm term\n"
     "  send (-h | --help)\n"
     "  send --version\n"
     "\n"
@@ -100,6 +101,7 @@ const char *progs[] = {[CIRCLE] = "circle",
                        [MENU] = "menu",
                        [WM3] = "wm3",
                        [VOL] = "vol",
+                       [TM] = "tm",
                        NULL};
 
 Args ArgMap[] = {
@@ -170,6 +172,11 @@ Args ArgMap[] = {
             {"u", 0},
             {"d", 0},
             {NULL, 0},
+        },
+    [TM] =
+        {
+            {"term", 0},
+            {NULL, 0}
         },
 };
 

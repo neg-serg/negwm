@@ -23,6 +23,7 @@ set $flast exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send flast
 set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
 set $wm3 exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send wm3
 set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send vol
+set $tm exec --no-startup-id ${XDG_CONFIG_HOME}/i3/tm term
 
 set $scratchpad_dialog floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
 
@@ -380,11 +381,11 @@ bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
-exec ~/bin/term
 exec_always make -C $i3 &
 exec_always $i3/negi3mods.py >> ~/tmp/negi3mods.log 2>&1 &
 exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
 exec_always pkill sxhkd; sxhkd
 exec_always [[ $(pgrep polybar|wc -l) -le 1  ]] && polybar -c $XDG_CONFIG_HOME/polybar/main main
+exec $tm term
 # vim:filetype=i3
