@@ -176,6 +176,7 @@ Args ArgMap[] = {
     [TM] =
         {
             {"run", 1},
+            {"reload", 0},
             {NULL, 0}
         },
 };

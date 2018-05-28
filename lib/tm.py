@@ -73,6 +73,7 @@ class tm(modi3cfg):
         """
         {
             "run": self.run,
+            "reload": self.reload_config,
         }[args[0]](*args[1:])
 
     def detect_session_bind(self):
