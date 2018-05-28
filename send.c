@@ -175,7 +175,7 @@ Args ArgMap[] = {
         },
     [TM] =
         {
-            {"term", 0},
+            {"run", 1},
             {NULL, 0}
         },
 };

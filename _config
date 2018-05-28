@@ -387,5 +387,5 @@ exec_always pkill -f 'mpc idle'
 exec_always pkill polybar
 exec_always pkill sxhkd; sxhkd
 exec_always [[ $(pgrep polybar|wc -l) -le 1  ]] && polybar -c $XDG_CONFIG_HOME/polybar/main main
-exec $tm term
+exec $tm run term
 # vim:filetype=i3
