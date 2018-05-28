@@ -49,8 +49,19 @@ class env():
                 '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
                 "-e", "dash", "-c",
             ],
+            "cool-retro-term": ["cool-retro-term"] + [
+                "-e", "dash", "-c",
+            ],
         }
-        self.prefix = f"{expanduser('~/bin/dynamic-colors')} switch dark3;"
+
+        colorscheme = cfg.get("colorscheme", "")
+        if not colorscheme:
+            colorscheme = cfg.get(name, {}).get("colorscheme", 'dark3')
+        self.set_colorscheme = \
+            f"{expanduser('~/bin/dynamic-colors')} switch {colorscheme};"
+        self.postfix = cfg.get(name, {}).get("postfix", '')
+        if self.postfix and self.postfix[0] != '-':
+            self.postfix = '\\; ' + self.postfix
 
 
 class tm(modi3cfg):
@@ -60,6 +71,8 @@ class tm(modi3cfg):
         modi3cfg.__init__(self, i3, convert_me=False)
         self.envs = {
             'term': env('term', self.cfg),
+            'ranger': env('ranger', self.cfg),
+            'teardrop': env('teardrop', self.cfg),
         }
 
     def run_app(self, args):
@@ -97,7 +110,7 @@ class tm(modi3cfg):
     def attach_to_session(self):
         self.run_app(
             self.env.term_params[self.env.term] +
-            [f"{self.env.prefix} {self.env.tmux_session_attach}"]
+            [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
         )
 
     def search_classname(self):
@@ -109,7 +122,7 @@ class tm(modi3cfg):
     def create_new_session(self):
         self.run_app(
             self.env.term_params[self.env.term] +
-            [f"{self.env.prefix} {self.env.tmux_new_session} && \
+            [f"{self.env.set_colorscheme} {self.env.tmux_new_session} {self.env.postfix} && \
                 {self.env.tmux_session_attach}"]
         )
 
