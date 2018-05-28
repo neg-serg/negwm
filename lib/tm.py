@@ -9,19 +9,19 @@ from singleton import Singleton
 
 class env():
     def __init__(self, name, cfg):
-        self.session_name = name
-        self.socket_path = expanduser(
+        self.name = name
+        self.sockpath = expanduser(
             f'~/1st_level/{name}.socket'
         )
         self.window_class = cfg.get(name, {}).get("window_class", {})
 
         # get terminal from config, use Alacritty by default
-        self.term = cfg.get(name, {}).get("term", "Alacritty")
+        self.term = cfg.get(name, {}).get("term", "alacritty").lower()
 
         self.tmux_session_attach = \
-            f"tmux -S {self.socket_path} a -t {name}"
+            f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = \
-            f"tmux -S {self.socket_path} new-session -s {name}"
+            f"tmux -S {self.sockpath} new-session -s {name}"
         self.params = {
             "alacritty": ["alacritty"] + [
                 "-t", self.window_class,
@@ -60,12 +60,12 @@ class tm(modi3cfg):
 
     def detect_session_bind(self):
         session_list = subprocess.run(
-            shlex.split(f"tmux -S {self.env.socket_path} list-sessions"),
+            shlex.split(f"tmux -S {self.env.sockpath} list-sessions"),
             stdout=subprocess.PIPE
         ).stdout
         return subprocess.run(
             shlex.split(
-                f"awk -F ':' '/{self.env.session_name}/ {{print $1}}'"
+                f"awk -F ':' '/{self.env.name}/ {{print $1}}'"
             ),
             stdout=subprocess.PIPE,
             input=(session_list)
@@ -92,7 +92,7 @@ class tm(modi3cfg):
 
     def run(self, name):
         self.env = self.envs[name]
-        if self.env.session_name in self.detect_session_bind():
+        if self.env.name in self.detect_session_bind():
             wid = self.search_classname()
             try:
                 if int(wid.decode()):
