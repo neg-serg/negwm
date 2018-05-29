@@ -118,7 +118,8 @@ class tm(modi3cfg):
             i3: i3ipc connection(not used).
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread(not used).
-        """        modi3cfg.__init__(self, i3, convert_me=False)
+        """
+        modi3cfg.__init__(self, i3, convert_me=False)
         self.envs = {}
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)
