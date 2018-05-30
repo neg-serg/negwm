@@ -24,7 +24,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-/* macros */
+// Macros
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
 
@@ -38,11 +38,7 @@
 
 #define NK_SHADER_VERSION "#version 150\n"
 
-/* ===============================================================
- *
- *                          DEVICE
- *
- * ===============================================================*/
+// Device
 struct nk_glfw_vertex {
     float position[2];
     float uv[2];
@@ -381,7 +377,8 @@ int main(int argc, char *argv[]) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    win = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "NamedScratchpadPlaceholder", NULL, NULL);
+    win = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
+                           "NamedScratchpadPlaceholder", NULL, NULL);
     glfwMakeContextCurrent(win);
     glfwSetWindowUserPointer(win, &ctx);
     glfwSetCharCallback(win, text_input);
@@ -402,10 +399,11 @@ int main(int argc, char *argv[]) {
         {
             const void *image;
             int w, h;
-            struct nk_font *font;
             nk_font_atlas_init_default(&atlas);
             nk_font_atlas_begin(&atlas);
-            font = nk_font_atlas_add_default(&atlas, 13, 0);
+            struct nk_font *font = nk_font_atlas_add_from_file(
+                &atlas, "/usr/share/fonts/TTF/iosevka-term-bold.ttf", 32, 0
+            );
             image = nk_font_atlas_bake(&atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
             device_upload_atlas(&device, image, w, h);
             nk_font_atlas_end(&atlas, nk_handle_id((int)device.font_tex),
@@ -421,15 +419,14 @@ int main(int argc, char *argv[]) {
                 {
                     struct nk_canvas canvas;
                     canvas_begin(&ctx, &canvas, 0, 0, 0, width, height,
-                                 nk_rgb(250, 250, 250));
+                                 nk_rgb(0, 0, 0));
                     {
-                        nk_fill_rect(canvas.painter, nk_rect(15, 15, 210, 210),
-                                     5, nk_rgb(247, 230, 154));
-                        nk_fill_rect(canvas.painter, nk_rect(20, 20, 200, 200),
-                                     5, nk_rgb(188, 174, 118));
-                        nk_draw_text(canvas.painter, nk_rect(30, 30, 150, 20),
-                                     "Text to draw", 12, &font->handle,
-                                     nk_rgb(188, 174, 118), nk_rgb(0, 0, 0));
+                        nk_draw_text(
+                            canvas.painter, nk_rect(30, 30, 150, 20),
+                            "Text to draw", 12, &font->handle,
+                            nk_rgb(188, 174, 118),
+                            nk_rgb(250, 255, 255)
+                        );
                     }
                     canvas_end(&ctx, &canvas);
                 }
