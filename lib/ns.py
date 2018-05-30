@@ -533,7 +533,8 @@ class ns(modi3cfg, Matcher):
         self.del_props(tag, prop_str)
 
     def switch(self, args: List) -> None:
-        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+        """ Defines pipe-based IPC for nsd module. With appropriate function
+            bindings.
 
             This function defines bindings to the named_scratchpad methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
