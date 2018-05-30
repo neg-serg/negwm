@@ -48,7 +48,7 @@ class Negi3Mods():
             intern('fsdpms'): None,
             intern('wm3'): None,
             intern('vol'): None,
-            intern('tm'): None,
+            intern('executor'): None,
         }
 
         # stuff for startup notifications

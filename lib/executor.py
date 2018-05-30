@@ -93,7 +93,7 @@ class env():
             self.prog = cfg.get(name, {}).get('prog', 'true')
 
 
-class tm(modi3cfg):
+class executor(modi3cfg):
     """ Tmux Manager class. Easy and consistent way to create tmux sessions on
         dedicated sockets. Also it can run simply run applications without
         Tmux. The main advantage is dynamic config reloading and simplicity of
