@@ -22,7 +22,7 @@ from typing import Callable, List
 import lib.geom as geom
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from modlib import Matcher, notify_msg
+from main import Matcher, notify_msg
 
 
 class ns(modi3cfg, Matcher):

@@ -1,7 +1,7 @@
 #!/usr/bin/pypy3
 """ i3 negi3mods daemon script.
 
-This module loads all negi3mods an start it via modlib's daemon_manager
+This module loads all negi3mods an start it via main's daemon_manager
 mailoop. Inotify-based watchers for all negi3mods TOML-based configuration
 spawned here, to use it just start it from any place without parameters. Also
 there is i3 config watcher to convert it from ppi3 format to plain i3
@@ -30,7 +30,7 @@ import aionotify
 import i3ipc
 from threading import Thread
 from lib.locker import get_lock
-from lib.modlib import daemon_manager, notify_msg, i3path
+from lib.main import daemon_manager, notify_msg, i3path
 
 
 class Negi3Mods():

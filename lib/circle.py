@@ -16,7 +16,7 @@ of issues here in detection of existing/visible windows, etc.
 
 import re
 import os
-from modlib import Matcher
+from main import Matcher
 from modi3cfg import modi3cfg
 from singleton import Singleton
 

@@ -94,7 +94,7 @@ def find_visible_windows(windows_on_ws):
                 stdout=subprocess.PIPE
             ).stdout
         except:
-            print("get some problem in [find_visible_windows] in [modlib]")
+            print("get some problem in [find_visible_windows] in [main]")
         if xprop is not None and xprop:
             xprop = xprop.decode('UTF-8').strip()
             if '_NET_WM_STATE_HIDDEN' not in xprop:

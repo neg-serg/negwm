@@ -5,7 +5,7 @@
     commands.
 """
 import re
-from modlib import get_screen_resolution
+from main import get_screen_resolution
 
 
 class geom():

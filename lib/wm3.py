@@ -10,7 +10,7 @@ space, etc.
 
 import collections
 from itertools import cycle
-from modlib import find_visible_windows, get_screen_resolution
+from main import find_visible_windows, get_screen_resolution
 from singleton import Singleton
 from modi3cfg import modi3cfg
 

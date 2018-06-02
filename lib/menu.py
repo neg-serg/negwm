@@ -17,7 +17,7 @@ import subprocess
 import sys
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from modlib import i3path, get_screen_resolution
+from main import i3path, get_screen_resolution
 from functools import partial
 
 

@@ -10,7 +10,7 @@ import toml
 import traceback
 import asyncio
 import aionotify
-from modlib import i3path, notify_msg
+from main import i3path, notify_msg
 
 
 class modconfig(object):

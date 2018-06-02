@@ -6,7 +6,7 @@ information about previous windows. We need this because previously selected
 window may be closed, and then you cannot focus it.
 """
 
-from modlib import find_visible_windows
+from main import find_visible_windows
 from singleton import Singleton
 
 

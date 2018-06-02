@@ -8,7 +8,7 @@ pretty simple API. I've considered that inheritance here is good idea.
 import sys
 import toml
 import traceback
-from modlib import i3path
+from main import i3path
 
 
 class modi3cfg(object):
