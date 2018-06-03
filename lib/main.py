@@ -252,7 +252,7 @@ class daemon_manager():
                     args = list(filter(lambda x: x != '', eval_str.split(' ')))
                     try:
                         self.mods[name].switch(args)
-                    except TypeError:
+                    except Exception:
                         print_traceback()
 
     def add_fifo(self, name):

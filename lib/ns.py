@@ -22,7 +22,7 @@ from typing import Callable, List
 import lib.geom as geom
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import Matcher, notify_msg
+from main import Matcher, notify_msg, print_traceback
 
 
 class ns(modi3cfg, Matcher):
@@ -209,9 +209,9 @@ class ns(modi3cfg, Matcher):
                 stdin=None,
                 stdout=subprocess.PIPE
             ).stdout
-        except:
+        except Exception:
             print("get some problem in [check_dialog_win] in [nsd.py]")
-            pass
+            print_traceback()
 
         if xprop is not None:
             xprop = xprop.decode('UTF-8').strip()
@@ -252,16 +252,14 @@ class ns(modi3cfg, Matcher):
             Args:
                 tag (str): denotes the target tag.
         """
-        if not len(self.marked[tag]) and "prog" in self.cfg[tag]:
-            try:
-                prog_str = re.sub(
-                    "~",
-                    os.path.realpath(os.path.expandvars("$HOME")),
-                    self.cfg[tag]["prog"]
-                )
+        if not len(self.marked.get(tag, {})):
+            prog_str = re.sub(
+                "~",
+                os.path.realpath(os.path.expandvars("$HOME")),
+                self.cfg[tag].get("prog", {})
+            )
+            if prog_str:
                 self.i3.command(f'exec {prog_str}')
-            except:
-                pass
 
         if self.visible_count_on_tag(tag) > 0:
             self.unfocus(tag)
@@ -334,8 +332,8 @@ class ns(modi3cfg, Matcher):
                     )
                     self.i3.command(f'exec {prog_str}')
                     self.focus_win_flag = [True, tag]
-                except:
-                    pass
+                except Exception:
+                    print_traceback()
             else:
                 self.focus_sub_tag(tag, subtag_classes_set)
         else:

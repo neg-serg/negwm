@@ -104,12 +104,12 @@ class circle(modi3cfg, Matcher):
             tag (str): denotes target [tag]
             subtag (str): denotes the target [subtag], optional.
         """
-        try:
+        if tag is not None and self.cfg.get(tag) is not None:
             if not subtag:
                 prog_str = re.sub(
                     "~", os.path.realpath(os.path.expandvars("$HOME")),
                     self.cfg[tag]
-                        .get("prog", {})
+                        .get("prog", "")
                 )
             else:
                 prog_str = re.sub(
@@ -117,12 +117,10 @@ class circle(modi3cfg, Matcher):
                     self.cfg[tag]
                         .get("subtag", {})
                         .get(subtag, {})
-                        .get("prog", {})
+                        .get("prog", "")
                 )
             if prog_str:
                 self.i3.command('exec {}'.format(prog_str))
-        except:
-            pass
 
     def find_next_not_the_same_win(self, tag):
         """ It was used as the guard to infinite loop in the past.
