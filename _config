@@ -123,6 +123,7 @@ assign [class="^(libreoffice|abiword).*$"] → $doc
 assign [class="^term$"] → $term
 assign $mplayer → $media
 assign $webcam → $media
+assign [class="Nicotine.*" instance="nicotine"] → $media
 assign [class="^lollypop$"] → $media
 assign [class="spotify"] → $spotify
 assign [class="Sxiv"] → $sxiv
@@ -140,7 +141,6 @@ assign $pdf → $doc
 for_window [class="^(caja|Pavucontrol|Awf-gtk3|lxappearance|stardict|Conky|zazu)$"] floating enable
 for_window [class="cool-retro-term"] floating enable
 for_window [class="(feh|qiv)"] floating enable
-for_window [class="Nicotine.*" instance="nicotine"] floating enable
 for_window [class="rdesktop" instance="rdesktop"] floating enable
 for_window [class="^(Tilda|Guake|Xmessage|XFontSel|XCalc|Xfce)$"] floating enable
 for_window [class="wpg"] floating enable, move absolute position 1210 626, resize set 700 500
@@ -331,11 +331,12 @@ mode "" {
     bindsym e mode "default", [urgent=latest] focus
     bindsym a mode "default", $ns dialog
     bindsym {i,o,$S+O} mode "default", exec ~/bin/pls -{output,sink,vol}
-    bindsym $c+t mode "default", $circle subtag web tor
-    bindsym $c+y mode "default", $circle subtag web yandex
+    bindsym 5 mode "default", $circle subtag web tor
+    bindsym y mode "default", $circle subtag web yandex
+    bindsym f mode "default", $circle subtag web firefox
 	bindsym $S+d floating toggle; $exit
 	bindsym $S+l exec ~/bin/scripts/lock/lock.sh && sleep 0.5s; $exit
-	bindsym $S+v exec ~/bin/qemu/vm_menu; $exit
+	bindsym {$S+,}v exec ~/bin/qemu/vm_menu; $exit
     #-------------------------------------------------------
     bindsym {$m4,$alt,}+s $ns subtag im skype, mode "default"
     bindsym {$m4+t,$alt+t,t} $ns subtag im tel, mode "default"
