@@ -90,7 +90,12 @@ class env():
             self.postfix = '\\; ' + self.postfix
         self.tmuxed = int(cfg.get(name, {}).get("tmuxed", 1))
         if not self.tmuxed:
-            self.prog = cfg.get(name, {}).get('prog', 'true')
+            prog_to_dtach = cfg.get(name, {}).get('prog_detach', '')
+            if prog_to_dtach:
+                self.prog = \
+                    f'dtach -A ~/1st_level/{name}.session {prog_to_dtach}'
+            else:
+                self.prog = cfg.get(name, {}).get('prog', 'true')
 
 
 class executor(modi3cfg):
