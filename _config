@@ -185,7 +185,7 @@ for_window [instance="mutt"]     move scratchpad, move absolute position 293 0, 
 for_window [class="ranger"]      move scratchpad, move absolute position 170 18,  resize set 1132 760
 for_window [class="teardrop"]    move scratchpad, move absolute position 39  4,   resize set 1844 704
 for_window [class="youtube-get"] move scratchpad, move absolute position 247 13,  resize set 1339 866
-for_window [class="_weechat_"]   move scratchpad, move absolute position 112 33,  resize set 1736 1091
+for_window [class="weechat"]     move scratchpad, move absolute position 112 33,  resize set 1736 1091
 for_window [instance="webcam"]   floating enable, move container to workspace current, move scratchpad, move absolute position center, resize set 1280 720, focus
 
 #░█▀▄░▀█▀░█▀█░█░░░█▀█░█▀▀░█▀▀
