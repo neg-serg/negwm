@@ -78,20 +78,20 @@ hide_edge_borders both
 # ░█░█░█▄█░█▀▀
 # ░█▄█░█░█░▀▀█
 # ░▀░▀░▀░▀░▀▀▀
-set ${term,ws1} " α:term"
-set ${web,ws2} " β:web"
-set ${doc,ws3} " γ:doc"
-set ${dev,ws4} " δ:dev"
-set ${media,ws5} " ε:media"
-set ${gimp,ws6} "ζ:gimp"
-set ${admin,ws7} "η:admin"
-set ${ide,ws8} " θ:ide"
-set ${steam,ws9} " ι:steam"
-set ${torrent,ws10} " κ:torrent"
-set ${vm,ws11} "λ:vm"
-set ${wine,ws12} "μ:wine"
-set ${spotify,ws13} " ν:spotify"
-set ${sxiv,ws14} " ξ: [pic]"
+set $term " α:term"
+set $web " β:web"
+set $doc " γ:doc"
+set $dev " δ:dev"
+set $media " ε:media"
+set $gimp "ζ:gimp"
+set $admin "η:admin"
+set $ide " θ:ide"
+set $steam " ι:steam"
+set $torrent " κ:torrent"
+set $vm "λ:vm"
+set $wine "μ:wine"
+set $spotify " ν:spotify"
+set $sxiv " ξ: [pic]"
 
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
@@ -111,6 +111,7 @@ set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
 set $jetbrains [class="^jetbrains-(idea|clion|andrond-studio).*"]
 set $vms [class="(?i)^(VirtualBox|vmware|[Qq]emu.*|spic).*$"]
 set $java_dialogs [instance="sun-awt-X11-(XWindowPeer|XDialogPeer|XFramePeer)"]
+set $office [class="^(libreoffice|abiword).*$"]
 
 for_window [class=".*"] title_format " >_ %title ", focus
 # ░█░█░█▄█░░░░░█▀▄░█░█░█░░░█▀▀░█▀▀
@@ -119,7 +120,7 @@ for_window [class=".*"] title_format " >_ %title ", focus
 assign $browsers → $web
 assign [class="guncharmap"] → $doc
 assign $vms → $vm
-assign [class="^(libreoffice|abiword).*$"] → $doc
+assign $office → $doc
 assign [class="^term$"] → $term
 assign $mplayer → $media
 assign $webcam → $media
@@ -128,7 +129,7 @@ assign [class="^lollypop$"] → $media
 assign [class="spotify"] → $spotify
 assign [class="Sxiv"] → $sxiv
 assign $torrent_apps → $torrent
-assign [instance="^(gparted|_logs_|recoll|remmina|gnome-disks)$"] → $admin
+assign [instance="^(gparted|recoll|remmina|gnome-disks)$"] → $admin
 # ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
 # ░█▀▄░█▀▀░█▀█░█░█░█▀▀░█▀▄░▀▀█
 # ░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀
@@ -138,30 +139,17 @@ assign $pdf → $doc
 # ░█░█░█▀█░█▀▄░░░░░█▀▀░█░░░█▀█░█▀█░▀█▀░▀█▀░█▀█░█▀▀
 # ░▀▄▀░█▀█░█▀▄░░░░░█▀▀░█░░░█░█░█▀█░░█░░░█░░█░█░█░█
 # ░░▀░░▀░▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░▀▀▀
-for_window [class="^(caja|Pavucontrol|Awf-gtk3|lxappearance|stardict|Conky|zazu)$"] floating enable
-for_window [class="cool-retro-term"] floating enable
-for_window [class="(feh|qiv)"] floating enable
-for_window [class="rdesktop" instance="rdesktop"] floating enable
-for_window [class="^(Tilda|Guake|Xmessage|XFontSel|XCalc|Xfce)$"] floating enable
-for_window [class="wpg"] floating enable, move absolute position 1210 626, resize set 700 500
-for_window [class="yakuake"] floating enable
-for_window [instance="^(gcalctool|galculator|console|gdb|mixer|htop|gcolor2|gpick)$"] floating enable
-for_window [instance="^(Update|gnome-keyring|file-progress|wicd)$"] floating enable
-for_window [class="NamedScratchpadPlaceholder"] floating enable
-for_window [title="^(screenkey|Debconf|control-center|Pavucontrol|B2[Gg])$"] floating enable
+for_window [class="^(Pavucontrol|Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gpick|rdesktop|nsph)$"] floating enable
+for_window [class="Wpg.py"] floating enable, move absolute position 1210 626, resize set 700 500
 
 # ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
 # ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀░░░▀░▀░▀▀▀░▀▀▀░▀▀▀
-assign [class="Gimp"] → $gimp
-assign [class="darktable"] → $gimp
-assign [class="^(inkscape|simple-scan)$"] → $gimp
-for_window [class="Gimp" window_role="^(gimp-file-{open,save}|gimp-message-dialog|gimp-image-new|gimp-toolbox-color-dialog)$"]  floating enable
+assign [class="^(Gimp|darktable|inkscape)$"] → $gimp
 
 # ░█▀▀░█▀▄░▀█▀░▀█▀░█▀█░█▀▄░█▀▀
 # ░█▀▀░█░█░░█░░░█░░█░█░█▀▄░▀▀█
 # ░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀
-for_window [class="Emacs" instance="emacs" title="Question"] floating enable
 assign $vim → $dev
 assign $not_vim → $dev
 assign $jetbrains → $ide
