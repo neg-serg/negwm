@@ -1,7 +1,4 @@
 import os
 import sys
-
-sys.path.append(
-    os.getenv("HOME", "/home/" + os.getenv("USER", "neg")) +  "/.config/i3/lib"
-)
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
 

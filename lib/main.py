@@ -34,10 +34,7 @@ def print_traceback():
 def i3path():
     """ Easy way to return i3 config path. May be improved.
     """
-    user_name = os.environ.get("USER", "neg")
-    xdg_config_path = os.environ.get(
-        "XDG_CONFIG_HOME", "/home/" + user_name + "/.config/"
-    )
+    xdg_config_path = os.environ.get("XDG_CONFIG_HOME")
     i3_path = xdg_config_path + "/i3/"
     return i3_path
 
@@ -52,7 +49,7 @@ def notify_msg(msg, prefix=" "):
     notify_msg = [
         'notify-send',
         "<span weight='normal' color='#617287'>" +
-        prefix +  msg +
+        prefix + msg +
         "</span>"
     ]
     subprocess.run(notify_msg)
@@ -93,7 +90,7 @@ def find_visible_windows(windows_on_ws):
                 ['xprop', '-id', str(w.window)],
                 stdout=subprocess.PIPE
             ).stdout
-        except:
+        except Exception:
             print("get some problem in [find_visible_windows] in [main]")
         if xprop is not None and xprop:
             xprop = xprop.decode('UTF-8').strip()
