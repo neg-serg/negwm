@@ -337,8 +337,8 @@ static void canvas_begin(struct nk_context *ctx, struct nk_canvas *canvas,
 
     /* create/update window and set position + size */
     flags = flags & ~NK_WINDOW_DYNAMIC;
-    nk_window_set_bounds(ctx, "NamedScratchpadPlaceholder", nk_rect(x, y, width, height));
-    nk_begin(ctx, "NamedScratchpadPlaceholder", nk_rect(x, y, width, height),
+    nk_window_set_bounds(ctx, "nsph", nk_rect(x, y, width, height));
+    nk_begin(ctx, "nsph", nk_rect(x, y, width, height),
              NK_WINDOW_NO_SCROLLBAR | flags);
 
     /* allocate the complete window space for drawing */
@@ -378,7 +378,7 @@ int main(int argc, char *argv[]) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     win = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
-                           "NamedScratchpadPlaceholder", NULL, NULL);
+                           "nsph", NULL, NULL);
     glfwMakeContextCurrent(win);
     glfwSetWindowUserPointer(win, &ctx);
     glfwSetCharCallback(win, text_input);
