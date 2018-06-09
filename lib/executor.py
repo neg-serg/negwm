@@ -96,6 +96,8 @@ class env():
                     f'dtach -A ~/1st_level/{name}.session {prog_to_dtach}'
             else:
                 self.prog = cfg.get(name, {}).get('prog', 'true')
+        self.set_wm_class = cfg.get(name, {}).get('set_wm_class', '')
+        self.set_instance = cfg.get(name, {}).get('set_instance', '')
 
 
 class executor(modi3cfg):
@@ -134,7 +136,21 @@ class executor(modi3cfg):
             Args:
                 args (List): arguments list.
         """
-        subprocess.Popen(args)
+        if not self.env.set_wm_class:
+            subprocess.Popen(args)
+        else:
+            if not self.env.set_instance:
+                self.env.set_instance = self.env.set_wm_class
+            subprocess.Popen(
+                [
+                    './wm_class',
+                    '--run',
+                    self.env.set_wm_class,
+                    self.env.set_instance,
+                ] + args,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
 
     def switch(self, args):
         """ Defines pipe-based IPC for cirled module. With appropriate
