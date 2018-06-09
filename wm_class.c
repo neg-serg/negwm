@@ -91,7 +91,7 @@ void traverse(window *win, window_action act, void* ctx)
         for (i = 0; i < n; i++) {
             // traverse destructively:
             win->window = childs[i];
-            traverse(win, act, ctx);
+            traverse(win, (void (*)(struct window *, void *))act, ctx);
         }
         XFree(childs);
     }
@@ -129,7 +129,13 @@ void set_wm_class(window *win, wm_class_context *ctx)
 
 void match_pid_set_wm_class(window *win, wm_class_context *ctx)
 {
-    match_pid(win, ctx->atom, ctx->pid, set_wm_class, ctx);
+    match_pid(
+        win,
+        ctx->atom,
+        ctx->pid,
+        (void (*)(struct window *, void *))set_wm_class,
+        ctx
+    );
 }
 
 /*
@@ -168,7 +174,11 @@ void set_wm_class_by_pid(char *name, char *class, pid_t pid)
         .class = class
     };
 
-    traverse(&win, match_pid_set_wm_class, &ctx);
+    traverse(
+        &win,
+        (void (*)(struct window *, void *))match_pid_set_wm_class,
+        &ctx
+    );
 
     if (done == 0) {
         print_error("can't find the program windows (or maybe the program don't set the _NET_WM_PID property)");

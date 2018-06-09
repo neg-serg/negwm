@@ -185,13 +185,13 @@ char *get_fifo_name(int modnum) {
     char *sock_path = calloc(128, 1);
     char *sock_path_after_readlink = calloc(128, 1);
     const char *home = getenv("HOME");
-    strncat(sock_path, home, strlen(home));
-    strncat(sock_path, "/", 1);
-    strncat(sock_path, "tmp", strlen("tmp"));
+    strcat(sock_path, home);
+    strcat(sock_path, "/");
+    strcat(sock_path, "tmp");
     readlink(sock_path, sock_path_after_readlink, 128);
-    strncat(sock_path_after_readlink, "/", 1);
-    strncat(sock_path_after_readlink, progs[modnum], strlen(progs[modnum]));
-    strncat(sock_path_after_readlink, ".fifo", strlen(".fifo"));
+    strcat(sock_path_after_readlink, "/");
+    strcat(sock_path_after_readlink, progs[modnum]);
+    strcat(sock_path_after_readlink, ".fifo");
     free(sock_path);
     return sock_path_after_readlink;
 }
@@ -220,8 +220,8 @@ int main(int argc, const char *argv[]) {
     if (mod_func != -1) {
         if (argc == 3 + ArgMap[mod][mod_func].num_param) {
             for (int i = 2; i < argc; i++) {
-                strncat(cmd, argv[i], strlen(argv[i]));
-                strncat(cmd, " ", 1);
+                strcat(cmd, argv[i]);
+                strcat(cmd, " ");
             }
         } else {
             printf("%s\n", "bad number of parameters!");

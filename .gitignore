@@ -3,7 +3,7 @@ config
 __pycache__
 lib/.ropeproject/
 canvas
-placeholder
+placeholder/placeholder
 wm_class
 GPATH
 GRTAGS
