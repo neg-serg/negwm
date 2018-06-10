@@ -109,7 +109,7 @@ set $webcam [class="^(cheese|obs)$"]
 set $vim [instance="^(wim|nwim|oni)$"]
 set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
 set $jetbrains [class="^jetbrains-(idea|clion|andrond-studio).*"]
-set $vms [class="(?i)^(VirtualBox|vmware|[Qq]emu.*|spic).*$"]
+set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
 set $java_dialogs [instance="sun-awt-X11-(XWindowPeer|XDialogPeer|XFramePeer)"]
 set $office [class="^(libreoffice|abiword).*$"]
 
