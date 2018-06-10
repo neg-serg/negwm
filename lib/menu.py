@@ -80,6 +80,9 @@ class menu(modi3cfg):
         self.ws_name_color = self.cfg.get("ws_name_color", '#4779B3')
         self.wm_class_color = self.cfg.get("wm_class_color", "#228888")
 
+        self.lhs_br = self.cfg.get('left_bracket', '[')
+        self.rhs_br = self.cfg.get('right_bracket', ']')
+
     def rofi_args(
             self,
             prompt=None,
@@ -189,6 +192,9 @@ class menu(modi3cfg):
     def colorize(self, s, color, weight='normal'):
         return f"<span weight='{weight}' color='{color}'>{s}</span>"
 
+    def wrap_str(self, s):
+        return self.lhs_br + s + self.rhs_br
+
     def menu_action_rich(self, cmd, prompt):
         """ Run beautiful selection dialog for window with given action
             Args:
@@ -209,18 +215,12 @@ class menu(modi3cfg):
                         ' scratchpad', self.scratchpad_color
                     )
                     scratchlist.append(
-                        f'{ws_name:<58} \
-                        {self.colorize(win.window_class, \
-                        "{self.wm_class_color}"):<64} \
-                        {re.sub("<[^<]+?>", "", win.name)}'
+                        f'{ws_name:<58} {self.colorize(win.window_class, "{self.wm_class_color}"):<64} {re.sub("<[^<]+?>", "", win.name)}'
                     )
                 else:
                     ws_name = self.colorize(ws_name, self.ws_name_color)
                     wlist.append(
-                        f'{ws_name:<58} \
-                        {self.colorize(win.window_class, \
-                        "{self.wm_class_color}"):<64} \
-                        {re.sub("<[^<]+?>", "", win.name)}'
+                        f'{ws_name:<58} {self.colorize(win.window_class, "{self.wm_class_color}"):<64} {re.sub("<[^<]+?>", "", win.name)}'
                     )
         winlist = wlist + scratchlist
 
@@ -247,13 +247,13 @@ class menu(modi3cfg):
     def goto_win(self):
         """ Run rofi goto selection dialog
         """
-        self.menu_action_simple('focus', '[go]')
+        self.menu_action_simple('focus', self.wrap_str('go'))
 
     def attach_win(self):
         """ Attach window to the current workspace.
         """
         self.menu_action_simple(
-            'move window to workspace current', '[attach win]'
+            'move window to workspace current', self.wrap_str('attach')
         )
 
     def show_props(self):
@@ -299,7 +299,8 @@ class menu(modi3cfg):
             self.rofi_args(
                 cnum=1,
                 lnum=len(xprops),
-                width=int(self.screen_width * 0.75)
+                width=int(self.screen_width * 0.75),
+                prompt=f'{self.wrap_str("xprop")} {self.prompt}'
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(xprops), 'UTF-8')
@@ -384,7 +385,7 @@ class menu(modi3cfg):
             self.rofi_args(
                 cnum=len(lst),
                 width=int(self.screen_width * 0.75),
-                prompt=f"[{mod}] {self.prompt}"
+                prompt=f'{self.wrap_str(mod)} {self.prompt}'
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(lst), 'UTF-8')
@@ -401,7 +402,7 @@ class menu(modi3cfg):
                 cnum=len(self.possible_mods),
                 lnum=1,
                 width=int(self.screen_width * 0.75),
-                prompt=f"[selmod] {self.prompt}"
+                prompt=f'{self.wrap_str("selmod")} {self.prompt}'
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.possible_mods), 'UTF-8')
@@ -446,7 +447,7 @@ class menu(modi3cfg):
             self.rofi_args(
                 cnum=len(wslist),
                 width=int(self.screen_width * 0.66),
-                prompt=f"[ws] {self.prompt}"
+                prompt=f'{self.wrap_str("ws")} {self.prompt}'
             ),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(wslist), 'UTF-8')
@@ -527,7 +528,10 @@ class menu(modi3cfg):
                         if args == prev_args:
                             return 0
                         cmd_rerun = subprocess.run(
-                            self.rofi_args(f"{self.prompt} " + cmd),
+                            self.rofi_args(
+                                f"{self.wrap_str('i3cmd')} {self.prompt} "
+                                + cmd
+                            ),
                             stdout=subprocess.PIPE,
                             input=bytes('\n'.join(args), 'UTF-8')
                         ).stdout
