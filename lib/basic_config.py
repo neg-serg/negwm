@@ -42,7 +42,7 @@ class modconfig(object):
             self.load_config()
             self.__init__()
             self.special_reload()
-        except:
+        except Exception:
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
             self.__init__()
