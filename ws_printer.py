@@ -70,7 +70,7 @@ class ws_printer(modconfig):
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.ws_color = self.cfg.get("ws_color", "#8FA8C7")
+        self.ws_color = self.cfg.get("ws_color")
         self.ws_name = ""
 
         for ws in self.i3.get_workspaces():
@@ -84,7 +84,7 @@ class ws_printer(modconfig):
         self.ws_name = event.current.name
         self.event.set()
 
-    def colorize(self, s, color="#005fd7"):
+    def colorize(self, s, color):
         return f"%{{F{color}}}{s}%{{F#ccc}}"
 
     def on_eventent(self, i3, event):
