@@ -76,6 +76,10 @@ class menu(modi3cfg):
         self.matching = self.cfg.get("matching", "fuzzy")
         self.prompt = self.cfg.get("prompt", ">>")
 
+        self.scratchpad_color = self.cfg.get("scratchpad_color", '#395573')
+        self.ws_name_color = self.cfg.get("ws_name_color", '#4779B3')
+        self.wm_class_color = self.cfg.get("wm_class_color", "#228888")
+
     def rofi_args(
             self,
             prompt=None,
@@ -119,12 +123,12 @@ class menu(modi3cfg):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL
             ).stdout
-        except:
+        except Exception:
             return ""
 
         lst = [
             t.replace("'", '')
-            for t in re.split('\s*,\s*', json.loads(
+            for t in re.split('\\s*,\\s*', json.loads(
                 out.decode('UTF-8')
             )[0]['error'])[2:]
         ]
@@ -137,7 +141,8 @@ class menu(modi3cfg):
         return lst
 
     def switch(self, args):
-        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+        """ Defines pipe-based IPC for nsd module. With appropriate function
+            bindings.
 
             This function defines bindings to the named_scratchpad methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
@@ -200,17 +205,21 @@ class menu(modi3cfg):
             if win.id != focused.id:
                 ws_name = win.parent.parent.name
                 if ws_name == '__i3_scratch':
-                    ws_name = self.colorize(' scratchpad', '#395573')
+                    ws_name = self.colorize(
+                        ' scratchpad', self.scratchpad_color
+                    )
                     scratchlist.append(
                         f'{ws_name:<58} \
-                        {self.colorize(win.window_class, "#228888"):<64} \
+                        {self.colorize(win.window_class, \
+                        "{self.wm_class_color}"):<64} \
                         {re.sub("<[^<]+?>", "", win.name)}'
                     )
                 else:
-                    ws_name = self.colorize(ws_name, '#4779B3')
+                    ws_name = self.colorize(ws_name, self.ws_name_color)
                     wlist.append(
                         f'{ws_name:<58} \
-                        {self.colorize(win.window_class, "#228888"):<64} \
+                        {self.colorize(win.window_class, \
+                        "{self.wm_class_color}"):<64} \
                         {re.sub("<[^<]+?>", "", win.name)}'
                     )
         winlist = wlist + scratchlist
@@ -263,12 +272,12 @@ class menu(modi3cfg):
             if out is not None:
                 ret = [
                     t.replace("'", '') for t in
-                    re.split('\s*, \s*', json.loads(
+                    re.split('\\s*, \\s*', json.loads(
                                 out.decode('UTF-8')
                             )[0]['error'])[1:]
                 ]
             return ret
-        except:
+        except Exception:
             return None
 
     def xprop_menu(self):
@@ -311,7 +320,8 @@ class menu(modi3cfg):
 
         Args:
             with_title (bool): add WM_NAME attribute, to the list, optional.
-            with_role (bool): add WM_WINDOW_ROLE attribute to the list, optional.
+            with_role (bool): add WM_WINDOW_ROLE attribute to the list,
+            optional.
         """
         xprops = []
         w = self.i3.get_tree().find_focused()
@@ -423,7 +433,7 @@ class menu(modi3cfg):
                 ]
                 subprocess.run(cmdl)
         else:
-            print(f'[no tag name specified] for props [{aprop_str}]')
+            print(f'No tag name specified for props [{aprop_str}]')
 
     def select_ws(self, use_wslist):
         """ Apply target function to workspace.
@@ -465,7 +475,8 @@ class menu(modi3cfg):
         ws = self.select_ws(use_wslist)
         if ws is not None and ws:
             self.apply_to_ws(
-                partial(self.i3.command, f'[con_id=__focused__] move to workspace {ws}')
+                partial(self.i3.command,
+                        f'[con_id=__focused__] move to workspace {ws}')
             )
 
     def cmd_menu(self):
