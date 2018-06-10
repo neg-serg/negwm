@@ -31,42 +31,44 @@ import i3ipc
 from threading import Thread
 from lib.locker import get_lock
 from lib.main import daemon_manager, notify_msg, i3path
+from lib.basic_config import modconfig
 
 
-class Negi3Mods():
+class negi3mods(modconfig):
     def __init__(self):
         """ Init function
 
             Using of self.intern for better performance, create i3ipc
             connection, connects to the asyncio eventloop.
         """
-        self.mods = {
-            intern('circle'): None,
-            intern('ns'): None,
-            intern('flast'): None,
-            intern('menu'): None,
-            intern('fsdpms'): None,
-            intern('wm3'): None,
-            intern('vol'): None,
-            intern('executor'): None,
-        }
-
-        # stuff for startup notifications
-        self.notification_text = "Wow! It's time to start mods!\n\n"
-        self.msg_prefix = "<span weight='normal' color='#395573'> >> </span>"
 
         # i3 path used to get i3 config path for "send" binary, _config needed
         # by ppi3 path and another configs.
         self.i3_path = i3path()
 
+        # setup asyncio loop
+        loop = asyncio.get_event_loop()
+
+        modconfig.__init__(self, loop)
+
+        self.loop = loop
+        self.mods = {}
+        for mod in self.cfg.get("module_list", ''):
+            self.mods[intern(mod)] = None
+
+        # stuff for startup notifications
+        self.notification_text = "Wow! It's time to start mods!\n\n"
+        notification_color = self.cfg.get("notification_color", '#ffffff')
+        prefix = self.cfg.get("prefix", ">")
+        self.msg_prefix = f"<span weight='normal' \
+                           color='{notification_color}'> {prefix} </span>"
+
         # i3 path used to get "send" binary path
         self.i3_cfg_path = self.i3_path + '/cfg/'
 
-        # main i3ipc connection created here and can be bypassed to the most of modules here.
+        # main i3ipc connection created here and can be bypassed to the most of
+        # modules here.
         self.i3 = i3ipc.Connection()
-
-        # setup asyncio loop
-        self.loop = asyncio.get_event_loop()
 
     def load_modules(self):
         """ Load modules.
@@ -125,12 +127,18 @@ class Negi3Mods():
             changed_mod = event.name[:-4]
             if changed_mod in self.mods:
                 if reload_one:
-                    subprocess.run([self.i3_path + 'send', changed_mod, 'reload'])
+                    subprocess.run(
+                        [self.i3_path + 'send', changed_mod, 'reload']
+                    )
                     notify_msg(f'[Reloaded {changed_mod}]')
                 else:
                     for mod in self.mods.keys():
-                        subprocess.run([self.i3_path + 'send', mod, 'reload'])
-                    notify_msg('[Reloaded {' + ','.join(self.mods.keys()) + '} ]')
+                        subprocess.run(
+                            [self.i3_path + 'send', mod, 'reload']
+                        )
+                    notify_msg(
+                        '[Reloaded {' + ','.join(self.mods.keys()) + '} ]'
+                    )
         watcher.close()
 
     async def i3_config_worker(self, watcher):
@@ -219,6 +227,6 @@ if __name__ == '__main__':
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(lambda: os._exit(0))
 
-    daemon = Negi3Mods()
+    daemon = negi3mods()
     daemon.run()
 
