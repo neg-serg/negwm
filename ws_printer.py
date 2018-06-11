@@ -71,6 +71,7 @@ class ws_printer(modconfig):
         self.split_by = re.compile('[;,]')
 
         self.ws_color = self.cfg.get("ws_color")
+        self.binding_color = self.cfg.get("binding_color")
         self.ws_name = ""
 
         for ws in self.i3.get_workspaces():
@@ -97,7 +98,8 @@ class ws_printer(modconfig):
                     if ret == "default":
                         self.binding_mode = ''
                     else:
-                        self.binding_mode = self.colorize(ret) + ' '
+                        self.binding_mode = \
+                            self.colorize(ret, color=self.binding_color) + ' '
                     self.event.set()
 
     def special_reload(self):
