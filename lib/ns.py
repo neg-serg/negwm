@@ -253,11 +253,7 @@ class ns(modi3cfg, Matcher):
                 tag (str): denotes the target tag.
         """
         if not len(self.marked.get(tag, {})):
-            prog_str = re.sub(
-                "~",
-                os.path.realpath(os.path.expandvars("$HOME")),
-                self.conf(tag, "prog")
-            )
+            prog_str = self.extract_prog_str(self.conf(tag, "prog"))
             if prog_str:
                 self.i3.command(f'exec {prog_str}')
 
@@ -321,8 +317,7 @@ class ns(modi3cfg, Matcher):
             ]
             if not len(subtag_classes_matched):
                 try:
-                    prog_str = re.sub(
-                        "~", os.path.realpath(os.path.expandvars("$HOME")),
+                    prog_str = self.extract_prog_str(
                         self.conf(tag, "subtag", subtag, "prog")
                     )
                     self.i3.command(f'exec {prog_str}')
