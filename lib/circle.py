@@ -97,6 +97,32 @@ class circle(modi3cfg, Matcher):
         # store the current window here to cache get_tree().find_focused value.
         self.current_win = self.i3.get_tree().find_focused()
 
+    def conf(self, *conf_path):
+        """ Helper to extract config for current tag.
+
+        Args:
+            conf_path: path of config from where extract.
+        """
+        ret = {}
+        for part in conf_path:
+            if not ret:
+                ret = self.cfg.get(part)
+            else:
+                ret = ret.get(part)
+        return ret
+
+    def extract_prog_str(self, conf_part):
+        """ Helper to extract prog string from config
+
+        Args:
+            conf_part (str): part of config from where you want to extract it.
+        """
+        return re.sub(
+            "~",
+            os.path.realpath(os.path.expandvars("$HOME")),
+            conf_part.get("prog", "")
+        )
+
     def run_prog(self, tag, subtag=''):
         """ Run the appropriate application for the current tag/subtag.
 
@@ -106,18 +132,10 @@ class circle(modi3cfg, Matcher):
         """
         if tag is not None and self.cfg.get(tag) is not None:
             if not subtag:
-                prog_str = re.sub(
-                    "~", os.path.realpath(os.path.expandvars("$HOME")),
-                    self.cfg[tag]
-                        .get("prog", "")
-                )
+                prog_str = self.extract_prog_str(self.conf(tag))
             else:
-                prog_str = re.sub(
-                    "~", os.path.realpath(os.path.expandvars("$HOME")),
-                    self.cfg[tag]
-                        .get("subtag", {})
-                        .get(subtag, {})
-                        .get("prog", "")
+                prog_str = self.extract_prog_str(
+                    self.conf(tag, "subtag", subtag)
                 )
             if prog_str:
                 self.i3.command('exec {}'.format(prog_str))
@@ -136,7 +154,7 @@ class circle(modi3cfg, Matcher):
         """
         fullscreened = self.i3.get_tree().find_fullscreen()
         for win in fullscreened:
-            if self.current_win.window_class in set(self.cfg[tag]["class"]) \
+            if self.current_win.window_class in set(self.conf(tag, "class")) \
                     and self.current_win.id == win.id:
                 self.need_handle_fullscreen = False
                 win.command('fullscreen disable')
@@ -212,22 +230,21 @@ class circle(modi3cfg, Matcher):
                 self.focus_next(tag, idx, fullscreen_handler=False)
             else:
                 idx = self.counters[tag] % len(self.tagged[tag])
-                if ("priority" in self.cfg[tag]) \
+                if ("priority" in self.conf(tag)) \
                         and self.current_win.window_class \
-                        not in set(self.cfg[tag]["class"]):
+                        not in set(self.conf(tag, "class")):
 
                     if not len([win for win in self.tagged[tag]
                                 if win.window_class ==
-                                self.cfg[tag]["priority"]]):
+                                self.conf(tag, "priority")]):
                         self.run_prog(tag)
                         return
 
                     for idx, item in enumerate(self.tagged[tag]):
-                        if item.window_class == self.cfg[tag]["priority"]:
-                            fullscreened = \
-                                self.i3.get_tree().find_fullscreen()
+                        if item.window_class == self.conf(tag, "priority"):
+                            fullscreened = self.i3.get_tree().find_fullscreen()
                             for win in fullscreened:
-                                tgt = self.cfg[tag]
+                                tgt = self.conf(tag)
                                 if win.window_class in tgt["class"] \
                                         and win.window_class != tgt["priority"]:
                                     self.interactive = False
@@ -249,8 +266,7 @@ class circle(modi3cfg, Matcher):
             tag (str): denotes target [tag]
             subtag (str): denotes the target [subtag].
         """
-        self.subtag_info = \
-            self.cfg[tag].get("subtag", {}).get(subtag, {})
+        self.subtag_info = self.conf(tag, "subtag", subtag)
         if not set(self.subtag_info.get("class", {})) & \
                 {w.window_class for w in self.tagged.get(tag, {})}:
             self.run_prog(tag, subtag)
