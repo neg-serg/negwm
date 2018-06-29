@@ -256,7 +256,7 @@ class ns(modi3cfg, Matcher):
             prog_str = re.sub(
                 "~",
                 os.path.realpath(os.path.expandvars("$HOME")),
-                self.cfg[tag].get("prog", {})
+                self.conf(tag, "prog")
             )
             if prog_str:
                 self.i3.command(f'exec {prog_str}')
@@ -313,9 +313,9 @@ class ns(modi3cfg, Matcher):
                 tag (str): denotes the target tag.
                 subtag (str): denotes the target subtag.
         """
-        if subtag in self.cfg[tag].get("subtag", {}):
+        if subtag in self.conf(tag, "subtag"):
             class_list = [win.window_class for win in self.marked[tag]]
-            subtag_classes_set = self.cfg[tag].get("subtag", {}) \
+            subtag_classes_set = self.conf(tag, "subtag") \
                 .get(subtag, {}) \
                 .get("class", {})
             subtag_classes_matched = [
@@ -325,10 +325,7 @@ class ns(modi3cfg, Matcher):
                 try:
                     prog_str = re.sub(
                         "~", os.path.realpath(os.path.expandvars("$HOME")),
-                        self.cfg[tag]
-                            .get("subtag", {})
-                            .get(subtag, {})
-                            .get("prog", {})
+                        self.conf(tag, "subtag", subtag, "prog")
                     )
                     self.i3.command(f'exec {prog_str}')
                     self.focus_win_flag = [True, tag]
