@@ -230,9 +230,8 @@ class circle(modi3cfg, Matcher):
                         if item.window_class == self.conf(tag, "priority"):
                             fullscreened = self.i3.get_tree().find_fullscreen()
                             for win in fullscreened:
-                                tgt = self.conf(tag)
-                                if win.window_class in tgt["class"] \
-                                        and win.window_class != tgt["priority"]:
+                                if win.window_class in self.conf(tag, "class") \
+                                        and win.window_class != self.conf(tag, "priority"):
                                     self.interactive = False
                                     win.command('fullscreen disable')
                             self.focus_next(tag, idx, inc_counter=False)

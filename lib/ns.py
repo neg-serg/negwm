@@ -120,7 +120,7 @@ class ns(modi3cfg, Matcher):
             try:
                 self.transients[0].command('focus')
                 del self.transients[0]
-            except:
+            except Exception:
                 self.mark_all_tags(hide=False)
 
     def unfocus(self, tag: str) -> None:
@@ -423,7 +423,8 @@ class ns(modi3cfg, Matcher):
             del self.marked[tag][idx]
 
             # then make a new mark and move scratchpad
-            win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, {self.nsgeom.get_geom(tag)}"
+            win_cmd = f"{self.make_mark_str(tag)}, \
+                move scratchpad, {self.nsgeom.get_geom(tag)}"
             win.command(win_cmd)
             self.marked[tag].append(win)
 
@@ -441,7 +442,8 @@ class ns(modi3cfg, Matcher):
         focused = self.i3.get_tree().find_focused()
         for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
-                self.cfg[tag]["geom"] = f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                self.cfg[tag]["geom"] = f"{focused.rect.width}x\
+                    {focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
                 self.dump_config()
                 break
 
@@ -454,11 +456,12 @@ class ns(modi3cfg, Matcher):
         focused = self.i3.get_tree().find_focused()
         for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
-                self.cfg[tag]["geom"] = f"{focused.rect.width}x{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                self.cfg[tag]["geom"] = f"{focused.rect.width}x\
+                    {focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
                 if win.rect.x != focused.rect.x \
-                or win.rect.y != focused.rect.y \
-                or win.rect.width != focused.rect.width \
-                or win.rect.height != focused.rect.height:
+                    or win.rect.y != focused.rect.y \
+                    or win.rect.width != focused.rect.width \
+                        or win.rect.height != focused.rect.height:
                     self.nsgeom = geom.geom(self.cfg)
                     win.rect.x = focused.rect.x
                     win.rect.y = focused.rect.y
@@ -647,7 +650,7 @@ class ns(modi3cfg, Matcher):
                     break
         self.winlist = self.i3.get_tree()
 
-    def mark_all_tags(self, hide: bool=True) -> None:
+    def mark_all_tags(self, hide: bool = True) -> None:
         """ Add marks to the all tags.
 
             Args:
@@ -666,7 +669,8 @@ class ns(modi3cfg, Matcher):
                         hide_cmd = ''
                         if hide:
                             hide_cmd = '[con_id=__focused__] scratchpad show'
-                        win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
+                        win_cmd = f"{self.make_mark_str(tag)}, \
+                            move scratchpad, \
                             {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
