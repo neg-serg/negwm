@@ -5,6 +5,7 @@ files. It supports inotify-based updating of self.cfg dynamically and has
 pretty simple API. I've considered that inheritance here is good idea.
 """
 
+import re
 import sys
 import toml
 import traceback
