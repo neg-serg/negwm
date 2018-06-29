@@ -8,6 +8,7 @@ pretty simple API. I've considered that inheritance here is good idea.
 import sys
 import toml
 import traceback
+from functools import lru_cache
 from main import i3path
 
 
@@ -40,6 +41,21 @@ class modi3cfg(object):
         self.loop = None
         if loop is not None:
             self.loop = loop
+
+    @lru_cache(maxsize=128)
+    def conf(self, *conf_path):
+        """ Helper to extract config for current tag.
+
+        Args:
+            conf_path: path of config from where extract.
+        """
+        ret = {}
+        for part in conf_path:
+            if not ret:
+                ret = self.cfg.get(part)
+            else:
+                ret = ret.get(part)
+        return ret
 
     def cfg_regex_props(self):
         # regex cfg properties
