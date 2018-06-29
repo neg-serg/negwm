@@ -253,7 +253,7 @@ class ns(modi3cfg, Matcher):
                 tag (str): denotes the target tag.
         """
         if not len(self.marked.get(tag, {})):
-            prog_str = self.extract_prog_str(self.conf(tag, "prog"))
+            prog_str = self.extract_prog_str(self.conf(tag))
             if prog_str:
                 self.i3.command(f'exec {prog_str}')
 
@@ -318,7 +318,7 @@ class ns(modi3cfg, Matcher):
             if not len(subtag_classes_matched):
                 try:
                     prog_str = self.extract_prog_str(
-                        self.conf(tag, "subtag", subtag, "prog")
+                        self.conf(tag, "subtag", subtag)
                     )
                     self.i3.command(f'exec {prog_str}')
                     self.focus_win_flag = [True, tag]

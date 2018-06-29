@@ -6,6 +6,7 @@ pretty simple API. I've considered that inheritance here is good idea.
 """
 
 import re
+import os
 import sys
 import toml
 import traceback
