@@ -57,6 +57,18 @@ class modi3cfg(object):
                 ret = ret.get(part)
         return ret
 
+    def extract_prog_str(self, conf_part):
+        """ Helper to extract prog string from config
+
+        Args:
+            conf_part (str): part of config from where you want to extract it.
+        """
+        return re.sub(
+            "~",
+            os.path.realpath(os.path.expandvars("$HOME")),
+            conf_part.get("prog", "")
+        )
+
     def cfg_regex_props(self):
         # regex cfg properties
         return {"class_r", "instance_r", "name_r", "role_r"}

@@ -97,18 +97,6 @@ class circle(modi3cfg, Matcher):
         # store the current window here to cache get_tree().find_focused value.
         self.current_win = self.i3.get_tree().find_focused()
 
-    def extract_prog_str(self, conf_part):
-        """ Helper to extract prog string from config
-
-        Args:
-            conf_part (str): part of config from where you want to extract it.
-        """
-        return re.sub(
-            "~",
-            os.path.realpath(os.path.expandvars("$HOME")),
-            conf_part.get("prog", "")
-        )
-
     def run_prog(self, tag, subtag=''):
         """ Run the appropriate application for the current tag/subtag.
 
