@@ -7,7 +7,10 @@ various parameters, also it works is faster then dedicated scripts, because
 there is no parsing / translation phase here in runtime.
 """
 import subprocess
+import os
 import shlex
+import shutil
+import yaml
 from os.path import expanduser
 from modi3cfg import modi3cfg
 from singleton import Singleton
@@ -47,39 +50,6 @@ class env():
             f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = \
             f"tmux -S {self.sockpath} new-session -s {name}"
-        self.term_params = {
-            "alacritty": ["alacritty"] + [
-                "-t", self.window_class,
-                "-e", "dash", "-c"
-            ],
-            "alacritty-ncmpcpp": [
-                "alacritty",
-                "--config-file",
-                expanduser("~/.config/alacritty/ncmpcpp.yml")
-            ] + [
-                "-t", self.window_class,
-                "-e", "dash", "-c"
-            ],
-            "st": ["st"] + [
-                "-c", self.window_class,
-                "-f", self.font + ":size=" + str(self.font_size),
-                "-e", "dash", "-c",
-            ],
-            "urxvt": ["urxvt"] + [
-                "-name", self.window_class,
-                "-fn", "xft:" + self.font + ":size=" + str(self.font_size),
-                "-e", "dash", "-c",
-            ],
-            "xterm": ["xterm"] + [
-                '-class', self.window_class,
-                '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
-                "-e", "dash", "-c",
-            ],
-            "cool-retro-term": ["cool-retro-term"] + [
-                "-e", "dash", "-c",
-            ],
-        }
-
         colorscheme = cfg.get("colorscheme", "")
         if not colorscheme:
             colorscheme = cfg.get(name, {}).get("colorscheme", 'dark3')
@@ -98,6 +68,97 @@ class env():
                 self.prog = cfg.get(name, {}).get('prog', 'true')
         self.set_wm_class = cfg.get(name, {}).get('set_wm_class', '')
         self.set_instance = cfg.get(name, {}).get('set_instance', '')
+
+        self.create_term_params(cfg, name)
+
+    def generate_alacritty_config(self, cfg, name):
+        alacritty_suffix = cfg.get(name, {}).get('alacritty_suffix', {})
+        ret = expanduser("~/.config/alacritty/alacritty.yml")
+        if alacritty_suffix:
+            alacritty_suffix = expanduser(
+                "alacritty_" + alacritty_suffix + '.yml'
+            )
+            cfgname = expanduser("~/tmp/" + alacritty_suffix)
+            if not os.path.exists(cfgname):
+                shutil.copyfile(
+                    expanduser("~/.config/alacritty/alacritty.yml"),
+                    cfgname
+                )
+            ret = cfgname
+        return ret
+
+    def create_term_params(self, cfg, name):
+        terminal = cfg.get(name, {}).get("term")
+        print(f'Creating term params for {name}')
+        if terminal == "alacritty":
+            self.term_opts = ["alacritty"] + [
+                "-t", self.window_class,
+                "-e", "dash", "-c"
+            ]
+        elif terminal == "alacritty-custom":
+            yaml_config = None
+            custom_config = self.generate_alacritty_config(cfg, name)
+            with open(custom_config, "r") as fp:
+                try:
+                    yaml_config_ = yaml.load(fp)
+                    yaml_config_["font"]["normal"]["family"] = self.font
+                    yaml_config_["font"]["bold"]["family"] = self.font
+                    yaml_config_["font"]["italic"]["family"] = self.font
+                    yaml_config_["font"]["size"] = self.font_size
+                except yaml.YAMLError as e:
+                    print(e)
+                finally:
+                    yaml_config = yaml_config_
+            with open(custom_config, 'w', encoding='utf8') as outfile:
+                try:
+                    yaml.dump(
+                        yaml_config,
+                        outfile,
+                        default_flow_style=False,
+                        allow_unicode=True,
+                        canonical=False,
+                        explicit_start=True
+                    )
+                except yaml.YAMLError as e:
+                    print(e)
+            self.term_opts = [
+                "alacritty", "--config-file",
+                expanduser(custom_config)
+            ] + [
+                "-t", self.window_class,
+                "-e", "dash", "-c"
+            ]
+        elif terminal == "alacritty-ncmpcpp":
+            self.term_opts = [
+                "alacritty",
+                "--config-file",
+                expanduser("~/.config/alacritty/ncmpcpp.yml")
+            ] + [
+                "-t", self.window_class,
+                "-e", "dash", "-c"
+            ]
+        elif terminal == "st":
+            self.term_opts = ["st"] + [
+                "-c", self.window_class,
+                "-f", self.font + ":size=" + str(self.font_size),
+                "-e", "dash", "-c",
+            ]
+        elif terminal == "urxvt":
+            self.term_opts = ["urxvt"] + [
+                "-name", self.window_class,
+                "-fn", "xft:" + self.font + ":size=" + str(self.font_size),
+                "-e", "dash", "-c",
+            ]
+        elif terminal == "xterm":
+            self.term_opts = ["xterm"] + [
+                '-class', self.window_class,
+                '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
+                "-e", "dash", "-c",
+            ]
+        elif terminal == "cool-retro-term":
+            self.term_opts = ["cool-retro-term"] + [
+                "-e", "dash", "-c",
+            ]
 
 
 class executor(modi3cfg):
@@ -130,6 +191,10 @@ class executor(modi3cfg):
         self.envs = {}
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        for env in self.envs:
+            del env
 
     def run_app(self, args):
         """ Wrapper to run selected application in background.
@@ -187,7 +252,7 @@ class executor(modi3cfg):
         """ Run tmux to attach to given socket.
         """
         self.run_app(
-            self.env.term_params[self.env.term] +
+            self.env.term_opts +
             [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
         )
 
@@ -203,8 +268,9 @@ class executor(modi3cfg):
         """ Run tmux to create the new session on given socket.
         """
         self.run_app(
-            self.env.term_params[self.env.term] +
-            [f"{self.env.set_colorscheme} {self.env.tmux_new_session} {self.env.postfix} && \
+            self.env.term_opts +
+            [f"{self.env.set_colorscheme} \
+            {self.env.tmux_new_session} {self.env.postfix} && \
                 {self.env.tmux_session_attach}"]
         )
 
@@ -228,7 +294,7 @@ class executor(modi3cfg):
                 self.create_new_session()
         else:
             self.run_app(
-                self.env.term_params[self.env.term] + [
+                self.env.term_opts + [
                     self.env.set_colorscheme + self.env.prog
                 ]
             )
