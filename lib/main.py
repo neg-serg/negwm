@@ -260,7 +260,8 @@ class daemon_manager():
     def create_fifo(self, name):
         """ Create FIFO for the given name
         """
-        fifo = os.path.realpath(os.path.expandvars('$HOME/tmp/' + name + '.fifo'))
+        fifo = os.path.realpath(os.path.expandvars(
+            '$HOME/tmp/' + name + '.fifo'))
         if os.path.exists(fifo):
             os.remove(fifo)
         try:
