@@ -73,46 +73,47 @@ class env():
 
     def generate_alacritty_config(self, cfg, name):
         alacritty_suffix = cfg.get(name, {}).get('alacritty_suffix', {})
+        if not alacritty_suffix:
+            alacritty_suffix = cfg.get(name, {}).get('window_class')
+
         ret = expanduser("~/.config/alacritty/alacritty.yml")
-        if alacritty_suffix:
-            alacritty_suffix = expanduser(
-                "alacritty_" + alacritty_suffix + '.yml'
+
+        alacritty_suffix = expanduser(
+            "alacritty_" + alacritty_suffix + '.yml'
+        )
+        cfgname = expanduser("~/tmp/" + alacritty_suffix)
+        if not os.path.exists(cfgname):
+            shutil.copyfile(
+                expanduser("~/.config/alacritty/alacritty.yml"),
+                cfgname
             )
-            cfgname = expanduser("~/tmp/" + alacritty_suffix)
-            if not os.path.exists(cfgname):
-                shutil.copyfile(
-                    expanduser("~/.config/alacritty/alacritty.yml"),
-                    cfgname
-                )
-            ret = cfgname
+        ret = cfgname
         return ret
 
     def create_term_params(self, cfg, name):
         terminal = cfg.get(name, {}).get("term")
-        print(f'Creating term params for {name}')
         if terminal == "alacritty":
             self.term_opts = ["alacritty"] + [
                 "-t", self.window_class,
                 "-e", "dash", "-c"
             ]
         elif terminal == "alacritty-custom":
-            yaml_config = None
             custom_config = self.generate_alacritty_config(cfg, name)
+
             with open(custom_config, "r") as fp:
                 try:
-                    yaml_config_ = yaml.load(fp)
-                    yaml_config_["font"]["normal"]["family"] = self.font
-                    yaml_config_["font"]["bold"]["family"] = self.font
-                    yaml_config_["font"]["italic"]["family"] = self.font
-                    yaml_config_["font"]["size"] = self.font_size
+                    conf = yaml.load(fp)
+                    conf["font"]["normal"]["family"] = self.font
+                    conf["font"]["bold"]["family"] = self.font
+                    conf["font"]["italic"]["family"] = self.font
+                    conf["font"]["size"] = self.font_size
                 except yaml.YAMLError as e:
                     print(e)
-                finally:
-                    yaml_config = yaml_config_
+
             with open(custom_config, 'w', encoding='utf8') as outfile:
                 try:
                     yaml.dump(
-                        yaml_config,
+                        conf,
                         outfile,
                         default_flow_style=False,
                         allow_unicode=True,
