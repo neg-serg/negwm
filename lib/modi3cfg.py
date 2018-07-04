@@ -90,7 +90,7 @@ class modi3cfg(object):
     def subtag_attr_list(self):
         return self.possible_props()
 
-    def reload_config(self):
+    def reload_config(self, *arg):
         """ Reload config for current selected module.
             Call load_config, print debug messages and reinit all stuff.
         """
@@ -102,7 +102,7 @@ class modi3cfg(object):
             else:
                 self.__init__(self.i3, loop=self.loop)
             print(f"[{self.mod}] config reloaded")
-        except:
+        except Exception:
             print(f"[{self.mod}] config reload failed")
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
