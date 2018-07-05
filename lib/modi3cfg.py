@@ -59,17 +59,21 @@ class modi3cfg(object):
                 ret = ret.get(part)
         return ret
 
-    def extract_prog_str(self, conf_part):
-        """ Helper to extract prog string from config
+    def extract_prog_str(self, conf_part, prog_field="prog", exe_file=True):
+        """ Helper to extract prog(by default) string from config
 
         Args:
             conf_part (str): part of config from where you want to extract it.
+            prog_field (str): string name to extract.
         """
-        return re.sub(
-            "~",
-            os.path.realpath(os.path.expandvars("$HOME")),
-            conf_part.get("prog", "")
-        )
+        if exe_file:
+            return re.sub(
+                "~",
+                os.path.realpath(os.path.expandvars("$HOME")),
+                conf_part.get(prog_field, "")
+            )
+        else:
+            return conf_part.get(prog_field, "")
 
     def cfg_regex_props(self):
         # regex cfg properties
