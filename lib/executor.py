@@ -123,7 +123,7 @@ class env():
                 except yaml.YAMLError as e:
                     print(e)
             self.term_opts = [
-                "alacritty", "--config-file",
+                "alacritty", "--live-config-reload", "--config-file",
                 expanduser(custom_config)
             ] + [
                 "-t", self.window_class,
