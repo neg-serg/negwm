@@ -110,7 +110,7 @@ class circle(modi3cfg, Matcher):
                     self.conf(tag, "subtag", subtag)
                 )
             if prog_str:
-                self.i3.command('exec {}'.format(prog_str))
+                self.i3.command(f'exec {prog_str}')
             else:
                 spawn_str = self.extract_prog_str(
                     self.conf(tag),
@@ -119,9 +119,7 @@ class circle(modi3cfg, Matcher):
                 )
                 if spawn_str:
                     self.i3.command(
-                        'exec ~/.config/i3/send executor run {}'.format(
-                            spawn_str
-                        )
+                        f'exec ~/.config/i3/send executor run {spawn_str}'
                     )
 
     def find_next_not_the_same_win(self, tag):
