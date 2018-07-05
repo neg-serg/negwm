@@ -1,5 +1,9 @@
 My nice and fast modules for i3.
 
+# Screenshots
+
+![shot1](https://i.imgur.com/1cox0ps.png)
+
 # What is it?
 
 For now this collection of modules for i3 includes:
@@ -29,6 +33,11 @@ condition when you try to switch workspaces backward-forward to quickly.
 then handles mpv with mpvc if the current window is mpv, or with sending 0,
 9 keys to the mpv window if not.
 
+*executor* : something like tmux / terminal manager, allows you change
+terminal almost on-the-fly, as far as all terminal options and create
+sophisticated tmux-sessions without need of shell-magic. Personally I use it
+for all of my terminal applications.
+
 Many of them as circled, infod, nsd, vold, wm3d can be configured via
 TOML-files with inotify-based autoreload.
 
@@ -55,7 +64,13 @@ pip install aiofiles
 In case of pypy it may be something like
 
 ```
-pypy3 -m pip install gevent
+pypy3 -m pip install 
+pypy3 -m pip inotify
+pypy3 -m pip gevent
+pypy3 -m pip i3ipc
+pypy3 -m pip toml
+pypy3 -m pip aionotify
+pypy3 -m pip aiofiles
 ```
 
 etc. Of course you are also need pip or conda, or smth to install dependencies.
