@@ -4,6 +4,7 @@
     in this module geometry is parsed from config X11 internal format to the i3
     commands.
 """
+
 import re
 from main import get_screen_resolution
 
