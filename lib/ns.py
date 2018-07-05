@@ -13,8 +13,6 @@ your scratchpad from fullscreen and also restore fullsreen state of the
 window when needed.
 """
 
-import os
-import re
 import subprocess
 import uuid
 from typing import Callable, List
