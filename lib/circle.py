@@ -111,6 +111,18 @@ class circle(modi3cfg, Matcher):
                 )
             if prog_str:
                 self.i3.command('exec {}'.format(prog_str))
+            else:
+                spawn_str = self.extract_prog_str(
+                    self.conf(tag),
+                    "spawn",
+                    exe_file=False
+                )
+                if spawn_str:
+                    self.i3.command(
+                        'exec ~/.config/i3/send executor run {}'.format(
+                            spawn_str
+                        )
+                    )
 
     def find_next_not_the_same_win(self, tag):
         """ It was used as the guard to infinite loop in the past.
