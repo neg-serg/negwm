@@ -116,6 +116,10 @@ For now here can be dragons, so add bug report to github if you get
 problems.
 
 # Video Demonstration
+Youtube (low quality):
 [![i3pluginsdemo](https://img.youtube.com/vi/U7eJMP0zvKc/0.jpg)](https://www.youtube.com/embed/U7eJMP0zvKc)
+
+Vimeo (good quality):
+[![i3pluginsdemovimeo](https://i.imgur.com/QIuWrkX.png)](https://vimeo.com/255452812)
 
 [ppi3]: https://github.com/KeyboardFire/ppi3
