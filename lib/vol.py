@@ -112,7 +112,8 @@ class vol(Singleton, modi3cfg):
                     break
 
     def switch(self, args) -> None:
-        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+        """ Defines pipe-based IPC for nsd module. With appropriate function
+        bindings.
 
             This function defines bindings to the named_scratchpad methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the

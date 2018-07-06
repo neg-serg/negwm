@@ -113,9 +113,7 @@ class circle(modi3cfg, Matcher):
                 self.i3.command(f'exec {prog_str}')
             else:
                 spawn_str = self.extract_prog_str(
-                    self.conf(tag),
-                    "spawn",
-                    exe_file=False
+                    self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
                     self.i3.command(
@@ -226,10 +224,12 @@ class circle(modi3cfg, Matcher):
                         if item.window_class == self.conf(tag, "priority"):
                             fullscreened = self.i3.get_tree().find_fullscreen()
                             for win in fullscreened:
-                                if win.window_class in self.conf(tag, "class") \
-                                        and win.window_class != self.conf(tag, "priority"):
-                                    self.interactive = False
-                                    win.command('fullscreen disable')
+                                if win.window_class in self.conf(tag, "class"):
+                                    if win.window_class != self.conf(
+                                            tag, "priority"
+                                    ):
+                                        self.interactive = False
+                                        win.command('fullscreen disable')
                             self.focus_next(tag, idx, inc_counter=False)
                             return
                 elif self.current_win.id == self.twin(tag, idx).id:
