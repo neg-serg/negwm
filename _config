@@ -27,7 +27,7 @@ set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send executor
 
 set $scratchpad_dialog floating enable, move absolute position 180 20, resize set 1556 620, move scratchpad
 
-#for_window [title="^NPP$"] floating enable, move absolute position 0 px 0 px, move workspace $ws4, workspace --no-auto-back-and-forth $ws4
+for_window [title="^NPP$"] floating enable, move absolute position 0 px 0 px, move workspace $ws4, workspace --no-auto-back-and-forth $ws4
 
 # ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀ #
 # ░█░░░█░█░█░░░█░█░█▀▄░▀▀█ #
@@ -191,22 +191,19 @@ for_window [class="Places"] $scratchpad_dialog
 # ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
 # ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
 set $exit mode "default"
+bindsym $m4+{h,l} focus {left,right}
 bindsym $alt+e mode ""               # special mode
 bindsym $m4+r mode ""                # resize mode
 bindsym $m4+minus mode ""            # window-manager / split / tiling mode
 bindsym $m4+$S+$c+BackSpace mode " " # blocking mode
-#----------------------------------------------
-bindsym $m4+h focus left
-bindsym $m4+l focus right
-#----------------------------------------------
 mode " " {
     bindsym $m4+$S+BackSpace mode "default"
     bindsym $m4+$c+$S+BackSpace mode "default"
 }
 #----------------------------------------------
-bindsym --release Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym --release $S+Print exec --no-startup-id ~/bin/scripts/screenshot current
-bindsym --release {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot region
+bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
+bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot current
+bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot region
 bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
 bindsym $m4+a $menu attach
 bindsym $m4+g $menu ws
