@@ -202,8 +202,8 @@ mode " " {
 }
 #----------------------------------------------
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot current
-bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot region
+bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
+bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
 bindsym $m4+a $menu attach
 bindsym $m4+g $menu ws
