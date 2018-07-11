@@ -217,7 +217,7 @@ bindsym $m4+e $ns toggle im
 bindsym $m4+$S+s $menu autoprop
 bindsym $m4+$S+p $ns toggle volcontrol
 bindsym $m4+d $ns toggle teardrop
-bindsym $m4+$S+d $ns toggle console
+bindsym $m4+m $ns toggle youtube
 bindsym $m4+$S+e $ns toggle weechat
 bindsym $m4+3 $ns next
 bindsym $m4+$c+$S+R $ns geom_restore
@@ -244,7 +244,7 @@ bindsym $m4+grave exec $wm3 focus_next_visible
 bindsym $m4+$S+grave exec $wm3 focus_prev_visible
 
 bindsym $alt+g exec $menu goto_win
-bindsym $m4+m exec $menu xprop
+bindsym $m4+$C+m exec $menu xprop
 bindsym $m4+q fullscreen toggle
 bindsym $m4+$c+grave $menu run
 
