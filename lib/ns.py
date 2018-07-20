@@ -278,8 +278,9 @@ class ns(modi3cfg, Matcher):
                 self.unfocus(tag)
                 return
 
-        self.toggle_fs(focused)
-        self.focus(tag)
+        if len(self.marked.get(tag, {})):
+            self.toggle_fs(focused)
+            self.focus(tag)
 
     def focus_sub_tag(self, tag: str, subtag_classes_set):
         """ Cycle over the subtag windows.
