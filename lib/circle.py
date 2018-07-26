@@ -231,7 +231,6 @@ class circle(modi3cfg, Matcher):
                                         self.interactive = False
                                         win.command('fullscreen disable')
                             self.focus_next(tag, idx, inc_counter=False)
-                            return
                 elif self.current_win.id == self.twin(tag, idx).id:
                     self.find_next_not_the_same_win(tag)
                 else:
@@ -248,13 +247,14 @@ class circle(modi3cfg, Matcher):
             subtag (str): denotes the target [subtag].
         """
         self.subtag_info = self.conf(tag, "subtag", subtag)
-        if not set(self.subtag_info.get("class", {})) & \
-                {w.window_class for w in self.tagged.get(tag, {})}:
-            self.run_prog(tag, subtag)
+        if not set(self.subtag_info.get("class", {})):
+            if not {w.window_class for w in self.tagged.get(tag, {})}:
+                self.tag_windows()
+                self.run_prog(tag, subtag)
         else:
             idx = 0
+            self.tag_windows()
             self.focus_next(tag, idx, subtagged=True)
-        self.tag_windows()
 
     def switch(self, args):
         """ Defines pipe-based IPC for cirled module. With appropriate
@@ -311,7 +311,7 @@ class circle(modi3cfg, Matcher):
         """
         for win in self.winlist.leaves():
             if self.match(win, tag):
-                self.tagged[tag].append(win)
+                self.tagged.get(tag, {}).append(win)
 
     def tag_windows(self):
         """ Find acceptable windows for the all tags and add it to the
