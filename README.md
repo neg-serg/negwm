@@ -1,4 +1,4 @@
-My nice and fast modules for i3.
+![banner](https://i.imgur.com/fgmuilL.png)
 
 # Screenshots
 
