@@ -96,7 +96,7 @@ set $sxiv " ξ: [pic]"
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
-set $browsers [class="^(Firefox|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
+set $browsers [class="^(Firefox|Nightly|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(dota2|darkest.bin.x86_64|PillarsOfEternityII)$"]
 set $wine_apps [class="^(wine|Crossover)$"]
