@@ -247,14 +247,18 @@ class circle(modi3cfg, Matcher):
             subtag (str): denotes the target [subtag].
         """
         self.subtag_info = self.conf(tag, "subtag", subtag)
-        if not set(self.subtag_info.get("class", {})):
-            if not {w.window_class for w in self.tagged.get(tag, {})}:
-                self.tag_windows()
+        self.tag_windows()
+
+        if self.subtag_info:
+            subtagged_class_set = set(self.subtag_info.get("class", {}))
+            tagged_win_classes = {
+                w.window_class for w in self.tagged.get(tag, {})
+            }
+            if not (tagged_win_classes & subtagged_class_set):
                 self.run_prog(tag, subtag)
-        else:
-            idx = 0
-            self.tag_windows()
-            self.focus_next(tag, idx, subtagged=True)
+            else:
+                idx = 0
+                self.focus_next(tag, idx, subtagged=True)
 
     def switch(self, args):
         """ Defines pipe-based IPC for cirled module. With appropriate
