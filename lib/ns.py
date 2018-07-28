@@ -411,8 +411,7 @@ class ns(modi3cfg, Matcher):
     def hide_current(self) -> None:
         """ Hide the currently selected tag.
         """
-        if not self.apply_to_current_tag(self.unfocus):
-            self.i3.command('[con_id=__focused__] scratchpad show')
+        self.apply_to_current_tag(self.unfocus)
 
     def geom_restore(self, tag: str) -> None:
         """ Show the next window for the current selected tag.
