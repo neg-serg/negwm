@@ -31,7 +31,7 @@ class flast():
         self.i3 = i3
 
         # previous / current window list
-        self.window_history = self.i3.get_tree().leaves()
+        self.window_history = []
 
         # depth of history list
         self.max_win_history = 64
@@ -45,7 +45,8 @@ class flast():
         self.__init__(self.i3)
 
     def switch(self, args):
-        """ Defines pipe-based IPC for nsd module. With appropriate function bindings.
+        """ Defines pipe-based IPC for nsd module. With appropriate function
+        bindings.
 
             This function defines bindings to the named_scratchpad methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
@@ -86,14 +87,6 @@ class flast():
         self.window_history.insert(0, wid)
         if len(self.window_history) > self.max_win_history:
             del self.window_history[self.max_win_history:]
-
-    def get_windows_on_ws(self):
-        """ Get windows on the current workspace.
-        """
-        return filter(
-            lambda win: win.window,
-            self.i3.get_tree().find_focused().workspace().descendents()
-        )
 
     def go_back_if_nothing(self, i3, event):
         """ Go back for temporary tags like pictures or media.
