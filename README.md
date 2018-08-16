@@ -53,24 +53,23 @@ TOML-files with inotify-based autoreload.
 To install it you may use pip:
 
 ```
-pip install inotify
-pip install gevent
-pip install i3ipc
-pip install toml
-pip install aionotify
-pip install aiofiles
+pip install --upgrade --force-reinstall inotify
+    gevent \
+    i3ipc \
+    toml \
+    aionotify \
+    aiofiles
 ```
 
 In case of pypy it may be something like
 
 ```
-pypy3 -m pip install 
-pypy3 -m pip inotify
-pypy3 -m pip gevent
-pypy3 -m pip i3ipc
-pypy3 -m pip toml
-pypy3 -m pip aionotify
-pypy3 -m pip aiofiles
+pypy3 -m pip install --upgrade --force-reinstall inotify \
+    gevent \
+    i3ipc \
+    toml \
+    aionotify \
+    aiofiles
 ```
 
 etc. Of course you are also need pip or conda, or smth to install dependencies.
