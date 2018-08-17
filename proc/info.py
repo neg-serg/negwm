@@ -34,11 +34,13 @@ class info(modi3cfg):
         # modi3cfg init.
         super().__init__(i3)
 
-        # echo server address.
-        self.addr = self.cfg.get("addr", '0.0.0.0')
+        # server addresses.
+        self.echo_addr = self.cfg.get("echo_addr", '0.0.0.0')
+        self.wait_proc_addr = self.cfg.get("wait_proc_addr", '0.0.0.0')
 
-        # echo server port.
-        self.port = int(self.cfg.get("port", '31888'))
+        # server ports.
+        self.echo_port = int(self.cfg.get("echo_port", '31888'))
+        self.wait_proc_port = int(self.cfg.get("wait_port", '31887'))
 
         # default connection count.
         self.conn_count = int(self.cfg.get("conn_count", 10))
@@ -47,49 +49,71 @@ class info(modi3cfg):
         self.buf_size = int(self.cfg.get('buf_size', 2048))
 
         # nsd instance. We need it to extract info
-        self.ns_instance = ns(i3)
-
         # circled instance. We need it to extract info
+        self.ns_instance = ns(i3)
         self.circle_instance = circle(i3)
 
-    def close_conn(self):
+    def close_conn(self, curr_conn):
         """ Close connection.
 
             This function is just for DRY principle and convinience.
         """
-        self.curr_conn.shutdown(1)
-        self.curr_conn.close()
+        curr_conn.shutdown(1)
+        curr_conn.close()
 
-    def mainloop(self):
-        """ Mainloop function, listen to request, returns echo, very stupid.
+    def echo_mainloop(self):
+        """ Echo server mainloop, listen to request, returns echo, very stupid.
         """
         conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        conn.bind((self.addr, self.port))
+        conn.bind((self.echo_addr, self.echo_port))
         conn.listen(self.conn_count)
 
         while True:
-            self.curr_conn, _ = conn.accept()
+            curr_conn, _ = conn.accept()
             while True:
-                data = self.curr_conn.recv(self.buf_size)
+                data = curr_conn.recv(self.buf_size)
                 if data is None:
-                    self.close_conn()
+                    self.close_conn(curr_conn)
                     break
                 elif 'ns_list' in data.decode():
                     output = [k for k in self.ns_instance.cfg]
-                    self.curr_conn.send(bytes(str(output), 'UTF-8'))
-                    self.close_conn()
+                    curr_conn.send(bytes(str(output), 'UTF-8'))
+                    self.close_conn(curr_conn)
                     break
                 elif 'circle_list' in data.decode():
                     output = [k for k in self.circle_instance.cfg]
-                    self.curr_conn.send(bytes(str(output), 'UTF-8'))
-                    self.close_conn()
+                    curr_conn.send(bytes(str(output), 'UTF-8'))
+                    self.close_conn(curr_conn)
+                    break
+
+    def wait_proc_mainloop(self):
+        """ Wait proc mainloop, listen to request, parse it, returns echo when
+            done.
+        """
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        conn.bind((self.wait_proc_addr, self.wait_proc_port))
+        conn.listen(self.conn_count)
+
+        while True:
+            curr_conn, _ = conn.accept()
+            while True:
+                data = curr_conn.recv(self.buf_size)
+                if data is None:
+                    self.close_conn(curr_conn)
+                    break
+                elif 'wait_for' in data.decode():
+                    print(data.decode())
+                    curr_conn.send(bytes(str(data.decode()), 'UTF-8'))
+                    self.close_conn(curr_conn)
                     break
 
 
 if __name__ == '__main__':
     i3 = i3ipc.Connection()
     proc = info(i3)
-    Thread(target=proc.mainloop, daemon=True).start()
+    Thread(target=proc.echo_mainloop, daemon=True).start()
+    Thread(target=proc.wait_proc_mainloop, daemon=True).start()
     proc.i3.main()
 
