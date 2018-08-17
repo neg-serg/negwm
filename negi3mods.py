@@ -56,6 +56,9 @@ class negi3mods(modconfig):
         for mod in self.cfg.get("module_list", ''):
             self.mods[intern(mod)] = None
 
+        # Start inotify watchers
+        self.use_inotify = True
+
         # stuff for startup notifications
         self.notification_text = "Wow! It's time to start mods!\n\n"
         notification_color = self.cfg.get("notification_color", '#ffffff')
@@ -179,6 +182,17 @@ class negi3mods(modconfig):
         asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
         asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
 
+    def run_procs(self):
+        for proc in self.cfg.get("proc_list", {}):
+            # Start echo server as separated process
+            subprocess.run(['pkill', '-f', f'proc/{proc}.py'])
+            subprocess.run(
+                [self.i3_path + f'proc/{proc}.py &'],
+                shell=True,
+                cwd=self.i3_path + '/proc'
+            )
+            print(f'run proc {self.i3_path} proc/{proc}.py &')
+
     def run(self):
         """ Run negi3mods here.
         """
@@ -197,15 +211,11 @@ class negi3mods(modconfig):
                 func(*args)
             print(f'... {name} loaded]', flush=True)
 
-        # Start inotify watchers
-        use_inotify = True
         start(self.load_modules, 'modules')
-        if use_inotify:
+        if self.use_inotify:
             start(self.run_inotify_watchers, 'inotify watchers')
 
-        # Start echo server as separated process
-        subprocess.run(['pkill', '-f', 'info.py'])
-        subprocess.run([self.i3_path + 'info.py &'], shell=True)
+        self.run_procs()
 
         # Start modules mainloop.
         start(Thread(target=self.manager.mainloop,
