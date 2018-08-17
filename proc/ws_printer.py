@@ -37,13 +37,16 @@ year :: 2018
 # I think that the most of improvements come from threading patching here.
 
 from gevent import monkey
+import os
+import sys
 monkey.patch_all()
 
-from lib.basic_config import modconfig
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
+from basic_config import modconfig
 
 import asyncio
 import i3ipc
-import sys
 import re
 from threading import Thread, Event
 

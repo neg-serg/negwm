@@ -31,8 +31,11 @@ year :: 2018
 """
 
 import asyncio
+import os
 import sys
-from lib.basic_config import modconfig
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
+from basic_config import modconfig
 
 
 class vol_printer(modconfig):

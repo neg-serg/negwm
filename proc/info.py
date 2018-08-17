@@ -11,9 +11,10 @@ with asyncio or something like this in the future.
 import socket
 import i3ipc
 from threading import Thread
+import os
 import sys
-sys.path.append('..')
-sys.path.append('../lib')
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
 from singleton import Singleton
 from modi3cfg import modi3cfg
 from ns import ns

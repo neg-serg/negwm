@@ -8,8 +8,10 @@ for example wayland-friendly.
 import i3ipc
 from threading import Thread
 from subprocess import run
+import os
 import sys
-sys.path.append('../lib')
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
+sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
 from singleton import Singleton
 
 
