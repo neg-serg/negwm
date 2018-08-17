@@ -17,7 +17,7 @@ Config example:
 
 [module/ws]
 type = custom/script
-exec = ~/.config/i3/ws_printer.py
+exec = ~/.config/i3/proc/ws_printer.py
 exec-if = sleep 1
 format = <label>
 tail = true
