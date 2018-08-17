@@ -1,3 +1,4 @@
+#!/usr/bin/pypy3
 """ Module to set / unset dpms while fullscreen is toggled on.
 
 I am simply use xset here. There is better solution possible,
@@ -7,6 +8,8 @@ for example wayland-friendly.
 import i3ipc
 from threading import Thread
 from subprocess import run
+import sys
+sys.path.append('../lib')
 from singleton import Singleton
 
 
@@ -17,8 +20,6 @@ class fsdpms(Singleton):
 
         self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
         self.i3.on('window::close', self.on_window_close)
-
-        Thread(target=self.i3.main, daemon=True).start()
 
     def set_dpms(self, state):
         """ set / unset dpms
@@ -52,4 +53,10 @@ class fsdpms(Singleton):
         tree = self.i3.get_tree()
         if not tree.find_fullscreen():
             self.set_dpms(True)
+
+
+if __name__ == '__main__':
+    i3 = i3ipc.Connection()
+    proc = fsdpms(i3)
+    proc.i3.main()
 

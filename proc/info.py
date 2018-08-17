@@ -10,10 +10,12 @@ with asyncio or something like this in the future.
 
 import socket
 import i3ipc
-from lib.singleton import Singleton
-from modi3cfg import modi3cfg
 from threading import Thread
-
+import sys
+sys.path.append('..')
+sys.path.append('../lib')
+from singleton import Singleton
+from modi3cfg import modi3cfg
 from ns import ns
 from circle import circle
 
@@ -86,7 +88,7 @@ class info(modi3cfg):
 
 if __name__ == '__main__':
     i3 = i3ipc.Connection()
-    loop = info(i3)
-    Thread(target=loop.mainloop, daemon=True).start()
-    loop.i3.main()
+    proc = info(i3)
+    Thread(target=proc.mainloop, daemon=True).start()
+    proc.i3.main()
 
