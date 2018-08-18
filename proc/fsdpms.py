@@ -6,13 +6,13 @@ for example wayland-friendly.
 """
 
 import i3ipc
-from threading import Thread
 from subprocess import run
 import os
 import sys
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
 from singleton import Singleton
+from locker import get_lock
 
 
 class fsdpms(Singleton):
@@ -58,6 +58,7 @@ class fsdpms(Singleton):
 
 
 if __name__ == '__main__':
+    get_lock('fsdpms.py')
     i3 = i3ipc.Connection()
     proc = fsdpms(i3)
     proc.i3.main()
