@@ -647,6 +647,8 @@ class ns(modi3cfg, Matcher):
                         if tr.id == win.id:
                             self.transients.remove(tr)
                     break
+        if win_ev.fullscreen_mode:
+            self.apply_to_current_tag(self.unfocus)
         self.winlist = self.i3.get_tree()
 
     def mark_all_tags(self, hide: bool = True) -> None:
