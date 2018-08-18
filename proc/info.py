@@ -16,7 +16,6 @@ import sys
 import subprocess
 import shlex
 import collections
-import asyncio
 import time
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
@@ -38,8 +37,6 @@ class info(modi3cfg):
 
         # modi3cfg init.
         super().__init__(i3)
-
-        self.loop = asyncio.get_event_loop()
 
         # server addresses.
         self.echo_addr = self.cfg.get("echo_addr", '::')
@@ -119,19 +116,21 @@ class info(modi3cfg):
                     break
                 elif 'wait_for' in data.decode():
                     wattr = self.parse_exec_wait(data.decode())
-                    self.await_for_window(wattr, curr_conn)
+                    self.exec_wait = self.await_for_window(wattr, curr_conn)
+                    next(self.exec_wait)
                     break
 
     def await_for_window(self, wattr, curr_conn):
         ans = 'win_not_created'
         if wattr is not None:
             while not self.need_check:
-                pass
+                yield
             self.need_check = False
             del_w = None
             for w in self.created_wins:
                 if wattr == w:
                     ans = 'win_created'
+                    del_w = w
                     break
                 else:
                     continue
@@ -139,6 +138,7 @@ class info(modi3cfg):
             self.created_wins.remove(del_w)
         curr_conn.send(bytes(ans, 'UTF-8'))
         self.close_conn(curr_conn)
+        yield None
 
     def parse_exec_wait(self, wait_cmd):
         wattr = {'class': "", 'instance': "", 'name': "", 'exec': ""}
@@ -179,6 +179,7 @@ class info(modi3cfg):
             else:
                 self.created_wins.append(wattr)
                 self.need_check = True
+                self.exec_wait.send(True)
                 break
         self.exec_wait_queue.remove(wattr)
 
