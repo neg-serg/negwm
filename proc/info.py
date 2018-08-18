@@ -35,8 +35,8 @@ class info(modi3cfg):
         super().__init__(i3)
 
         # server addresses.
-        self.echo_addr = self.cfg.get("echo_addr", '0.0.0.0')
-        self.wait_proc_addr = self.cfg.get("wait_proc_addr", '0.0.0.0')
+        self.echo_addr = self.cfg.get("echo_addr", '::')
+        self.wait_proc_addr = self.cfg.get("wait_proc_addr", '::')
 
         # server ports.
         self.echo_port = int(self.cfg.get("echo_port", '31888'))
@@ -64,7 +64,7 @@ class info(modi3cfg):
     def echo_mainloop(self):
         """ Echo server mainloop, listen to request, returns echo, very stupid.
         """
-        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         conn.bind((self.echo_addr, self.echo_port))
         conn.listen(self.conn_count)
@@ -91,7 +91,7 @@ class info(modi3cfg):
         """ Wait proc mainloop, listen to request, parse it, returns echo when
             done.
         """
-        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         conn.bind((self.wait_proc_addr, self.wait_proc_port))
         conn.listen(self.conn_count)

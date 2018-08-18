@@ -41,13 +41,13 @@ class menu(modi3cfg):
         self.magic_pie = self.cfg.get('magic_pie', 'sssssnake')
 
         # default echo server host
-        self.host = self.cfg.get("host", "0.0.0.0")
+        self.host = self.cfg.get("host", "::")
 
         # default echo server port
         self.port = int(self.cfg.get("port", 31888))
 
         # create echo server socket
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 
         # negi3mods which allows add / delete property.
         # For example this feature can be used to move / delete window
@@ -266,7 +266,7 @@ class menu(modi3cfg):
     def i3_cmd_args(self, cmd):
         try:
             out = subprocess.run(
-                ['i3-msg', cmd],
+                [self.i3cmd, cmd],
                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
             ).stdout
             if out is not None:
@@ -358,7 +358,7 @@ class menu(modi3cfg):
         Args:
             mod (str): negi3mod name.
         """
-        self.sock = socket.socket()
+        self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         self.sock.connect((self.host, self.port))
         self.sock.send(bytes(f'{mod}_list\n', 'UTF-8'))
 

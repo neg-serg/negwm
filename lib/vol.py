@@ -35,7 +35,7 @@ class vol(Singleton, modi3cfg):
         self.inc = self.cfg.get("mpd_inc", 1)
 
         # Default mpd address.
-        self.mpd_addr = self.cfg.get("mpd_addr", "127.0.0.1")
+        self.mpd_addr = self.cfg.get("mpd_addr", "::1")
 
         # Default mpd port.
         self.mpd_port = self.cfg.get("mpd_port", "6600")
@@ -146,7 +146,9 @@ class vol(Singleton, modi3cfg):
             mpv_key = '0'
             mpv_cmd = '--increase'
         if self.mpd_status == "play":
-            self.mpd_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.mpd_socket = socket.socket(
+                socket.AF_INET6, socket.SOCK_STREAM
+            )
             try:
                 self.mpd_socket.connect((self.mpd_addr, int(self.mpd_port)))
                 self.mpd_socket.send(bytes(

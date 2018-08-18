@@ -46,7 +46,7 @@ class vol_printer(modconfig):
         super().__init__(self.loop)
 
         # default MPD address
-        self.addr = self.cfg.get("mpdaddr", "127.0.0.1")
+        self.addr = self.cfg.get("mpdaddr", "::1")
 
         # default MPD port
         self.port = self.cfg.get("mpdport", "6600")
