@@ -16,9 +16,9 @@ import sys
 import subprocess
 import shlex
 import collections
-import time
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
+from locker import get_lock
 from singleton import Singleton
 from modi3cfg import modi3cfg
 from ns import ns
@@ -185,6 +185,7 @@ class info(modi3cfg):
 
 
 if __name__ == '__main__':
+    get_lock('info.py')
     i3 = i3ipc.Connection()
     proc = info(i3)
     Thread(target=proc.echo_mainloop, daemon=True).start()
