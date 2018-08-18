@@ -13,6 +13,11 @@ import i3ipc
 from threading import Thread
 import os
 import sys
+import subprocess
+import shlex
+import collections
+import asyncio
+import time
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
 from singleton import Singleton
@@ -34,6 +39,8 @@ class info(modi3cfg):
         # modi3cfg init.
         super().__init__(i3)
 
+        self.loop = asyncio.get_event_loop()
+
         # server addresses.
         self.echo_addr = self.cfg.get("echo_addr", '::')
         self.wait_proc_addr = self.cfg.get("wait_proc_addr", '::')
@@ -52,6 +59,13 @@ class info(modi3cfg):
         # circled instance. We need it to extract info
         self.ns_instance = ns(i3)
         self.circle_instance = circle(i3)
+
+        self.exec_wait_queue = collections.deque(maxlen=10)
+        self.created_wins = collections.deque(maxlen=10)
+
+        self.need_check = False
+
+        i3.on('window::new', self.wait_for_window)
 
     def close_conn(self, curr_conn):
         """ Close connection.
@@ -104,10 +118,69 @@ class info(modi3cfg):
                     self.close_conn(curr_conn)
                     break
                 elif 'wait_for' in data.decode():
-                    print(data.decode())
-                    curr_conn.send(bytes(str(data.decode()), 'UTF-8'))
-                    self.close_conn(curr_conn)
+                    wattr = self.parse_exec_wait(data.decode())
+                    self.await_for_window(wattr, curr_conn)
                     break
+
+    def await_for_window(self, wattr, curr_conn):
+        ans = 'win_not_created'
+        if wattr is not None:
+            while not self.need_check:
+                pass
+            self.need_check = False
+            del_w = None
+            for w in self.created_wins:
+                if wattr == w:
+                    ans = 'win_created'
+                    break
+                else:
+                    continue
+        if del_w is not None:
+            self.created_wins.remove(del_w)
+        curr_conn.send(bytes(ans, 'UTF-8'))
+        self.close_conn(curr_conn)
+
+    def parse_exec_wait(self, wait_cmd):
+        wattr = {'class': "", 'instance': "", 'name': "", 'exec': ""}
+        wait_cmd_split = shlex.split(wait_cmd)
+        for tok in wait_cmd_split[1:]:
+            if len(tok):
+                if 'class=' in tok:
+                    wattr['class'] = tok.split('class=')[1]
+                elif 'instance=' in tok:
+                    wattr['instance'] = tok.split('instance=')[1]
+                elif 'name=' in tok:
+                    wattr['name'] = tok.split('name=')[1]
+                else:
+                    wattr['exec'] = tok
+
+        if wattr['exec']:
+            if wattr['class'] or wattr['instance'] or wattr['name']:
+                self.exec_wait_queue.appendleft(wattr)
+                try:
+                    subprocess.Popen(
+                        shlex.split(wattr['exec']),
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
+                except Exception:
+                    pass
+
+        return wattr
+
+    def wait_for_window(self, i3, event):
+        win = event.container
+        self.winlist = i3.get_tree()
+        for wattr in self.exec_wait_queue:
+            if wattr['class'] and win.window_class != wattr['class'] or \
+                wattr['instance'] and win.window_instance != wattr['instance'] or \
+                    wattr['name'] and win.window_instance != wattr['name']:
+                        continue
+            else:
+                self.created_wins.append(wattr)
+                self.need_check = True
+                break
+        self.exec_wait_queue.remove(wattr)
 
 
 if __name__ == '__main__':
