@@ -200,7 +200,7 @@ class modi3cfg(object):
                 value = toks[1]
                 if value[0] == value[-1] and value[0] in {'"', "'"}:
                     value = value[1:-1]
-                if attr in self.possible_props:
+                if attr in self.subtag_attr_list():
                     self.win_attrs[self.conv_props.get(attr, {})] = value
 
     def add_props(self, tag, prop_str):
