@@ -256,9 +256,7 @@ class ns(modi3cfg, Matcher):
                 self.i3.command(f'exec {prog_str}')
             else:
                 spawn_str = self.extract_prog_str(
-                    self.conf(tag),
-                    "spawn",
-                    exe_file=False
+                    self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
                     self.i3.command(
