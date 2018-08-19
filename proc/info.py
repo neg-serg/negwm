@@ -171,6 +171,7 @@ class info(modi3cfg):
     def wait_for_window(self, i3, event):
         win = event.container
         self.winlist = i3.get_tree()
+        tgt_wattr = None
         for wattr in self.exec_wait_queue:
             if wattr['class'] and win.window_class != wattr['class'] or \
                 wattr['instance'] and win.window_instance != wattr['instance'] or \
@@ -180,8 +181,10 @@ class info(modi3cfg):
                 self.created_wins.append(wattr)
                 self.need_check = True
                 self.exec_wait.send(True)
+                tgt_wattr = wattr
                 break
-        self.exec_wait_queue.remove(wattr)
+        if tgt_wattr is not None:
+            self.exec_wait_queue.remove(tgt_wattr)
 
 
 if __name__ == '__main__':
