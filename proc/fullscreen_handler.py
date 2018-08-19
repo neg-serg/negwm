@@ -16,7 +16,7 @@ from singleton import Singleton
 from locker import get_lock
 
 
-class fsdpms(Singleton):
+class fullscreen_handler(Singleton):
     def __init__(self, i3, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3ipc.Connection()
@@ -87,8 +87,8 @@ class fsdpms(Singleton):
 
 
 if __name__ == '__main__':
-    get_lock('fsdpms.py')
+    get_lock('fullscreen_handler.py')
     i3 = i3ipc.Connection()
-    proc = fsdpms(i3)
+    proc = fullscreen_handler(i3)
     proc.i3.main()
 
