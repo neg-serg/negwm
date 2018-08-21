@@ -244,11 +244,17 @@ bindsym $m4+grave exec $wm3 focus_next_visible
 bindsym $m4+$S+grave exec $wm3 focus_prev_visible
 
 bindsym $alt+g exec $menu goto_win
-bindsym $m4+m exec $menu xprop
+bindsym $m4+m mode "sw"
 bindsym $m4+q fullscreen toggle
 bindsym $m4+$c+grave $menu run
 
 bindsym $m4+$c+q kill
+
+mode "sw" {
+    bindsym m exec $menu xprop, $exit
+    bindsym s exec ~/bin/pls -switch, $exit
+    bindsym {Return,Escape,space,$c+C,$c+G}, $exit
+}
 #-------------------------------------------------------
 bindsym $alt+Tab $flast switch
 bindsym $m4+slash $flast switch
@@ -258,7 +264,7 @@ bindsym $m4+slash $flast switch
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░░░▀░▀░▀▀▀░▀▀▀
 mode "pass " {
     bindsym {c,p} exec ~/bin/scripts/lpwd {,type}, $exit
-    bindsym {Return,Escape,$c+C,$c+G} $exit
+    bindsym {Return,Escape,$c+C,$c+G}, $exit
 }
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▄░█▀▀░█▀▀░▀█▀░▀▀█░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▄░█▀▀░▀▀█░░█░░▄▀░░█▀▀
