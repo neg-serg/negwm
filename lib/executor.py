@@ -14,6 +14,7 @@ import yaml
 from os.path import expanduser
 from modi3cfg import modi3cfg
 from singleton import Singleton
+from multiprocessing import Process
 
 
 class env():
@@ -69,7 +70,10 @@ class env():
         self.set_wm_class = cfg.get(name, {}).get('set_wm_class', '')
         self.set_instance = cfg.get(name, {}).get('set_instance', '')
 
-        self.create_term_params(cfg, name)
+        Process(
+            target=self.create_term_params,
+            args=(cfg, name,), daemon=True
+        ).start()
 
     def generate_alacritty_config(self, cfg, name):
         alacritty_suffix = cfg.get(name, {}).get('alacritty_suffix', {})
