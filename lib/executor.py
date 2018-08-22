@@ -70,10 +70,7 @@ class env():
         self.set_wm_class = cfg.get(name, {}).get('set_wm_class', '')
         self.set_instance = cfg.get(name, {}).get('set_instance', '')
 
-        Process(
-            target=self.create_term_params,
-            args=(cfg, name,), daemon=True
-        ).start()
+        self.create_term_params(cfg, name)
 
     def generate_alacritty_config(self, cfg, name):
         alacritty_suffix = cfg.get(name, {}).get('alacritty_suffix', {})
@@ -94,6 +91,30 @@ class env():
         ret = cfgname
         return ret
 
+    def fileprocess(self, custom_config):
+        with open(custom_config, "r") as fp:
+            try:
+                conf = yaml.load(fp)
+                conf["font"]["normal"]["family"] = self.font
+                conf["font"]["bold"]["family"] = self.font
+                conf["font"]["italic"]["family"] = self.font
+                conf["font"]["size"] = self.font_size
+            except yaml.YAMLError as e:
+                print(e)
+
+        with open(custom_config, 'w', encoding='utf8') as outfile:
+            try:
+                yaml.dump(
+                    conf,
+                    outfile,
+                    default_flow_style=False,
+                    allow_unicode=True,
+                    canonical=False,
+                    explicit_start=True
+                )
+            except yaml.YAMLError as e:
+                print(e)
+
     def create_term_params(self, cfg, name):
         terminal = cfg.get(name, {}).get("term")
         if terminal == "alacritty":
@@ -103,29 +124,7 @@ class env():
             ]
         elif terminal == "alacritty-custom":
             custom_config = self.generate_alacritty_config(cfg, name)
-
-            with open(custom_config, "r") as fp:
-                try:
-                    conf = yaml.load(fp)
-                    conf["font"]["normal"]["family"] = self.font
-                    conf["font"]["bold"]["family"] = self.font
-                    conf["font"]["italic"]["family"] = self.font
-                    conf["font"]["size"] = self.font_size
-                except yaml.YAMLError as e:
-                    print(e)
-
-            with open(custom_config, 'w', encoding='utf8') as outfile:
-                try:
-                    yaml.dump(
-                        conf,
-                        outfile,
-                        default_flow_style=False,
-                        allow_unicode=True,
-                        canonical=False,
-                        explicit_start=True
-                    )
-                except yaml.YAMLError as e:
-                    print(e)
+            Process(target=self.fileprocess, args=(custom_config,), daemon=True).start()
             self.term_opts = [
                 "alacritty", "--live-config-reload", "--config-file",
                 expanduser(custom_config)
