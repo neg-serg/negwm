@@ -40,16 +40,6 @@ class fullscreen_handler(Singleton):
             run(['polybar-msg', 'cmd', 'hide'])
         pass
 
-    def set_dpms(self, on):
-        """ set / unset dpms
-        """
-        if on:
-            run(['xset', 's', 'on'])
-            run(['xset', '+dpms'])
-        else:
-            run(['xset', 's', 'off'])
-            run(['xset', '-dpms'])
-
     def on_fullscreen_mode(self, i3, event):
         """ Disable fullscreen if fullscreened window is here.
 
@@ -62,7 +52,6 @@ class fullscreen_handler(Singleton):
             return
         tree = self.i3.get_tree()
         fullscreens = tree.find_fullscreen()
-        self.set_dpms(not fullscreens)
         if fullscreens:
             for win in fullscreens:
                 if win.window_class == 'mpv':
@@ -82,7 +71,6 @@ class fullscreen_handler(Singleton):
         tree = self.i3.get_tree()
         fullscreens = tree.find_fullscreen()
         if not fullscreens:
-            self.set_dpms(True)
             self.set_polybar(True)
 
 
