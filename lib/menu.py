@@ -159,7 +159,7 @@ class menu(modi3cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def menu_action_simple(self, cmd, prompt):
+    def win_act_simple(self, cmd, prompt):
         """ Run simple and fast selection dialog for window with given action.
             Args:
                 cmd (string): action for window to run.
@@ -187,7 +187,7 @@ class menu(modi3cfg):
                 if w.name == win_name:
                     w.command(cmd)
 
-    def menu_action_rich(self, cmd, prompt):
+    def win_act_pretty(self, cmd, prompt):
         """ Run beautiful selection dialog for window with given action
             Args:
                 cmd (string): action for window to run.
@@ -245,12 +245,12 @@ class menu(modi3cfg):
     def goto_win(self):
         """ Run rofi goto selection dialog
         """
-        self.menu_action_simple('focus', self.wrap_str('go'))
+        self.win_act_simple('focus', self.wrap_str('go'))
 
     def attach_win(self):
         """ Attach window to the current workspace.
         """
-        self.menu_action_simple(
+        self.win_act_simple(
             'move window to workspace current', self.wrap_str('attach')
         )
 
