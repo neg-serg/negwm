@@ -83,17 +83,10 @@ class menu(modi3cfg):
         self.lhs_br = self.cfg.get('left_bracket', '[')
         self.rhs_br = self.cfg.get('right_bracket', ']')
 
-    def rofi_args(
-            self,
-            prompt=None,
-            cnum=16,
-            lnum=2,
-            width=None,
-            markup_rows='-nomarkup-rows'):
-        if prompt is None:
-            prompt = self.prompt
-        if width is None:
-            width = self.screen_width - 20
+    def rofi_args(self, prompt=None, cnum=16, lnum=2, width=None, markup_rows=None):
+        prompt = prompt or self.prompt
+        width = width or self.screen_width - 20
+        markup_rows = markup_rows or '-no-markup-rows'
 
         """ Returns arguments list for rofi runner.
 
@@ -107,9 +100,9 @@ class menu(modi3cfg):
             'rofi', '-show', '-dmenu',
             '-columns', str(cnum), '-lines', str(lnum),
             '-disable-history',
+            markup_rows,
             '-p', prompt,
             '-i',  # non case-sensitive
-            f'{markup_rows}'
             '-matching', f'{self.matching}',
             '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
             '-theme-str', f'#window {{ width:{width}; y-offset: -32; \
@@ -170,18 +163,23 @@ class menu(modi3cfg):
         """ Run simple and fast selection dialog for window with given action.
             Args:
                 cmd (string): action for window to run.
+                prompt (string): custom prompt for rofi.
         """
         leaves = self.i3.get_tree().leaves()
         winlist = [win.name for win in leaves]
-        win_name = subprocess.run(
-            self.rofi_args(
-                cnum=len(winlist),
-                width=int(self.screen_width * 0.75),
-                prompt=f"{prompt} {self.prompt}"
-            ),
-            stdout=subprocess.PIPE,
-            input=bytes('\n'.join(winlist), 'UTF-8')
-        ).stdout
+        winlist_len = len(winlist)
+        if winlist and winlist_len > 1:
+            win_name = subprocess.run(
+                self.rofi_args(
+                    cnum=winlist_len,
+                    width=int(self.screen_width * 0.75),
+                    prompt=f"{prompt} {self.prompt}"
+                ),
+                stdout=subprocess.PIPE,
+                input=bytes('\n'.join(winlist), 'UTF-8')
+            ).stdout
+        elif winlist_len:
+            win_name = winlist[0]
 
         if win_name is not None and win_name:
             win_name = win_name.decode('UTF-8').strip()
@@ -189,24 +187,17 @@ class menu(modi3cfg):
                 if w.name == win_name:
                     w.command(cmd)
 
-    def colorize(self, s, color, weight='normal'):
-        return f"<span weight='{weight}' color='{color}'>{s}</span>"
-
-    def wrap_str(self, s):
-        return self.lhs_br + s + self.rhs_br
-
     def menu_action_rich(self, cmd, prompt):
         """ Run beautiful selection dialog for window with given action
             Args:
                 cmd (string): action for window to run.
+                prompt (string): custom prompt for rofi.
         """
         tree = self.i3.get_tree()
         leaves = tree.leaves()
         focused = tree.find_focused()
 
-        winlist = []
-        scratchlist = []
-        wlist = []
+        winlist, scratchlist, wlist = [], [], []
         for win in leaves:
             if win.id != focused.id:
                 ws_name = win.parent.parent.name
@@ -224,25 +215,32 @@ class menu(modi3cfg):
                     )
         winlist = wlist + scratchlist
 
-        if len(winlist) <= 1:
-            return
-
-        win_name = subprocess.run(
-            self.rofi_args(
-                lnum=len(winlist),
-                width=int(self.screen_width * 0.6),
-                prompt=f"{prompt} {self.prompt}",
-                markup_rows='-markup-rows'
-            ),
-            stdout=subprocess.PIPE,
-            input=bytes('\n'.join(winlist), 'UTF-8')
-        ).stdout
+        winlist_len = len(winlist)
+        if winlist and winlist_len > 1:
+            win_name = subprocess.run(
+                self.rofi_args(
+                    lnum=winlist_len,
+                    width=int(self.screen_width * 0.75),
+                    prompt=f"{prompt} {self.prompt}",
+                    markup_rows='-markup-rows'
+                ),
+                stdout=subprocess.PIPE,
+                input=bytes('\n'.join(winlist), 'UTF-8')
+            ).stdout
+        elif winlist_len:
+            win_name = winlist[0]
 
         if win_name is not None and win_name:
             win_name = win_name.decode('UTF-8').strip()
             for w in leaves:
                 if w.name in win_name:
                     w.command(cmd)
+
+    def colorize(self, s, color, weight='normal'):
+        return f"<span weight='{weight}' color='{color}'>{s}</span>"
+
+    def wrap_str(self, s):
+        return self.lhs_br + s + self.rhs_br
 
     def goto_win(self):
         """ Run rofi goto selection dialog
