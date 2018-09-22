@@ -28,6 +28,7 @@ import cgitb
 import asyncio
 import aionotify
 import i3ipc
+import shutil
 from threading import Thread
 from lib.locker import get_lock
 from lib.main import daemon_manager, notify_msg, i3path
@@ -68,6 +69,11 @@ class negi3mods(modconfig):
 
         # i3 path used to get "send" binary path
         self.i3_cfg_path = self.i3_path + '/cfg/'
+
+        # test config to check ppi3 conversion result
+        self.test_cfg_path = os.path.realpath(
+            os.path.expandvars('$HOME/tmp/config_test')
+        )
 
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
@@ -154,27 +160,34 @@ class negi3mods(modconfig):
         while True:
             event = await watcher.get_event()
             if event.name == '_config':
-                with open(self.i3_path + "/config", "w") as fp:
+                with open(self.test_cfg_path, "w") as fp:
                     subprocess.run(
                         ['ppi3', self.i3_path + '_config'],
                         stdout=fp
                     )
+                    config_is_valid = self.validate_i3_config()
+                if config_is_valid:
+                    print("i3 config is valid!")
+                    shutil.move(self.test_cfg_path, self.i3_path + 'config')
         watcher.close()
 
-    def check_i3_config(self):
-        """ Checks i3 config.
-
-            TODO: add this check to the i3 watcher again.
+    def validate_i3_config(self):
+        """ Checks that i3 config is ok.
         """
         check_config = subprocess.run(
-            ['i3', '-C'],
+            ['i3', '-c', self.test_cfg_path, '-C'],
             stdout=subprocess.PIPE
         ).stdout.decode('utf-8')
         if len(check_config):
-            subprocess.Popen(
-                ["notify-send", check_config.encode('utf-8')]
-            )
-        check_config = ""
+            error_data = check_config.encode('utf-8')
+            print(error_data)
+            subprocess.Popen(["notify-send", error_data])
+
+            # remove invalid config
+            os.remove(self.test_cfg_path)
+
+            return False
+        return True
 
     def run_inotify_watchers(self):
         """ Start all watchers here via ensure_future to run it in background.
