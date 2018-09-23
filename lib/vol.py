@@ -52,8 +52,8 @@ class vol(Singleton, modi3cfg):
         # Cache current window on focus.
         self.i3.on("window::focus", self.set_curr_win)
 
-        # Default mpd status is "none"
-        self.mpd_status = "none"
+        # Default mpd status is False
+        self.mpd_playing = False
 
         # MPD idle command listens to the player events by default.
         self.idle_cmd_str = "idle player\n"
@@ -92,9 +92,9 @@ class vol(Singleton, modi3cfg):
             writer.write(self.status_cmd_str.encode(encoding='utf-8'))
             stat_data = await reader.read(self.mpd_buf_size)
             if 'state: play' in stat_data.decode('UTF-8').split('\n'):
-                self.mpd_status = "play"
+                self.mpd_playing = True
             else:
-                self.mpd_status = "none"
+                self.mpd_playing = False
             while True:
                 writer.write(self.idle_cmd_str.encode(encoding='utf-8'))
                 data = await reader.read(self.mpd_buf_size)
@@ -102,11 +102,11 @@ class vol(Singleton, modi3cfg):
                     writer.write(self.status_cmd_str.encode(encoding='utf-8'))
                     stat_data = await reader.read(self.mpd_buf_size)
                     if 'state: play' in stat_data.decode('UTF-8').split('\n'):
-                        self.mpd_status = "play"
+                        self.mpd_playing = True
                     else:
-                        self.mpd_status = "none"
+                        self.mpd_playing = False
                 else:
-                    self.mpd_status = "none"
+                    self.mpd_playing = False
                 if writer.transport._conn_lost:
                     # TODO: add function to wait for MPD port here.
                     break
@@ -145,7 +145,7 @@ class vol(Singleton, modi3cfg):
             val_str = "+" + str(val)
             mpv_key = '0'
             mpv_cmd = '--increase'
-        if self.mpd_status == "play":
+        if self.mpd_playing:
             self.mpd_socket = socket.socket(
                 socket.AF_INET6, socket.SOCK_STREAM
             )
