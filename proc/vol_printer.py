@@ -111,7 +111,7 @@ class vol_printer(modconfig):
     async def update_mpd_volume(self, loop):
         """ Update MPD volume here and print it.
         """
-        prev_volume = 'wtf'
+        prev_volume = ''
         reader, writer = await asyncio.open_connection(
             host=self.addr, port=self.port, loop=loop
         )
@@ -123,23 +123,24 @@ class vol_printer(modconfig):
                     writer.write(self.status_cmd_str.encode(encoding='utf-8'))
                     stat_data = await reader.read(self.buf_size)
                     parsed = stat_data.decode('utf-8').split('\n')
-                    if 'state: play' in parsed:
-                        if 'volume' in parsed[0]:
-                            self.volume = parsed[0][8:]
-                            if int(self.volume) >= 0:
-                                if prev_volume != self.volume:
-                                    self.volume = self.print_volume()
-                                    sys.stdout.write(f"{self.volume}\n")
-                                prev_volume = parsed[0][8:]
-                            else:
-                                self.empty_output()
+                    if 'state: play' in parsed and 'volume' in parsed[0]:
+                        self.volume = parsed[0][8:]
+                        if int(self.volume) >= 0:
+                            if prev_volume != self.volume:
+                                self.volume = self.print_volume()
+                                sys.stdout.write(f"{self.volume}\n")
+                            prev_volume = parsed[0][8:]
+                        else:
+                            self.empty_output()
                     else:
-                        prev_volume = 'wtf'
+                        prev_volume = ''
                         writer.close()
                         self.empty_output()
                         return
                 else:
+                    prev_volume = ''
                     writer.close()
+                    self.empty_output()
                     return
 
 
