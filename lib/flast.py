@@ -100,14 +100,17 @@ class flast():
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
-        focused = i3.get_tree().find_focused()
+        focused_ws_name = i3.get_tree().find_focused().workspace().name
         wswins = filter(
             lambda win: win.window,
-            self.i3.get_tree().find_focused().workspace().descendents()
+            self.i3.get_tree()
+                .find_focused()
+                .workspace()
+                .descendents()
         )
         if not len(find_visible_windows(wswins)):
-            for ws in ["pic", "media"]:
-                if ws in focused.workspace().name:
+            for ws_substr in {"pic", "media"}:
+                if ws_substr in focused_ws_name:
                     self.alt_tab()
                     return
 
