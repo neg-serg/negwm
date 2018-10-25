@@ -63,8 +63,8 @@ class circle(modi3cfg, Matcher):
         # map of tag to the tagged windows.
         self.tagged = {}
 
-        # counters for the tag [tag]
-        self.counters = {}
+        # current_position for the tag [tag]
+        self.current_position = {}
 
         # list of windows which fullscreen state need to be restored.
         self.restore_fullscreen = []
@@ -87,7 +87,7 @@ class circle(modi3cfg, Matcher):
 
         for tag in self.cfg:
             self.tagged[tag] = []
-            self.counters[tag] = 0
+            self.current_position[tag] = 0
 
         # tag all windows after start
         self.tag_windows()
@@ -126,7 +126,7 @@ class circle(modi3cfg, Matcher):
             tag (str): denotes target [tag]
         """
         if len(self.tagged[tag]) > 1:
-            self.counters[tag] += 1
+            self.current_position[tag] += 1
             self.go_next(tag)
 
     def prefullscreen(self, tag):
@@ -173,7 +173,7 @@ class circle(modi3cfg, Matcher):
         self.twin(tag, idx, subtagged).command('focus')
 
         if inc_counter:
-            self.counters[tag] += 1
+            self.current_position[tag] += 1
 
         if fullscreen_handler:
             self.postfullscreen(tag, idx)
@@ -209,7 +209,7 @@ class circle(modi3cfg, Matcher):
                 idx = 0
                 self.focus_next(tag, idx, fullscreen_handler=False)
             else:
-                idx = self.counters[tag] % len(self.tagged[tag])
+                idx = self.current_position[tag] % len(self.tagged[tag])
                 if ("priority" in self.conf(tag)) \
                         and self.current_win.window_class \
                         not in set(self.conf(tag, "class")):
@@ -224,12 +224,10 @@ class circle(modi3cfg, Matcher):
                         if item.window_class == self.conf(tag, "priority"):
                             fullscreened = self.i3.get_tree().find_fullscreen()
                             for win in fullscreened:
-                                if win.window_class in self.conf(tag, "class"):
-                                    if win.window_class != self.conf(
-                                            tag, "priority"
-                                    ):
-                                        self.interactive = False
-                                        win.command('fullscreen disable')
+                                if win.window_class in self.conf(tag, "class") and \
+                                        win.window_class != self.conf(tag, "priority"):
+                                    self.interactive = False
+                                    win.command('fullscreen disable')
                             self.focus_next(tag, idx, inc_counter=False)
                 elif self.current_win.id == self.twin(tag, idx).id:
                     self.find_next_not_the_same_win(tag)
