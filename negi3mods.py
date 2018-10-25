@@ -54,7 +54,7 @@ class negi3mods(modconfig):
 
         self.loop = loop
         self.mods = {}
-        for mod in self.cfg.get("module_list", ''):
+        for mod in self.cfg["module_list"]:
             self.mods[intern(mod)] = None
 
         # Start inotify watchers
@@ -119,7 +119,7 @@ class negi3mods(modconfig):
         watcher.watch(
             alias='i3cfg',
             path=self.i3_path,
-            flags=aionotify.Flags.CLOSE_WRITE,
+            flags=aionotify.Flags.CLOSE_WRITE
         )
         return watcher
 
