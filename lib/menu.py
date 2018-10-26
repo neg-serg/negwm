@@ -83,6 +83,8 @@ class menu(modi3cfg):
         self.lhs_br = self.cfg.get('left_bracket', '[')
         self.rhs_br = self.cfg.get('right_bracket', ']')
 
+        self.gap = self.cfg.get('gap', '34')
+
     def rofi_args(self, prompt=None, cnum=16, lnum=2, width=None, markup_rows=None):
         prompt = prompt or self.prompt
         width = width or self.screen_width - 20
@@ -105,7 +107,7 @@ class menu(modi3cfg):
             '-i',  # non case-sensitive
             '-matching', f'{self.matching}',
             '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
-            '-theme-str', f'#window {{ width:{width}; y-offset: -32; \
+            '-theme-str', f'#window {{ width:{width}; y-offset: -{self.gap}; \
             location: {self.location}; \
             anchor: {self.anchor}; }}',
         ]
