@@ -148,7 +148,7 @@ class menu(modi3cfg):
                 args (List): argument list for the selected function.
         """
         {
-            "run": self.cmd_menu,
+            "run": self.i3_cmd_menu,
             "xprop": self.xprop_menu,
             "autoprop": self.autoprop,
             "show_props": self.show_props,
@@ -478,7 +478,7 @@ class menu(modi3cfg):
                         f'[con_id=__focused__] move to workspace {ws}')
             )
 
-    def cmd_menu(self):
+    def i3_cmd_menu(self):
         """ Menu for i3 commands with hackish autocompletion.
         """
         # set default menu args for supported menus
