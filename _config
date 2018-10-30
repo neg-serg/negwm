@@ -101,7 +101,8 @@ set $browsers [class="^(Firefox|Nightly|Conkeror|Iceweasel|Icecat|Navigator|Wate
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(dota2|darkest.bin.x86_64|PillarsOfEternityII|Lutris|Civ6|warframe.x64.exe)$"]
 set $wine_apps [class="^(wine|Crossover)$"]
-set $windows_exe [title="^.*.exe$"]
+set $windows_exe_by_title [title="^.*.exe$"]
+set $windows_exe_by_class [class="^.*.exe$"]
 set $pdf [class="^(Okular|Apvlv|Zathura|Evince|XDvi)$"]
 set $fb2 [class="Cr3" instance="cr3"]
 set $torrent_apps [class="^(Vuze|Ktorrent|stig)$"]
@@ -164,7 +165,8 @@ assign $java_dialogs → $ide
 assign $sclient → $steam
 assign $games → $steam
 assign $wine_apps → $wine
-assign $windows_exe → $wine
+assign $windows_exe_by_title → $wine
+assign $windows_exe_by_class → $wine
 assign [class="discord"] → $wine
 
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
