@@ -70,6 +70,9 @@ class env():
         self.set_wm_class = cfg.get(name, {}).get('set_wm_class', '')
         self.set_instance = cfg.get(name, {}).get('set_instance', '')
 
+        self.x_pad = cfg.get(name, {}).get('x_padding', '2')
+        self.y_pad = cfg.get(name, {}).get('y_padding', '2')
+
         self.create_term_params(cfg, name)
 
     def generate_alacritty_config(self, cfg, name):
@@ -99,6 +102,8 @@ class env():
                 conf["font"]["bold"]["family"] = self.font
                 conf["font"]["italic"]["family"] = self.font
                 conf["font"]["size"] = self.font_size
+                conf["window"]["padding"]['x'] = self.x_pad
+                conf["window"]["padding"]['y'] = self.y_pad
             except yaml.YAMLError as e:
                 print(e)
 
@@ -124,19 +129,12 @@ class env():
             ]
         elif terminal == "alacritty-custom":
             custom_config = self.generate_alacritty_config(cfg, name)
-            Process(target=self.fileprocess, args=(custom_config,), daemon=True).start()
+            Process(
+                target=self.fileprocess, args=(custom_config,), daemon=True
+            ).start()
             self.term_opts = [
                 "alacritty", "--live-config-reload", "--config-file",
                 expanduser(custom_config)
-            ] + [
-                "-t", self.window_class,
-                "-e", "dash", "-c"
-            ]
-        elif terminal == "alacritty-ncmpcpp":
-            self.term_opts = [
-                "alacritty",
-                "--config-file",
-                expanduser("~/.config/alacritty/ncmpcpp.yml")
             ] + [
                 "-t", self.window_class,
                 "-e", "dash", "-c"
