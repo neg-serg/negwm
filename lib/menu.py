@@ -181,7 +181,7 @@ class menu(modi3cfg):
                 input=bytes('\n'.join(winlist), 'UTF-8')
             ).stdout
         elif winlist_len:
-            win_name = winlist[0]
+            win_name = winlist[0].encode()
 
         if win_name is not None and win_name:
             win_name = win_name.decode('UTF-8').strip()
