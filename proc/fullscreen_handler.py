@@ -28,14 +28,14 @@ class fullscreen_handler(Singleton, modconfig):
         cfg = self.cfg
 
         # default panel classes
-        self.panel_classes = cfg.get("panel_classes", ["polybar"])
+        self.panel_classes = cfg.get("panel_classes", [])
 
         # fullscreened workspaces
-        self.ws_fullscreen = cfg.get("ws_fullscreen", ["media"])
+        self.ws_fullscreen = cfg.get("ws_fullscreen", [])
 
         # for which windows we shoudn't show panel
         self.classes_to_hide_panel = cfg.get(
-            "classes_to_hide_panel", ["mpv"]
+            "classes_to_hide_panel", []
         )
 
         self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
