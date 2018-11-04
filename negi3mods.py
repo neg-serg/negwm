@@ -24,7 +24,6 @@ from sys import intern
 import subprocess
 import importlib
 import atexit
-import cgitb
 import asyncio
 import aionotify
 import i3ipc
@@ -245,7 +244,6 @@ class negi3mods(modconfig):
 
 if __name__ == '__main__':
     get_lock('negi3mods.py')
-    cgitb.enable(format='text')
 
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(lambda: os._exit(0))
