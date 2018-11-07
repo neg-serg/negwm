@@ -240,7 +240,7 @@ bindsym $m4+s $ns hide_current
 # ░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀
 bindsym $m4+$c+c $circle next sxiv
 bindsym $m4+$S+c $circle subtag sxiv wallpaper
-bindsym $m4+{x,1,2} $circle next {term,nwim,emacs}
+bindsym $m4+{x,1} $circle next {term,nwim}
 bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
 bindsym $m4+F3 $circle next emacs
 bindsym $m4+$c+{v,e} $circle next {vm,steam}
