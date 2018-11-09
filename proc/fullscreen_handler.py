@@ -43,6 +43,17 @@ class fullscreen_handler(Singleton, modconfig):
         self.i3.on('workspace::focus', self.on_focus)
 
     def on_focus(self, i3, event):
+        i3_tree = i3.get_tree()
+        focused_win = i3_tree.find_focused()
+        fullscreens = i3_tree.find_fullscreen()
+        for w in fullscreens:
+            if w.id == focused_win.id:
+                for ws_name in self.ws_fullscreen:
+                    if ws_name in event.current.name:
+                        self.set_panel(False)
+                        self.polybar_need_restore = True
+                        return
+
         for ws_name in self.ws_fullscreen:
             if ws_name in event.old.name and ws_name not in event.current.name:
                 if self.polybar_need_restore:
@@ -65,13 +76,19 @@ class fullscreen_handler(Singleton, modconfig):
         if event.container.window_class in self.panel_classes:
             return
 
-        fullscreens = self.i3.get_tree().find_fullscreen()
+        i3_tree = self.i3.get_tree()
+        fullscreens = i3_tree.find_fullscreen()
+
         if fullscreens:
+            focused_ws = i3_tree.find_focused().workspace().name
             for win in fullscreens:
                 for tgt_class in self.classes_to_hide_panel:
                     if win.window_class == tgt_class:
-                        self.set_panel(False)
-                        self.polybar_need_restore = True
+                        for ws in self.ws_fullscreen:
+                            if ws in focused_ws:
+                                self.polybar_need_restore = True
+                                self.set_panel(False)
+                                break
                         return
 
     def on_window_close(self, i3, event):
