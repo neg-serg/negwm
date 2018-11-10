@@ -207,7 +207,7 @@ mode " " {
 }
 #----------------------------------------------
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym $m4+$S+b exec --no-startup-id "zsh -c 'mpv ~/vid/new/*(.)'"
+bindsym $m4+$S+b exec "zsh -c 'mpv ~/vid/new/*(.)'"
 bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
 bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw"
 bindsym $m4+$S+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
