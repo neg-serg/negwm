@@ -8,9 +8,10 @@ window may be closed, and then you cannot focus it.
 
 from main import find_visible_windows
 from singleton import Singleton
+from modi3cfg import modi3cfg
 
 
-class flast():
+class flast(modi3cfg):
     """ Advanced alt-tab class.
 
     Metaclass:
@@ -27,6 +28,9 @@ class flast():
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
+        # Initialize modi3cfg.
+        modi3cfg.__init__(self, i3)
+
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
 
@@ -35,6 +39,9 @@ class flast():
 
         # depth of history list
         self.max_win_history = 64
+
+        # workspaces with auto alt-tab when close
+        self.autoback = self.cfg.get('autoback', {})
 
         self.i3.on('window::focus', self.on_window_focus)
         self.i3.on('window::close', self.go_back_if_nothing)
@@ -109,8 +116,8 @@ class flast():
                 .descendents()
         )
         if not len(find_visible_windows(wswins)):
-            for ws_substr in {"pic", "media"}:
-                if ws_substr in focused_ws_name:
+            for ws_substr in self.autoback:
+                if focused_ws_name.endswith(ws_substr):
                     self.alt_tab()
                     return
 
