@@ -132,7 +132,7 @@ assign [class="spotify"] → $spotify
 assign [class="Sxiv"] → $sxiv
 assign $torrent_apps → $torrent
 assign [instance="^(gparted|recoll|gnome-disks)$"] → $admin
-assign [instance="^(xfreerdp|remmina)$"] → $remote
+assign [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] → $remote
 
 # ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
 # ░█▀▄░█▀▀░█▀█░█░█░█▀▀░█▀▄░▀▀█
@@ -211,7 +211,7 @@ bindsym $m4+$S+b exec ~/bin/pl rofi 1st_level ~/vid/new
 bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
 bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw-list"
 bindsym $m4+$S+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
-bindsym $m4+$S+5 $circle next remote
+bindsym $m4+$C+5 $circle next remote
 bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
 bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+4 exec --no-startup-id flameshot gui
