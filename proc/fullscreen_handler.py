@@ -50,19 +50,18 @@ class fullscreen_handler(Singleton, modconfig):
             if w.id == focused_win.id:
                 for ws_name in self.ws_fullscreen:
                     if ws_name in event.current.name:
-                        self.set_panel(False)
+                        self.set_panel('hide')
                         self.polybar_need_restore = True
                         return
 
         for ws_name in self.ws_fullscreen:
             if ws_name in event.old.name and ws_name not in event.current.name:
                 if self.polybar_need_restore:
-                    self.set_panel(True)
+                    self.set_panel('show')
                     self.polybar_need_restore = False
                     return
 
-    def set_panel(self, on):
-        action = 'show' if on else 'hide'
+    def set_panel(self, action):
         run(['polybar-msg', 'cmd', action])
 
     def on_fullscreen_mode(self, i3, event):
@@ -87,7 +86,7 @@ class fullscreen_handler(Singleton, modconfig):
                         for ws in self.ws_fullscreen:
                             if ws in focused_ws:
                                 self.polybar_need_restore = True
-                                self.set_panel(False)
+                                self.set_panel('hide')
                                 break
                         return
 
@@ -103,7 +102,7 @@ class fullscreen_handler(Singleton, modconfig):
             return
 
         if not self.i3.get_tree().find_fullscreen():
-            self.set_panel(True)
+            self.set_panel('show')
 
 
 if __name__ == '__main__':
