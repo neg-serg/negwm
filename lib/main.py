@@ -23,7 +23,6 @@ import traceback
 import re
 import asyncio
 import aiofiles
-from gevent.queue import Queue
 from singleton import Singleton
 
 
@@ -227,11 +226,6 @@ class daemon_manager():
 
         # mods list
         self.mods = mods
-
-        # mainloop Queue dict, addressed by mod name.
-        self.Q = {}
-        for m in self.mods:
-            self.Q[sys.intern(m)] = Queue()
 
     async def fifo_listner(self, name):
         """ Async FIFO(named-pipe) listner
