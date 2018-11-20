@@ -327,11 +327,13 @@ mode "" {
     bindsym c mode "pass "
     bindsym e mode "default", [urgent=latest] focus
     bindsym a mode "default", $ns dialog
+
     bindsym 5 mode "default", $circle subtag web tor
     bindsym 6 mode "default", $circle subtag web tor_btdig
     bindsym 7 mode "default", $circle subtag web tor_rutracker
     bindsym y mode "default", $circle subtag web yandex
     bindsym f mode "default", $circle subtag web firefox
+
 	bindsym $S+d floating toggle; $exit
 	bindsym $S+l exec ~/bin/scripts/lock/lock.sh && sleep 0.5s; $exit
 	bindsym {$S+,}v exec ~/bin/qemu/vm_menu; $exit
