@@ -38,6 +38,8 @@ class fullscreen_handler(Singleton, modconfig):
             "classes_to_hide_panel", []
         )
 
+        self.set_panel = self.set_panel_xdo
+
         self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
         self.i3.on('window::close', self.on_window_close)
         self.i3.on('workspace::focus', self.on_focus)
@@ -61,7 +63,10 @@ class fullscreen_handler(Singleton, modconfig):
                     self.polybar_need_restore = False
                     return
 
-    def set_panel(self, action):
+    def set_panel_xdo(self, action):
+        run(['xdo', action, '-N', 'Polybar'])
+
+    def set_panel_polybar(self, action):
         run(['polybar-msg', 'cmd', action])
 
     def on_fullscreen_mode(self, i3, event):
