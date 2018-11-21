@@ -114,5 +114,5 @@ if __name__ == '__main__':
     get_lock('fullscreen_handler.py')
     i3 = i3ipc.Connection()
     proc = fullscreen_handler(i3)
-    proc.i3.main()
+    proc.i3.main(timeout=1)
 
