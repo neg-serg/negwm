@@ -89,8 +89,8 @@ set $torrent " κ:torrent"
 set $vm "λ:vm"
 set $wine "μ:wine"
 set $spotify " ν:spotify"
-set $sxiv " ξ: pic"
-set $remote "ο: remote"
+set $sxiv " ξ:pic"
+set $remote "ο:remote"
 
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
