@@ -45,7 +45,7 @@ client.background              #000000
 # ░█▀▀░█▀█░█▀█░▀█▀
 # ░█▀▀░█░█░█░█░░█░
 # ░▀░░░▀▀▀░▀░▀░░▀░
-set $myfont Iosevka Term Heavy 7
+set $myfont Iosevka Term Heavy 8
 font pango: $myfont
 
 # ░█▄█░█▀█░█░█░█▀▀░█▀▀░░░█░█▀▀░█▀█░█▀▀░█░█░█▀▀
