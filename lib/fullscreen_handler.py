@@ -5,21 +5,19 @@ I am simply use xset here. There is better solution possible,
 for example wayland-friendly.
 """
 
-import i3ipc
-from subprocess import run
-import os
-import sys
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
+
+import subprocess
 from singleton import Singleton
-from locker import get_lock
 from basic_config import modconfig
+from typing import List
 
 
 class fullscreen_handler(Singleton, modconfig):
+    __metaclass__ = Singleton
+
     def __init__(self, i3, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3ipc.Connection()
+        self.i3 = i3
         self.polybar_need_restore = False
 
         # Initialize modcfg.
@@ -40,9 +38,9 @@ class fullscreen_handler(Singleton, modconfig):
 
         self.set_panel = self.set_panel_xdo
 
-        self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
-        self.i3.on('window::close', self.on_window_close)
-        self.i3.on('workspace::focus', self.on_focus)
+        # self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
+        # self.i3.on('window::close', self.on_window_close)
+        # self.i3.on('workspace::focus', self.on_focus)
 
     def on_focus(self, i3, event):
         i3_tree = i3.get_tree()
@@ -63,11 +61,26 @@ class fullscreen_handler(Singleton, modconfig):
                     self.polybar_need_restore = False
                     return
 
+    def switch(self, args: List) -> None:
+        """ Defines pipe-based IPC for nsd module. With appropriate function
+            bindings.
+
+            This function defines bindings to the named_scratchpad methods that
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate FIFO.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
+        {
+
+        }[args[0]](*args[1:])
+
     def set_panel_xdo(self, action):
-        run(['xdo', action, '-N', 'Polybar'])
+        subprocess.Popen(['xdo', action, '-N', 'Polybar'])
 
     def set_panel_polybar(self, action):
-        run(['polybar-msg', 'cmd', action])
+        subprocess.run(['polybar-msg', 'cmd', action])
 
     def on_fullscreen_mode(self, i3, event):
         """ Disable fullscreen if fullscreened window is here.
@@ -108,11 +121,4 @@ class fullscreen_handler(Singleton, modconfig):
 
         if not self.i3.get_tree().find_fullscreen():
             self.set_panel('show')
-
-
-if __name__ == '__main__':
-    get_lock('fullscreen_handler.py')
-    i3 = i3ipc.Connection()
-    proc = fullscreen_handler(i3)
-    proc.i3.main(timeout=1)
 
