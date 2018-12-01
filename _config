@@ -328,9 +328,8 @@ mode "" {
     bindsym e mode "default", [urgent=latest] focus
     bindsym a mode "default", $ns dialog
 
-    bindsym 5 mode "default", $circle subtag web tor
+    bindsym 5 mode "default", $circle subtag web tor_rutracker
     bindsym 6 mode "default", $circle subtag web tor_btdig
-    bindsym 7 mode "default", $circle subtag web tor_rutracker
     bindsym y mode "default", $circle subtag web yandex
     bindsym f mode "default", $circle subtag web firefox
 
