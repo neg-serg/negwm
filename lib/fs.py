@@ -1,11 +1,10 @@
-#!/usr/bin/pypy3
 """ Module to set / unset dpms while fullscreen is toggled on.
 
 I am simply use xset here. There is better solution possible,
 for example wayland-friendly.
 """
 
-import subprocess
+from subprocess import Popen
 from singleton import Singleton
 
 
@@ -17,21 +16,14 @@ class fs(Singleton):
         self.panel_should_be_restored = False
 
         # default panel classes
-        self.panel_classes = cfg.panel_classes
-
+        self.panel_classes = cfg["panel_classes"]
         # fullscreened workspaces
-        self.ws_fullscreen = cfg.ws_fullscreen
-
+        self.ws_fullscreen = cfg["ws_fullscreen"]
         # for which windows we shoudn't show panel
-        self.classes_to_hide_panel = cfg.classes_to_hide_panel
+        self.classes_to_hide_panel = cfg["classes_to_hide_panel"]
 
-        self.set_panel_xdo = lambda action: subprocess.Popen(
-            ['xdo', action, '-N', 'Polybar']
-        )
-
-        self.set_panel_polybar = lambda action: subprocess.Popen(
-            ['polybar-msg', 'cmd', action]
-        )
+        self.set_panel_xdo = lambda act: Popen(['xdo', act, '-N', 'Polybar'])
+        self.set_panel_polybar = lambda act: Popen(['polybar-msg', 'cmd', act])
 
         self.panel_action = self.set_panel_xdo
 
