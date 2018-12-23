@@ -9,7 +9,7 @@ import subprocess
 from singleton import Singleton
 
 
-class fullscreen_handler(Singleton):
+class fs(Singleton):
     __metaclass__ = Singleton
 
     def __init__(self, i3, cfg):
