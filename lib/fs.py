@@ -12,7 +12,6 @@ class fs(Singleton):
     __metaclass__ = Singleton
 
     def __init__(self, i3, cfg):
-
         self.panel_should_be_restored = False
 
         # default panel classes
@@ -22,10 +21,10 @@ class fs(Singleton):
         # for which windows we shoudn't show panel
         self.classes_to_hide_panel = cfg["classes_to_hide_panel"]
 
-        self.set_panel_xdo = lambda act: Popen(['xdo', act, '-N', 'Polybar'])
-        self.set_panel_polybar = lambda act: Popen(['polybar-msg', 'cmd', act])
+        self.panel_use_xdo = lambda act: Popen(['xdo', act, '-N', 'Polybar'])
+        self.panel_use_polybar = lambda act: Popen(['polybar-msg', 'cmd', act])
 
-        self.panel_action = self.set_panel_xdo
+        self.panel_action = self.panel_action_xdo
 
     def set_panel(self, action, restore):
         self.panel_action(action)
@@ -41,13 +40,13 @@ class fs(Singleton):
             if w.id == focused_win.id:
                 for ws_name in self.ws_fullscreen:
                     if ws_name in event.current.name:
-                        self.set_panel('hide', restore=True)
+                        self.panel_action('hide', restore=True)
                         return
 
         for ws_name in self.ws_fullscreen:
             if ws_name in event.old.name and ws_name not in event.current.name:
                 if self.panel_should_be_restored:
-                    self.set_panel('show', restore=False)
+                    self.panel_action('show', restore=False)
                     return
 
     # call it on window close
@@ -63,7 +62,7 @@ class fs(Singleton):
             return
 
         if not i3.get_tree().find_fullscreen():
-            self.set_panel('show')
+            self.panel_action('show')
 
     # call it on fullscreen mode
     def fullscreen_toggle_action(self, i3, event):
@@ -87,7 +86,7 @@ class fs(Singleton):
                     if win.window_class == tgt_class:
                         for ws in self.ws_fullscreen:
                             if ws in focused_ws:
-                                self.set_panel('hide', restore=True)
+                                self.panel_action('hide', restore=True)
                                 break
                         return
 
