@@ -60,7 +60,7 @@ class ns(modi3cfg, Matcher):
 
     def initialize(self, i3):
         # winlist is used to reduce calling i3.get_tree() too many times.
-        self.winlist = self.i3.get_tree()
+        self.winlist = i3.get_tree()
 
         # fullscreen_list is used to perform fullscreen hacks
         self.fullscreen_list = []
@@ -72,9 +72,6 @@ class ns(modi3cfg, Matcher):
         # marked used to get the list of current tagged windows
         # with the given tag
         self.marked = {l: [] for l in self.cfg}
-
-        # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3
 
         # transients used to exclude dialogs and another another transient
         # windows from the usual named-scratchpad-geometry handling method
@@ -89,6 +86,9 @@ class ns(modi3cfg, Matcher):
         # focus_win_flag is a helper to perform attach/detach window to the
         # named scratchpad with add_prop/del_prop routines
         self.focus_win_flag = [False, ""]
+
+        # i3ipc connection, bypassed by negi3mods runner
+        self.i3 = i3
 
     def make_mark_str(self, tag: str) -> str:
         """ Generate unique mark for the given [tag]
