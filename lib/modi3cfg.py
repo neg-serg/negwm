@@ -10,7 +10,6 @@ import os
 import sys
 import toml
 import traceback
-from functools import lru_cache
 from main import i3path
 
 
@@ -44,7 +43,6 @@ class modi3cfg(object):
         if loop is not None:
             self.loop = loop
 
-    @lru_cache(maxsize=64)
     def conf(self, *conf_path):
         """ Helper to extract config for current tag.
 
