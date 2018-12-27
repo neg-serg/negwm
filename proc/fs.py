@@ -6,7 +6,7 @@ for example wayland-friendly.
 """
 
 import i3ipc
-from subprocess import run, Popen
+from subprocess import run
 import os
 import sys
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
@@ -16,7 +16,7 @@ from locker import get_lock
 from basic_config import modconfig
 
 
-class fullscreen_handler(Singleton, modconfig):
+class fs(Singleton, modconfig):
     def __init__(self, i3, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3ipc.Connection()
@@ -70,7 +70,8 @@ class fullscreen_handler(Singleton, modconfig):
             self.panel_should_be_restored = restore
 
     def on_fullscreen_mode(self, i3, event):
-        """ Disable fullscreen if fullscreened window is here.
+        """ Disable panel if it was in fullscreen mode and then goes to
+        windowed mode.
 
             Args:
                 i3: i3ipc connection.
@@ -95,7 +96,7 @@ class fullscreen_handler(Singleton, modconfig):
                         return
 
     def on_window_close(self, i3, event):
-        """ Check the current fullscreen window, if no fullscreen enable dpms.
+        """ If there are no fullscreen windows then show panel closing window.
 
             Args:
                 i3: i3ipc connection.
@@ -106,12 +107,12 @@ class fullscreen_handler(Singleton, modconfig):
             return
 
         if not i3.get_tree().find_fullscreen():
-            self.panel_action('hide', restore=True)
+            self.panel_action('show', restore=True)
 
 
 if __name__ == '__main__':
-    get_lock('fullscreen_handler.py')
+    get_lock('fs.py')
     i3 = i3ipc.Connection()
-    proc = fullscreen_handler(i3)
+    proc = fs(i3)
     proc.i3.main()
 
