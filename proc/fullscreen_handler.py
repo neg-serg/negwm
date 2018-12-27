@@ -6,7 +6,7 @@ for example wayland-friendly.
 """
 
 import i3ipc
-from subprocess import run
+from subprocess import run, Popen
 import os
 import sys
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
@@ -20,7 +20,7 @@ class fullscreen_handler(Singleton, modconfig):
     def __init__(self, i3, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3ipc.Connection()
-        self.polybar_need_restore = False
+        self.panel_should_be_restored = False
 
         # Initialize modcfg.
         super().__init__(loop)
@@ -38,6 +38,11 @@ class fullscreen_handler(Singleton, modconfig):
             "classes_to_hide_panel", []
         )
 
+        self.panel_use_xdo = lambda act: run(['xdo', act, '-N', 'Polybar'])
+        self.panel_use_polybar = lambda act: run(['polybar-msg', 'cmd', act])
+
+        self.panel_use = self.panel_use_xdo
+
         self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
         self.i3.on('window::close', self.on_window_close)
         self.i3.on('workspace::focus', self.on_focus)
@@ -50,20 +55,19 @@ class fullscreen_handler(Singleton, modconfig):
             if w.id == focused_win.id:
                 for ws_name in self.ws_fullscreen:
                     if ws_name in event.current.name:
-                        self.set_panel(False)
-                        self.polybar_need_restore = True
+                        self.panel_action('hide', restore=True)
                         return
 
         for ws_name in self.ws_fullscreen:
             if ws_name in event.old.name and ws_name not in event.current.name:
-                if self.polybar_need_restore:
-                    self.set_panel(True)
-                    self.polybar_need_restore = False
+                if self.panel_should_be_restored:
+                    self.panel_action('show', restore=False)
                     return
 
-    def set_panel(self, on):
-        action = 'show' if on else 'hide'
-        run(['polybar-msg', 'cmd', action])
+    def panel_action(self, action, restore):
+        self.panel_use(action)
+        if restore is not None:
+            self.panel_should_be_restored = restore
 
     def on_fullscreen_mode(self, i3, event):
         """ Disable fullscreen if fullscreened window is here.
@@ -76,7 +80,7 @@ class fullscreen_handler(Singleton, modconfig):
         if event.container.window_class in self.panel_classes:
             return
 
-        i3_tree = self.i3.get_tree()
+        i3_tree = i3.get_tree()
         fullscreens = i3_tree.find_fullscreen()
 
         if fullscreens:
@@ -86,8 +90,7 @@ class fullscreen_handler(Singleton, modconfig):
                     if win.window_class == tgt_class:
                         for ws in self.ws_fullscreen:
                             if ws in focused_ws:
-                                self.polybar_need_restore = True
-                                self.set_panel(False)
+                                self.panel_action('hide', restore=True)
                                 break
                         return
 
@@ -102,8 +105,8 @@ class fullscreen_handler(Singleton, modconfig):
         if event.container.window_class in self.panel_classes:
             return
 
-        if not self.i3.get_tree().find_fullscreen():
-            self.set_panel(True)
+        if not i3.get_tree().find_fullscreen():
+            self.panel_action('hide', restore=True)
 
 
 if __name__ == '__main__':
