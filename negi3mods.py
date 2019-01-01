@@ -243,7 +243,7 @@ class negi3mods(modconfig):
 
 
 if __name__ == '__main__':
-    get_lock(__file__)
+    get_lock(os.path.basename(__file__))
 
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(lambda: os._exit(0))

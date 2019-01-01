@@ -111,7 +111,7 @@ class fs(Singleton, modconfig):
 
 
 if __name__ == '__main__':
-    get_lock(__file__)
+    get_lock(os.path.basename(__file__))
     locals()[os.path.basename(__file__)[:2]](
         i3ipc.Connection()
     ).i3.main()
