@@ -111,8 +111,8 @@ class fs(Singleton, modconfig):
 
 
 if __name__ == '__main__':
-    get_lock('fs.py')
-    i3 = i3ipc.Connection()
-    proc = fs(i3)
-    proc.i3.main()
+    get_lock(__file__)
+    locals()[os.path.basename(__file__)[:2]](
+        i3ipc.Connection()
+    ).i3.main()
 

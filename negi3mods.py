@@ -243,11 +243,10 @@ class negi3mods(modconfig):
 
 
 if __name__ == '__main__':
-    get_lock('negi3mods.py')
+    get_lock(__file__)
 
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(lambda: os._exit(0))
 
-    daemon = negi3mods()
-    daemon.run()
+    negi3mods().run()
 

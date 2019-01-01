@@ -145,5 +145,5 @@ class vol_printer(modconfig):
 
 
 if __name__ == '__main__':
-    loop = vol_printer()
+    vol_printer()
 

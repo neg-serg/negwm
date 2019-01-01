@@ -188,7 +188,7 @@ class info(modi3cfg):
 
 
 if __name__ == '__main__':
-    get_lock('info.py')
+    get_lock(__file__)
     i3 = i3ipc.Connection()
     proc = info(i3)
     Thread(target=proc.echo_mainloop, daemon=True).start()
