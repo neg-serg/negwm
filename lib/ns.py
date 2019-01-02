@@ -316,17 +316,15 @@ class ns(modi3cfg, Matcher):
                 tag (str): denotes the target tag.
                 subtag (str): denotes the target subtag.
         """
-        if subtag in self.conf(tag, "subtag"):
+        if subtag in self.conf(tag):
             class_list = [win.window_class for win in self.marked[tag]]
-            subtag_classes_set = self.conf(tag, "subtag", subtag, "class")
+            subtag_classes_set = self.conf(tag, subtag, "class")
             subtag_classes_matched = [
                 w for w in class_list if w in subtag_classes_set
             ]
             if not len(subtag_classes_matched):
                 try:
-                    prog_str = self.extract_prog_str(
-                        self.conf(tag, "subtag", subtag)
-                    )
+                    prog_str = self.extract_prog_str(self.conf(tag, subtag))
                     self.i3.command(f'exec {prog_str}')
                     self.focus_win_flag = [True, tag]
                 except Exception:
