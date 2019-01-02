@@ -107,7 +107,7 @@ class circle(modi3cfg, Matcher):
                 prog_str = self.extract_prog_str(self.conf(tag))
             else:
                 prog_str = self.extract_prog_str(
-                    self.conf(tag, "subtag", subtag)
+                    self.conf(tag, subtag)
                 )
             if prog_str:
                 self.i3.command(f'exec {prog_str}')
@@ -244,7 +244,7 @@ class circle(modi3cfg, Matcher):
             tag (str): denotes target [tag]
             subtag (str): denotes the target [subtag].
         """
-        self.subtag_info = self.conf(tag, "subtag", subtag)
+        self.subtag_info = self.conf(tag, subtag)
         self.tag_windows()
 
         if self.subtag_info:
