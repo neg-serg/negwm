@@ -45,21 +45,23 @@ class fs(Singleton, modconfig):
 
         self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
         self.i3.on('window::close', self.on_window_close)
-        self.i3.on('workspace::focus', self.on_focus)
+        self.i3.on('workspace::focus', self.on_workspace_focus)
 
-    def on_focus(self, i3, event):
+    def on_workspace_focus(self, i3, event):
         i3_tree = i3.get_tree()
-        focused_win = i3_tree.find_focused()
         fullscreens = i3_tree.find_fullscreen()
-        for w in fullscreens:
-            if w.id == focused_win.id:
-                for ws_name in self.ws_fullscreen:
-                    if ws_name in event.current.name:
+
+        for tgt_workspace in self.ws_fullscreen:
+            for ws_win in event.current:
+                for fs in fullscreens:
+                    if tgt_workspace in event.current.name \
+                            and fs.id == ws_win.id:
                         self.panel_action('hide', restore=True)
                         return
 
-        for ws_name in self.ws_fullscreen:
-            if ws_name in event.old.name and ws_name not in event.current.name:
+        for tgt_workspace in self.ws_fullscreen:
+            if tgt_workspace in event.old.name and \
+                    tgt_workspace not in event.current.name:
                 if self.panel_should_be_restored:
                     self.panel_action('show', restore=False)
                     return
@@ -81,6 +83,9 @@ class fs(Singleton, modconfig):
         if event.container.window_class in self.panel_classes:
             return
 
+        self.fullscreen_hide(i3)
+
+    def fullscreen_hide(self, i3):
         i3_tree = i3.get_tree()
         fullscreens = i3_tree.find_fullscreen()
 
