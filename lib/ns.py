@@ -15,7 +15,7 @@ window when needed.
 
 import subprocess
 import uuid
-from typing import List, Callable, Optional, Set
+from typing import List, Callable, Set, Optional
 
 import lib.geom as geom
 from singleton import Singleton
@@ -98,7 +98,7 @@ class ns(modi3cfg, Matcher):
         """
         return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
-    def focus(self, tag: str, hide: Optional[bool] = True) -> None:
+    def focus(self, tag: str, hide: bool = True) -> None:
         """ Show given [tag]
 
             Args:
@@ -381,7 +381,7 @@ class ns(modi3cfg, Matcher):
             func(curr_tag)
         return curr_tag_exits
 
-    def next_win(self, hide: Optional[bool] = True) -> None:
+    def next_win(self, hide: bool = True) -> None:
         """ Show the next window for the currently selected tag.
 
             Args:
@@ -467,8 +467,8 @@ class ns(modi3cfg, Matcher):
                     win.rect.height = focused.rect.height
                 break
 
-    def auto_save_geom(self, save: Optional[bool] = True,
-                       with_notification: Optional[bool] = False) -> None:
+    def auto_save_geom(self, save: bool = True,
+                       with_notification: bool = False) -> None:
         """ Set geometry autosave option with optional notification.
 
             Args:
@@ -572,7 +572,7 @@ class ns(modi3cfg, Matcher):
                 return True
         return False
 
-    def mark(self, tag: str, hide: Optional[bool] = True) -> None:
+    def mark(self, tag: str, hide: bool = True) -> None:
         """ Add unique mark to the target [tag] with optional [hide].
 
             Args:
@@ -651,7 +651,7 @@ class ns(modi3cfg, Matcher):
             self.apply_to_current_tag(self.unfocus)
         self.winlist = self.i3.get_tree()
 
-    def mark_all_tags(self, hide: Optional[bool] = True) -> None:
+    def mark_all_tags(self, hide: bool = True) -> None:
         """ Add marks to the all tags.
 
             Args:

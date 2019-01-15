@@ -23,7 +23,7 @@ import traceback
 import re
 import asyncio
 import aiofiles
-from typing import List, Optional, Mapping, Iterator
+from typing import List, Mapping, Iterator
 from singleton import Singleton
 
 
@@ -39,7 +39,7 @@ def i3path() -> str:
     return i3_path
 
 
-def notify_msg(msg: str, prefix: Optional[str] = " "):
+def notify_msg(msg: str, prefix: str = " "):
     """ Send messages via notify-osd based notifications.
 
         Args:

@@ -19,7 +19,7 @@ from singleton import Singleton
 from modi3cfg import modi3cfg
 from main import i3path, get_screen_resolution
 from functools import partial
-from typing import List, Optional, Callable
+from typing import List, Callable
 
 
 class menu(modi3cfg):
@@ -241,7 +241,7 @@ class menu(modi3cfg):
                     w.command(cmd)
 
     def colorize(self, s: str,
-                 color: str, weight: Optional[str] = 'normal') -> str:
+                 color: str, weight: str = 'normal') -> str:
         return f"<span weight='{weight}' color='{color}'>{s}</span>"
 
     def wrap_str(self, s: str) -> str:
@@ -319,8 +319,8 @@ class menu(modi3cfg):
                 input=bytes(ret.strip(), 'UTF-8')
             )
 
-    def get_autoprop_as_str(self, with_title: Optional[bool] = False,
-                            with_role: Optional[bool] = False) -> str:
+    def get_autoprop_as_str(self, with_title: bool = False,
+                            with_role: bool = False) -> str:
         """ Convert xprops list to i3 commands format.
 
         Args:
@@ -464,7 +464,7 @@ class menu(modi3cfg):
         """
         ws_func()
 
-    def goto_ws(self, use_wslist: Optional[bool] = True) -> None:
+    def goto_ws(self, use_wslist: bool = True) -> None:
         """ Go to workspace menu.
         """
         ws = self.select_ws(use_wslist)
@@ -473,7 +473,7 @@ class menu(modi3cfg):
                 partial(self.i3.command, f'workspace {ws}')
             )
 
-    def move_to_ws(self, use_wslist: Optional[bool] = True) -> None:
+    def move_to_ws(self, use_wslist: bool = True) -> None:
         """ Move current window to the selected workspace
         """
         ws = self.select_ws(use_wslist)
