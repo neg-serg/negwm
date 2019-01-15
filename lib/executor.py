@@ -11,6 +11,7 @@ import os
 import shlex
 import shutil
 import yaml
+from typing import List
 from os.path import expanduser
 from modi3cfg import modi3cfg
 from singleton import Singleton
@@ -30,7 +31,7 @@ class env():
         Use Singleton metaclass from singleton module.
 
     """
-    def __init__(self, name, cfg):
+    def __init__(self, name, cfg) -> None:
         self.name = name
         self.sockpath = expanduser(
             f'~/1st_level/{name}.socket'
@@ -94,7 +95,7 @@ class env():
         ret = cfgname
         return ret
 
-    def fileprocess(self, custom_config):
+    def fileprocess(self, custom_config) -> None:
         with open(custom_config, "r") as fp:
             try:
                 conf = yaml.load(fp)
@@ -120,7 +121,7 @@ class env():
             except yaml.YAMLError as e:
                 print(e)
 
-    def create_term_params(self, cfg, name):
+    def create_term_params(self, cfg, name) -> None:
         terminal = cfg.get(name, {}).get("term")
         if terminal == "alacritty":
             self.term_opts = ["alacritty"] + [
@@ -179,7 +180,7 @@ class executor(modi3cfg):
     """
     __metaclass__ = Singleton
 
-    def __init__(self, i3, loop=None):
+    def __init__(self, i3, loop=None) -> None:
         """ Init function.
 
         Arguments for this constructor used only for compatibility.
@@ -194,11 +195,11 @@ class executor(modi3cfg):
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         for env in self.envs:
             del env
 
-    def run_app(self, args):
+    def run_app(self, args: List) -> None:
         """ Wrapper to run selected application in background.
             Args:
                 args (List): arguments list.
@@ -219,7 +220,7 @@ class executor(modi3cfg):
                 stderr=subprocess.DEVNULL,
             )
 
-    def switch(self, args):
+    def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for cirled module. With appropriate
             function bindings.
 
@@ -250,7 +251,7 @@ class executor(modi3cfg):
             input=(session_list)
         ).stdout.decode()
 
-    def attach_to_session(self):
+    def attach_to_session(self) -> None:
         """ Run tmux to attach to given socket.
         """
         self.run_app(
@@ -266,7 +267,7 @@ class executor(modi3cfg):
             stdout=subprocess.PIPE
         ).stdout
 
-    def create_new_session(self):
+    def create_new_session(self) -> None:
         """ Run tmux to create the new session on given socket.
         """
         self.run_app(
@@ -276,7 +277,7 @@ class executor(modi3cfg):
                 {self.env.tmux_session_attach}"]
         )
 
-    def run(self, name):
+    def run(self, name: str) -> None:
         """ Entry point, run application with Tmux on dedicated socket(in most
             cases), or without tmux, if config value tmuxed=0.
             Args:

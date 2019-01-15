@@ -8,13 +8,14 @@ pretty simple API. I've considered that inheritance here is good idea.
 import re
 import os
 import sys
+from typing import Set
 import toml
 import traceback
 from main import i3path
 
 
 class modi3cfg(object):
-    def __init__(self, i3, convert_me=False, loop=None):
+    def __init__(self, i3, convert_me=False, loop=None) -> None:
         # detect current negi3mod
         self.mod = self.__class__.__name__
 
@@ -73,7 +74,7 @@ class modi3cfg(object):
         else:
             return conf_part.get(prog_field, "")
 
-    def cfg_regex_props(self):
+    def cfg_regex_props(self) -> Set:
         # regex cfg properties
         return {"class_r", "instance_r", "name_r", "role_r"}
 
@@ -81,18 +82,18 @@ class modi3cfg(object):
         # basic + regex props
         return self.cfg_props() | self.cfg_regex_props()
 
-    def possible_props(self):
+    def possible_props(self) -> Set:
         # windows properties used for props add / del
         return {'class', 'instance', 'window_role', 'title'}
 
-    def cfg_props(self):
+    def cfg_props(self) -> Set:
         # basic cfg properties, without regexes
         return {'class', 'instance', 'name', 'role'}
 
-    def subtag_attr_list(self):
+    def subtag_attr_list(self) -> Set:
         return self.possible_props()
 
-    def reload_config(self, *arg):
+    def reload_config(self, *arg) -> None:
         """ Reload config for current selected module.
             Call load_config, print debug messages and reinit all stuff.
         """
@@ -110,18 +111,18 @@ class modi3cfg(object):
             self.cfg = prev_conf
             self.__init__()
 
-    def dict_converse(self):
+    def dict_converse(self) -> None:
         """ Convert list attributes to set for the better performance.
         """
         self.dict_apply(lambda key: set(key), self.convert_subtag)
 
-    def dict_deconverse(self):
+    def dict_deconverse(self) -> None:
         """ Convert set attributes to list, because of set cannot be saved
             / restored to / from TOML-files corretly.
         """
         self.dict_apply(lambda key: list(key), self.deconvert_subtag)
 
-    def convert_subtag(self, subtag):
+    def convert_subtag(self, subtag) -> None:
         """ Convert subtag attributes to set for the better performance.
 
             Args:
@@ -129,7 +130,7 @@ class modi3cfg(object):
         """
         self.subtag_apply(subtag, lambda key: set(key))
 
-    def deconvert_subtag(self, subtag):
+    def deconvert_subtag(self, subtag) -> None:
         """ Convert set attributes to list, because of set cannot be saved
         / restored to / from TOML-files corretly.
 
@@ -138,7 +139,7 @@ class modi3cfg(object):
         """
         self.subtag_apply(subtag, lambda key: list(key))
 
-    def dict_apply(self, field_conv, subtag_conv):
+    def dict_apply(self, field_conv, subtag_conv) -> None:
         """ Convert list attributes to set for the better performance.
 
             Args:
@@ -148,11 +149,13 @@ class modi3cfg(object):
         for string in self.cfg.values():
             for key in string:
                 if key in self.win_all_props():
-                    string[sys.intern(key)] = field_conv(string[sys.intern(key)])
+                    string[sys.intern(key)] = field_conv(
+                        string[sys.intern(key)]
+                    )
                 elif key == "subtag":
                     subtag_conv(string[sys.intern(key)])
 
-    def subtag_apply(self, subtag, field_conv):
+    def subtag_apply(self, subtag, field_conv) -> None:
         """ Convert subtag attributes to set for the better performance.
 
             Args:
@@ -164,7 +167,7 @@ class modi3cfg(object):
                 if key in self.subtag_attr_list():
                     val[sys.intern(key)] = field_conv(val[sys.intern(key)])
 
-    def load_config(self):
+    def load_config(self) -> None:
         """ Reload config itself and convert lists in it to sets for the better
             performance.
         """
@@ -173,7 +176,7 @@ class modi3cfg(object):
         if self.convert_me:
             self.dict_converse()
 
-    def dump_config(self):
+    def dump_config(self) -> None:
         """ Dump current config, can be used for debugging.
         """
         with open(self.i3_cfg_mod_path, "r+") as fp:
@@ -184,7 +187,7 @@ class modi3cfg(object):
         if self.convert_me:
             self.dict_converse()
 
-    def property_to_winattrib(self, prop_str):
+    def property_to_winattrib(self, prop_str) -> None:
         """ Parse property string to create win_attrs dict.
             Args:
                 prop_str (str): property string in special format.
@@ -201,7 +204,7 @@ class modi3cfg(object):
                 if attr in self.subtag_attr_list():
                     self.win_attrs[self.conv_props.get(attr, {})] = value
 
-    def add_props(self, tag, prop_str):
+    def add_props(self, tag, prop_str) -> None:
         """ Move window to some tag.
             Args:
                 tag (str): target tag
@@ -224,7 +227,7 @@ class modi3cfg(object):
                     if type(self.cfg[tag][t]) == str:
                         self.cfg[tag][t] = {self.win_attrs[t]}
 
-    def del_direct_props(self, tag):
+    def del_direct_props(self, tag) -> None:
         """ Remove basic(non-regex) properties of window from target tag.
             Args:
                 tag (str): target tag
@@ -239,7 +242,7 @@ class modi3cfg(object):
                         if self.win_attrs[t] == tok:
                             self.cfg[tag][t].remove(tok)
 
-    def del_regex_props(self, tag):
+    def del_regex_props(self, tag) -> None:
         """ Remove regex properties of window from target tag.
             Args:
                 tag (str): target tag
@@ -260,7 +263,7 @@ class modi3cfg(object):
                                 or (t == "role_r" and self.win_attrs[t[:-2]] == l.window_role):
                                     self.cfg[tag][t].remove(reg)
 
-    def del_props(self, tag, prop_str):
+    def del_props(self, tag, prop_str) -> None:
         """ Remove window from some tag.
             Args:
                 tag (str): target tag

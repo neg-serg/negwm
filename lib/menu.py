@@ -19,12 +19,13 @@ from singleton import Singleton
 from modi3cfg import modi3cfg
 from main import i3path, get_screen_resolution
 from functools import partial
+from typing import List, Optional, Callable
 
 
 class menu(modi3cfg):
     __metaclass__ = Singleton
 
-    def __init__(self, i3, loop=None):
+    def __init__(self, i3, loop=None) -> None:
         # Initialize modi3cfg.
         modi3cfg.__init__(self, i3)
 
@@ -85,7 +86,8 @@ class menu(modi3cfg):
 
         self.gap = self.cfg.get('gap', '34')
 
-    def rofi_args(self, prompt=None, cnum=16, lnum=2, width=None, markup_rows=None):
+    def rofi_args(self, prompt=None, cnum=16,
+                  lnum=2, width=None, markup_rows=None) -> List:
         prompt = prompt or self.prompt
         width = width or self.screen_width - 20
         markup_rows = markup_rows or '-no-markup-rows'
@@ -112,7 +114,7 @@ class menu(modi3cfg):
             anchor: {self.anchor}; }}',
         ]
 
-    def i3_cmds(self):
+    def i3_cmds(self) -> List:
         """ Return the list of i3 commands with magic_pie hack autocompletion.
         """
         try:
@@ -122,7 +124,7 @@ class menu(modi3cfg):
                 stderr=subprocess.DEVNULL
             ).stdout
         except Exception:
-            return ""
+            return []
 
         lst = [
             t.replace("'", '')
@@ -138,7 +140,7 @@ class menu(modi3cfg):
 
         return lst
 
-    def switch(self, args):
+    def switch(self, args) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
             bindings.
 
@@ -161,7 +163,7 @@ class menu(modi3cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def win_act_simple(self, cmd, prompt):
+    def win_act_simple(self, cmd, prompt) -> None:
         """ Run simple and fast selection dialog for window with given action.
             Args:
                 cmd (string): action for window to run.
@@ -189,7 +191,7 @@ class menu(modi3cfg):
                 if w.name == win_name:
                     w.command(cmd)
 
-    def win_act_pretty(self, cmd, prompt):
+    def win_act_pretty(self, cmd, prompt) -> None:
         """ Run beautiful selection dialog for window with given action
             Args:
                 cmd (string): action for window to run.
@@ -238,32 +240,33 @@ class menu(modi3cfg):
                 if w.name in win_name:
                     w.command(cmd)
 
-    def colorize(self, s, color, weight='normal'):
+    def colorize(self, s: str,
+                 color: str, weight: Optional[str] = 'normal') -> str:
         return f"<span weight='{weight}' color='{color}'>{s}</span>"
 
-    def wrap_str(self, s):
+    def wrap_str(self, s: str) -> str:
         return self.lhs_br + s + self.rhs_br
 
-    def goto_win(self):
+    def goto_win(self) -> None:
         """ Run rofi goto selection dialog
         """
         self.win_act_simple('focus', self.wrap_str('go'))
 
-    def attach_win(self):
+    def attach_win(self) -> None:
         """ Attach window to the current workspace.
         """
         self.win_act_simple(
             'move window to workspace current', self.wrap_str('attach')
         )
 
-    def show_props(self):
+    def show_props(self) -> None:
         """ Send notify-osd message about current properties.
         """
         aprop_str = self.get_autoprop_as_str(with_title=False)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
         subprocess.run(notify_msg)
 
-    def i3_cmd_args(self, cmd):
+    def i3_cmd_args(self, cmd) -> List:
         try:
             out = subprocess.run(
                 [self.i3cmd, cmd],
@@ -280,7 +283,7 @@ class menu(modi3cfg):
         except Exception:
             return None
 
-    def xprop_menu(self):
+    def xprop_menu(self) -> None:
         """ Menu to show X11 atom attributes for current window.
         """
         xprops = []
@@ -316,7 +319,8 @@ class menu(modi3cfg):
                 input=bytes(ret.strip(), 'UTF-8')
             )
 
-    def get_autoprop_as_str(self, with_title=False, with_role=False):
+    def get_autoprop_as_str(self, with_title: Optional[bool] = False,
+                            with_role: Optional[bool] = False) -> str:
         """ Convert xprops list to i3 commands format.
 
         Args:
@@ -352,7 +356,7 @@ class menu(modi3cfg):
                             ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
-    def mod_data_list(self, mod):
+    def mod_data_list(self, mod: str) -> List:
         """ Extract list of module tags. Used by add_prop menus.
 
         Args:
@@ -374,7 +378,7 @@ class menu(modi3cfg):
 
         return lst
 
-    def tag_name(self, mod, lst):
+    def tag_name(self, mod: str, lst: List) -> str:
         """ Returns tag name, selected by rofi.
 
         Args:
@@ -394,7 +398,7 @@ class menu(modi3cfg):
         if rofi_tag is not None and rofi_tag:
             return rofi_tag.decode('UTF-8').strip()
 
-    def get_mod(self):
+    def get_mod(self) -> str:
         """ Select negi3mod for add_prop by rofi.
         """
         mod = subprocess.run(
@@ -413,7 +417,7 @@ class menu(modi3cfg):
         else:
             return ""
 
-    def autoprop(self):
+    def autoprop(self) -> None:
         """ Start autoprop menu to move current module to smth.
         """
         mod = self.get_mod()
@@ -436,7 +440,7 @@ class menu(modi3cfg):
         else:
             print(f'No tag name specified for props [{aprop_str}]')
 
-    def select_ws(self, use_wslist):
+    def select_ws(self, use_wslist: bool) -> str:
         """ Apply target function to workspace.
         """
         if use_wslist:
@@ -453,15 +457,14 @@ class menu(modi3cfg):
             input=bytes('\n'.join(wslist), 'UTF-8')
         ).stdout
 
-        ws = ws.decode('UTF-8').strip()
-        return ws
+        return ws.decode('UTF-8').strip()
 
-    def apply_to_ws(self, ws_func):
+    def apply_to_ws(self, ws_func: Callable) -> None:
         """ Partial apply function to workspace.
         """
         ws_func()
 
-    def goto_ws(self, use_wslist=True):
+    def goto_ws(self, use_wslist: Optional[bool] = True) -> None:
         """ Go to workspace menu.
         """
         ws = self.select_ws(use_wslist)
@@ -470,7 +473,7 @@ class menu(modi3cfg):
                 partial(self.i3.command, f'workspace {ws}')
             )
 
-    def move_to_ws(self, use_wslist=True):
+    def move_to_ws(self, use_wslist: Optional[bool] = True) -> None:
         """ Move current window to the selected workspace
         """
         ws = self.select_ws(use_wslist)
@@ -480,7 +483,7 @@ class menu(modi3cfg):
                         f'[con_id=__focused__] move to workspace {ws}')
             )
 
-    def i3_cmd_menu(self):
+    def i3_cmd_menu(self) -> int:
         """ Menu for i3 commands with hackish autocompletion.
         """
         # set default menu args for supported menus

@@ -9,12 +9,13 @@ window is not focused or via sending 0, 9 keyboard commands if it is.
 import subprocess
 import socket
 import asyncio
+from typing import List
 from singleton import Singleton
 from modi3cfg import modi3cfg
 
 
 class vol(Singleton, modi3cfg):
-    def __init__(self, i3, loop):
+    def __init__(self, i3, loop) -> None:
         """ Init function
 
         Args:
@@ -68,7 +69,7 @@ class vol(Singleton, modi3cfg):
         asyncio.set_event_loop(self.loop)
         asyncio.ensure_future(self.update_mpd_status(self.loop))
 
-    def set_curr_win(self, i3, event):
+    def set_curr_win(self, i3, event) -> None:
         """ Cache the current window.
 
             Args:
@@ -78,7 +79,7 @@ class vol(Singleton, modi3cfg):
         """
         self.current_win = event.container
 
-    async def update_mpd_status(self, loop):
+    async def update_mpd_status(self, loop) -> None:
         """ Asynchronous function to get current MPD status.
 
             Args:
@@ -111,7 +112,7 @@ class vol(Singleton, modi3cfg):
                     # TODO: add function to wait for MPD port here.
                     break
 
-    def switch(self, args) -> None:
+    def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
         bindings.
 
@@ -128,7 +129,7 @@ class vol(Singleton, modi3cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def change_volume(self, val):
+    def change_volume(self, val: int) -> None:
         """ Change volume here.
 
             This function using MPD state information, information about
@@ -175,7 +176,7 @@ class vol(Singleton, modi3cfg):
         else:
             return
 
-    def volume_up(self, *args):
+    def volume_up(self, *args) -> None:
         """ Increase target volume level.
 
             Args:
@@ -187,7 +188,7 @@ class vol(Singleton, modi3cfg):
             count = 1
         self.change_volume(count)
 
-    def volume_down(self, *args):
+    def volume_down(self, *args) -> None:
         """ Decrease target volume level.
 
             Args:

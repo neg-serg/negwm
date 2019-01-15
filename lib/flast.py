@@ -20,7 +20,7 @@ class flast(modi3cfg):
     """
     __metaclass__ = Singleton
 
-    def __init__(self, i3, loop=None):
+    def __init__(self, i3, loop=None) -> None:
         """ Init function
 
         Args:
@@ -46,12 +46,12 @@ class flast(modi3cfg):
         self.i3.on('window::focus', self.on_window_focus)
         self.i3.on('window::close', self.go_back_if_nothing)
 
-    def reload_config(self):
+    def reload_config(self) -> None:
         """ Reloads config. Dummy.
         """
         self.__init__(self.i3)
 
-    def switch(self, args):
+    def switch(self, args) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
         bindings.
 
@@ -67,7 +67,7 @@ class flast(modi3cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def alt_tab(self):
+    def alt_tab(self) -> None:
         """ Focus previous window.
         """
         leaves = self.i3.get_tree().leaves()
@@ -78,7 +78,7 @@ class flast(modi3cfg):
                 self.i3.command(f'[con_id={wid}] focus')
                 return
 
-    def on_window_focus(self, i3, event):
+    def on_window_focus(self, i3, event) -> None:
         """ Store information about current / previous windows.
 
             Args:
@@ -95,7 +95,7 @@ class flast(modi3cfg):
         if len(self.window_history) > self.max_win_history:
             del self.window_history[self.max_win_history:]
 
-    def go_back_if_nothing(self, i3, event):
+    def go_back_if_nothing(self, i3, event) -> None:
         """ Go back for temporary tags like pictures or media.
 
             This function make auto alt-tab for workspaces which should by

@@ -23,14 +23,15 @@ import traceback
 import re
 import asyncio
 import aiofiles
+from typing import List, Optional, Mapping, Iterator
 from singleton import Singleton
 
 
-def print_traceback():
+def print_traceback() -> None:
     print(traceback.format_exc())
 
 
-def i3path():
+def i3path() -> str:
     """ Easy way to return i3 config path. May be improved.
     """
     xdg_config_path = os.environ.get("XDG_CONFIG_HOME")
@@ -38,7 +39,7 @@ def i3path():
     return i3_path
 
 
-def notify_msg(msg, prefix=" "):
+def notify_msg(msg: str, prefix: Optional[str] = " "):
     """ Send messages via notify-osd based notifications.
 
         Args:
@@ -54,7 +55,7 @@ def notify_msg(msg, prefix=" "):
     subprocess.run(notify_msg)
 
 
-def get_screen_resolution():
+def get_screen_resolution() -> Mapping:
     """ Return current screen resolution with help of xrandr.
     """
     out = subprocess.run(
@@ -64,13 +65,12 @@ def get_screen_resolution():
     ).stdout
     if out is not None and out:
         resolution = out.decode('UTF-8').split()[0].split('x')
-        ret = {'width': int(resolution[0]), 'height': int(resolution[1])}
+        return {'width': int(resolution[0]), 'height': int(resolution[1])}
     else:
-        ret = {'width': 1920, 'height': 1200}
-    return ret
+        return {'width': 1920, 'height': 1200}
 
 
-def find_visible_windows(windows_on_ws):
+def find_visible_windows(windows_on_ws) -> List:
     """ Find windows visible on the screen now.
 
     Unfortunately for now external xprop application used for it,
@@ -114,23 +114,23 @@ class Matcher(object):
     negi3mods.
 
     """
-    def find_classed(self, wlist, pattern):
+    def find_classed(self, wlist, pattern) -> Iterator:
         return (c for c in wlist
                 if c.window_class and re.search(pattern, c.window_class))
 
-    def find_instanced(self, wlist, pattern):
+    def find_instanced(self, wlist, pattern) -> Iterator:
         return (c for c in wlist
                 if c.window_instance and re.search(pattern, c.window_instance))
 
-    def find_by_role(self, wlist, pattern):
+    def find_by_role(self, wlist, pattern) -> Iterator:
         return (c for c in wlist
                 if c.window_role and re.search(pattern, c.window_role))
 
-    def find_named(self, wlist, pattern):
+    def find_named(self, wlist, pattern) -> Iterator:
         return (c for c in wlist
                 if c.name and re.search(pattern, c.name))
 
-    def class_r(self):
+    def class_r(self) -> bool:
         for pattern in self.matched_list:
             cls_by_regex = self.find_classed(
                 self.winlist.leaves(),
@@ -142,7 +142,7 @@ class Matcher(object):
                         return True
         return False
 
-    def instance_r(self):
+    def instance_r(self) -> bool:
         for pattern in self.matched_list:
             inst_by_regex = self.find_instanced(
                 self.winlist.leaves(),
@@ -154,7 +154,7 @@ class Matcher(object):
                         return True
         return False
 
-    def role_r(self):
+    def role_r(self) -> bool:
         for pattern in self.matched_list:
             role_by_regex = self.find_by_role(
                 self.winlist.leaves(),
@@ -166,7 +166,7 @@ class Matcher(object):
                         return True
         return False
 
-    def name_r(self):
+    def name_r(self) -> bool:
         for pattern in self.matched_list:
             name_by_regex = self.find_named(
                 self.winlist.leaves(),
@@ -178,7 +178,7 @@ class Matcher(object):
                         return True
         return False
 
-    def match(self, win, tag):
+    def match(self, win, tag) -> bool:
         self.win = win
         factors = [
             sys.intern("class"),
@@ -220,14 +220,14 @@ class daemon_manager():
     """
     __metaclass__ = Singleton
 
-    def __init__(self, mods):
+    def __init__(self, mods) -> None:
         # FIFO list
         self.fifos = {}
 
         # mods list
         self.mods = mods
 
-    async def fifo_listner(self, name):
+    async def fifo_listner(self, name) -> None:
         """ Async FIFO(named-pipe) listner
 
             Args:
@@ -246,12 +246,12 @@ class daemon_manager():
                     except Exception:
                         print_traceback()
 
-    def add_fifo(self, name):
+    def add_fifo(self, name: str) -> None:
         """ Add negi3mods FIFO.
         """
         self.fifos[name] = self.create_fifo(name)
 
-    def create_fifo(self, name):
+    def create_fifo(self, name: str) -> str:
         """ Create FIFO for the given name
         """
         fifo = os.path.realpath(os.path.expandvars(
@@ -266,7 +266,7 @@ class daemon_manager():
         finally:
             return fifo
 
-    def mainloop(self, loop):
+    def mainloop(self, loop) -> None:
         """ Mainloop for module. Started by negi3mods in separated thread.
 
             Args:

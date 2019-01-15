@@ -14,6 +14,7 @@ window with the correct fullscreen state, where normal i3 behaviour has a lot
 of issues here in detection of existing/visible windows, etc.
 """
 
+from typing import List
 from main import Matcher
 from modi3cfg import modi3cfg
 from singleton import Singleton
@@ -34,7 +35,7 @@ class circle(modi3cfg, Matcher):
     """
     __metaclass__ = Singleton
 
-    def __init__(self, i3, loop=None):
+    def __init__(self, i3, loop=None) -> None:
         """ Init function
 
         Main part is in self.initialize, which performs initialization itself.
@@ -56,7 +57,7 @@ class circle(modi3cfg, Matcher):
         self.i3.on("window::focus", self.set_curr_win)
         self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
 
-    def initialize(self, i3):
+    def initialize(self, i3) -> None:
         # i3ipc connection, bypassed by negi3mods runner.
         self.i3 = i3
 
@@ -95,7 +96,7 @@ class circle(modi3cfg, Matcher):
         # store the current window here to cache get_tree().find_focused value.
         self.current_win = self.i3.get_tree().find_focused()
 
-    def run_prog(self, tag, subtag=''):
+    def run_prog(self, tag, subtag='') -> None:
         """ Run the appropriate application for the current tag/subtag.
 
         Args:
@@ -120,7 +121,7 @@ class circle(modi3cfg, Matcher):
                         f'exec ~/.config/i3/send executor run {spawn_str}'
                     )
 
-    def find_next_not_the_same_win(self, tag):
+    def find_next_not_the_same_win(self, tag) -> None:
         """ It was used as the guard to infinite loop in the past.
         Args:
             tag (str): denotes target [tag]
@@ -129,7 +130,7 @@ class circle(modi3cfg, Matcher):
             self.current_position[tag] += 1
             self.go_next(tag)
 
-    def prefullscreen(self, tag):
+    def prefullscreen(self, tag) -> None:
         """ Prepare to go fullscreen.
         """
         fullscreened = self.i3.get_tree().find_fullscreen()
@@ -139,7 +140,7 @@ class circle(modi3cfg, Matcher):
                 self.need_handle_fullscreen = False
                 win.command('fullscreen disable')
 
-    def postfullscreen(self, tag, idx):
+    def postfullscreen(self, tag, idx) -> None:
         """ Exit from fullscreen.
         """
         now_focused = self.twin(tag, idx).id
@@ -153,7 +154,7 @@ class circle(modi3cfg, Matcher):
     def focus_next(self, tag, idx,
                    inc_counter=True,
                    fullscreen_handler=True,
-                   subtagged=False):
+                   subtagged=False) -> None:
         """ Focus next window. Used by go_next function.
         Tag list is a list of windows by some factor, which determined by
         config settings.
@@ -195,7 +196,7 @@ class circle(modi3cfg, Matcher):
                 if win.window_class in subtag_win_classes:
                     return self.tagged[tag][subidx]
 
-    def go_next(self, tag):
+    def go_next(self, tag) -> None:
         """ Circle over windows. Function "called" from the user-side.
 
         Args:
@@ -237,7 +238,7 @@ class circle(modi3cfg, Matcher):
             self.tag_windows()
             self.go_next(tag)
 
-    def go_subtag(self, tag, subtag):
+    def go_subtag(self, tag, subtag) -> None:
         """ Circle over subtag windows. Function "called" from the user-side.
 
         Args:
@@ -258,7 +259,7 @@ class circle(modi3cfg, Matcher):
                 idx = 0
                 self.focus_next(tag, idx, subtagged=True)
 
-    def switch(self, args):
+    def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for cirled module. With appropriate
             function bindings.
 
@@ -277,7 +278,7 @@ class circle(modi3cfg, Matcher):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def add_prop(self, tag, prop_str):
+    def add_prop(self, tag, prop_str) -> None:
         """ Add property via [prop_str] to the target [tag].
 
         Args:
@@ -288,13 +289,13 @@ class circle(modi3cfg, Matcher):
         if tag in self.cfg:
             self.add_props(tag, prop_str)
 
-        for t in self.cfg:
-            if t != tag:
-                self.del_props(t, prop_str)
+        for tag in self.cfg:
+            if tag != tag:
+                self.del_props(tag, prop_str)
 
         self.initialize(self.i3)
 
-    def del_prop(self, tag, prop_str):
+    def del_prop(self, tag, prop_str) -> None:
         """ Delete property via [prop_str] to the target [tag].
 
             Args:
@@ -304,7 +305,7 @@ class circle(modi3cfg, Matcher):
         """
         self.del_props(tag, prop_str)
 
-    def find_acceptable_windows(self, tag):
+    def find_acceptable_windows(self, tag) -> None:
         """ Wrapper over Matcher.match to find acceptable windows and add it to
             tagged[tag] list.
 
@@ -315,7 +316,7 @@ class circle(modi3cfg, Matcher):
             if self.match(win, tag):
                 self.tagged.get(tag, {}).append(win)
 
-    def tag_windows(self):
+    def tag_windows(self) -> None:
         """ Find acceptable windows for the all tags and add it to the
             tagged[tag] list.
 
@@ -331,7 +332,7 @@ class circle(modi3cfg, Matcher):
         for tag in self.cfg:
             self.find_acceptable_windows(tag)
 
-    def sort_by_parent(self, tag):
+    def sort_by_parent(self, tag) -> None:
         """
             Sort windows by some infernal logic: At first sort by parent
             container order, than in any order.
@@ -362,7 +363,7 @@ class circle(modi3cfg, Matcher):
         except TypeError:
             pass
 
-    def add_wins(self, i3, event):
+    def add_wins(self, i3, event) -> None:
         """ Tag window if it is match defined rules.
 
             Args:
@@ -380,7 +381,7 @@ class circle(modi3cfg, Matcher):
                     self.add_wins(i3, event)
         self.winlist = self.i3.get_tree()
 
-    def del_wins(self, i3, event):
+    def del_wins(self, i3, event) -> None:
         """ Delete tag from window if it's closed.
 
             Args:
@@ -403,7 +404,7 @@ class circle(modi3cfg, Matcher):
         self.subtag_info = {}
         self.winlist = self.i3.get_tree()
 
-    def set_curr_win(self, i3, event):
+    def set_curr_win(self, i3, event) -> None:
         """ Cache the current window.
 
             Args:
@@ -413,7 +414,7 @@ class circle(modi3cfg, Matcher):
         """
         self.current_win = event.container
 
-    def handle_fullscreen(self, i3, event):
+    def handle_fullscreen(self, i3, event) -> None:
         """ Performs actions over the restore_fullscreen list.
 
             This function memorize the current state of the fullscreen property

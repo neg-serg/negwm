@@ -15,7 +15,7 @@ window when needed.
 
 import subprocess
 import uuid
-from typing import Callable, List
+from typing import List, Callable, Optional, Set
 
 import lib.geom as geom
 from singleton import Singleton
@@ -58,7 +58,7 @@ class ns(modi3cfg, Matcher):
         self.i3.on('window::new', self.mark_tag)
         self.i3.on('window::close', self.unmark_tag)
 
-    def initialize(self, i3):
+    def initialize(self, i3) -> None:
         # winlist is used to reduce calling i3.get_tree() too many times.
         self.winlist = i3.get_tree()
 
@@ -98,7 +98,7 @@ class ns(modi3cfg, Matcher):
         """
         return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
-    def focus(self, tag: str, hide=True) -> None:
+    def focus(self, tag: str, hide: Optional[bool] = True) -> None:
         """ Show given [tag]
 
             Args:
@@ -148,7 +148,7 @@ class ns(modi3cfg, Matcher):
             else:
                 win.command('move container to workspace current')
 
-    def find_visible_windows(self, focused=None):
+    def find_visible_windows(self, focused: Optional[bool] = None) -> List:
         """ Find windows visible on the screen now.
 
             Unfortunately for now external xprop application used for it,
@@ -184,7 +184,7 @@ class ns(modi3cfg, Matcher):
 
         return visible_windows
 
-    def check_dialog_win(self, w):
+    def check_dialog_win(self, w) -> bool:
         """ Check that window [w] is not dialog window
 
             Unfortunately for now external xprop application used for it,
@@ -222,7 +222,7 @@ class ns(modi3cfg, Matcher):
                     )
         return ret
 
-    def dialog_toggle(self):
+    def dialog_toggle(self) -> None:
         """ Show dialog windows
 
             This function using self.check_dialog_win, which use information
@@ -234,7 +234,7 @@ class ns(modi3cfg, Matcher):
             if not self.check_dialog_win(win):
                 win.command('move container to workspace current')
 
-    def toggle_fs(self, win):
+    def toggle_fs(self, win) -> None:
         """ Toggles fullscreen on/off and show/hide requested scratchpad after.
 
             Args:
@@ -280,7 +280,7 @@ class ns(modi3cfg, Matcher):
             self.toggle_fs(focused)
             self.focus(tag)
 
-    def focus_sub_tag(self, tag: str, subtag_classes_set):
+    def focus_sub_tag(self, tag: str, subtag_classes_set: Set) -> None:
         """ Cycle over the subtag windows.
 
             Args:
@@ -340,7 +340,7 @@ class ns(modi3cfg, Matcher):
         [win.command('fullscreen toggle') for win in self.fullscreen_list]
         self.fullscreen_list = []
 
-    def visible_count_on_tag(self, tag: str):
+    def visible_count_on_tag(self, tag: str) -> int:
         """ Counts visible windows for given tag
 
             Args:
@@ -381,7 +381,7 @@ class ns(modi3cfg, Matcher):
             func(curr_tag)
         return curr_tag_exits
 
-    def next_win(self, hide=True) -> None:
+    def next_win(self, hide: Optional[bool] = True) -> None:
         """ Show the next window for the currently selected tag.
 
             Args:
@@ -400,6 +400,7 @@ class ns(modi3cfg, Matcher):
                     )
                     win.command('move scratchpad')
             self.focus(tag, Hide)
+
         Hide = hide
         focused_win = self.i3.get_tree().find_focused()
         self.apply_to_current_tag(next_win_)
@@ -466,7 +467,8 @@ class ns(modi3cfg, Matcher):
                     win.rect.height = focused.rect.height
                 break
 
-    def auto_save_geom(self, save=True, with_notification=False):
+    def auto_save_geom(self, save: Optional[bool] = True,
+                       with_notification: Optional[bool] = False) -> None:
         """ Set geometry autosave option with optional notification.
 
             Args:
@@ -479,7 +481,7 @@ class ns(modi3cfg, Matcher):
         if with_notification:
             notify_msg(f"geometry autosave={save}")
 
-    def autosave_toggle(self):
+    def autosave_toggle(self) -> None:
         """ Toggle autosave mode.
         """
         if self.geom_auto_save:
@@ -487,17 +489,17 @@ class ns(modi3cfg, Matcher):
         else:
             self.auto_save_geom(True, with_notification=True)
 
-    def geom_dump_current(self):
+    def geom_dump_current(self) -> None:
         """ Dump geometry for the current selected tag.
         """
         self.apply_to_current_tag(self.geom_dump)
 
-    def geom_save_current(self):
+    def geom_save_current(self) -> None:
         """ Save geometry for the current selected tag.
         """
         self.apply_to_current_tag(self.geom_save)
 
-    def add_prop(self, tag, prop_str):
+    def add_prop(self, tag: str, prop_str: str) -> None:
         """ Add property via [prop_str] to the target [tag].
 
             Args:
@@ -517,7 +519,7 @@ class ns(modi3cfg, Matcher):
 
         self.initialize(self.i3)
 
-    def del_prop(self, tag, prop_str):
+    def del_prop(self, tag: str, prop_str: str) -> None:
         """ Delete property via [prop_str] to the target [tag].
 
             Args:
@@ -555,7 +557,7 @@ class ns(modi3cfg, Matcher):
             "dialog": self.dialog_toggle,
         }[args[0]](*args[1:])
 
-    def check_win_marked(self, win, tag):
+    def check_win_marked(self, win, tag: str) -> bool:
         """ Delete property via [prop_str] to the target [tag].
 
             This function used for add_prop/delete_prop methods to not make the
@@ -570,7 +572,7 @@ class ns(modi3cfg, Matcher):
                 return True
         return False
 
-    def mark(self, tag, hide=True):
+    def mark(self, tag: str, hide: Optional[bool] = True) -> None:
         """ Add unique mark to the target [tag] with optional [hide].
 
             Args:
@@ -649,7 +651,7 @@ class ns(modi3cfg, Matcher):
             self.apply_to_current_tag(self.unfocus)
         self.winlist = self.i3.get_tree()
 
-    def mark_all_tags(self, hide: bool = True) -> None:
+    def mark_all_tags(self, hide: Optional[bool] = True) -> None:
         """ Add marks to the all tags.
 
             Args:

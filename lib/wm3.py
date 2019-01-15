@@ -10,13 +10,14 @@ space, etc.
 
 import collections
 from itertools import cycle
+from typing import List, Optional
 from main import find_visible_windows, get_screen_resolution
 from singleton import Singleton
 from modi3cfg import modi3cfg
 
 
 class wm3(Singleton, modi3cfg):
-    def __init__(self, i3, loop=None):
+    def __init__(self, i3, loop=None) -> None:
         """ Init function
 
         Main part is in self.initialize, which performs initialization itself.
@@ -30,7 +31,7 @@ class wm3(Singleton, modi3cfg):
         modi3cfg.__init__(self, i3)
         self.initialize(i3)
 
-    def initialize(self, i3):
+    def initialize(self, i3) -> None:
         # i3ipc connection, bypassed by negi3mods runner.
         self.i3 = i3
 
@@ -61,7 +62,7 @@ class wm3(Singleton, modi3cfg):
         # coeff to shrink window in all dimensions
         self.shrink_coeff = self.cfg.get("shrink_coeff", 0.99)
 
-    def switch(self, args):
+    def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
         bindings.
 
@@ -88,7 +89,7 @@ class wm3(Singleton, modi3cfg):
             "revert_maximize": self.revert_maximize,
         }[args[0]](*args[1:])
 
-    def load_useless_gaps(self):
+    def load_useless_gaps(self) -> None:
         """ Load useless gaps settings.
         """
         try:
@@ -102,7 +103,8 @@ class wm3(Singleton, modi3cfg):
         except (KeyError, TypeError, AttributeError):
             self.useless_gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
 
-    def center_geom(self, win, change_geom=False, degrade_coeff=0.82):
+    def center_geom(self, win,
+                    change_geom: bool = False, degrade_coeff: int = 0.82):
         """ Move window to the center with geometry optional changing.
 
         Args:
@@ -137,7 +139,7 @@ class wm3(Singleton, modi3cfg):
 
         return geom
 
-    def move_center(self, resize):
+    def move_center(self, resize) -> None:
         """ Move window to center.
 
         Args:

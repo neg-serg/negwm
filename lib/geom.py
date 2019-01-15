@@ -10,7 +10,7 @@ from main import get_screen_resolution
 
 
 class geom():
-    def __init__(self, cfg):
+    def __init__(self, cfg) -> None:
         """ Init function
 
         Args:
@@ -32,7 +32,7 @@ class geom():
         for tag in self.cfg:
             self.parsed_geom[tag] = self.parse_geom(tag)
 
-    def scratchpad_hide_cmd(self, hide):
+    def scratchpad_hide_cmd(self, hide: bool) -> str:
         """ Returns cmd needed to hide scratchpad.
 
             Args:
@@ -43,7 +43,7 @@ class geom():
             ret = ", [con_id=__focused__] scratchpad show"
         return ret
 
-    def ret_info(self, tag, attr, target_attr, dprefix, hide):
+    def ret_info(self, tag, attr, target_attr, dprefix, hide) -> str:
         """ Create rule in i3 commands format
 
         Args:
@@ -64,7 +64,7 @@ class geom():
                 return for_win_cmd
         return ''
 
-    def ch(self, lst, ch):
+    def ch(self, lst, ch) -> str:
         """ Return char is list is not empty to prevent stupid commands.
         """
         ret = ''
@@ -72,11 +72,11 @@ class geom():
             ret = ch
         return ret
 
-    def parse_attr(self, tag, attr):
+    def parse_attr(self, tag, attr) -> str:
         """ Create attribute matching string.
-
-            tag (str): target tag.
-            attr (str): target attrubute.
+            Args:
+                tag (str): target tag.
+                attr (str): target attrubute.
         """
         ret = ''
         attrib_list = self.cfg[tag][attr]
@@ -92,7 +92,7 @@ class geom():
 
         return ret
 
-    def create_i3_match_rules(self, hide=True, dprefix="for_window "):
+    def create_i3_match_rules(self, hide=True, dprefix="for_window ") -> None:
         """ Create i3 match rules for all tags.
 
         Args:
@@ -111,12 +111,12 @@ class geom():
         self.cmd_list = filter(lambda str: str != '', cmd_list)
 
     # nsd need this function
-    def get_geom(self, tag):
+    def get_geom(self, tag) -> str:
         """ External function used by nsd
         """
         return self.parsed_geom[tag]
 
-    def parse_geom(self, tag):
+    def parse_geom(self, tag) -> str:
         """ Convert geometry from self.cfg format to i3 commands.
 
         Args:
