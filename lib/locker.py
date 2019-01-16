@@ -7,7 +7,7 @@ import sys
 import socket
 
 
-def get_lock(process_name) -> None:
+def get_lock(process_name: str) -> None:
     # Without holding a reference to our socket somewhere it gets garbage
     # collected when the function exits
     get_lock._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)

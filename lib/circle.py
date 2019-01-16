@@ -96,7 +96,7 @@ class circle(modi3cfg, Matcher):
         # store the current window here to cache get_tree().find_focused value.
         self.current_win = self.i3.get_tree().find_focused()
 
-    def run_prog(self, tag, subtag='') -> None:
+    def run_prog(self, tag: str, subtag: str = '') -> None:
         """ Run the appropriate application for the current tag/subtag.
 
         Args:
@@ -121,7 +121,7 @@ class circle(modi3cfg, Matcher):
                         f'exec ~/.config/i3/send executor run {spawn_str}'
                     )
 
-    def find_next_not_the_same_win(self, tag) -> None:
+    def find_next_not_the_same_win(self, tag: str) -> None:
         """ It was used as the guard to infinite loop in the past.
         Args:
             tag (str): denotes target [tag]
@@ -130,7 +130,7 @@ class circle(modi3cfg, Matcher):
             self.current_position[tag] += 1
             self.go_next(tag)
 
-    def prefullscreen(self, tag) -> None:
+    def prefullscreen(self, tag: str) -> None:
         """ Prepare to go fullscreen.
         """
         fullscreened = self.i3.get_tree().find_fullscreen()
@@ -140,7 +140,7 @@ class circle(modi3cfg, Matcher):
                 self.need_handle_fullscreen = False
                 win.command('fullscreen disable')
 
-    def postfullscreen(self, tag, idx) -> None:
+    def postfullscreen(self, tag: str, idx: int) -> None:
         """ Exit from fullscreen.
         """
         now_focused = self.twin(tag, idx).id
@@ -151,10 +151,10 @@ class circle(modi3cfg, Matcher):
                     f'[con_id={now_focused}] fullscreen enable'
                 )
 
-    def focus_next(self, tag, idx,
-                   inc_counter=True,
-                   fullscreen_handler=True,
-                   subtagged=False) -> None:
+    def focus_next(self, tag: str, idx: int,
+                   inc_counter: bool = True,
+                   fullscreen_handler: bool = True,
+                   subtagged: bool = False) -> None:
         """ Focus next window. Used by go_next function.
         Tag list is a list of windows by some factor, which determined by
         config settings.
@@ -181,7 +181,7 @@ class circle(modi3cfg, Matcher):
 
         self.need_handle_fullscreen = True
 
-    def twin(self, tag, idx, with_subtag=False):
+    def twin(self, tag: str, idx: int, with_subtag: bool = False):
         """ Detect target window.
             Args:
                 tag (str): selected tag.
@@ -196,7 +196,7 @@ class circle(modi3cfg, Matcher):
                 if win.window_class in subtag_win_classes:
                     return self.tagged[tag][subidx]
 
-    def go_next(self, tag) -> None:
+    def go_next(self, tag: str) -> None:
         """ Circle over windows. Function "called" from the user-side.
 
         Args:
@@ -238,7 +238,7 @@ class circle(modi3cfg, Matcher):
             self.tag_windows()
             self.go_next(tag)
 
-    def go_subtag(self, tag, subtag) -> None:
+    def go_subtag(self, tag: str, subtag: str) -> None:
         """ Circle over subtag windows. Function "called" from the user-side.
 
         Args:
@@ -278,7 +278,7 @@ class circle(modi3cfg, Matcher):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def add_prop(self, tag, prop_str) -> None:
+    def add_prop(self, tag: str, prop_str: str) -> None:
         """ Add property via [prop_str] to the target [tag].
 
         Args:
@@ -295,7 +295,7 @@ class circle(modi3cfg, Matcher):
 
         self.initialize(self.i3)
 
-    def del_prop(self, tag, prop_str) -> None:
+    def del_prop(self, tag: str, prop_str: str) -> None:
         """ Delete property via [prop_str] to the target [tag].
 
             Args:
@@ -305,7 +305,7 @@ class circle(modi3cfg, Matcher):
         """
         self.del_props(tag, prop_str)
 
-    def find_acceptable_windows(self, tag) -> None:
+    def find_acceptable_windows(self, tag: str) -> None:
         """ Wrapper over Matcher.match to find acceptable windows and add it to
             tagged[tag] list.
 
@@ -332,7 +332,7 @@ class circle(modi3cfg, Matcher):
         for tag in self.cfg:
             self.find_acceptable_windows(tag)
 
-    def sort_by_parent(self, tag) -> None:
+    def sort_by_parent(self, tag: str) -> None:
         """
             Sort windows by some infernal logic: At first sort by parent
             container order, than in any order.

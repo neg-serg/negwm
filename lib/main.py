@@ -23,7 +23,7 @@ import traceback
 import re
 import asyncio
 import aiofiles
-from typing import List, Mapping, Iterator
+from typing import List, Iterator
 from singleton import Singleton
 
 
@@ -55,7 +55,7 @@ def notify_msg(msg: str, prefix: str = " "):
     subprocess.run(notify_msg)
 
 
-def get_screen_resolution() -> Mapping:
+def get_screen_resolution() -> dict:
     """ Return current screen resolution with help of xrandr.
     """
     out = subprocess.run(
@@ -70,7 +70,7 @@ def get_screen_resolution() -> Mapping:
         return {'width': 1920, 'height': 1200}
 
 
-def find_visible_windows(windows_on_ws) -> List:
+def find_visible_windows(windows_on_ws: List) -> List:
     """ Find windows visible on the screen now.
 
     Unfortunately for now external xprop application used for it,
@@ -114,19 +114,19 @@ class Matcher(object):
     negi3mods.
 
     """
-    def find_classed(self, wlist, pattern) -> Iterator:
+    def find_classed(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_class and re.search(pattern, c.window_class))
 
-    def find_instanced(self, wlist, pattern) -> Iterator:
+    def find_instanced(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_instance and re.search(pattern, c.window_instance))
 
-    def find_by_role(self, wlist, pattern) -> Iterator:
+    def find_by_role(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_role and re.search(pattern, c.window_role))
 
-    def find_named(self, wlist, pattern) -> Iterator:
+    def find_named(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.name and re.search(pattern, c.name))
 
@@ -178,7 +178,7 @@ class Matcher(object):
                         return True
         return False
 
-    def match(self, win, tag) -> bool:
+    def match(self, win, tag: str) -> bool:
         self.win = win
         factors = [
             sys.intern("class"),
@@ -220,14 +220,14 @@ class daemon_manager():
     """
     __metaclass__ = Singleton
 
-    def __init__(self, mods) -> None:
+    def __init__(self, mods: List) -> None:
         # FIFO list
         self.fifos = {}
 
         # mods list
         self.mods = mods
 
-    async def fifo_listner(self, name) -> None:
+    async def fifo_listner(self, name: str) -> None:
         """ Async FIFO(named-pipe) listner
 
             Args:

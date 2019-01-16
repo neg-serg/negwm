@@ -6,6 +6,7 @@ information about previous windows. We need this because previously selected
 window may be closed, and then you cannot focus it.
 """
 
+from typing import List
 from main import find_visible_windows
 from singleton import Singleton
 from modi3cfg import modi3cfg
@@ -51,7 +52,7 @@ class flast(modi3cfg):
         """
         self.__init__(self.i3)
 
-    def switch(self, args) -> None:
+    def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
         bindings.
 

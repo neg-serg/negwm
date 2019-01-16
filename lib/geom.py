@@ -6,11 +6,12 @@
 """
 
 import re
+from typing import List
 from main import get_screen_resolution
 
 
 class geom():
-    def __init__(self, cfg) -> None:
+    def __init__(self, cfg: dict) -> None:
         """ Init function
 
         Args:
@@ -43,7 +44,8 @@ class geom():
             ret = ", [con_id=__focused__] scratchpad show"
         return ret
 
-    def ret_info(self, tag, attr, target_attr, dprefix, hide) -> str:
+    def ret_info(self, tag: str, attr: str, target_attr: str,
+                 dprefix: str, hide: str) -> str:
         """ Create rule in i3 commands format
 
         Args:
@@ -64,7 +66,7 @@ class geom():
                 return for_win_cmd
         return ''
 
-    def ch(self, lst, ch) -> str:
+    def ch(self, lst: List, ch: str) -> str:
         """ Return char is list is not empty to prevent stupid commands.
         """
         ret = ''
@@ -72,7 +74,7 @@ class geom():
             ret = ch
         return ret
 
-    def parse_attr(self, tag, attr) -> str:
+    def parse_attr(self, tag: str, attr: str) -> str:
         """ Create attribute matching string.
             Args:
                 tag (str): target tag.
@@ -92,7 +94,8 @@ class geom():
 
         return ret
 
-    def create_i3_match_rules(self, hide=True, dprefix="for_window ") -> None:
+    def create_i3_match_rules(self, hide: bool = True,
+                              dprefix: str = "for_window ") -> None:
         """ Create i3 match rules for all tags.
 
         Args:
@@ -111,12 +114,12 @@ class geom():
         self.cmd_list = filter(lambda str: str != '', cmd_list)
 
     # nsd need this function
-    def get_geom(self, tag) -> str:
+    def get_geom(self, tag: str) -> str:
         """ External function used by nsd
         """
         return self.parsed_geom[tag]
 
-    def parse_geom(self, tag) -> str:
+    def parse_geom(self, tag: str) -> str:
         """ Convert geometry from self.cfg format to i3 commands.
 
         Args:

@@ -19,7 +19,7 @@ from singleton import Singleton
 from modi3cfg import modi3cfg
 from main import i3path, get_screen_resolution
 from functools import partial
-from typing import List, Callable
+from typing import List, Callable, Optional
 
 
 class menu(modi3cfg):
@@ -86,8 +86,10 @@ class menu(modi3cfg):
 
         self.gap = self.cfg.get('gap', '34')
 
-    def rofi_args(self, prompt=None, cnum=16,
-                  lnum=2, width=None, markup_rows=None) -> List:
+    def rofi_args(self, prompt: str = None, cnum: int = 16,
+                  lnum: int = 2,
+                  width: Optional[int] = None,
+                  markup_rows: Optional[str] = None) -> List[str]:
         prompt = prompt or self.prompt
         width = width or self.screen_width - 20
         markup_rows = markup_rows or '-no-markup-rows'
@@ -98,7 +100,8 @@ class menu(modi3cfg):
             prompt (str): rofi prompt, optional.
             cnum (int): number of columns, optional.
             lnum (int): number of lines, optional.
-            width (int): width of rofi menu.
+            width (int): width of rofi menu, optional.
+            markup_rows (str): markup rows setting.
         """
         return [
             'rofi', '-show', '-dmenu',
@@ -114,7 +117,7 @@ class menu(modi3cfg):
             anchor: {self.anchor}; }}',
         ]
 
-    def i3_cmds(self) -> List:
+    def i3_cmds(self) -> List[str]:
         """ Return the list of i3 commands with magic_pie hack autocompletion.
         """
         try:
@@ -140,7 +143,7 @@ class menu(modi3cfg):
 
         return lst
 
-    def switch(self, args) -> None:
+    def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
             bindings.
 
@@ -163,11 +166,11 @@ class menu(modi3cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def win_act_simple(self, cmd, prompt) -> None:
+    def win_act_simple(self, cmd: str, prompt: str) -> None:
         """ Run simple and fast selection dialog for window with given action.
             Args:
-                cmd (string): action for window to run.
-                prompt (string): custom prompt for rofi.
+                cmd (str): action for window to run.
+                prompt (str): custom prompt for rofi.
         """
         leaves = self.i3.get_tree().leaves()
         winlist = [win.name for win in leaves]
@@ -191,7 +194,7 @@ class menu(modi3cfg):
                 if w.name == win_name:
                     w.command(cmd)
 
-    def win_act_pretty(self, cmd, prompt) -> None:
+    def win_act_pretty(self, cmd: str, prompt: str) -> None:
         """ Run beautiful selection dialog for window with given action
             Args:
                 cmd (string): action for window to run.
@@ -266,7 +269,7 @@ class menu(modi3cfg):
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
         subprocess.run(notify_msg)
 
-    def i3_cmd_args(self, cmd) -> List:
+    def i3_cmd_args(self, cmd: str) -> List[str]:
         try:
             out = subprocess.run(
                 [self.i3cmd, cmd],
@@ -356,7 +359,7 @@ class menu(modi3cfg):
                             ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
-    def mod_data_list(self, mod: str) -> List:
+    def mod_data_list(self, mod: str) -> List[str]:
         """ Extract list of module tags. Used by add_prop menus.
 
         Args:
@@ -378,12 +381,12 @@ class menu(modi3cfg):
 
         return lst
 
-    def tag_name(self, mod: str, lst: List) -> str:
+    def tag_name(self, mod: str, lst: List[str]) -> str:
         """ Returns tag name, selected by rofi.
 
         Args:
             mod (str): module name string.
-            lst (List): list of rofi input.
+            lst (List[str]): list of rofi input.
         """
         rofi_tag = subprocess.run(
             self.rofi_args(

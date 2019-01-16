@@ -10,7 +10,7 @@ space, etc.
 
 import collections
 from itertools import cycle
-from typing import List
+from typing import List, Mapping, Iterator
 from main import find_visible_windows, get_screen_resolution
 from singleton import Singleton
 from modi3cfg import modi3cfg
@@ -104,7 +104,7 @@ class wm3(Singleton, modi3cfg):
             self.useless_gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
 
     def center_geom(self, win,
-                    change_geom: bool = False, degrade_coeff: int = 0.82):
+                    change_geom: bool = False, degrade_coeff: float = 0.82):
         """ Move window to the center with geometry optional changing.
 
         Args:
@@ -139,7 +139,7 @@ class wm3(Singleton, modi3cfg):
 
         return geom
 
-    def move_center(self, resize) -> None:
+    def move_center(self, resize: str) -> None:
         """ Move window to center.
 
         Args:
@@ -167,13 +167,13 @@ class wm3(Singleton, modi3cfg):
         )
         return self.geom_list[-1]["geom"]
 
-    def multiple_geom(self, win, coeff):
+    def multiple_geom(self, win, coeff: float) -> Mapping[str, int]:
         """ Generic function to shrink/grow floating window geometry.
 
             Args:
                 win: target window.
-                coeff (int): generic coefficient which denotes grow/shrink geom
-                             of the target window.
+                coeff (float): generic coefficient which denotes grow/shrink
+                               geom of the target window.
         """
         return {
             'x': int(win.rect.x),
@@ -182,21 +182,21 @@ class wm3(Singleton, modi3cfg):
             'height': int(win.rect.height * coeff),
         }
 
-    def grow(self):
+    def grow(self) -> None:
         """ Grow floating window geometry by [self.grow_coeff].
         """
         focused = self.i3.get_tree().find_focused()
         geom = self.multiple_geom(focused, self.grow_coeff)
         self.set_geom(focused, geom)
 
-    def shrink(self):
+    def shrink(self) -> None:
         """ Shrink floating window geometry by [self.shrink_coeff].
         """
         focused = self.i3.get_tree().find_focused()
         geom = self.multiple_geom(focused, self.shrink_coeff)
         self.set_geom(focused, geom)
 
-    def x2(self, mode):
+    def x2(self, mode: str) -> None:
         """ Move window to the 1st or 2nd half of the screen space with the
             given orientation.
 
@@ -258,7 +258,7 @@ class wm3(Singleton, modi3cfg):
 
             self.set_geom(self.current_win, geom)
 
-    def quad(self, mode):
+    def quad(self, mode: int) -> None:
         """ Move window to the 1,2,3,4 quad of 2D screen space
 
         Args:
@@ -325,7 +325,7 @@ class wm3(Singleton, modi3cfg):
 
             self.set_geom(self.current_win, geom)
 
-    def maximize(self, by='XY'):
+    def maximize(self, by: str = 'XY') -> None:
         """ Maximize window by attribute.
 
         Args:
@@ -358,7 +358,7 @@ class wm3(Singleton, modi3cfg):
                 )
             self.set_geom(self.current_win, max_geom)
 
-    def revert_maximize(self):
+    def revert_maximize(self) -> None:
         """ Revert changed window state.
         """
         try:
@@ -369,14 +369,15 @@ class wm3(Singleton, modi3cfg):
         except (KeyError, TypeError, AttributeError):
             pass
 
-    def maximized_geom(self, geom, gaps={}, byX=False, byY=False):
+    def maximized_geom(self, geom: dict, gaps: dict = {},
+                       byX: bool = False, byY: bool = False) -> dict:
         """ Return maximized geom.
 
         Args:
             geom (dict): var to return maximized geometry.
             gaps (dict): dict to define useless gaps.
-            byX: maximize by X.
-            byY: maximize by Y.
+            byX (bool): maximize by X.
+            byY (bool): maximize by Y.
         """
         if gaps == {}:
             gaps = self.useless_gaps
@@ -388,17 +389,17 @@ class wm3(Singleton, modi3cfg):
             geom['height'] = self.current_resolution['height'] - gaps['s'] * 2
         return geom
 
-    def set_geom(self, win, geom):
+    def set_geom(self, win, geom: dict) -> dict:
         """ Generic function to set geometry.
 
         Args:
             win: target window to change windows.
-            geom: geometry.
+            geom (dict): geometry.
         """
         win.command(f"move absolute position {geom['x']} {geom['y']}")
         win.command(f"resize set {geom['width']} {geom['height']} px")
 
-    def create_geom_from_rect(self, rect):
+    def create_geom_from_rect(self, rect) -> dict:
         """ Create geometry from the given rectangle.
 
         Args:
@@ -413,7 +414,7 @@ class wm3(Singleton, modi3cfg):
 
         return geom
 
-    def save_geom(self, target_win=None):
+    def save_geom(self, target_win=None) -> dict:
         """ Save geometry.
 
         Args:
@@ -424,7 +425,7 @@ class wm3(Singleton, modi3cfg):
             target_win = self.current_win
         return self.create_geom_from_rect(target_win.rect)
 
-    def get_windows_on_ws(self):
+    def get_windows_on_ws(self) -> Iterator:
         """ Get windows on the current workspace.
         """
         return filter(
@@ -432,7 +433,7 @@ class wm3(Singleton, modi3cfg):
             self.i3.get_tree().find_focused().workspace().descendents()
         )
 
-    def focus_next(self, reversed_order=False):
+    def focus_next(self, reversed_order: bool = False) -> None:
         """ Focus next visible window.
 
         Args:

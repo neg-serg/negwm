@@ -31,7 +31,7 @@ class env():
         Use Singleton metaclass from singleton module.
 
     """
-    def __init__(self, name, cfg) -> None:
+    def __init__(self, name: str, cfg: dict) -> None:
         self.name = name
         self.sockpath = expanduser(
             f'~/1st_level/{name}.socket'
@@ -76,7 +76,7 @@ class env():
 
         self.create_term_params(cfg, name)
 
-    def generate_alacritty_config(self, cfg, name):
+    def generate_alacritty_config(self, cfg: dict, name: str) -> None:
         alacritty_suffix = cfg.get(name, {}).get('alacritty_suffix', {})
         if not alacritty_suffix:
             alacritty_suffix = cfg.get(name, {}).get('window_class')
@@ -95,7 +95,7 @@ class env():
         ret = cfgname
         return ret
 
-    def fileprocess(self, custom_config) -> None:
+    def fileprocess(self, custom_config: str) -> None:
         with open(custom_config, "r") as fp:
             try:
                 conf = yaml.load(fp)
@@ -121,7 +121,7 @@ class env():
             except yaml.YAMLError as e:
                 print(e)
 
-    def create_term_params(self, cfg, name) -> None:
+    def create_term_params(self, cfg: dict, name: str) -> None:
         terminal = cfg.get(name, {}).get("term")
         if terminal == "alacritty":
             self.term_opts = ["alacritty"] + [
@@ -236,7 +236,7 @@ class executor(modi3cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def detect_session_bind(self):
+    def detect_session_bind(self) -> str:
         """ Find target session for given socket.
         """
         session_list = subprocess.run(
@@ -259,7 +259,7 @@ class executor(modi3cfg):
             [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
         )
 
-    def search_classname(self):
+    def search_classname(self) -> str:
         """ Search for selected window class.
         """
         return subprocess.run(
