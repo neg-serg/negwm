@@ -131,6 +131,7 @@ for_window [class="Sxiv"] move workspace $sxiv, focus
 for_window $torrent_apps move workspace $torrent, focus
 for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $admin, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote
+for_window [class="albert"] move workspace current, focus
 
 # ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
 # ░█▀▄░█▀▀░█▀█░█░█░█▀▀░█▀▄░▀▀█
