@@ -103,8 +103,8 @@ class env():
                 conf["font"]["bold"]["family"] = self.font
                 conf["font"]["italic"]["family"] = self.font
                 conf["font"]["size"] = self.font_size
-                conf["window"]["padding"]['x'] = self.x_pad
-                conf["window"]["padding"]['y'] = self.y_pad
+                conf["window"]["padding"]['x'] = int(self.x_pad)
+                conf["window"]["padding"]['y'] = int(self.y_pad)
             except yaml.YAMLError as e:
                 print(e)
 
