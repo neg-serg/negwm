@@ -55,13 +55,14 @@ focus_follows_mouse no
 focus_on_window_activation urgent
 # warp the mouse to the middle of the window when changing to a different screen
 mouse_warping none
+focus_wrapping yes
 
 # ░█░█░▀█▀░█▀█░█▀▀
 # ░█▄█░░█░░█░█░▀▀█
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀
 #popup_during_fullscreen leave_fullscreen
-new_window pixel 2
-new_float pixel 3
+default_border pixel 2
+default_floating_border pixel 3
 show_marks no
 
 # ░█▀▀░█▀█░█▀█░█▀▀
@@ -113,6 +114,7 @@ set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$
 set $java_dialogs [instance="sun-awt-X11-(XWindowPeer|XDialogPeer|XFramePeer)"]
 set $office [class="^(libreoffice|abiword).*$"]
 
+title_align left
 for_window [class=".*"] title_format " >_ %title "
 # ░█░█░█▄█░░░░░█▀▄░█░█░█░░░█▀▀░█▀▀
 # ░█▄█░█░█░░░░░█▀▄░█░█░█░░░█▀▀░▀▀█
