@@ -155,39 +155,31 @@ for_window [class="^(Gimp|darktable|inkscape)$"] move workspace $gimp
 # ░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀
 for_window $vim move workspace $dev, focus
 for_window $not_vim move workspace $dev
-for_window $jetbrains move workspace $ide
-for_window $java_dialogs move workspace $ide
+for_window {$jetbrains,$java_dialogs} move workspace $ide
 
 # ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀
-for_window $sclient move workspace $steam
-for_window $games move workspace $steam
-for_window $wine_apps move workspace $wine
-for_window $windows_exe_by_title move workspace $wine
-for_window $windows_exe_by_class move workspace $wine
-for_window [class="discord"] move workspace $wine
+for_window {$sclient,$games} move workspace $steam
+for_window {$wine_apps,$windows_exe_by_title,$windows_exe_by_class,[class="discord"]} move workspace $wine
 
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
 #░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░░▀▀▀
 for_window [class="^(telegram-desktop|Skype|Telegram-desktop|ViberPC|TelegramDesktop|finch|VK)$"] move scratchpad, move absolute position 1372 127, resize set 528 1029
-for_window [class="ncmpcpp"] move scratchpad, move absolute position 400 400, resize set 1200 600
+for_window [{instance,class}="ncmpcpp"] move scratchpad, move absolute position 400 400, resize set 1200 600
 for_window [instance="mutt"] move scratchpad, move absolute position 293 0, resize set 1250 700
-for_window [class="ranger"] move scratchpad, move absolute position 170 18, resize set 1132 760
-for_window [class="teardrop"] move scratchpad, move absolute position 39 4, resize set 1844 704
-for_window [class="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
-for_window [class="weechat"] move scratchpad, move absolute position 112 33, resize set 1736 1091
+for_window [{instance,class}="ranger"] move scratchpad, move absolute position 170 18, resize set 1132 760
+for_window [{instance,class}="teardrop"] move scratchpad, move absolute position 39 4, resize set 1844 704
+for_window [{instance,class}="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
+for_window [{instance,class}="weechat"] move scratchpad, move absolute position 112 33, resize set 1736 1091
 for_window [instance="webcam"] floating enable, move container to workspace current, move scratchpad, move absolute position center, resize set 1280 720, focus
 
 #░█▀▄░▀█▀░█▀█░█░░░█▀█░█▀▀░█▀▀
 #░█░█░░█░░█▀█░█░░░█░█░█░█░▀▀█
 #░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
-for_window [window_type="dialog"] $scratchpad_dialog
-for_window [window_type="menu"] $scratchpad_dialog
-for_window [window_type="utility"] $scratchpad_dialog
-for_window [window_type="toolbar"] $scratchpad_dialog
+for_window [window_type="{dialog,menu,utility,toolbar}"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
 
 #---------------------------------------------
