@@ -66,6 +66,13 @@ class vol_printer(modconfig):
         # various MPD // Volume printer delimiters
         self.delimiter = self.cfg.get("delimiter", "||")
 
+        # set string for the empty output
+        if self.cfg.get('show_volume', '').startswith('y'):
+            self.empty_str = f"%{{F#395573}}{self.delimiter}%{{F#cccccc}}" + \
+                f"Vol: %{{F#617287}}n/a%{{F-}} %{{F#395573}}⟭%{{F-}}"
+        else:
+            self.empty_str = f" %{{F#395573}}⟭%{{F-}}"
+
         # run mainloop
         self.main()
 
@@ -78,8 +85,9 @@ class vol_printer(modconfig):
                 self.update_mpd_volume(self.loop)
             )
         except ConnectionError:
-            sys.stdout.write("\n")
-            pass
+            self.empty_output()
+        finally:
+            self.loop.close()
 
     def print_volume(self):
         """ Create nice and shiny output for polybar.
@@ -90,11 +98,13 @@ class vol_printer(modconfig):
     def empty_output(self):
         """ This output will be used if no information about volume.
         """
-        sys.stdout.write("%{{F#395573}} ⟭%{{F-}}\n")
+        sys.stdout.write(f'{self.empty_str}\n')
 
     async def initial_mpd_volume(self, loop, reader, writer):
         """ Load MPD volume state when script started.
         """
+        mpd_stopped = None
+
         data = await reader.read(self.buf_size)
         writer.write(self.status_cmd_str.encode(encoding='utf-8'))
         stat_data = await reader.read(self.buf_size)
@@ -106,6 +116,15 @@ class vol_printer(modconfig):
                 sys.stdout.write(f"{self.volume}\n")
             else:
                 sys.stdout.write(f" \n")
+        else:
+            for t in parsed:
+                if t == 'state: stop':
+                    mpd_stopped = True
+                    break
+            if mpd_stopped:
+                print()
+            else:
+                print(self.empty_str)
         return data.startswith(b'OK')
 
     async def update_mpd_volume(self, loop):
@@ -130,8 +149,6 @@ class vol_printer(modconfig):
                                 self.volume = self.print_volume()
                                 sys.stdout.write(f"{self.volume}\n")
                             prev_volume = parsed[0][8:]
-                        else:
-                            self.empty_output()
                     else:
                         prev_volume = ''
                         writer.close()
