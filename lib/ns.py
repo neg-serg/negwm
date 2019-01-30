@@ -109,7 +109,7 @@ class ns(modi3cfg, Matcher):
         """
         if not len(self.transients):
             [
-                win.command('move container to workspace current')
+                win.command('focus, move container to workspace current')
                 for win in self.marked[tag]
             ]
             if hide:
