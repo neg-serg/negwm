@@ -137,7 +137,7 @@ class env():
                 "alacritty", "--live-config-reload", "--config-file",
                 expanduser(custom_config)
             ] + [
-                "-t", self.window_class,
+                "--class", self.window_class,
                 "-e", "dash", "-c"
             ]
         elif terminal == "st":
