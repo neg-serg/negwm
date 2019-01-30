@@ -123,7 +123,7 @@ for_window $browsers move workspace $web, focus
 for_window [class="guncharmap"] move workspace $doc
 for_window $vms move workspace $vm, focus
 for_window $office move workspace $doc, focus
-for_window [class="^term$"] move workspace $term, focus
+for_window [{class,instance}="^term$"] move workspace $term, focus
 for_window $mplayer move workspace $media, focus
 for_window $webcam move workspace $media, focus
 for_window [class="Nicotine.*" instance="nicotine"] move workspace $media, focus
