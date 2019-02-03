@@ -232,7 +232,7 @@ class ns(modi3cfg, Matcher):
         wlist = self.i3.get_tree().leaves()
         for win in wlist:
             if not self.check_dialog_win(win):
-                win.command('move container to workspace current')
+                win.command('focus, move container to workspace current')
 
     def toggle_fs(self, win) -> None:
         """ Toggles fullscreen on/off and show/hide requested scratchpad after.
