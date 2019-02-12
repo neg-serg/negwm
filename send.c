@@ -181,19 +181,13 @@ Args ArgMap[] = {
         },
 };
 
-char *get_fifo_name(int modnum) {
+char *get_file_name(int modnum) {
     char *sock_path = calloc(128, 1);
     char *sock_path_after_readlink = calloc(128, 1);
-    const char *home = getenv("HOME");
-    strcat(sock_path, home);
-    strcat(sock_path, "/");
-    strcat(sock_path, "tmp");
-    readlink(sock_path, sock_path_after_readlink, 128);
-    strcat(sock_path_after_readlink, "/");
-    strcat(sock_path_after_readlink, progs[modnum]);
-    strcat(sock_path_after_readlink, ".fifo");
-    free(sock_path);
-    return sock_path_after_readlink;
+    strcat(sock_path, "/dev/shm/");
+    strcat(sock_path, progs[modnum]);
+    strcat(sock_path, ".nif");
+    return sock_path;
 }
 
 int main(int argc, const char *argv[]) {
@@ -233,13 +227,13 @@ int main(int argc, const char *argv[]) {
         return -3;
     }
 
-    char *sock_name = get_fifo_name(mod);
+    char *file_name = get_file_name(mod);
     cmd[strlen(cmd)] = '\n';
-    int out_fd = open(sock_name, O_WRONLY | O_NONBLOCK);
+    int out_fd = open(file_name, O_WRONLY | O_NONBLOCK);
     write(out_fd, cmd, strlen(cmd) - 1);
     close(out_fd);
 
-    free(sock_name);
+    free(file_name);
     free(cmd);
     return 0;
 }

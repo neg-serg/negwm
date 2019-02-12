@@ -9,7 +9,7 @@ Matcher:
     circle run-or-raise, etc.
 
 Daemon manager and mod daemon:
-    Mod daemon creates appropriate fifos in the ~/tmp directory.
+    Mod daemon creates appropriate files in the /dev/shm directory.
 
     Daemon manager handles all requests to this named pipe based API with help
     of asyncio.
@@ -213,7 +213,7 @@ class Matcher(object):
 class daemon_manager():
     """ Daemon manager. Rules by negi3mods, dispatch messages.
 
-        Every module has indivisual main loop with indivisual named-pipe(FIFO).
+        Every module has indivisual main loop with indivisual neg-ipc-file.
 
     Metaclass:
         Use Singleton metaclass from singleton module.
@@ -221,22 +221,22 @@ class daemon_manager():
     __metaclass__ = Singleton
 
     def __init__(self, mods: List) -> None:
-        # FIFO list
-        self.fifos = {}
+        # file list
+        self.files = {}
 
         # mods list
         self.mods = mods
 
-    async def fifo_listner(self, name: str) -> None:
-        """ Async FIFO(named-pipe) listner
+    async def ipc_listner(self, name: str) -> None:
+        """ Async neg-ipc-file listner
 
             Args:
                 name(str): module name.
         """
         while True:
-            async with aiofiles.open(self.fifos[name], mode='r') as fifo:
+            async with aiofiles.open(self.files[name], mode='r') as fd:
                 while True:
-                    data = await fifo.read()
+                    data = await fd.read()
                     if not len(data):
                         break
                     eval_str = data.split('\n', 1)[0]
@@ -246,25 +246,25 @@ class daemon_manager():
                     except Exception:
                         print_traceback()
 
-    def add_fifo(self, name: str) -> None:
-        """ Add negi3mods FIFO.
+    def add_ipc(self, name: str) -> None:
+        """ Add negi3mods IPC.
         """
-        self.fifos[name] = self.create_fifo(name)
+        self.files[name] = self.create_ipc(name)
 
-    def create_fifo(self, name: str) -> str:
-        """ Create FIFO for the given name
+    def create_ipc(self, name: str) -> str:
+        """ Create IPC for the given name
         """
-        fifo = os.path.realpath(os.path.expandvars(
-            '$HOME/tmp/' + name + '.fifo'))
-        if os.path.exists(fifo):
-            os.remove(fifo)
+        neg_ipc_file = os.path.realpath(os.path.expandvars(
+            '/dev/shm/' + name + '.nif'))
+        if os.path.exists(neg_ipc_file):
+            os.remove(neg_ipc_file)
         try:
-            os.mkfifo(fifo)
+            os.mkfifo(neg_ipc_file)
         except OSError as oe:
             if oe.errno != os.errno.EEXIST:
                 raise
         finally:
-            return fifo
+            return neg_ipc_file
 
     def mainloop(self, loop) -> None:
         """ Mainloop for module. Started by negi3mods in separated thread.
@@ -275,6 +275,6 @@ class daemon_manager():
         """
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
-            asyncio.wait([self.fifo_listner(m) for m in self.mods])
+            asyncio.wait([self.ipc_listner(m) for m in self.mods])
         )
 
