@@ -21,6 +21,7 @@ import sys
 import subprocess
 import traceback
 import re
+import errno
 import asyncio
 import aiofiles
 from typing import List, Iterator
@@ -29,6 +30,14 @@ from singleton import Singleton
 
 def print_traceback() -> None:
     print(traceback.format_exc())
+
+
+def create_dir(dirname):
+    try:
+        os.makedirs(dirname)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
 
 def i3path() -> str:

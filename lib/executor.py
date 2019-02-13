@@ -17,6 +17,7 @@ from os.path import expanduser
 from modi3cfg import modi3cfg
 from singleton import Singleton
 from multiprocessing import Process
+from main import create_dir
 
 
 class env():
@@ -35,12 +36,23 @@ class env():
     def __init__(self, name: str, cfg: dict) -> None:
         self.name = name
         self.tmux_socket_dir = expanduser('/dev/shm/tmux_sockets')
+        self.alacritty_cfg_dir = expanduser('/dev/shm/alacritty_cfg')
         self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
+        self.default_alacritty_cfg_path = "~/.config/alacritty/alacritty.yml"
+        create_dir(self.tmux_socket_dir)
+        create_dir(self.alacritty_cfg_dir)
         try:
             os.makedirs(self.tmux_socket_dir)
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
+
+        try:
+            os.makedirs(self.alacritty_cfg_dir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+
         self.window_class = cfg.get(name, {}).get("window_class", {})
 
         # get terminal from config, use Alacritty by default
@@ -86,12 +98,11 @@ class env():
         if not alacritty_suffix:
             alacritty_suffix = cfg.get(name, {}).get('window_class')
 
-        ret = expanduser("~/.config/alacritty/alacritty.yml")
+        expanduser(self.default_alacritty_cfg_path)
 
-        alacritty_suffix = expanduser(
-            "alacritty_" + alacritty_suffix + '.yml'
-        )
-        cfgname = expanduser("~/tmp/" + alacritty_suffix)
+        alacritty_suffix = expanduser(alacritty_suffix + '.yml')
+        cfgname = expanduser(f'{self.alacritty_cfg_dir}/{alacritty_suffix}')
+
         if not os.path.exists(cfgname):
             shutil.copyfile(
                 expanduser("~/.config/alacritty/alacritty.yml"),
