@@ -5,7 +5,6 @@ LIBS := $(GLFW3) -lGL -lm -lGLU -lGLEW
 .PHONY: all
 
 all:  \
-	placeholder \
 	wm_class \
 	send
 
@@ -13,14 +12,8 @@ generate: clean
 
 clean:
 	@rm -rfv \
-	    placeholder/placeholder \
 	    wm_class \
 	    send
-
-placeholder: placeholder/placeholder
-
-placeholder/placeholder: placeholder/placeholder.c
-	$(CC) $(CFLAGS) $(LIBS) $@.c -o $@
 
 wm_class: wm_class.c
 	$(CC) $(CFLAGS) -lX11 $@.c -o $@
