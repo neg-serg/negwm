@@ -49,7 +49,7 @@ import asyncio
 import i3ipc
 import re
 from threading import Thread, Event
-
+from main import extract_xrdb_value
 
 class ws_printer(modconfig):
     def __init__(self):
@@ -73,8 +73,10 @@ class ws_printer(modconfig):
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.ws_color = self.cfg.get("ws_color")
-        self.binding_color = self.cfg.get("binding_color")
+        self.ws_color_field = self.cfg.get("ws_color_field")
+        self.binding_color_field = self.cfg.get("binding_color_field")
+        self.ws_color = extract_xrdb_value(self.ws_color_field)
+        self.binding_color = extract_xrdb_value(self.binding_color_field)
         self.ws_name = ""
 
         for ws in self.i3.get_workspaces():
