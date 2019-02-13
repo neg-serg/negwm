@@ -48,6 +48,19 @@ def i3path() -> str:
     return i3_path
 
 
+def extract_xrdb_value(field: str) -> str:
+    """ Extracts field from xrdb executable.
+    """
+    out = subprocess.run(
+        f"xrdb -query | rg '{field}' | awk '{{print $2}}'",
+        shell=True,
+        stdout=subprocess.PIPE
+    ).stdout
+    if out is not None and out:
+        ret = out.decode('UTF-8').split()[0]
+        return ret
+
+
 def notify_msg(msg: str, prefix: str = " "):
     """ Send messages via notify-osd based notifications.
 
@@ -55,9 +68,10 @@ def notify_msg(msg: str, prefix: str = " "):
             msg: message string.
             prefix: optional prefix for message string.
     """
+    foreground_color = extract_xrdb_value('\\*.foreground')
     notify_msg = [
         'notify-send',
-        "<span weight='normal' color='#617287'>" +
+        f"<span weight='normal' color='{foreground_color}'>" +
         prefix + msg +
         "</span>"
     ]
