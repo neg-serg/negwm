@@ -36,6 +36,7 @@ import sys
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
 from basic_config import modconfig
+from main import extract_xrdb_value
 
 
 class vol_printer(modconfig):
@@ -66,12 +67,21 @@ class vol_printer(modconfig):
         # various MPD // Volume printer delimiters
         self.delimiter = self.cfg.get("delimiter", "||")
 
+        # xrdb-colors: use blue by default for brackets
+        self.bracket_color_field = self.cfg.get("bracket_color_field", '\\*.color4')
+        self.bright_color_field = self.cfg.get("bright_color_field", 'polybar.light')
+        self.foreground_color_field = self.cfg.get("foreground_color_field", '\\*.foreground')
+
+        self.bracket_color = extract_xrdb_value(self.bracket_color_field)
+        self.bright_color = extract_xrdb_value(self.bright_color_field)
+        self.foreground_color = extract_xrdb_value(self.foreground_color_field)
+
         # set string for the empty output
         if self.cfg.get('show_volume', '').startswith('y'):
-            self.empty_str = f"%{{F#395573}}{self.delimiter}%{{F#cccccc}}" + \
-                f"Vol: %{{F#617287}}n/a%{{F-}} %{{F#395573}}⟭%{{F-}}"
+            self.empty_str = f"%{{F{self.bracket_color}}}{self.delimiter}%{{F{self.bright_color}}}" + \
+                f"Vol: %{{F{self.foreground_color}}}n/a%{{F-}} %{{F{self.bracket_color}}}⟭%{{F-}}"
         else:
-            self.empty_str = f" %{{F#395573}}⟭%{{F-}}"
+            self.empty_str = f" %{{F{self.bracket_color}}}⟭%{{F-}}"
 
         # run mainloop
         self.main()
@@ -92,8 +102,8 @@ class vol_printer(modconfig):
     def print_volume(self):
         """ Create nice and shiny output for polybar.
         """
-        return f'%{{F#395573}}{self.delimiter}%{{F-}}%{{F#cccccc}}' + \
-            f'Vol: {self.volume}%%{{F-}}%{{F#395573}} ⟭%{{F-}}'
+        return f'%{{F{self.bracket_color}}}{self.delimiter}%{{F-}}%{{F{self.bright_color}}}' + \
+            f'Vol: {self.volume}%%{{F-}}%{{F{self.bracket_color}}} ⟭%{{F-}}'
 
     def empty_output(self):
         """ This output will be used if no information about volume.
