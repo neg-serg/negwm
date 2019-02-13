@@ -30,7 +30,7 @@ import i3ipc
 import shutil
 from threading import Thread
 from lib.locker import get_lock
-from lib.main import daemon_manager, notify_msg, i3path
+from lib.main import daemon_manager, notify_msg, i3path, extract_xrdb_value
 from lib.basic_config import modconfig
 
 
@@ -61,7 +61,8 @@ class negi3mods(modconfig):
 
         # stuff for startup notifications
         self.notification_text = "Wow! It's time to start mods!\n\n"
-        notification_color = self.cfg.get("notification_color", '#ffffff')
+        notification_color_field = self.cfg.get("notification_color_field", '\\*.color4')
+        notification_color = extract_xrdb_value(notification_color_field)
         prefix = self.cfg.get("prefix", ">")
         self.msg_prefix = f"<span weight='normal' \
                            color='{notification_color}'> {prefix} </span>"
