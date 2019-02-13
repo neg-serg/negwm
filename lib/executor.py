@@ -8,6 +8,7 @@ there is no parsing / translation phase here in runtime.
 """
 import subprocess
 import os
+import errno
 import shlex
 import shutil
 import yaml
@@ -33,9 +34,13 @@ class env():
     """
     def __init__(self, name: str, cfg: dict) -> None:
         self.name = name
-        self.sockpath = expanduser(
-            f'~/1st_level/{name}.socket'
-        )
+        self.tmux_socket_dir = expanduser('/dev/shm/tmux_sockets')
+        self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
+        try:
+            os.makedirs(self.tmux_socket_dir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
         self.window_class = cfg.get(name, {}).get("window_class", {})
 
         # get terminal from config, use Alacritty by default
