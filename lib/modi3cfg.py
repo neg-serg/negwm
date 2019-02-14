@@ -225,7 +225,7 @@ class modi3cfg(object):
                         self.cfg[tag].update({t: self.win_attrs[t]})
                     # special fix for the case where attr
                     # is just attr not {attr}
-                    if type(self.cfg[tag][t]) == str:
+                    if type(self.conf(tag, t)) == str:
                         self.cfg[tag][t] = {self.win_attrs[t]}
 
     def del_direct_props(self, tag: str) -> None:
@@ -236,9 +236,9 @@ class modi3cfg(object):
         # Delete 'direct' props:
         for t in self.cfg[tag].copy():
             if t in self.cfg_props():
-                if type(self.cfg[tag][t]) is str:
+                if type(self.conf(tag, t)) is str:
                     del self.cfg[tag][t]
-                elif type(self.cfg[tag][t]) is set:
+                elif type(self.conf(tag, t)) is set:
                     for tok in self.cfg[tag][t].copy():
                         if self.win_attrs[t] == tok:
                             self.cfg[tag][t].remove(tok)
@@ -276,6 +276,6 @@ class modi3cfg(object):
 
         # Cleanup
         for t in self.cfg_regex_props() | self.cfg_props():
-            if t in self.cfg[tag] and self.cfg[tag][t] == set():
+            if t in self.conf(tag) and self.conf(tag, t) == set():
                 del self.cfg[tag][t]
 

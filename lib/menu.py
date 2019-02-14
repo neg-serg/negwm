@@ -36,16 +36,16 @@ class menu(modi3cfg):
         self.i3_path = i3path()
 
         # i3-msg application name
-        self.i3cmd = self.cfg.get("i3cmd", 'i3-msg')
+        self.i3cmd = self.conf("i3cmd")
 
         # magic pie to spawn error, used for autocomplete.
-        self.magic_pie = self.cfg.get('magic_pie', 'sssssnake')
+        self.magic_pie = self.conf('magic_pie')
 
         # default echo server host
-        self.host = self.cfg.get("host", "::")
+        self.host = self.conf("host")
 
         # default echo server port
-        self.port = int(self.cfg.get("port", 31888))
+        self.port = int(self.conf("port"))
 
         # create echo server socket
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
@@ -56,12 +56,12 @@ class menu(modi3cfg):
         self.possible_mods = ['ns', 'circle']
 
         # Window properties shown by xprop menu.
-        self.xprops_list = self.cfg.get("xprops_list", {})
+        self.xprops_list = self.conf("xprops_list")
 
         # Window properties used by i3 to match windows.
-        self.i3rules_xprop = set(self.cfg.get("rules_xprop", {}))
+        self.i3rules_xprop = set(self.conf("rules_xprop"))
 
-        self.wslist = self.cfg.get("wslist", {})
+        self.wslist = self.conf("wslist")
 
         # Magic delimiter used by add_prop / del_prop routines.
         self.delim = "@"
@@ -70,21 +70,21 @@ class menu(modi3cfg):
         self.screen_width = get_screen_resolution()["width"]
 
         # set up settings for rofi, dmenu, whatever
-        self.launcher_font = self.cfg.get("font", "sans") + " " + \
-            str(self.cfg.get("font_size", "14"))
-        self.location = self.cfg.get("location", "south")
-        self.anchor = self.cfg.get("anchor", "south")
-        self.matching = self.cfg.get("matching", "fuzzy")
-        self.prompt = self.cfg.get("prompt", ">>")
+        self.launcher_font = self.conf("font") + " " + \
+            str(self.conf("font_size"))
+        self.location = self.conf("location")
+        self.anchor = self.conf("anchor")
+        self.matching = self.conf("matching")
+        self.prompt = self.conf("prompt")
 
-        self.scratchpad_color = self.cfg.get("scratchpad_color", '#395573')
-        self.ws_name_color = self.cfg.get("ws_name_color", '#4779B3')
-        self.wm_class_color = self.cfg.get("wm_class_color", "#228888")
+        self.scratchpad_color = self.conf("scratchpad_color")
+        self.ws_name_color = self.conf("ws_name_color")
+        self.wm_class_color = self.conf("wm_class_color")
 
-        self.lhs_br = self.cfg.get('left_bracket', '[')
-        self.rhs_br = self.cfg.get('right_bracket', ']')
+        self.lhs_br = self.conf('left_bracket')
+        self.rhs_br = self.conf('right_bracket')
 
-        self.gap = self.cfg.get('gap', '34')
+        self.gap = self.conf('gap')
 
     def rofi_args(self, prompt: str = None, cnum: int = 16,
                   lnum: int = 2,

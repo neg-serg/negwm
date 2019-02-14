@@ -440,7 +440,7 @@ class ns(modi3cfg, Matcher):
         focused = self.i3.get_tree().find_focused()
         for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
-                self.cfg[tag]["geom"] = f"{focused.rect.width}x" + \
+                self.conf[tag]["geom"] = f"{focused.rect.width}x" + \
                     f"{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
                 self.dump_config()
                 break
@@ -454,7 +454,7 @@ class ns(modi3cfg, Matcher):
         focused = self.i3.get_tree().find_focused()
         for idx, win in enumerate(self.marked[tag]):
             if win.id == focused.id:
-                self.cfg[tag]["geom"] = f"{focused.rect.width}x\
+                self.conf[tag]["geom"] = f"{focused.rect.width}x\
                     {focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
                 if win.rect.x != focused.rect.x \
                     or win.rect.y != focused.rect.y \

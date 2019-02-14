@@ -33,22 +33,22 @@ class vol(Singleton, modi3cfg):
         self.loop = loop
 
         # Default increment step for mpd.
-        self.inc = self.cfg.get("mpd_inc", 1)
+        self.inc = self.conf("mpd_inc")
 
         # Default mpd address.
-        self.mpd_addr = self.cfg.get("mpd_addr", "::1")
+        self.mpd_addr = self.conf("mpd_addr")
 
         # Default mpd port.
-        self.mpd_port = self.cfg.get("mpd_port", "6600")
+        self.mpd_port = self.conf("mpd_port")
 
         # Default mpd buffer size.
-        self.mpd_buf_size = self.cfg.get("mpd_buf_size", 1024)
+        self.mpd_buf_size = self.conf("mpd_buf_size")
 
         # Default mpv socket.
-        self.mpv_socket = self.cfg.get("mpv_socket", "/tmp/mpv.socket")
+        self.mpv_socket = self.conf("mpv_socket")
 
         # Send 0, 9 keys to the mpv window or not.
-        self.use_mpv09 = self.cfg.get("use_mpv09", True)
+        self.use_mpv09 = self.conf("use_mpv09")
 
         # Cache current window on focus.
         self.i3.on("window::focus", self.set_curr_win)

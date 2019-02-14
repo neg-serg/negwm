@@ -57,7 +57,7 @@ class ws_printer(modconfig):
         self.loop = asyncio.get_event_loop()
 
         # Initialize modcfg.
-        super().__init__(self.loop)
+        modconfig.__init__(self, self.loop)
 
         self.event = Event()
         self.event.set()
@@ -73,8 +73,8 @@ class ws_printer(modconfig):
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.ws_color_field = self.cfg.get("ws_color_field")
-        self.binding_color_field = self.cfg.get("binding_color_field")
+        self.ws_color_field = self.conf("ws_color_field")
+        self.binding_color_field = self.conf("binding_color_field")
         self.ws_color = extract_xrdb_value(self.ws_color_field)
         self.binding_color = extract_xrdb_value(self.binding_color_field)
         self.ws_name = ""

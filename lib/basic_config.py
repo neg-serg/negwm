@@ -47,6 +47,20 @@ class modconfig(object):
             self.cfg = prev_conf
             self.__init__()
 
+    def conf(self, *conf_path):
+        """ Helper to extract config for current tag.
+
+        Args:
+            conf_path: path of config from where extract.
+        """
+        ret = {}
+        for part in conf_path:
+            if not ret:
+                ret = self.cfg.get(part)
+            else:
+                ret = ret.get(part)
+        return ret
+
     def load_config(self):
         """ Reload config itself and convert lists in it to sets for the better
             performance.

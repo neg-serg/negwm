@@ -36,21 +36,21 @@ class info(modi3cfg):
         """
 
         # modi3cfg init.
-        super().__init__(i3)
+        modi3cfg.__init__(self, i3)
 
         # server addresses.
-        self.echo_addr = self.cfg.get("echo_addr", '::')
-        self.wait_proc_addr = self.cfg.get("wait_proc_addr", '::')
+        self.echo_addr = self.conf("echo_addr")
+        self.wait_proc_addr = self.conf("wait_proc_addr")
 
         # server ports.
-        self.echo_port = int(self.cfg.get("echo_port", '31888'))
-        self.wait_proc_port = int(self.cfg.get("wait_port", '31887'))
+        self.echo_port = int(self.conf("echo_port"))
+        self.wait_proc_port = int(self.conf("wait_port"))
 
         # default connection count.
-        self.conn_count = int(self.cfg.get("conn_count", 10))
+        self.conn_count = int(self.conf("conn_count"))
 
         # buffer size.
-        self.buf_size = int(self.cfg.get('buf_size', 2048))
+        self.buf_size = int(self.conf('buf_size'))
 
         # nsd instance. We need it to extract info
         # circled instance. We need it to extract info

@@ -44,16 +44,16 @@ class vol_printer(modconfig):
         self.loop = asyncio.get_event_loop()
 
         # Initialize modcfg.
-        super().__init__(self.loop)
+        modconfig.__init__(self, self.loop)
 
         # default MPD address
-        self.addr = self.cfg.get("mpdaddr", "::1")
+        self.addr = self.conf("mpdaddr")
 
         # default MPD port
-        self.port = self.cfg.get("mpdport", "6600")
+        self.port = self.conf("mpdport")
 
         # buffer size
-        self.buf_size = self.cfg.get("bufsize", 1024)
+        self.buf_size = self.conf("bufsize")
 
         # output string
         self.volume = ""
@@ -65,19 +65,19 @@ class vol_printer(modconfig):
         self.status_cmd_str = "status\n"
 
         # various MPD // Volume printer delimiters
-        self.delimiter = self.cfg.get("delimiter", "||")
+        self.delimiter = self.conf("delimiter")
 
         # xrdb-colors: use blue by default for brackets
-        self.bracket_color_field = self.cfg.get("bracket_color_field", '\\*.color4')
-        self.bright_color_field = self.cfg.get("bright_color_field", 'polybar.light')
-        self.foreground_color_field = self.cfg.get("foreground_color_field", '\\*.foreground')
+        self.bracket_color_field = self.conf("bracket_color_field")
+        self.bright_color_field = self.conf("bright_color_field")
+        self.foreground_color_field = self.conf("foreground_color_field")
 
         self.bracket_color = extract_xrdb_value(self.bracket_color_field)
         self.bright_color = extract_xrdb_value(self.bright_color_field)
         self.foreground_color = extract_xrdb_value(self.foreground_color_field)
 
         # set string for the empty output
-        if self.cfg.get('show_volume', '').startswith('y'):
+        if self.conf('show_volume').startswith('y'):
             self.empty_str = f"%{{F{self.bracket_color}}}{self.delimiter}%{{F{self.bright_color}}}" + \
                 f"Vol: %{{F{self.foreground_color}}}n/a%{{F-}} %{{F{self.bracket_color}}}⟭%{{F-}}"
         else:

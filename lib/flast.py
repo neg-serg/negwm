@@ -42,7 +42,7 @@ class flast(modi3cfg):
         self.max_win_history = 64
 
         # workspaces with auto alt-tab when close
-        self.autoback = self.cfg.get('autoback', {})
+        self.autoback = self.conf('autoback')
 
         self.i3.on('window::focus', self.on_window_focus)
         self.i3.on('window::close', self.go_back_if_nothing)

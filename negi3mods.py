@@ -53,7 +53,7 @@ class negi3mods(modconfig):
 
         self.loop = loop
         self.mods = {}
-        for mod in self.cfg["module_list"]:
+        for mod in self.conf("module_list"):
             self.mods[intern(mod)] = None
 
         # Start inotify watchers
@@ -61,9 +61,9 @@ class negi3mods(modconfig):
 
         # stuff for startup notifications
         self.notification_text = "Wow! It's time to start mods!\n\n"
-        notification_color_field = self.cfg.get("notification_color_field", '\\*.color4')
+        notification_color_field = self.conf("notification_color_field")
         notification_color = extract_xrdb_value(notification_color_field)
-        prefix = self.cfg.get("prefix", ">")
+        prefix = self.conf("prefix")
         self.msg_prefix = f"<span weight='normal' \
                            color='{notification_color}'> {prefix} </span>"
 
@@ -196,7 +196,7 @@ class negi3mods(modconfig):
         asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
 
     def run_procs(self):
-        for proc in self.cfg.get("proc_list", {}):
+        for proc in self.conf("proc_list"):
             # Start echo server as separated process
             subprocess.run(['pkill', '-f', f'proc/{proc}.py'])
             subprocess.run(

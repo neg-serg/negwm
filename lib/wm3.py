@@ -36,7 +36,7 @@ class wm3(Singleton, modi3cfg):
         self.i3 = i3
 
         # cache list length
-        maxlength = self.cfg["cache_list_size"]
+        maxlength = self.conf("cache_list_size")
 
         # create list with the finite number of elements by the [None] * N hack
         self.geom_list = collections.deque(
@@ -51,16 +51,16 @@ class wm3(Singleton, modi3cfg):
         self.load_useless_gaps()
 
         # config about useless gaps for quad splitting, True by default
-        self.quad_use_gaps = self.cfg.get("quad_use_gaps", True)
+        self.quad_use_gaps = self.conf("quad_use_gaps")
 
         # config about useless gaps for half splitting, True by default
-        self.x2_use_gaps = self.cfg.get("x2_use_gaps", True)
+        self.x2_use_gaps = self.conf("x2_use_gaps")
 
         # coeff to grow window in all dimensions
-        self.grow_coeff = self.cfg.get("grow_coeff", 1.01)
+        self.grow_coeff = self.conf("grow_coeff")
 
         # coeff to shrink window in all dimensions
-        self.shrink_coeff = self.cfg.get("shrink_coeff", 0.99)
+        self.shrink_coeff = self.conf("shrink_coeff")
 
     def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
