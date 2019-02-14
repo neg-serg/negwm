@@ -381,12 +381,8 @@ bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
-exec_always make -C $i3 &
-exec_always $i3/negi3mods.py >> ~/tmp/negi3mods.log 2>&1 &
-exec_always pkill -f 'mpc idle'
-exec_always pkill polybar
-exec_always pkill sxhkd; sxhkd &
-exec_always zsh ~/bin/scripts/panel_run.sh
+exec_always zsh ~/bin/scripts/i3_prepare.sh
+exec_always zsh ~/bin/scripts/panel_run.sh hard
 exec --no-startup-id caffeine &
 exec --no-startup-id sleep 1s && ${XDG_CONFIG_HOME}/i3/send circle next term
 # vim:filetype=i3
