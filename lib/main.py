@@ -114,9 +114,9 @@ def find_visible_windows(windows_on_ws: List) -> List:
             ).stdout
         except Exception:
             print("get some problem in [find_visible_windows] in [main]")
-        if xprop is not None and xprop:
+        if xprop is not None:
             xprop = xprop.decode('UTF-8').strip()
-            if '_NET_WM_STATE_HIDDEN' not in xprop:
+            if xprop == '_NET_WM_STATE_HIDDEN:  not found.':
                 visible_windows.append(w)
 
     return visible_windows
