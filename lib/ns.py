@@ -178,9 +178,8 @@ class ns(modi3cfg, Matcher):
             ).stdout
             if xprop is not None:
                 xprop = xprop.decode('UTF-8').strip()
-                if xprop:
-                    if '_NET_WM_STATE_HIDDEN' not in xprop:
-                        visible_windows.append(w)
+                if xprop == '_NET_WM_STATE_HIDDEN:  not found.':
+                    visible_windows.append(w)
 
         return visible_windows
 
@@ -217,11 +216,11 @@ class ns(modi3cfg, Matcher):
         if xprop is not None:
             xprop = xprop.decode('UTF-8').strip()
             if xprop:
-                if '_NET_WM_STATE_HIDDEN' not in xprop:
-                    ret = not (
-                        '_NET_WM_WINDOW_TYPE_DIALOG' in xprop
+                if '_NET_WM_STATE_HIDDEN:  not found.' in xprop:
+                    ret = (
+                        '_NET_WM_WINDOW_TYPE_DIALOG:  not found.' in xprop
                         or
-                        '_NET_WM_STATE_MODAL' in xprop
+                        '_NET_WM_STATE_MODAL:  not found.' in xprop
                     )
         return ret
 
