@@ -109,7 +109,7 @@ def find_visible_windows(windows_on_ws: List) -> List:
         xprop = None
         try:
             xprop = subprocess.run(
-                ['xprop', '-id', str(w.window)],
+                ['xprop', '-id', str(w.window), '_NET_WM_STATE_HIDDEN'],
                 stdout=subprocess.PIPE
             ).stdout
         except Exception:
