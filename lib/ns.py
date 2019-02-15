@@ -172,7 +172,7 @@ class ns(modi3cfg, Matcher):
         xprop = None
         for w in wswins:
             xprop = subprocess.run(
-                ['xprop', '-id', str(w.window)],
+                ['xprop', '-id', str(w.window), "_NET_WM_STATE_HIDDEN"],
                 stdin=None,
                 stdout=subprocess.PIPE
             ).stdout
@@ -203,7 +203,10 @@ class ns(modi3cfg, Matcher):
         xprop = None
         try:
             xprop = subprocess.run(
-                ['xprop', '-id', str(w.window)],
+                ['xprop', '-id', str(w.window),
+                 "_NET_WM_STATE_HIDDEN",
+                 "_NET_WM_WINDOW_TYPE_DIALOG",
+                 "_NET_WM_STATE_MODAL"],
                 stdin=None,
                 stdout=subprocess.PIPE
             ).stdout
