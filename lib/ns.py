@@ -171,12 +171,11 @@ class ns(modi3cfg, Matcher):
 
         xprop = None
         for w in wswins:
-            xprop_p = subprocess.Popen(
+            xprop = subprocess.run(
                 ['xprop', '-id', str(w.window)],
                 stdin=None,
                 stdout=subprocess.PIPE
-            )
-            xprop, _ = xprop_p.communicate()
+            ).stdout
             if xprop is not None:
                 xprop = xprop.decode('UTF-8').strip()
                 if xprop:
@@ -203,12 +202,11 @@ class ns(modi3cfg, Matcher):
         ret = True
         xprop = None
         try:
-            xprop_p = subprocess.Popen(
+            xprop = subprocess.run(
                 ['xprop', '-id', str(w.window)],
                 stdin=None,
                 stdout=subprocess.PIPE
-            )
-            xprop, _ = xprop_p.communicate()
+            ).stdout
         except Exception:
             print("get some problem in [check_dialog_win] in [nsd.py]")
             print_traceback()
