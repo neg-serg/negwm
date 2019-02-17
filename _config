@@ -81,9 +81,9 @@ set $term " α:term"
 set $web " β:web"
 set $doc " γ:doc"
 set $dev " δ:dev"
-set $media " ε:media"
-set $gimp " ζ:gimp"
-set $admin " η:admin"
+set $gfx " ε:gfx"
+set $draw " ζ:draw"
+set $sys " η:sys"
 set $ide " θ:ide"
 set $steam " ι:steam"
 set $torrent " κ:torrent"
@@ -124,14 +124,14 @@ for_window [class="guncharmap"] move workspace $doc
 for_window $vms move workspace $vm, focus
 for_window $office move workspace $doc, focus
 for_window [{class,instance}="^term$"] move workspace $term, focus
-for_window $mplayer move workspace $media, focus
-for_window $webcam move workspace $media, focus
-for_window [class="Nicotine.*" instance="nicotine"] move workspace $media, focus
-for_window [class="^lollypop$"] move workspace $media, focus
+for_window $mplayer move workspace $gfx, focus
+for_window $webcam move workspace $gfx, focus
+for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
+for_window [class="^lollypop$"] move workspace $gfx, focus
 for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="Sxiv"] move workspace $sxiv, focus
 for_window $torrent_apps move workspace $torrent, focus
-for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $admin, focus
+for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote
 for_window [class="albert"] move workspace current, focus
 
@@ -150,7 +150,7 @@ for_window [class="Wpg.py"] floating enable, move position 1210 626, resize set 
 # ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
 # ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀░░░▀░▀░▀▀▀░▀▀▀░▀▀▀
-for_window [class="^(Gimp|darktable|inkscape)$"] move workspace $gimp
+for_window [class="^(draw|darktable|inkscape)$"] move workspace $draw
 
 # ░█▀▀░█▀▄░▀█▀░▀█▀░█▀█░█▀▄░█▀▀
 # ░█▀▀░█░█░░█░░░█░░█░█░█▀▄░▀▀█
