@@ -172,18 +172,18 @@ class ns(modi3cfg, Matcher):
         xprop = None
         for w in wswins:
             xprop = subprocess.run(
-                ['xprop', '-id', str(w.window), "_NET_WM_STATE_HIDDEN"],
+                ['xprop', '-id', str(w.window), "_NET_WM_STATE"],
                 stdin=None,
                 stdout=subprocess.PIPE
             ).stdout
             if xprop is not None:
                 xprop = xprop.decode('UTF-8').strip()
-                if xprop == '_NET_WM_STATE_HIDDEN:  not found.':
+                if '_NET_WM_STATE_HIDDEN' not in xprop:
                     visible_windows.append(w)
 
         return visible_windows
 
-    def check_dialog_win(self, w) -> bool:
+    def is_dialog_win(self, w) -> bool:
         """ Check that window [w] is not dialog window
 
             Unfortunately for now external xprop application used for it,
@@ -195,45 +195,40 @@ class ns(modi3cfg, Matcher):
                 w : target window to check
         """
         if w.window_instance == "Places" \
-                or w.window_role == "GtkFileChooserDialog" \
+                or w.window_role in {"GtkFileChooserDialog", "confirmEx",
+                                     "gimp-file-open"} \
                 or w.window_class == "Dialog":
-            return False
-        ret = True
+            return True
+
         xprop = None
         try:
             xprop = subprocess.run(
-                ['xprop', '-id', str(w.window),
-                 "_NET_WM_STATE_HIDDEN",
-                 "_NET_WM_WINDOW_TYPE_DIALOG",
-                 "_NET_WM_STATE_MODAL"],
+                ['xprop', '-id', str(w.window), "_NET_WM_WINDOW_TYPE"],
                 stdin=None,
                 stdout=subprocess.PIPE
             ).stdout
         except Exception:
-            print("get some problem in [check_dialog_win] in [nsd.py]")
             print_traceback()
 
         if xprop is not None:
-            xprop = xprop.decode('UTF-8').strip()
+            xprop = xprop.decode('UTF-8').strip().split('\n')
             if xprop:
-                if '_NET_WM_STATE_HIDDEN:  not found.' in xprop:
-                    ret = (
-                        '_NET_WM_WINDOW_TYPE_DIALOG:  not found.' in xprop
-                        or
-                        '_NET_WM_STATE_MODAL:  not found.' in xprop
-                    )
-        return ret
+                for tok in xprop:
+                    if '_NET_WM_WINDOW_TYPE(ATOM)' in tok:
+                        return '_NET_WM_WINDOW_TYPE_DIALOG' in tok \
+                                or '_NET_WM_STATE_MODAL' in tok
+        return False
 
     def dialog_toggle(self) -> None:
         """ Show dialog windows
 
-            This function using self.check_dialog_win, which use information
+            This function using self.is_dialog_win, which use information
             extracted from xprop application. And because of this it's not so
             fast. But this operation is pretty rare, so no problem here.
         """
         wlist = self.i3.get_tree().leaves()
         for win in wlist:
-            if not self.check_dialog_win(win):
+            if self.is_dialog_win(win):
                 win.command('move container to workspace current, focus')
 
     def toggle_fs(self, win) -> None:
@@ -611,7 +606,7 @@ class ns(modi3cfg, Matcher):
         self.winlist = self.i3.get_tree()
         for tag in self.cfg:
             if self.match(win, tag):
-                if self.check_dialog_win(win):
+                if not self.is_dialog_win(win):
                     # scratch_move
                     win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}"
@@ -667,7 +662,7 @@ class ns(modi3cfg, Matcher):
         for tag in self.cfg:
             for win in leaves:
                 if self.match(win, tag):
-                    if self.check_dialog_win(win):
+                    if not self.is_dialog_win(win):
                         # scratch move
                         hide_cmd = ''
                         if hide:
