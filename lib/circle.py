@@ -93,6 +93,9 @@ class circle(modi3cfg, Matcher):
         # tag all windows after start
         self.tag_windows()
 
+        # prepare for prefullscreen
+        self.fullscreened = self.i3.get_tree().find_fullscreen()
+
         # store the current window here to cache get_tree().find_focused value.
         self.current_win = self.i3.get_tree().find_focused()
 
@@ -133,8 +136,7 @@ class circle(modi3cfg, Matcher):
     def prefullscreen(self, tag: str) -> None:
         """ Prepare to go fullscreen.
         """
-        fullscreened = self.i3.get_tree().find_fullscreen()
-        for win in fullscreened:
+        for win in self.fullscreened:
             if self.current_win.window_class in set(self.conf(tag, "class")) \
                     and self.current_win.id == win.id:
                 self.need_handle_fullscreen = False
@@ -223,8 +225,7 @@ class circle(modi3cfg, Matcher):
 
                     for idx, item in enumerate(self.tagged[tag]):
                         if item.window_class == self.conf(tag, "priority"):
-                            fullscreened = self.i3.get_tree().find_fullscreen()
-                            for win in fullscreened:
+                            for win in self.fullscreened:
                                 if win.window_class in self.conf(tag, "class") and \
                                         win.window_class != self.conf(tag, "priority"):
                                     self.interactive = False
@@ -427,6 +428,7 @@ class circle(modi3cfg, Matcher):
                 event.container.
         """
         win = event.container
+        self.fullscreened = self.i3.get_tree().find_fullscreen()
         if self.need_handle_fullscreen:
             if win.fullscreen_mode:
                 if win.id not in self.restore_fullscreen:
