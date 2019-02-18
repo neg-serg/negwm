@@ -151,12 +151,10 @@ class ns(modi3cfg, Matcher):
             else:
                 win.command('move container to workspace current')
 
-    def find_visible_windows(self, focused: Optional[bool] = None) -> List:
-        """ Find windows visible on the screen now.
-
-            Unfortunately for now external xprop application used for it,
-            because of i3ipc gives no information about what windows
-            shown/hidden or about _NET_WM_STATE_HIDDEN attributes
+    def find_current_workspace_wins(
+            self, focused: Optional[bool] = None) -> List:
+        """ Find windows on the current workspace, which is enough for
+        scratchpads.
 
             Args:
                 focused: denotes that [focused] window should be extracted from
@@ -290,7 +288,7 @@ class ns(modi3cfg, Matcher):
 
         self.focus(tag)
 
-        visible_windows = self.find_visible_windows(focused)
+        visible_windows = self.find_current_workspace_wins(focused)
         for w in visible_windows:
             for i in self.marked[tag]:
                 if w.window_class in subtag_classes_set and w.id == i.id:
@@ -338,7 +336,7 @@ class ns(modi3cfg, Matcher):
             Args:
                 tag (str): denotes the target tag.
         """
-        visible_windows = self.find_visible_windows()
+        visible_windows = self.find_current_workspace_wins()
         vmarked = 0
         for w in visible_windows:
             for i in self.marked[tag]:
