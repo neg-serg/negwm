@@ -162,9 +162,7 @@ class ns(modi3cfg, Matcher):
                 focused: denotes that [focused] window should be extracted from
                          i3.get_tree() or not
         """
-        visible_windows = []
         wswins = []
-
         if focused is None:
             focused = self.i3.get_tree().find_focused()
 
@@ -172,19 +170,7 @@ class ns(modi3cfg, Matcher):
             if win.window is not None:
                 wswins.append(win)
 
-        xprop = None
-        for w in wswins:
-            xprop = subprocess.run(
-                ['xprop', '-id', str(w.window), "_NET_WM_STATE"],
-                stdin=None,
-                stdout=subprocess.PIPE
-            ).stdout
-            if xprop is not None:
-                xprop = xprop.decode('UTF-8').strip()
-                if '_NET_WM_STATE_HIDDEN' not in xprop:
-                    visible_windows.append(w)
-
-        return visible_windows
+        return wswins
 
     def is_dialog_win(self, w) -> bool:
         """ Check that window [w] is not dialog window
