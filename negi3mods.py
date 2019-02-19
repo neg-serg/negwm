@@ -1,4 +1,4 @@
-#!/usr/bin/pypy3
+#!/usr/bin/python3
 """ i3 negi3mods daemon script.
 
 This module loads all negi3mods an start it via main's daemon_manager
