@@ -4,16 +4,10 @@ LIBS := $(GLFW3) -lGL -lm -lGLU -lGLEW
 
 .PHONY: all
 
-all:  \
-	wm_class \
-	send
-
+all: wm_class send
 generate: clean
-
-clean:
-	@rm -rfv \
-	    wm_class \
-	    send
+clean: 
+	@rm -rfv wm_class send
 
 wm_class: wm_class.c
 	$(CC) $(CFLAGS) -lX11 $@.c -o $@
