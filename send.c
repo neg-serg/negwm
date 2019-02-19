@@ -93,7 +93,7 @@ const char *docstr =
     "Created by :: Neg\n"
     "email :: <serg.zorg@gmail.com>\n"
     "github :: https://github.com/neg-serg?tab=repositories\n"
-    "year :: 2018\n";
+    "year :: 2019\n";
 
 const char *progs[] = {[CIRCLE] = "circle",
                        [NS] = "ns",
