@@ -111,12 +111,12 @@ class ns(modi3cfg, Matcher):
                       performance and visual neatness
         """
         if not len(self.transients):
-            [
+            tgt_win = None
+            for win in self.marked[tag]:
                 win.command('move container to workspace current, focus')
-                for win in self.marked[tag]
-            ]
+                tgt_win = win
             if hide:
-                self.unfocus_all_but_current(tag)
+                self.unfocus_all_but_current(tag, tgt_win)
         else:
             try:
                 self.transients[0].command('focus')
@@ -138,18 +138,19 @@ class ns(modi3cfg, Matcher):
         ]
         self.restore_fullscreens()
 
-    def unfocus_all_but_current(self, tag: str) -> None:
+    def unfocus_all_but_current(self, tag: str, tgt_win) -> None:
         """ Hide all tagged windows except current.
 
             Args:
                 tag: tag string
         """
-        focused = self.i3.get_tree().find_focused()
-        for win in self.marked[tag]:
-            if win.id != focused.id:
-                win.command('move scratchpad')
-            else:
-                win.command('move container to workspace current')
+        tag_windows = self.marked[tag]
+        if len(tag_windows) > 1:
+            for win in self.marked[tag]:
+                if win.id != tgt_win.id:
+                    win.command('move scratchpad')
+                else:
+                    win.command('move container to workspace current')
 
     def find_current_workspace_wins(
             self, focused: Optional[bool] = None) -> List:
@@ -260,11 +261,6 @@ class ns(modi3cfg, Matcher):
         # We need to hide scratchpad it is visible,
         # regardless it focused or not
         focused = self.i3.get_tree().find_focused()
-
-        for w in self.marked[tag]:
-            if focused.id == w.id:
-                self.unfocus(tag)
-                return
 
         if len(self.marked.get(tag, {})):
             self.toggle_fs(focused)
