@@ -113,10 +113,12 @@ class ns(modi3cfg, Matcher):
         if not len(self.transients):
             tgt_win = None
             for win in self.marked[tag]:
-                win.command('move container to workspace current, focus')
+                win.command('move container to workspace current')
                 tgt_win = win
             if hide:
                 self.unfocus_all_but_current(tag, tgt_win)
+            if tgt_win is not None:
+                tgt_win.command('focus')
         else:
             try:
                 self.transients[0].command('focus')
@@ -144,8 +146,7 @@ class ns(modi3cfg, Matcher):
             Args:
                 tag: tag string
         """
-        tag_windows = self.marked[tag]
-        if len(tag_windows) > 1:
+        if len(self.marked[tag]) > 1 and tgt_win is not None:
             for win in self.marked[tag]:
                 if win.id != tgt_win.id:
                     win.command('move scratchpad')
