@@ -111,14 +111,14 @@ class ns(modi3cfg, Matcher):
                       performance and visual neatness
         """
         if not len(self.transients):
-            tgt_win = None
+            win_to_focus = None
             for win in self.marked[tag]:
                 win.command('move container to workspace current')
-                tgt_win = win
+                win_to_focus = win
             if hide:
-                self.unfocus_all_but_current(tag, tgt_win)
-            if tgt_win is not None:
-                tgt_win.command('focus')
+                self.unfocus_all_but_current(tag, win_to_focus)
+            if win_to_focus is not None:
+                win_to_focus.command('focus')
         else:
             try:
                 self.transients[0].command('focus')
@@ -140,15 +140,15 @@ class ns(modi3cfg, Matcher):
         ]
         self.restore_fullscreens()
 
-    def unfocus_all_but_current(self, tag: str, tgt_win) -> None:
+    def unfocus_all_but_current(self, tag: str, current_win) -> None:
         """ Hide all tagged windows except current.
 
             Args:
                 tag: tag string
         """
-        if len(self.marked[tag]) > 1 and tgt_win is not None:
+        if len(self.marked[tag]) > 1 and current_win is not None:
             for win in self.marked[tag]:
-                if win.id != tgt_win.id:
+                if win.id != current_win.id:
                     win.command('move scratchpad')
                 else:
                     win.command('move container to workspace current')
