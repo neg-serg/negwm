@@ -6,7 +6,7 @@ This daemon prints current MPD volume like `tail -f` echo server, so there is
 no need to use busy waiting to extract information from it.
 
 Usage:
-    ./vol_printer.py
+    ./polybar_vol.py
 
 Suppoused to be used inside polybar.
 
@@ -15,7 +15,7 @@ Config example:
 [module/volume]
 type = custom/script
 interval = 0
-exec = ~/.config/i3/proc/vol_printer.py
+exec = ~/.config/i3/proc/polybar_vol.py
 exec-if = sleep 1
 tail = true
 
@@ -39,7 +39,7 @@ from basic_config import modconfig
 from main import extract_xrdb_value
 
 
-class vol_printer(modconfig):
+class polybar_vol(modconfig):
     def __init__(self):
         self.loop = asyncio.get_event_loop()
 
@@ -172,5 +172,5 @@ class vol_printer(modconfig):
 
 
 if __name__ == '__main__':
-    vol_printer()
+    polybar_vol()
 

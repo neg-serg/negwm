@@ -9,7 +9,7 @@ leading to i3 wm dead-lock.
 Also it print current keybinding mode.
 
 Usage:
-    ./ws_printer.py
+    ./polybar_ws.py
 
 Suppoused to be used inside polybar.
 
@@ -17,7 +17,7 @@ Config example:
 
 [module/ws]
 type = custom/script
-exec = ~/.config/i3/proc/ws_printer.py
+exec = ~/.config/i3/proc/polybar_ws.py
 exec-if = sleep 1
 format = <label>
 tail = true
@@ -51,7 +51,7 @@ import re
 from threading import Thread, Event
 from main import extract_xrdb_value
 
-class ws_printer(modconfig):
+class polybar_ws(modconfig):
     def __init__(self):
         # initialize asyncio loop
         self.loop = asyncio.get_event_loop()
@@ -136,7 +136,7 @@ class ws_printer(modconfig):
 
 
 if __name__ == '__main__':
-    loop = ws_printer()
+    loop = polybar_ws()
     Thread(target=loop.main, daemon=False).start()
     loop.i3.main()
 

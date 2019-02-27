@@ -1,6 +1,6 @@
 """ Dynamic TOML-based config for basic negi3mods.
 
-It is the simplified version of modi3cfg for modules like vol_printer, etc.
+It is the simplified version of modi3cfg for modules like polybar_vol, etc.
 There are no external dependecies like i3 or asyncio.
 
 """
