@@ -377,6 +377,7 @@ mode "gaps-inner" {
 }
 
 bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
+bindsym $c+{1,2} $volume {d,u}
 
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
