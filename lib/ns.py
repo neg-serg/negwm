@@ -76,10 +76,6 @@ class ns(modi3cfg, Matcher):
         # with the given tag
         self.marked = {l: [] for l in self.cfg}
 
-        # transients used to exclude dialogs and another another transient
-        # windows from the usual named-scratchpad-geometry handling method
-        self.transients = []
-
         # Mark all tags from the start
         self.mark_all_tags(hide=True)
 
@@ -110,21 +106,15 @@ class ns(modi3cfg, Matcher):
                       Should be used in the most cases because of better
                       performance and visual neatness
         """
-        if not len(self.transients):
-            win_to_focus = None
-            for win in self.marked[tag]:
-                win.command('move container to workspace current')
-                win_to_focus = win
-            if hide:
+        win_to_focus = None
+        for win in self.marked[tag]:
+            win.command('move container to workspace current')
+            win_to_focus = win
+        if hide:
+            if tag != 'transients':
                 self.unfocus_all_but_current(tag, win_to_focus)
-            if win_to_focus is not None:
-                win_to_focus.command('focus')
-        else:
-            try:
-                self.transients[0].command('focus')
-                del self.transients[0]
-            except Exception:
-                self.mark_all_tags(hide=False)
+        if win_to_focus is not None:
+            win_to_focus.command('focus')
 
     def unfocus(self, tag: str) -> None:
         """ Hide given [tag]
@@ -221,10 +211,7 @@ class ns(modi3cfg, Matcher):
             extracted from xprop application. And because of this it's not so
             fast. But this operation is pretty rare, so no problem here.
         """
-        wlist = self.i3.get_tree().leaves()
-        for win in wlist:
-            if self.is_dialog_win(win):
-                win.command('move container to workspace current, focus')
+        self.focus('transients', hide=False)
 
     def toggle_fs(self, win) -> None:
         """ Toggles fullscreen on/off and show/hide requested scratchpad after.
@@ -582,7 +569,6 @@ class ns(modi3cfg, Matcher):
                     win.command(win_cmd)
                     self.marked[tag].append(win)
         self.winlist = self.i3.get_tree()
-        self.dialog_toggle()
 
     def mark_tag(self, i3, event) -> None:
         """ Add unique mark to the new window.
@@ -595,17 +581,20 @@ class ns(modi3cfg, Matcher):
         win = event.container
         self.winlist = self.i3.get_tree()
         for tag in self.cfg:
-            if self.match(win, tag):
-                if not self.is_dialog_win(win):
+            is_dialog_win = self.is_dialog_win(win)
+            if not is_dialog_win and tag != "transients":
+                if self.match(win, tag):
                     # scratch_move
                     win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
-                else:
-                    self.transients.append(win)
-        self.dialog_toggle()
+            if is_dialog_win:
+                win_cmd = f"{self.make_mark_str('transients')}, move scratchpad"
+                win.command(win_cmd)
+                self.marked["transients"].append(win)
         self.winlist = self.i3.get_tree()
+        self.dialog_toggle()
 
         # Special hack to invalidate windows after subtag start
         if self.focus_win_flag[0]:
@@ -626,15 +615,16 @@ class ns(modi3cfg, Matcher):
         win_ev = event.container
         self.winlist = self.i3.get_tree()
         for tag in self.cfg:
-            for _, win in enumerate(self.marked[tag]):
-                if win.id == win_ev.id:
-                    del self.marked[tag][_]
-                    del self.cache_dialog_wins[win]
-                    self.focus(tag)
-                    for tr in self.transients:
-                        if tr.id == win.id:
-                            self.transients.remove(tr)
-                    break
+            if tag != 'transients':
+                for _, win in enumerate(self.marked[tag]):
+                    if win.id == win_ev.id:
+                        del self.marked[tag][_]
+                        del self.cache_dialog_wins[win]
+                        self.focus(tag)
+                        for tr in self.marked["transients"]:
+                            if tr.id == win.id:
+                                self.marked["transients"].remove(tr)
+                        break
         if win_ev.fullscreen_mode:
             self.apply_to_current_tag(self.unfocus)
         self.winlist = self.i3.get_tree()
@@ -652,8 +642,9 @@ class ns(modi3cfg, Matcher):
         leaves = self.winlist.leaves()
         for tag in self.cfg:
             for win in leaves:
-                if self.match(win, tag):
-                    if not self.is_dialog_win(win):
+                is_dialog_win = self.is_dialog_win(win)
+                if not is_dialog_win and tag != "transients":
+                    if self.match(win, tag):
                         # scratch move
                         hide_cmd = ''
                         if hide:
@@ -663,8 +654,8 @@ class ns(modi3cfg, Matcher):
                             {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
-                    else:
-                        self.transients.append(win)
+                if is_dialog_win:
+                    win_cmd = f"{self.make_mark_str('transients')}, move scratchpad"
+                    self.marked["transients"].append(win)
         self.winlist = self.i3.get_tree()
-        self.dialog_toggle()
 
