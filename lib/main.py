@@ -201,6 +201,9 @@ class Matcher(object):
                         return True
         return False
 
+    def match_all(self) -> bool:
+        return len(self.matched_list) > 0
+
     def match(self, win, tag: str) -> bool:
         self.win = win
         factors = [
@@ -210,7 +213,8 @@ class Matcher(object):
             sys.intern("class_r"),
             sys.intern("instance_r"),
             sys.intern("name_r"),
-            sys.intern("role_r")
+            sys.intern("role_r"),
+            sys.intern('match_all')
         ]
 
         match = {
@@ -221,6 +225,7 @@ class Matcher(object):
             sys.intern("instance_r"): self.instance_r,
             sys.intern("role_r"): self.role_r,
             sys.intern("name_r"): self.name_r,
+            sys.intern("match_all"): self.match_all,
         }
 
         for f in factors:
