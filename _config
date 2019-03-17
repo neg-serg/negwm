@@ -90,7 +90,7 @@ set $torrent " κ:torrent"
 set $vm " λ:vm"
 set $wine " μ:wine"
 set $spotify " ν:spotify"
-set $sxiv " ξ:pic"
+set $pic " ξ:pic"
 set $remote " ο:remote"
 
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
@@ -129,7 +129,7 @@ for_window $webcam move workspace $gfx, focus
 for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
 for_window [class="^lollypop$"] move workspace $gfx, focus
 for_window [class="spotify"] move workspace $spotify, focus
-for_window [class="Sxiv"] move workspace $sxiv, focus
+for_window [class="Sxiv"] move workspace $pic, focus
 for_window $torrent_apps move workspace $torrent, focus
 for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote
@@ -138,8 +138,7 @@ for_window [class="albert"] move workspace current, focus
 # ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
 # ░█▀▄░█▀▀░█▀█░█░█░█▀▀░█▀▄░▀▀█
 # ░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀
-for_window $fb2 move workspace $doc, focus
-for_window $pdf move workspace $doc, focus
+for_window {$fb2,$pdf}, move workspace $doc, focus
 
 # ░█░█░█▀█░█▀▄░░░░░█▀▀░█░░░█▀█░█▀█░▀█▀░▀█▀░█▀█░█▀▀
 # ░▀▄▀░█▀█░█▀▄░░░░░█▀▀░█░░░█░█░█▀█░░█░░░█░░█░█░█░█
@@ -150,7 +149,7 @@ for_window [class="Wpg.py"] floating enable, move position 1210 626, resize set 
 # ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
 # ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀░░░▀░▀░▀▀▀░▀▀▀░▀▀▀
-for_window [class="^(draw|darktable|inkscape)$"] move workspace $draw
+for_window [class="^(draw|darktable|inkscape|gimp)$"] move workspace $draw
 
 # ░█▀▀░█▀▄░▀█▀░▀█▀░█▀█░█▀▄░█▀▀
 # ░█▀▀░█░█░░█░░░█░░█░█░█▀▄░▀▀█
@@ -168,7 +167,7 @@ for_window {$wine_apps,$windows_exe_by_title,$windows_exe_by_class,[class="disco
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
 #░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░░▀▀▀
-for_window [class="^(telegram-desktop|Skype|Telegram-desktop|ViberPC|TelegramDesktop|finch|VK)$"] move scratchpad, move position 1372 127, resize set 528 1029
+for_window [class="^(telegram-desktop|Telegram-desktop|TelegramDesktop|Skype|ViberPC|VK)$"] move scratchpad, move position 1372 127, resize set 528 1029
 for_window [{instance,class}="ncmpcpp"] move scratchpad, move position 400 400, resize set 1200 600
 for_window [instance="mutt"] move scratchpad, move position 293 0, resize set 1250 700
 for_window [{instance,class}="ranger"] move scratchpad, move position 170 18, resize set 1132 760
@@ -181,7 +180,6 @@ for_window [instance="webcam"] floating enable, move container to workspace curr
 #░█░█░░█░░█▀█░█░░░█░█░█░█░▀▀█
 #░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
-for_window [window_type="{dialog,menu,utility,toolbar}"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
 
 #---------------------------------------------
@@ -198,6 +196,8 @@ mode " " {
     bindsym $m4+$S+BackSpace mode "default"
     bindsym $m4+$c+$S+BackSpace mode "default"
 }
+
+bindsym $m4+$c+q kill
 #----------------------------------------------
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
 bindsym $m4+$S+b exec ~/bin/pl rofi 1st_level ~/vid/new
@@ -254,8 +254,6 @@ bindsym $alt+g exec $menu goto_win
 bindsym $m4+m exec $menu xprop, $exit
 bindsym $m4+q fullscreen toggle
 bindsym $m4+$c+grave $menu run
-
-bindsym $m4+$c+q kill
 
 #-------------------------------------------------------
 bindsym $alt+Tab $flast switch
@@ -348,13 +346,13 @@ mode "" {
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀
 mode "" {
-	bindsym {o,i} mode gaps-{outer,inner}
+	bindsym {o,i} mode -{outer,inner}
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░█▀█░█░█░▀█▀░█▀▀░█▀▄
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░█░█░█░█░░█░░█▀▀░█▀▄
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀
-mode "gaps-outer" {
+mode "-outer" {
 	bindsym {plus,minus}     gaps outer current {plus,minus} 5
 	bindsym 0                gaps outer current set 0
 
@@ -366,7 +364,7 @@ mode "gaps-outer" {
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░▀█▀░█▀█░█▀█░█▀▀░█▀▄
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░░█░░█░█░█░█░█▀▀░█▀▄
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀░▀░▀░▀░▀▀▀░▀░▀
-mode "gaps-inner" {
+mode "-inner" {
 	bindsym {plus,minus}     gaps inner current {plus,minus} 5
 	bindsym 0                gaps inner current set 0
 
@@ -377,6 +375,8 @@ mode "gaps-inner" {
 }
 
 bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
+
+bindsym $m4+p exec ~/bin/scripts/tmux_clipboard
 
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
