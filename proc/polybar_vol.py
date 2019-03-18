@@ -104,7 +104,7 @@ class polybar_vol(modconfig):
     def print_volume(self):
         """ Create nice and shiny output for polybar.
         """
-        return f'%{{F{self.bracket_color}}}{self.delimiter}%{{F-}}%{{F{self.bright_color}}}' + \
+        return f'%{{F{self.bracket_color}}}{self.delimiter}%{{F-}}%{{F{self.foreground_color}}}' + \
             f'Vol: {self.volume}%%{{F-}}%{{F{self.bracket_color}}} {self.right_bracket}%{{F-}}'
 
     def empty_output(self):
