@@ -80,7 +80,7 @@ hide_edge_borders both
 set $term " α:term"
 set $web " β:web"
 set $doc " γ:doc"
-set $dev " δ:dev"
+set $dev " δ:dev"
 set $gfx " ε:gfx"
 set $draw " ζ:draw"
 set $sys " η:sys"
