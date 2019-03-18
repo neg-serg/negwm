@@ -91,7 +91,7 @@ class polybar_ws(modconfig):
         self.event.set()
 
     def colorize(self, s, color):
-        return f"%{{F{color}}}{s}%{{F#ccc}}"
+        return f"%{{F{color}}}{s}%{{F-}}"
 
     def on_eventent(self, i3, event):
         bind_cmd = event.binding.command
