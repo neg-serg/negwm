@@ -62,6 +62,7 @@ const char *docstr =
     "  send flast switch\n"
     "  send menu run\n"
     "  send menu xprop\n"
+    "  send menu pls\n"
     "  send menu autoprop\n"
     "  send menu attach\n"
     "  send menu movews\n"
@@ -143,6 +144,7 @@ Args ArgMap[] = {
         {
             {"run", 0},
             {"xprop", 0},
+            {"pls", 0},
             {"reload", 0},
             {"autoprop", 0},
             {"ws", 0},
