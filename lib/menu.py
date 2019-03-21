@@ -92,7 +92,8 @@ class menu(modi3cfg):
     def rofi_args(self, prompt: str = None, cnum: int = 16,
                   lnum: int = 2,
                   width: Optional[int] = None,
-                  markup_rows: Optional[str] = None) -> List[str]:
+                  markup_rows: Optional[str] = None,
+                  auto_selection="-no-auto-selection") -> List[str]:
         prompt = prompt or self.prompt
         width = width or self.screen_width - 20
         markup_rows = markup_rows or '-no-markup-rows'
@@ -110,6 +111,7 @@ class menu(modi3cfg):
             'rofi', '-show', '-dmenu',
             '-columns', str(cnum), '-lines', str(lnum),
             '-disable-history',
+            auto_selection,
             markup_rows,
             '-p', prompt,
             '-i',  # non case-sensitive
@@ -160,7 +162,7 @@ class menu(modi3cfg):
         {
             "run": self.i3_cmd_menu,
             "xprop": self.xprop_menu,
-            "pls": self.pls_menu,
+            "pls": self.pulseaudio_menu,
             "autoprop": self.autoprop,
             "show_props": self.show_props,
             "ws": self.goto_ws,
@@ -290,7 +292,7 @@ class menu(modi3cfg):
         except Exception:
             return None
 
-    def pls_menu(self) -> None:
+    def pulseaudio_menu(self) -> None:
         rofi_app_list = []
         rofi_output_list = []
 
@@ -310,8 +312,9 @@ class menu(modi3cfg):
                 self.rofi_args(
                     cnum=1,
                     lnum=len(rofi_app_list),
+                    auto_selection='-auto-select',
                     width=int(self.screen_width * 0.55),
-                    prompt=f'{self.wrap_str("pulse app")} {self.prompt}'
+                    prompt=f'{self.wrap_str("pulse app")} {self.prompt}',
                 ),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(rofi_app_list), 'UTF-8')
@@ -344,8 +347,9 @@ class menu(modi3cfg):
                     self.rofi_args(
                         cnum=1,
                         lnum=len(rofi_output_list),
+                        auto_selection='-auto-select',
                         width=int(self.screen_width * 0.55),
-                        prompt=f'{self.wrap_str("pulse app")} {self.prompt}'
+                        prompt=f'{self.wrap_str("pulse output")} {self.prompt}'
                     ),
                     stdout=subprocess.PIPE,
                     input=bytes('\n'.join(rofi_output_list), 'UTF-8')
