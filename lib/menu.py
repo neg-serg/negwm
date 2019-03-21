@@ -15,6 +15,7 @@ import socket
 import re
 import subprocess
 import sys
+import pulsectl
 from singleton import Singleton
 from modi3cfg import modi3cfg
 from main import i3path, get_screen_resolution
@@ -85,6 +86,8 @@ class menu(modi3cfg):
         self.rhs_br = self.conf('right_bracket')
 
         self.gap = self.conf('gap')
+
+        self.pulse = pulsectl.Pulse('neg-pulse-selector')
 
     def rofi_args(self, prompt: str = None, cnum: int = 16,
                   lnum: int = 2,
@@ -157,6 +160,7 @@ class menu(modi3cfg):
         {
             "run": self.i3_cmd_menu,
             "xprop": self.xprop_menu,
+            "pls": self.pls_menu,
             "autoprop": self.autoprop,
             "show_props": self.show_props,
             "ws": self.goto_ws,
@@ -285,6 +289,78 @@ class menu(modi3cfg):
             return ret
         except Exception:
             return None
+
+    def pls_menu(self) -> None:
+        rofi_app_list = []
+        rofi_output_list = []
+
+        pulse_app_settings = {}
+
+        pulse_sink_list = self.pulse.sink_list()
+        pulse_app_list = self.pulse.sink_input_list()
+
+        for t in pulse_app_list:
+            app_name = t.proplist["media.name"] + ' -- ' + \
+                t.proplist["application.name"]
+            rofi_app_list += [app_name]
+            pulse_app_settings[app_name] = t
+
+        if len(rofi_app_list) > 0:
+            rofi_app_sel = subprocess.run(
+                self.rofi_args(
+                    cnum=1,
+                    lnum=len(rofi_app_list),
+                    width=int(self.screen_width * 0.55),
+                    prompt=f'{self.wrap_str("pulse app")} {self.prompt}'
+                ),
+                stdout=subprocess.PIPE,
+                input=bytes('\n'.join(rofi_app_list), 'UTF-8')
+            ).stdout
+
+            if rofi_app_sel is not None:
+                app_ret = rofi_app_sel.decode('UTF-8').strip()
+
+            exclude_device_name = ""
+            sel_app_props = pulse_app_settings[app_ret].proplist
+            for t in self.pulse.stream_restore_list():
+                if t is not None:
+                    if t.device is not None:
+                        if t.name == sel_app_props['module-stream-restore.id']:
+                            exclude_device_name = t.device
+
+            for n, t in enumerate(pulse_sink_list):
+                if t.proplist.get('udev.id', ''):
+                    if t.proplist['udev.id'].split('.')[0] == \
+                            exclude_device_name.split('.')[1]:
+                        continue
+                if t.proplist.get('device.profile.name', ''):
+                    if t.proplist['device.profile.name'] == \
+                            exclude_device_name.split('.')[-1]:
+                        continue
+                rofi_output_list += [str(t.index) + ' -- ' + t.description]
+
+            if len(rofi_output_list) > 0:
+                rofi_output_sel = subprocess.run(
+                    self.rofi_args(
+                        cnum=1,
+                        lnum=len(rofi_output_list),
+                        width=int(self.screen_width * 0.55),
+                        prompt=f'{self.wrap_str("pulse app")} {self.prompt}'
+                    ),
+                    stdout=subprocess.PIPE,
+                    input=bytes('\n'.join(rofi_output_list), 'UTF-8')
+                ).stdout
+
+                if rofi_output_sel is not None:
+                    out_ret = rofi_output_sel.decode('UTF-8').strip()
+
+                target_idx = out_ret.split('--')[0].strip()
+                if int(pulse_app_settings[app_ret].index) is not None \
+                        and int(target_idx) is not None:
+                    self.pulse.sink_input_move(
+                        int(pulse_app_settings[app_ret].index),
+                        int(target_idx),
+                    )
 
     def xprop_menu(self) -> None:
         """ Menu to show X11 atom attributes for current window.
