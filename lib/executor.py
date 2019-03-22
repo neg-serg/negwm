@@ -98,8 +98,6 @@ class env():
         if not alacritty_suffix:
             alacritty_suffix = cfg.get(name, {}).get('window_class')
 
-        expanduser(self.default_alacritty_cfg_path)
-
         alacritty_suffix = expanduser(alacritty_suffix + '.yml')
         cfgname = expanduser(f'{self.alacritty_cfg_dir}/{alacritty_suffix}')
 
@@ -108,19 +106,19 @@ class env():
                 expanduser("~/.config/alacritty/alacritty.yml"),
                 cfgname
             )
-        ret = cfgname
-        return ret
+        return cfgname
 
     def fileprocess(self, custom_config: str) -> None:
         with open(custom_config, "r") as fp:
             try:
                 conf = yaml.load(fp)
-                conf["font"]["normal"]["family"] = self.font
-                conf["font"]["bold"]["family"] = self.font
-                conf["font"]["italic"]["family"] = self.font
-                conf["font"]["size"] = self.font_size
-                conf["window"]["padding"]['x'] = int(self.x_pad)
-                conf["window"]["padding"]['y'] = int(self.y_pad)
+                if conf is not None:
+                    conf["font"]["normal"]["family"] = self.font
+                    conf["font"]["bold"]["family"] = self.font
+                    conf["font"]["italic"]["family"] = self.font
+                    conf["font"]["size"] = self.font_size
+                    conf["window"]["padding"]['x'] = int(self.x_pad)
+                    conf["window"]["padding"]['y'] = int(self.y_pad)
             except yaml.YAMLError as e:
                 print(e)
 
