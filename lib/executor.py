@@ -154,6 +154,18 @@ class env():
                 "--class", self.window_class,
                 "-e", "dash", "-c"
             ]
+        elif terminal == "alacritty-custom-silent":
+            custom_config = self.generate_alacritty_config(cfg, name)
+            Process(
+                target=self.fileprocess, args=(custom_config,), daemon=True
+            ).start()
+            self.term_opts = [
+                "alacritty", '-qq', "--live-config-reload", "--config-file",
+                expanduser(custom_config)
+            ] + [
+                "--class", self.window_class,
+                "-e", "dash", "-c"
+            ]
         elif terminal == "st":
             self.term_opts = ["st"] + [
                 "-c", self.window_class,
