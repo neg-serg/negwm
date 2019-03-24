@@ -292,7 +292,7 @@ class menu(modi3cfg):
         except Exception:
             return None
 
-    def pulseaudio_menu(self) -> None:
+    def pulseaudio_menu(self):
         rofi_app_list = []
         rofi_output_list = []
 
@@ -308,63 +308,76 @@ class menu(modi3cfg):
             pulse_app_settings[app_name] = t
 
         if len(rofi_app_list) > 0:
-            rofi_app_sel = subprocess.run(
-                self.rofi_args(
-                    cnum=1,
-                    lnum=len(rofi_app_list),
-                    auto_selection='-auto-select',
-                    width=int(self.screen_width * 0.55),
-                    prompt=f'{self.wrap_str("pulse app")} {self.prompt}',
-                ),
-                stdout=subprocess.PIPE,
-                input=bytes('\n'.join(rofi_app_list), 'UTF-8')
-            ).stdout
-
-            if rofi_app_sel is not None:
-                app_ret = rofi_app_sel.decode('UTF-8').strip()
-
-            exclude_device_name = ""
-            sel_app_props = pulse_app_settings[app_ret].proplist
-            for t in self.pulse.stream_restore_list():
-                if t is not None:
-                    if t.device is not None:
-                        if t.name == sel_app_props['module-stream-restore.id']:
-                            exclude_device_name = t.device
-
-            for n, t in enumerate(pulse_sink_list):
-                if t.proplist.get('udev.id', ''):
-                    if t.proplist['udev.id'].split('.')[0] == \
-                            exclude_device_name.split('.')[1]:
-                        continue
-                if t.proplist.get('device.profile.name', ''):
-                    if t.proplist['device.profile.name'] == \
-                            exclude_device_name.split('.')[-1]:
-                        continue
-                rofi_output_list += [str(t.index) + ' -- ' + t.description]
-
+            rofi_output_list, app_ret = self.pulseaudio_select_app(
+                rofi_app_list, pulse_app_settings, pulse_sink_list
+            )
             if len(rofi_output_list) > 0:
-                rofi_output_sel = subprocess.run(
-                    self.rofi_args(
-                        cnum=1,
-                        lnum=len(rofi_output_list),
-                        auto_selection='-auto-select',
-                        width=int(self.screen_width * 0.55),
-                        prompt=f'{self.wrap_str("pulse output")} {self.prompt}'
-                    ),
-                    stdout=subprocess.PIPE,
-                    input=bytes('\n'.join(rofi_output_list), 'UTF-8')
-                ).stdout
+                self.pulseaudio_select_output(
+                    rofi_output_list, pulse_app_settings, app_ret)
 
-                if rofi_output_sel is not None:
-                    out_ret = rofi_output_sel.decode('UTF-8').strip()
+    def pulseaudio_select_app(self, rofi_app_list, pulse_app_settings,
+                              pulse_sink_list) -> (List[str], str):
+        rofi_app_sel = subprocess.run(
+            self.rofi_args(
+                cnum=1,
+                lnum=len(rofi_app_list),
+                auto_selection='-auto-select',
+                width=int(self.screen_width * 0.55),
+                prompt=f'{self.wrap_str("pulse app")} {self.prompt}',
+            ),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(rofi_app_list), 'UTF-8')
+        ).stdout
 
-                target_idx = out_ret.split('--')[0].strip()
-                if int(pulse_app_settings[app_ret].index) is not None \
-                        and int(target_idx) is not None:
-                    self.pulse.sink_input_move(
-                        int(pulse_app_settings[app_ret].index),
-                        int(target_idx),
-                    )
+        if rofi_app_sel is not None:
+            app_ret = rofi_app_sel.decode('UTF-8').strip()
+
+        exclude_device_name = ""
+        sel_app_props = pulse_app_settings[app_ret].proplist
+        for t in self.pulse.stream_restore_list():
+            if t is not None:
+                if t.device is not None:
+                    if t.name == sel_app_props['module-stream-restore.id']:
+                        exclude_device_name = t.device
+
+        rofi_output_list = []
+        for n, t in enumerate(pulse_sink_list):
+            if t.proplist.get('udev.id', ''):
+                if t.proplist['udev.id'].split('.')[0] == \
+                        exclude_device_name.split('.')[1]:
+                    continue
+            if t.proplist.get('device.profile.name', ''):
+                if t.proplist['device.profile.name'] == \
+                        exclude_device_name.split('.')[-1]:
+                    continue
+            rofi_output_list += [str(t.index) + ' -- ' + t.description]
+
+        return rofi_output_list, app_ret
+
+    def pulseaudio_select_output(
+            self, rofi_output_list, pulse_app_settings, app_ret) -> None:
+        rofi_output_sel = subprocess.run(
+            self.rofi_args(
+                cnum=1,
+                lnum=len(rofi_output_list),
+                auto_selection='-auto-select',
+                width=int(self.screen_width * 0.55),
+                prompt=f'{self.wrap_str("pulse output")} {self.prompt}'
+            ),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(rofi_output_list), 'UTF-8')
+        ).stdout
+
+        if rofi_output_sel is not None:
+            out_ret = rofi_output_sel.decode('UTF-8').strip()
+
+        target_idx = out_ret.split('--')[0].strip()
+        if int(pulse_app_settings[app_ret].index) is not None \
+                and int(target_idx) is not None:
+            self.pulse.sink_input_move(
+                int(pulse_app_settings[app_ret].index),
+                int(target_idx),
+            )
 
     def xprop_menu(self) -> None:
         """ Menu to show X11 atom attributes for current window.
