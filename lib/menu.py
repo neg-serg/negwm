@@ -39,9 +39,6 @@ class menu(modi3cfg):
         # i3-msg application name
         self.i3cmd = self.conf("i3cmd")
 
-        # magic pie to spawn error, used for autocomplete.
-        self.magic_pie = self.conf('magic_pie')
-
         # default echo server host
         self.host = self.conf("host")
 
@@ -90,6 +87,30 @@ class menu(modi3cfg):
         self.pulse = pulsectl.Pulse('neg-pulse-selector')
         self.pulse_data = {}
 
+    def switch(self, args: List) -> None:
+        """ Defines pipe-based IPC for nsd module. With appropriate function
+            bindings.
+
+            This function defines bindings to the named_scratchpad methods that
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate FIFO.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
+        {
+            "run": self.i3_cmd_menu,
+            "xprop": self.xprop_menu,
+            "pls": self.pulseaudio_menu,
+            "autoprop": self.autoprop,
+            "show_props": self.show_props,
+            "ws": self.goto_ws,
+            "goto_win": self.goto_win,
+            "attach": self.attach_win,
+            "movews": self.move_to_ws,
+            "reload": self.reload_config,
+        }[args[0]](*args[1:])
+
     def rofi_args(self, prompt: str = None, cnum: int = 16,
                   lnum: int = 2,
                   width: Optional[int] = None,
@@ -128,7 +149,7 @@ class menu(modi3cfg):
         """
         try:
             out = subprocess.run(
-                [self.i3cmd, self.magic_pie],
+                [self.i3cmd, 'magic_pie'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL
             ).stdout
@@ -148,30 +169,6 @@ class menu(modi3cfg):
         lst.sort()
 
         return lst
-
-    def switch(self, args: List) -> None:
-        """ Defines pipe-based IPC for nsd module. With appropriate function
-            bindings.
-
-            This function defines bindings to the named_scratchpad methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate FIFO.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        {
-            "run": self.i3_cmd_menu,
-            "xprop": self.xprop_menu,
-            "pls": self.pulseaudio_menu,
-            "autoprop": self.autoprop,
-            "show_props": self.show_props,
-            "ws": self.goto_ws,
-            "goto_win": self.goto_win,
-            "attach": self.attach_win,
-            "movews": self.move_to_ws,
-            "reload": self.reload_config,
-        }[args[0]](*args[1:])
 
     def win_act_simple(self, cmd: str, prompt: str) -> None:
         """ Run simple and fast selection dialog for window with given action.
@@ -443,12 +440,10 @@ class menu(modi3cfg):
                             ret.append(f'instance={xattr[0]}{self.delim}')
                         if xattr[1] is not None and len(xattr[1]):
                             ret.append(f'class={xattr[1]}{self.delim}')
-                    if with_role:
-                        if "WM_WINDOW_ROLE" in founded_attr:
-                            ret.append(f'window_role={xattr[0]}{self.delim}')
-                    if with_title:
-                        if "WM_NAME" in founded_attr:
-                            ret.append(f'title={xattr[0]}{self.delim}')
+                    if with_role and "WM_WINDOW_ROLE" in founded_attr:
+                        ret.append(f'window_role={xattr[0]}{self.delim}')
+                    if with_title and "WM_NAME" in founded_attr:
+                        ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
     def mod_data_list(self, mod: str) -> List[str]:
