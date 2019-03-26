@@ -329,8 +329,6 @@ class circle(modi3cfg, Matcher):
 
         for tag in self.cfg:
             self.tagged[tag] = []
-
-        for tag in self.cfg:
             self.find_acceptable_windows(tag)
 
     def sort_by_parent(self, tag: str) -> None:
