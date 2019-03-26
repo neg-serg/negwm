@@ -137,19 +137,23 @@ class Matcher(object):
     negi3mods.
 
     """
-    def find_classed(self, wlist: List, pattern: str) -> Iterator:
+    @staticmethod
+    def find_classed(wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_class and re.search(pattern, c.window_class))
 
-    def find_instanced(self, wlist: List, pattern: str) -> Iterator:
+    @staticmethod
+    def find_instanced(wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_instance and re.search(pattern, c.window_instance))
 
-    def find_by_role(self, wlist: List, pattern: str) -> Iterator:
+    @staticmethod
+    def find_by_role(wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_role and re.search(pattern, c.window_role))
 
-    def find_named(self, wlist: List, pattern: str) -> Iterator:
+    @staticmethod
+    def find_named(wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.name and re.search(pattern, c.name))
 
@@ -249,11 +253,8 @@ class daemon_manager():
     __metaclass__ = Singleton
 
     def __init__(self, mods: List) -> None:
-        # file list
-        self.files = {}
-
-        # mods list
-        self.mods = mods
+        self.files = {}  # file list
+        self.mods = mods  # mods list
 
     async def ipc_listner(self, name: str) -> None:
         """ Async neg-ipc-file listner
@@ -279,7 +280,8 @@ class daemon_manager():
         """
         self.files[name] = self.create_ipc(name)
 
-    def create_ipc(self, name: str) -> str:
+    @staticmethod
+    def create_ipc(name: str) -> str:
         """ Create IPC for the given name
         """
         neg_ipc_file = os.path.realpath(os.path.expandvars(
