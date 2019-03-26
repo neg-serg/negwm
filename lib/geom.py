@@ -33,7 +33,8 @@ class geom():
         for tag in self.cfg:
             self.parsed_geom[tag] = self.parse_geom(tag)
 
-    def scratchpad_hide_cmd(self, hide: bool) -> str:
+    @staticmethod
+    def scratchpad_hide_cmd(hide: bool) -> str:
         """ Returns cmd needed to hide scratchpad.
 
             Args:
@@ -42,6 +43,15 @@ class geom():
         ret = ""
         if hide:
             ret = ", [con_id=__focused__] scratchpad show"
+        return ret
+
+    @staticmethod
+    def ch(lst: List, ch: str) -> str:
+        """ Return char is list is not empty to prevent stupid commands.
+        """
+        ret = ''
+        if len(lst) > 1:
+            ret = ch
         return ret
 
     def ret_info(self, tag: str, attr: str, target_attr: str,
@@ -60,28 +70,20 @@ class geom():
             if lst != []:
                 pref = dprefix+"[" + '{}="'.format(attr) + \
                     self.ch(self.cfg[tag][attr], '^')
-                for_win_cmd = pref + self.parse_attr(tag, target_attr) + \
+                for_win_cmd = pref + self.parse_attr(self.cfg[tag][attr]) + \
                     "move scratchpad, " + self.get_geom(tag) \
                                         + self.scratchpad_hide_cmd(hide)
                 return for_win_cmd
         return ''
 
-    def ch(self, lst: List, ch: str) -> str:
-        """ Return char is list is not empty to prevent stupid commands.
-        """
-        ret = ''
-        if len(lst) > 1:
-            ret = ch
-        return ret
-
-    def parse_attr(self, tag: str, attr: str) -> str:
+    @staticmethod
+    def parse_attr(attrib_list: List) -> str:
         """ Create attribute matching string.
             Args:
                 tag (str): target tag.
                 attr (str): target attrubute.
         """
         ret = ''
-        attrib_list = self.cfg[tag][attr]
         if len(attrib_list) > 1:
             ret += '('
         for iter, item in enumerate(attrib_list):
