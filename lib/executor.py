@@ -93,13 +93,15 @@ class env():
 
         self.create_term_params(cfg, name)
 
-    def generate_alacritty_config(self, cfg: dict, name: str) -> None:
+    @staticmethod
+    def generate_alacritty_config(
+            alacritty_cfg_dir, cfg: dict, name: str) -> str:
         alacritty_suffix = cfg.get(name, {}).get('alacritty_suffix', {})
         if not alacritty_suffix:
             alacritty_suffix = cfg.get(name, {}).get('window_class')
 
         alacritty_suffix = expanduser(alacritty_suffix + '.yml')
-        cfgname = expanduser(f'{self.alacritty_cfg_dir}/{alacritty_suffix}')
+        cfgname = expanduser(f'{alacritty_cfg_dir}/{alacritty_suffix}')
 
         if not os.path.exists(cfgname):
             shutil.copyfile(
@@ -143,7 +145,7 @@ class env():
                 "-e", "dash", "-c"
             ]
         elif terminal == "alacritty-custom":
-            custom_config = self.generate_alacritty_config(cfg, name)
+            custom_config = self.generate_alacritty_config(self.alacritty_cfg_dir, cfg, name)
             Process(
                 target=self.fileprocess, args=(custom_config,), daemon=True
             ).start()
@@ -155,7 +157,7 @@ class env():
                 "-e", "dash", "-c"
             ]
         elif terminal == "alacritty-custom-silent":
-            custom_config = self.generate_alacritty_config(cfg, name)
+            custom_config = self.generate_alacritty_config(self.alacritty_cfg_dir, cfg, name)
             Process(
                 target=self.fileprocess, args=(custom_config,), daemon=True
             ).start()
@@ -262,17 +264,16 @@ class executor(modi3cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def detect_session_bind(self) -> str:
+    @staticmethod
+    def detect_session_bind(sockpath, name) -> str:
         """ Find target session for given socket.
         """
         session_list = subprocess.run(
-            shlex.split(f"tmux -S {self.env.sockpath} list-sessions"),
+            shlex.split(f"tmux -S {sockpath} list-sessions"),
             stdout=subprocess.PIPE
         ).stdout
         return subprocess.run(
-            shlex.split(
-                f"awk -F ':' '/{self.env.name}/ {{print $1}}'"
-            ),
+            shlex.split(f"awk -F ':' '/{name}/ {{print $1}}'"),
             stdout=subprocess.PIPE,
             input=(session_list)
         ).stdout.decode()
@@ -312,7 +313,8 @@ class executor(modi3cfg):
         """
         self.env = self.envs[name]
         if self.env.tmuxed:
-            if self.env.name in self.detect_session_bind():
+            if self.env.name in self.detect_session_bind(
+                    self.env.sockpath, self.env.name):
                 wid = self.search_classname()
                 try:
                     if int(wid.decode()):
