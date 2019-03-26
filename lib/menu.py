@@ -15,6 +15,7 @@ import socket
 import re
 import subprocess
 import sys
+import os
 import pulsectl
 from singleton import Singleton
 from modi3cfg import modi3cfg
@@ -101,7 +102,8 @@ class menu(modi3cfg):
         {
             "run": self.i3_cmd_menu,
             "xprop": self.xprop_menu,
-            "pls": self.pulseaudio_menu,
+            "pulse_output": self.pulseaudio_output,
+            "pulse_input": self.pulseaudio_input,
             "autoprop": self.autoprop,
             "show_props": self.show_props,
             "ws": self.goto_ws,
@@ -109,6 +111,7 @@ class menu(modi3cfg):
             "attach": self.attach_win,
             "movews": self.move_to_ws,
             "reload": self.reload_config,
+            "gtk_theme": self.change_gtk_theme,
         }[args[0]](*args[1:])
 
     def rofi_args(self, prompt: str = None, cnum: int = 16,
@@ -247,8 +250,8 @@ class menu(modi3cfg):
                 if w.name in win_name:
                     w.command(cmd)
 
-    def colorize(self, s: str,
-                 color: str, weight: str = 'normal') -> str:
+    @staticmethod
+    def colorize(s: str, color: str, weight: str = 'normal') -> str:
         return f"<span weight='{weight}' color='{color}'>{s}</span>"
 
     def wrap_str(self, s: str) -> str:
@@ -290,7 +293,7 @@ class menu(modi3cfg):
         except Exception:
             return None
 
-    def pulseaudio_menu(self):
+    def pulseaudio_output(self):
         self.pulse_data = {
             "app_list": [],
             "sink_output_list": [],
@@ -309,6 +312,9 @@ class menu(modi3cfg):
             app_ret = self.pulseaudio_select_app()
             if len(self.pulse_data["sink_output_list"]) > 0:
                 self.pulseaudio_select_output(app_ret)
+
+    def pulseaudio_input(self):
+        pass
 
     def pulseaudio_select_app(self):
         rofi_app_sel = subprocess.run(
@@ -374,6 +380,12 @@ class menu(modi3cfg):
                 int(self.pulse_data["app_props"][app_ret].index),
                 int(target_idx),
             )
+
+    def change_gtk_theme(self):
+        for root, dirs, files in os.walk(os.path.expanduser("~/.themes")):
+            for file in files:
+                if file == 'gtk.css':
+                    print(os.path.join(root, file))
 
     def xprop_menu(self) -> None:
         """ Menu to show X11 atom attributes for current window.
