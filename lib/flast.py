@@ -111,7 +111,7 @@ class flast(modi3cfg):
         focused_ws_name = i3.get_tree().find_focused().workspace().name
         wswins = filter(
             lambda win: win.window,
-            self.i3.get_tree()
+                i3.get_tree()
                 .find_focused()
                 .workspace()
                 .descendents()
