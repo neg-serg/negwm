@@ -330,7 +330,8 @@ mode "" {
 	bindsym $S+d floating toggle; $exit
 	bindsym $S+l exec ~/bin/scripts/lock/lock.sh && sleep 0.5s; $exit
 	bindsym {$S+,}v exec ~/bin/qemu/vm_menu; $exit
-	bindsym o $menu pls; $exit
+	bindsym o $menu pulse_output; $exit
+	bindsym i $menu pulse_input; $exit
     bindsym $S+s exec ~/bin/pls -switch, $exit
     bindsym {i,o,$S+O} mode "default", exec ~/bin/pls -{output,sink,vol}
     #-------------------------------------------------------
@@ -385,5 +386,5 @@ bindsym $m4+p exec ~/bin/scripts/tmux_clipboard
 exec_always zsh ~/bin/scripts/i3_prepare.sh
 exec_always zsh ~/bin/scripts/panel_run.sh hard
 exec --no-startup-id caffeine &
-exec --no-startup-id sleep 1s && ${XDG_CONFIG_HOME}/i3/send circle next term
+exec --no-startup-id sleep 2s && ${XDG_CONFIG_HOME}/i3/send circle next term
 # vim:filetype=i3
