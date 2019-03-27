@@ -67,6 +67,10 @@ class polybar_vol(modconfig):
         # various MPD // Volume printer delimiters
         self.delimiter = self.conf("delimiter")
 
+        # volume prefix and suffix
+        self.vol_prefix = self.conf("vol_prefix")
+        self.vol_suffix = self.conf("vol_suffix")
+
         # xrdb-colors: use blue by default for brackets
         self.bracket_color_field = self.conf("bracket_color_field")
         self.bright_color_field = self.conf("bright_color_field")
@@ -76,12 +80,12 @@ class polybar_vol(modconfig):
         self.bright_color = extract_xrdb_value(self.bright_color_field)
         self.foreground_color = extract_xrdb_value(self.foreground_color_field)
 
-        self.right_bracket = " "
+        self.right_bracket = ""
 
         # set string for the empty output
         if self.conf('show_volume').startswith('y'):
             self.empty_str = f"%{{F{self.bracket_color}}}{self.delimiter}%{{F{self.bright_color}}}" + \
-                f"Vol: %{{F{self.foreground_color}}}n/a%{{F-}} %{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}"
+                f"{self.vol_prefix}%{{F{self.foreground_color}}}n/a%{{F-}} %{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}"
         else:
             self.empty_str = f" %{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}"
 
@@ -105,7 +109,7 @@ class polybar_vol(modconfig):
         """ Create nice and shiny output for polybar.
         """
         return f'%{{F{self.bracket_color}}}{self.delimiter}%{{F-}}%{{F{self.foreground_color}}}' + \
-            f'Vol: {self.volume}%%{{F-}}%{{F{self.bracket_color}}} {self.right_bracket}%{{F-}}'
+            f'{self.vol_prefix}{self.volume}{self.vol_suffix}%{{F-}}%{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}'
 
     def empty_output(self):
         """ This output will be used if no information about volume.
