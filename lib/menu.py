@@ -60,7 +60,7 @@ class menu(modi3cfg):
         # Window properties used by i3 to match windows.
         self.i3rules_xprop = set(self.conf("rules_xprop"))
 
-        self.wslist = self.conf("wslist")
+        self.workspaces = self.conf("workspaces")
 
         # Magic delimiter used by add_prop / del_prop routines.
         self.delim = "@"
@@ -418,10 +418,7 @@ class menu(modi3cfg):
 
         # Copy to the clipboard
         if ret is not None and ret != '':
-            subprocess.run(
-                ['xsel', '-i'],
-                input=bytes(ret.strip(), 'UTF-8')
-            )
+            subprocess.run(['xsel', '-i'], input=bytes(ret.strip(), 'UTF-8'))
 
     def get_autoprop_as_str(self, with_title: bool = False,
                             with_role: bool = False) -> str:
@@ -546,7 +543,7 @@ class menu(modi3cfg):
         """ Apply target function to workspace.
         """
         if use_wslist:
-            wslist = self.wslist
+            wslist = self.workspaces
         else:
             wslist = [ws.name for ws in self.i3.get_workspaces()] + ["[empty]"]
         ws = subprocess.run(
@@ -561,7 +558,8 @@ class menu(modi3cfg):
 
         return ws.decode('UTF-8').strip()
 
-    def apply_to_ws(self, ws_func: Callable) -> None:
+    @staticmethod
+    def apply_to_ws(ws_func: Callable) -> None:
         """ Partial apply function to workspace.
         """
         ws_func()
