@@ -17,6 +17,7 @@ import subprocess
 import sys
 import os
 import pulsectl
+import configparser
 from singleton import Singleton
 from modi3cfg import modi3cfg
 from main import i3path, get_screen_resolution
@@ -87,6 +88,8 @@ class menu(modi3cfg):
 
         self.pulse = pulsectl.Pulse('neg-pulse-selector')
         self.pulse_data = {}
+
+        self.gtk_config = configparser.ConfigParser()
 
     def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
@@ -382,10 +385,40 @@ class menu(modi3cfg):
             )
 
     def change_gtk_theme(self):
+        gtk_themes_list = []
         for root, dirs, files in os.walk(os.path.expanduser("~/.themes")):
             for file in files:
                 if file == 'gtk.css':
-                    print(os.path.join(root, file))
+                    target_dir_path = os.path.join(root, os.pardir)
+                    gtk_settings = self.gtk_config.read(
+                        os.path.abspath(
+                            os.path.join(target_dir_path, 'index.theme')
+                        )
+                    )
+                    if gtk_settings:
+                        gtk_themes_list += [os.path.basename(
+                            os.path.abspath(target_dir_path)
+                        )]
+
+        ret = ""
+        gtk_theme_sel = subprocess.run(
+            self.rofi_args(
+                cnum=1,
+                lnum=len(gtk_themes_list),
+                width=int(self.screen_width * 0.55),
+                prompt=f'{self.wrap_str("gtk_theme")} {self.prompt}'
+            ),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(gtk_themes_list), 'UTF-8')
+        ).stdout
+
+        if gtk_theme_sel is not None:
+            ret = gtk_theme_sel.decode('UTF-8').strip()
+
+        if ret is not None and ret != '':
+            subprocess.call([
+                os.path.expanduser('~/bin/scripts/gnome_settings'), '-a', ret
+            ])
 
     def xprop_menu(self) -> None:
         """ Menu to show X11 atom attributes for current window.
