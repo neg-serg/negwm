@@ -91,7 +91,7 @@ class negi3mods(modconfig):
         print()
         for mod in self.mods.keys():
             start_time = timeit.default_timer()
-            i3mod = importlib.import_module(mod)
+            i3mod = importlib.import_module('lib.' + mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             self.manager.add_ipc(mod)
             mod_startup_times.append(timeit.default_timer() - start_time)
