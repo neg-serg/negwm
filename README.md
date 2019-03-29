@@ -8,38 +8,52 @@
 
 For now this collection of modules for i3 includes:
 
-*nsd* : named ion3-like scratchpads with a whistles and fakes.
-
-*flastd* : alt-tab to the previous window, not the workspace.
-
-*circled* : better run-or-raise, with jump in a circle, subtags, priorities
-and more.
+## main
 
 *negi3mods* : application that run all modules and handle configuration of
-ppi3+i3 and modules on python. Also handles toml-configs updating.
+ppi3+i3 and modules on python. Also handles TOML-configs updating.
 
-*menud* : menu module including i3-menu with hackish autocompletion, menu to
+## modules
+
+*ns* : named ion3-like scratchpads with a whistles and fakes.
+
+*flast* : alt-tab to the previous window, not the workspace.
+
+*circle* : better run-or-raise, with jump in a circle, subtags, priorities
+and more.
+
+*menu* : menu module including i3-menu with hackish autocompletion, menu to
 attach window to window group(circled) or target named scratchpad(nsd) and
 more. 
 
-*fsmpmsd* : module to disable dpms, when fullscreen mode are toggled on.
+*vol*: contextual volume manager. Handles mpd by default. If mpd is
+stopped then handles mpv with mpvc if the current window is mpv, or with
+sending 0, 9 keys to the mpv window if not.
 
-*infod* : module to extract info from running i3-mods via AF_INET6 socket.
+*wm3*: various stuff to emulate some 2bwm UX.
+
+*executor*: module to create various terminal windows with custom config
+and/or tmux session handling. Supports a lot of terminal emulators.
+
+## procs to run by negi3mods as another process
+
+There are processes, not threads, separated from the main negi3mods event
+loop to reach better performance or another goals.
+
+*info* : module to extract info from running i3-mods via `AF_INET6` socket.
 For example it used to send information to the *polybar* as current workspace
 or i3-binding mode because of native polybar i3-interaction tends to race
 condition when you try to switch workspaces backward-forward to quickly.
+Can be used as helper for another modules, like `polybar_ws`.
 
-*vold* : contextual volume manager. Handles mpd by default. If mpd is stopped
-then handles mpv with mpvc if the current window is mpv, or with sending 0,
-9 keys to the mpv window if not.
+*fs* : module to disable dpms, when fullscreen mode are toggled on. Also it
+handles polybar show / hide to mimic ion3 default fullscreen behaviour.
 
-*executor* : something like tmux / terminal manager, allows you change
-terminal almost on-the-fly, as far as all terminal options and create
-sophisticated tmux-sessions without need of shell-magic. Personally I use it
-for all of my terminal applications.
+## procs to run from polybar
 
-Many of them as circled, infod, nsd, vold, wm3d can be configured via
-TOML-files with inotify-based autoreload.
+*polybar_ws*: async current i3 workspace printer for polybar.
+
+*polybar_vol* : async MPD printer for polybar.
 
 # Dependencies:
 
@@ -48,28 +62,32 @@ TOML-files with inotify-based autoreload.
 + i3ipc -- for i3 ipc interaction.
 + toml -- to save/load human-readable configuration files.
 + inotify -- to reload configs in realtime without reloading.
-+ gevent -- for the mainloop queue, greenlets.
++ aionotify -- async inotify bindings
++ aiofiles -- async file input-output
+
 
 To install it you may use pip:
 
 ```
-pip install --upgrade --force-reinstall inotify
-    gevent \
-    i3ipc \
-    toml \
-    aionotify \
-    aiofiles
+sudo pip install -r requirements.txt
+```
+
+or
+
+```
+sudo pip install --upgrade --force-reinstall inotify gevent i3ipc toml aionotify aiofiles
 ```
 
 In case of pypy it may be something like
 
 ```
-pypy3 -m pip install --upgrade --force-reinstall inotify \
-    gevent \
-    i3ipc \
-    toml \
-    aionotify \
-    aiofiles
+sudo pypy3 -m pip install --upgrade --force-reinstall inotify gevent i3ipc toml aionotify aiofiles
+```
+
+or
+
+```
+sudo pypy3 -m pip install -r requirements.txt
 ```
 
 etc. Of course you are also need pip or conda, or smth to install dependencies.
@@ -93,7 +111,7 @@ because of i3 connection will be closed after i3 restart and then started by
 
 ~~I recommend you to use *stackless python* for better performance. Nuitka / pypy
 / cython are *not* the best choise here: native python3 performance looks
-better on my machine. You can check measure performance with tools like pycallgraph.~~
+better on my machine.~~
 
 *Upd*: for some reason with stackless python I've got not correct return for
 `focused.workspace().descendents()` case, maybe it's my fault, but I can't
@@ -102,6 +120,20 @@ with stackless python 3.6 or 3.7, but ok with `CPython 3.6`.
 
 It seems that for now `pypy3 5.10.1-1` works very nice. Maybe this is because
 of code changes over the time.
+
+# Performance profiling
+
+You can check measure startup performance with tools like pycallgraph.
+
+Also you can try
+
+```
+kernprof -l -v ./negi3mods.py
+```
+
+for the more detail function/line-based profiling. As far as I know Pypy3 is
+not supported yet.
+
 
 # Why
 
