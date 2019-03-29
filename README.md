@@ -69,7 +69,7 @@ handles polybar show / hide to mimic ion3 default fullscreen behaviour.
 To install it you may use pip:
 
 ```
-sudo pip install -r requirements.txt
+sudo pip install -r requirements.txt --upgrade
 ```
 
 or
@@ -87,7 +87,7 @@ sudo pypy3 -m pip install --upgrade --force-reinstall inotify gevent i3ipc toml 
 or
 
 ```
-sudo pypy3 -m pip install -r requirements.txt
+sudo pypy3 -m pip install -r requirements.txt --upgrade
 ```
 
 etc. Of course you are also need pip or conda, or smth to install dependencies.
