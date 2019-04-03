@@ -384,6 +384,7 @@ bindsym $m4+p exec ~/bin/scripts/tmux_clipboard
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
 exec_always zsh ~/bin/scripts/i3_prepare.sh
+exec --no-startup-id /usr/lib/gsd-xsettings
 exec --no-startup-id caffeine &
 exec --no-startup-id sleep 2s && ${XDG_CONFIG_HOME}/i3/send circle next term
 # vim:filetype=i3
