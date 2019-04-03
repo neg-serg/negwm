@@ -192,6 +192,8 @@ bindsym $alt+e mode ""               # special mode
 bindsym $m4+r mode ""                # resize mode
 bindsym $m4+minus mode ""            # window-manager / split / tiling mode
 bindsym $m4+$S+$c+BackSpace mode " " # blocking mode
+bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
+bindsym $m4+p exec ~/bin/scripts/tmux_clipboard
 mode " " {
     bindsym $m4+$S+BackSpace mode "default"
     bindsym $m4+$c+$S+BackSpace mode "default"
@@ -375,10 +377,6 @@ mode "-inner" {
 
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
-
-bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
-
-bindsym $m4+p exec ~/bin/scripts/tmux_clipboard
 
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
