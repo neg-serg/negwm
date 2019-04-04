@@ -24,8 +24,7 @@ class geom():
         self.parsed_geom = {}
 
         # set current screen resolution
-        display = Negi3ModsDisplay()
-        self.current_resolution = display.get_screen_resolution()
+        self.current_resolution = Negi3ModsDisplay.get_screen_resolution()
 
         # external config
         self.cfg = cfg

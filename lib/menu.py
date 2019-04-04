@@ -67,8 +67,7 @@ class menu(modi3cfg):
         self.delim = "@"
 
         # cache screen width
-        display = Negi3ModsDisplay()
-        self.screen_width = display.get_screen_resolution()["width"]
+        self.screen_width = Negi3ModsDisplay.get_screen_resolution()["width"]
 
         # set up settings for rofi, dmenu, whatever
         self.launcher_font = self.conf("font") + " " + \

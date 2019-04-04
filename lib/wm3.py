@@ -46,8 +46,7 @@ class wm3(Singleton, modi3cfg):
         )
 
         # we need to know current resolution for almost all operations here.
-        display = Negi3ModsDisplay()
-        self.current_resolution = display.get_screen_resolution()
+        self.current_resolution = Negi3ModsDisplay.get_screen_resolution()
 
         # here we load information about useless gaps
         self.load_useless_gaps()

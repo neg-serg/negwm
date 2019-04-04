@@ -111,25 +111,20 @@ def find_visible_windows(windows_on_ws: List) -> List:
 
 
 class Negi3ModsDisplay():
-    __metaclass__ = Singleton
-    def __init__(self):
-        """ Get current screen resolution with help of xrandr.
-        """
-        self.get_xrandr_cache()
+    d = display.Display()
+    s = d.screen()
+    window = s.root.create_window(0, 0, 1, 1, 1, s.root_depth)
+    xrandr_cache = randr.get_screen_info(window)._data
 
-    def get_xrandr_cache(self):
-        d = display.Display()
-        s = d.screen()
-        window = s.root.create_window(0, 0, 1, 1, 1, s.root_depth)
-        self.xrandr_cache = randr.get_screen_info(window)._data
-
-    def get_screen_resolution(self) -> dict:
-        size_id = self.xrandr_cache['size_id']
-        resolution = self.xrandr_cache['sizes'][size_id]
+    @classmethod
+    def get_screen_resolution(cls) -> dict:
+        size_id = cls.xrandr_cache['size_id']
+        resolution = cls.xrandr_cache['sizes'][size_id]
         return {
             'width': int(resolution['width_in_pixels']),
             'height': int(resolution['height_in_pixels'])
         }
+
 
 class Matcher(object):
     """ Generic matcher class
