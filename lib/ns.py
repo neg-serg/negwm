@@ -62,9 +62,6 @@ class ns(modi3cfg, Matcher):
         # winlist is used to reduce calling i3.get_tree() too many times.
         self.winlist = i3.get_tree()
 
-        # Cache dialog windwows
-        self.cache_dialog_wins = dict()
-
         # fullscreen_list is used to perform fullscreen hacks
         self.fullscreen_list = []
 
@@ -173,9 +170,6 @@ class ns(modi3cfg, Matcher):
             Args:
                 w : target window to check
         """
-        if w in self.cache_dialog_wins.items():
-            return self.cache_dialog_wins[w]
-
         if w.window_instance == "Places" \
                 or w.window_role in {"GtkFileChooserDialog", "confirmEx",
                                      "gimp-file-open"} \
@@ -200,8 +194,6 @@ class ns(modi3cfg, Matcher):
                     if '_NET_WM_WINDOW_TYPE(ATOM)' in tok:
                         is_dialog = '_NET_WM_WINDOW_TYPE_DIALOG' in tok \
                                 or '_NET_WM_STATE_MODAL' in tok
-
-        self.cache_dialog_wins[w] = is_dialog
         return is_dialog
 
     def dialog_toggle(self) -> None:
@@ -619,7 +611,6 @@ class ns(modi3cfg, Matcher):
                 for _, win in enumerate(self.marked[tag]):
                     if win.id == win_ev.id:
                         del self.marked[tag][_]
-                        del self.cache_dialog_wins[win]
                         self.focus(tag)
                         for tr in self.marked["transients"]:
                             if tr.id == win.id:
