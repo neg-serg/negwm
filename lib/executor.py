@@ -12,6 +12,8 @@ import errno
 import shlex
 import shutil
 import yaml
+import yamlloader
+from collections import OrderedDict
 from typing import List
 from os.path import expanduser
 from modi3cfg import modi3cfg
@@ -113,7 +115,7 @@ class env():
     def fileprocess(self, custom_config: str) -> None:
         with open(custom_config, "r") as fp:
             try:
-                conf = yaml.load(fp, Loader=yaml.CLoader)
+                conf = yaml.load(fp, Loader=yamlloader.ordereddict.CLoader)
                 if conf is not None:
                     conf["font"]["normal"]["family"] = self.font
                     conf["font"]["bold"]["family"] = self.font
@@ -133,7 +135,7 @@ class env():
                     allow_unicode=True,
                     canonical=False,
                     explicit_start=True,
-                    Dumper=yaml.CDumper
+                    Dumper=yamlloader.ordereddict.CDumper
                 )
             except yaml.YAMLError as e:
                 print(e)
