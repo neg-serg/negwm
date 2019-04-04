@@ -24,6 +24,9 @@ import re
 import errno
 import asyncio
 import aiofiles
+from Xlib import display
+from Xlib.ext import randr
+
 from typing import List, Iterator
 from singleton import Singleton
 
@@ -78,21 +81,6 @@ def notify_msg(msg: str, prefix: str = " "):
     subprocess.run(notify_msg)
 
 
-def get_screen_resolution() -> dict:
-    """ Return current screen resolution with help of xrandr.
-    """
-    out = subprocess.run(
-        'xrandr | awk \'/*/{print $1}\'',
-        shell=True,
-        stdout=subprocess.PIPE
-    ).stdout
-    if out is not None and out:
-        resolution = out.decode('UTF-8').split()[0].split('x')
-        return {'width': int(resolution[0]), 'height': int(resolution[1])}
-    else:
-        return {'width': 1920, 'height': 1200}
-
-
 def find_visible_windows(windows_on_ws: List) -> List:
     """ Find windows visible on the screen now.
 
@@ -121,6 +109,27 @@ def find_visible_windows(windows_on_ws: List) -> List:
 
     return visible_windows
 
+
+class Negi3ModsDisplay():
+    __metaclass__ = Singleton
+    def __init__(self):
+        """ Get current screen resolution with help of xrandr.
+        """
+        self.get_xrandr_cache()
+
+    def get_xrandr_cache(self):
+        d = display.Display()
+        s = d.screen()
+        window = s.root.create_window(0, 0, 1, 1, 1, s.root_depth)
+        self.xrandr_cache = randr.get_screen_info(window)._data
+
+    def get_screen_resolution(self) -> dict:
+        size_id = self.xrandr_cache['size_id']
+        resolution = self.xrandr_cache['sizes'][size_id]
+        return {
+            'width': int(resolution['width_in_pixels']),
+            'height': int(resolution['height_in_pixels'])
+        }
 
 class Matcher(object):
     """ Generic matcher class

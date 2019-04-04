@@ -11,7 +11,8 @@ space, etc.
 import collections
 from itertools import cycle
 from typing import List, Mapping, Iterator
-from main import find_visible_windows, get_screen_resolution
+from main import find_visible_windows
+from main import Negi3ModsDisplay
 from singleton import Singleton
 from modi3cfg import modi3cfg
 
@@ -45,7 +46,8 @@ class wm3(Singleton, modi3cfg):
         )
 
         # we need to know current resolution for almost all operations here.
-        self.current_resolution = get_screen_resolution()
+        display = Negi3ModsDisplay()
+        self.current_resolution = display.get_screen_resolution()
 
         # here we load information about useless gaps
         self.load_useless_gaps()

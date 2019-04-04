@@ -20,7 +20,7 @@ import pulsectl
 import configparser
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import i3path, get_screen_resolution
+from main import i3path, Negi3ModsDisplay
 from functools import partial
 from typing import List, Callable, Optional
 
@@ -67,7 +67,8 @@ class menu(modi3cfg):
         self.delim = "@"
 
         # cache screen width
-        self.screen_width = get_screen_resolution()["width"]
+        display = Negi3ModsDisplay()
+        self.screen_width = display.get_screen_resolution()["width"]
 
         # set up settings for rofi, dmenu, whatever
         self.launcher_font = self.conf("font") + " " + \
