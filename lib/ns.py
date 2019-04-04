@@ -571,9 +571,10 @@ class ns(modi3cfg, Matcher):
                 event.container.
         """
         win = event.container
+        is_dialog_win = self.is_dialog_win(win)
+
         self.winlist = self.i3.get_tree()
         for tag in self.cfg:
-            is_dialog_win = self.is_dialog_win(win)
             if not is_dialog_win and tag != "transients":
                 if self.match(win, tag):
                     # scratch_move
@@ -631,9 +632,9 @@ class ns(modi3cfg, Matcher):
         """
         self.winlist = self.i3.get_tree()
         leaves = self.winlist.leaves()
-        for tag in self.cfg:
-            for win in leaves:
-                is_dialog_win = self.is_dialog_win(win)
+        for win in leaves:
+            is_dialog_win = self.is_dialog_win(win)
+            for tag in self.cfg:
                 if not is_dialog_win and tag != "transients":
                     if self.match(win, tag):
                         # scratch move
