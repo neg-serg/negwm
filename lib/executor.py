@@ -113,7 +113,7 @@ class env():
     def fileprocess(self, custom_config: str) -> None:
         with open(custom_config, "r") as fp:
             try:
-                conf = yaml.load(fp)
+                conf = yaml.load(fp, Loader=yaml.CLoader)
                 if conf is not None:
                     conf["font"]["normal"]["family"] = self.font
                     conf["font"]["bold"]["family"] = self.font
@@ -132,7 +132,8 @@ class env():
                     default_flow_style=False,
                     allow_unicode=True,
                     canonical=False,
-                    explicit_start=True
+                    explicit_start=True,
+                    Dumper=yaml.CDumper
                 )
             except yaml.YAMLError as e:
                 print(e)
