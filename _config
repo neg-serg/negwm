@@ -143,8 +143,7 @@ for_window {$fb2,$pdf}, move workspace $doc, focus
 # ░█░█░█▀█░█▀▄░░░░░█▀▀░█░░░█▀█░█▀█░▀█▀░▀█▀░█▀█░█▀▀
 # ░▀▄▀░█▀█░█▀▄░░░░░█▀▀░█░░░█░█░█▀█░░█░░░█░░█░█░█░█
 # ░░▀░░▀░▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░▀▀▀
-for_window [class="^(Pavucontrol|Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gpick|rdesktop|nsph)$"] floating enable
-for_window [class="Wpg.py"] floating enable, move position 1210 626, resize set 700 500
+for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gpick|rdesktop)$"] floating enable
 
 # ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
 # ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
@@ -211,25 +210,17 @@ bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
 bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+4 exec --no-startup-id flameshot gui
 bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
+
 bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
-bindsym $m4+$S+a $menu attach
-bindsym $m4+g $menu ws
-bindsym $m4+$c+g $menu movews
 #----------------------------------------------
 # ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
 # ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
 # ░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀░░░░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░
-bindsym $m4+f $ns toggle ncmpcpp
-bindsym $m4+e $ns toggle im
-bindsym $m4+$S+s $menu autoprop
-bindsym $m4+$S+p $ns toggle volcontrol
-bindsym $m4+d $ns toggle teardrop
-bindsym $m4+a $ns toggle youtube
-bindsym $m4+$S+e $ns toggle weechat
+bindsym $m4+{f,e,d,a} $ns toggle {ncmpcpp,im,teardrop,youtube}
+bindsym $m4+$S+{p,e} $ns toggle {volcontrol,weechat}
+
+bindsym $m4+$c+$S+{R,D,S} $ns {geom_restore,geom_dump,geom_autosave_mode}
 bindsym $m4+3 $ns next
-bindsym $m4+$c+$S+R $ns geom_restore
-bindsym $m4+$c+$S+D $ns geom_dump
-bindsym $m4+$c+$S+S $ns geom_autosave_mode
 bindsym $m4+s $ns hide_current
 
 # ░█▀▀░▀█▀░█▀▄░█▀▀░█░░░█▀▀
@@ -252,11 +243,18 @@ bindsym $m4+$c+f $circle next discord
 bindsym $m4+grave exec $wm3 focus_next_visible
 bindsym $m4+$S+grave exec $wm3 focus_prev_visible
 
+bindsym $m4+q fullscreen toggle
+
+# ░█▄█░█▀▀░█▀█░█░█
+# ░█░█░█▀▀░█░█░█░█
+# ░▀░▀░▀▀▀░▀░▀░▀▀▀
 bindsym $alt+g exec $menu goto_win
 bindsym $m4+m exec $menu xprop, $exit
-bindsym $m4+q fullscreen toggle
+bindsym $m4+$S+a $menu attach
+bindsym $m4+g $menu ws
+bindsym $m4+$c+g $menu movews
 bindsym $m4+$c+grave $menu run
-
+bindsym $m4+$S+s $menu autoprop
 #-------------------------------------------------------
 bindsym $alt+Tab $flast switch
 bindsym $m4+slash $flast switch
