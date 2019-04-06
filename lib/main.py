@@ -141,23 +141,19 @@ class Matcher(object):
     negi3mods.
 
     """
-    @staticmethod
-    def find_classed(wlist: List, pattern: str) -> Iterator:
+    def find_classed(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_class and re.search(pattern, c.window_class))
 
-    @staticmethod
-    def find_instanced(wlist: List, pattern: str) -> Iterator:
+    def find_instanced(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_instance and re.search(pattern, c.window_instance))
 
-    @staticmethod
-    def find_by_role(wlist: List, pattern: str) -> Iterator:
+    def find_by_role(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.window_role and re.search(pattern, c.window_role))
 
-    @staticmethod
-    def find_named(wlist: List, pattern: str) -> Iterator:
+    def find_named(self, wlist: List, pattern: str) -> Iterator:
         return (c for c in wlist
                 if c.name and re.search(pattern, c.name))
 
