@@ -74,13 +74,15 @@ class polybar_ws(modconfig):
 
         for ws in self.i3.get_workspaces():
             if ws.focused:
-                self.ws_name = ws.name
+                ws_name = ws.name
+                self.ws_name = ws_name.split(' :: ')[1:][0]
                 break
 
     def on_ws_focus(self, i3, event):
         """ Get workspace name and throw event.
         """
-        self.ws_name = event.current.name
+        ws_name = event.current.name
+        self.ws_name = ws_name.split(' :: ')[1:][0]
         self.event.set()
 
     def colorize(self, s, color):
