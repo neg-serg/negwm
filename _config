@@ -77,21 +77,21 @@ hide_edge_borders both
 # ░█░█░█▄█░█▀▀
 # ░█▄█░█░█░▀▀█
 # ░▀░▀░▀░▀░▀▀▀
-set $term " α:term"
-set $web " β:web"
-set $doc " γ:doc"
-set $dev " δ:dev"
-set $gfx " ε:gfx"
-set $draw " ζ:draw"
-set $sys " η:sys"
-set $ide " θ:ide"
-set $steam " ι:steam"
-set $torrent " κ:torrent"
-set $vm " λ:vm"
-set $wine " μ:wine"
-set $spotify " ν:spotify"
-set $pic " ξ:pic"
-set $remote " ο:remote"
+set $term "1 ::  α:term"
+set $web "2 ::  β:web"
+set $doc "3 ::  γ:doc"
+set $dev "4 ::  δ:dev"
+set $gfx "5 ::  ε:gfx"
+set $draw "6 ::  ζ:draw"
+set $sys "7 ::  η:sys"
+set $ide "8 ::  θ:ide"
+set $steam "9 ::  ι:steam"
+set $torrent "10 ::  κ:torrent"
+set $vm "11 ::  λ:vm"
+set $wine "12 ::  μ:wine"
+set $spotify "13 ::  ν:spotify"
+set $pic "14 ::  ξ:pic"
+set $remote "15 ::  ο:remote"
 
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
