@@ -10,7 +10,7 @@
         - i3-cmd menu with autocompletion.
 """
 
-import json
+import rapidjson as json
 import socket
 import re
 import subprocess
