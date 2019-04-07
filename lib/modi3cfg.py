@@ -66,6 +66,9 @@ class modi3cfg(object):
             conf_part (str): part of config from where you want to extract it.
             prog_field (str): string name to extract.
         """
+        if conf_part is None:
+            return
+
         if exe_file:
             return re.sub(
                 "~",
