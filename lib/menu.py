@@ -115,6 +115,7 @@ class menu(modi3cfg):
             "movews": self.move_to_ws,
             "reload": self.reload_config,
             "gtk_theme": self.change_gtk_theme,
+            "xrandr_resolution": self.change_resolution_xrandr,
         }[args[0]](*args[1:])
 
     def rofi_args(self, prompt: str = None, cnum: int = 16,
@@ -383,6 +384,33 @@ class menu(modi3cfg):
                 int(self.pulse_data["app_props"][app_ret].index),
                 int(target_idx),
             )
+
+    def change_resolution_xrandr(self):
+        xrandr_data = Negi3ModsDisplay.xrandr_resolution_list()
+        resolution_sel = subprocess.run(
+            self.rofi_args(
+                cnum=8,
+                width=int(self.screen_width * 0.55),
+                prompt=f'{self.wrap_str("gtk_theme")} {self.prompt}'
+            ),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(xrandr_data), 'UTF-8')
+        ).stdout
+
+        if resolution_sel is not None:
+            ret = resolution_sel.decode('UTF-8').strip()
+
+        ret_list = []
+        if ret and 'x' in ret:
+            size_pair = ret.split(':')
+            size_id = size_pair[0]
+            res_str = size_pair[1:][0].strip()
+            ret_list = res_str.split('x')
+
+        width, height = ret_list[0].strip(), ret_list[1].strip()
+
+        print(f'Set size to {width}x{height}')
+        Negi3ModsDisplay.set_screen_size(size_id)
 
     def change_gtk_theme(self):
         gtk_themes_list = []

@@ -64,6 +64,7 @@ const char *docstr =
     "  send menu xprop\n"
     "  send menu pulse_output\n"
     "  send menu pulse_input\n"
+    "  send menu xrandr_resolution\n"
     "  send menu gtk_theme\n"
     "  send menu autoprop\n"
     "  send menu attach\n"
@@ -148,6 +149,7 @@ Args ArgMap[] = {
             {"xprop", 0},
             {"pulse_output", 0},
             {"pulse_input", 0},
+            {"xrandr_resolution", 0},
             {"gtk_theme", 0},
             {"reload", 0},
             {"autoprop", 0},
