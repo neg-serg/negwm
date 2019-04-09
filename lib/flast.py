@@ -71,9 +71,9 @@ class flast(modi3cfg):
     def alt_tab(self) -> None:
         """ Focus previous window.
         """
-        leaves = self.i3.get_tree().leaves()
+        wids = set(w.id for w in self.i3.get_tree().leaves())
         for wid in self.window_history[1:]:
-            if wid not in set(w.id for w in leaves):
+            if wid not in wids:
                 self.window_history.remove(wid)
             else:
                 self.i3.command(f'[con_id={wid}] focus')
@@ -108,17 +108,11 @@ class flast(modi3cfg):
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
-        focused_ws_name = i3.get_tree().find_focused().workspace().name
-        wswins = filter(
-            lambda win: win.window,
-                i3.get_tree()
-                .find_focused()
-                .workspace()
-                .descendents()
-        )
-        if not len(find_visible_windows(wswins)):
+        workspace = i3.get_tree().find_focused().workspace()
+        focused_ws_name = workspace.name
+        wswins = workspace.descendents()
+        if not len(wswins):
             for ws_substr in self.autoback:
                 if focused_ws_name.endswith(ws_substr):
                     self.alt_tab()
-                    return
 
