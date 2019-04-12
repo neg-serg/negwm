@@ -7,7 +7,6 @@ window may be closed, and then you cannot focus it.
 """
 
 from typing import List
-from main import find_visible_windows
 from singleton import Singleton
 from modi3cfg import modi3cfg
 
@@ -114,5 +113,5 @@ class flast(modi3cfg):
         if not len(wswins):
             for ws_substr in self.autoback:
                 if focused_ws_name.endswith(ws_substr):
-                    self.alt_tab()
+                    self.i3.command('workspace back_and_forth')
 
