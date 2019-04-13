@@ -98,7 +98,7 @@ set $remote "15 ::  ο:remote"
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
 set $browsers [class="^(Firefox|Nightly|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
-set $games [class="^(dota2|darkest.bin.x86_64|PillarsOfEternityII|Lutris|Civ6|warframe.x64.exe)$"]
+set $games [class="^(dota2|darkest.bin.x86_64|PillarsOfEternityII|lutris|Lutris|Civ6|warframe.x64.exe)$"]
 set $wine_apps [class="^(wine|Crossover)$"]
 set $windows_exe_by_title [title="^.*.exe$"]
 set $windows_exe_by_class [class="^.*.exe$"]
@@ -161,7 +161,7 @@ for_window {$jetbrains,$java_dialogs} move workspace $ide
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀
 for_window {$sclient,$games} move workspace $steam
-for_window {$wine_apps,$windows_exe_by_title,$windows_exe_by_class,[class="discord"]} move workspace $wine
+for_window {$wine_apps,$windows_exe_by_title,$windows_exe_by_class} move workspace $wine
 
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
@@ -218,6 +218,7 @@ bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
 # ░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀░░░░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░
 bindsym $m4+{f,e,d,a} $ns toggle {ncmpcpp,im,teardrop,youtube}
 bindsym $m4+$S+{p,e} $ns toggle {volcontrol,weechat}
+bindsym $m4+v $ns toggle discord
 
 bindsym $m4+$c+$S+{R,D,S} $ns {geom_restore,geom_dump,geom_autosave_mode}
 bindsym $m4+3 $ns next
@@ -232,10 +233,9 @@ bindsym $m4+{x,1} $circle next {term,nwim}
 bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
 bindsym $m4+F3 $circle next emacs
 bindsym $m4+$c+{v,e} $circle next {vm,steam}
-bindsym $m4+v $circle next looking_glass
+bindsym $m4+$c+f $circle next looking_glass
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
-bindsym $m4+$c+f $circle next discord
 
 # ░█░█░█▄█░▀▀█
 # ░█▄█░█░█░░▀▄
