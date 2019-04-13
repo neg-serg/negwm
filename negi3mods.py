@@ -56,16 +56,7 @@ class negi3mods(modconfig):
         for mod in self.conf("module_list"):
             self.mods[intern(mod)] = None
 
-        # Start inotify watchers
-        self.use_inotify = True
-
-        # stuff for startup notifications
-        self.notification_text = "Wow! It's time to start mods!\n\n"
-        notification_color_field = self.conf("notification_color_field")
-        notification_color = extract_xrdb_value(notification_color_field)
-        prefix = self.conf("prefix")
-        self.msg_prefix = f"<span weight='normal' \
-                           color='{notification_color}'> {prefix} </span>"
+        self.prepare_notification()
 
         # i3 path used to get "send" binary path
         self.i3_cfg_path = self.i3_path + '/cfg/'
@@ -78,6 +69,15 @@ class negi3mods(modconfig):
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
         self.i3 = i3ipc.Connection()
+
+    def prepare_notification(self):
+        # stuff for startup notifications
+        self.notification_text = "Wow! It's time to start mods!\n\n"
+        notification_color_field = self.conf("notification_color_field")
+        notification_color = extract_xrdb_value(notification_color_field)
+        prefix = self.conf("prefix")
+        self.msg_prefix = f"<span weight='normal' \
+                           color='{notification_color}'> {prefix} </span>"
 
     def load_modules(self):
         """ Load modules.
@@ -225,8 +225,7 @@ class negi3mods(modconfig):
             print(f'... {name} loaded]', flush=True)
 
         start(self.load_modules, 'modules')
-        if self.use_inotify:
-            start(self.run_inotify_watchers, 'inotify watchers')
+        start(self.run_inotify_watchers, 'inotify watchers')
 
         self.run_procs()
 
