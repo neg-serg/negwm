@@ -240,8 +240,10 @@ bindsym $m4+$S+o $circle next obs
 # ░█░█░█▄█░▀▀█
 # ░█▄█░█░█░░▀▄
 # ░▀░▀░▀░▀░▀▀░
-bindsym $m4+grave exec $wm3 focus_next_visible
-bindsym $m4+$S+grave exec $wm3 focus_prev_visible
+bindsym $m4+grave $flast focus_next_visible
+bindsym $m4+$S+grave $flast focus_prev_visible
+# bindsym $m4+Tab $flast focus_next
+# bindsym $m4+$S+Tab $flast focus_prev
 
 bindsym $m4+q fullscreen toggle
 

@@ -60,6 +60,8 @@ const char *docstr =
     "  send ns toggle <name>\n"
     "  send flast reload\n"
     "  send flast switch\n"
+    "  send flast focus_next_visible\n"
+    "  send flast focus_prev_visible\n"
     "  send menu run\n"
     "  send menu xprop\n"
     "  send menu pulse_output\n"
@@ -72,8 +74,6 @@ const char *docstr =
     "  send menu ws\n"
     "  send menu goto_win\n"
     "  send wm3 center\n"
-    "  send wm3 focus_next_visible\n"
-    "  send wm3 focus_prev_visible\n"
     "  send wm3 grow\n"
     "  send wm3 maxhor\n"
     "  send wm3 maximize\n"
@@ -141,6 +141,10 @@ Args ArgMap[] = {
         {
             {"switch", 0},
             {"reload", 0},
+            {"focus_next_visible", 0},
+            {"focus_prev_visible", 0},
+            {"focus_next", 0},
+            {"focus_prev", 0},
             {NULL, 0},
         },
     [MENU] =
@@ -161,8 +165,6 @@ Args ArgMap[] = {
         },
     [WM3] =
         {
-            {"focus_next_visible", 0},
-            {"focus_prev_visible", 0},
             {"reload", 0},
             {"maximize", 0},
             {"maxhor", 0},

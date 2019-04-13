@@ -9,9 +9,7 @@ space, etc.
 """
 
 import collections
-from itertools import cycle
-from typing import List, Mapping, Iterator
-from main import find_visible_windows
+from typing import List, Mapping
 from main import Negi3ModsDisplay
 from singleton import Singleton
 from modi3cfg import modi3cfg
@@ -76,8 +74,6 @@ class wm3(Singleton, modi3cfg):
         """
         {
             "reload": self.reload_config,
-            "focus_next_visible": self.focus_next,
-            "focus_prev_visible": self.focus_next(reversed_order=True),
             "maximize": self.maximize,
             "maxhor": lambda: self.maximize(by='X'),
             "maxvert": lambda: self.maximize(by='Y'),
@@ -425,30 +421,4 @@ class wm3(Singleton, modi3cfg):
         if target_win is None:
             target_win = self.current_win
         return self.create_geom_from_rect(target_win.rect)
-
-    def get_windows_on_ws(self) -> Iterator:
-        """ Get windows on the current workspace.
-        """
-        return filter(
-            lambda x: x.window,
-            self.i3.get_tree().find_focused().workspace().descendents()
-        )
-
-    def focus_next(self, reversed_order: bool = False) -> None:
-        """ Focus next visible window.
-
-        Args:
-            reversed_order(bool) : [optional] predicate to change order.
-
-        """
-        visible_windows = find_visible_windows(self.get_windows_on_ws())
-        if reversed_order:
-            cycle_windows = cycle(reversed(visible_windows))
-        else:
-            cycle_windows = cycle(visible_windows)
-        for window in cycle_windows:
-            if window.focused:
-                focus_to = next(cycle_windows)
-                self.i3.command('[id="%d"] focus' % focus_to.window)
-                break
 

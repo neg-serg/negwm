@@ -6,9 +6,12 @@ information about previous windows. We need this because previously selected
 window may be closed, and then you cannot focus it.
 """
 
-from typing import List
+from typing import List, Iterator
 from singleton import Singleton
+from main import find_visible_windows
 from modi3cfg import modi3cfg
+from collections import deque
+from itertools import cycle
 
 
 class flast(modi3cfg):
@@ -44,7 +47,7 @@ class flast(modi3cfg):
         self.autoback = self.conf('autoback')
 
         self.i3.on('window::focus', self.on_window_focus)
-        self.i3.on('window::close', self.go_back_if_nothing)
+        self.i3.on('window::close', self.goto_nonempty_ws_on_close)
 
     def reload_config(self) -> None:
         """ Reloads config. Dummy.
@@ -65,6 +68,10 @@ class flast(modi3cfg):
         {
             "switch": self.alt_tab,
             "reload": self.reload_config,
+            "focus_next": self.focus_next,
+            "focus_prev": self.focus_prev,
+            "focus_next_visible": self.focus_next_visible,
+            "focus_prev_visible": self.focus_prev_visible,
         }[args[0]](*args[1:])
 
     def alt_tab(self) -> None:
@@ -95,7 +102,57 @@ class flast(modi3cfg):
         if len(self.window_history) > self.max_win_history:
             del self.window_history[self.max_win_history:]
 
-    def go_back_if_nothing(self, i3, event) -> None:
+    def get_windows_on_ws(self) -> Iterator:
+        """ Get windows on the current workspace.
+        """
+        return filter(
+            lambda x: x.window,
+            self.i3.get_tree().find_focused().workspace().descendents()
+        )
+
+    def goto_visible(self, reversed_order = False):
+        """ Focus next visible window.
+
+        Args:
+            reversed_order(bool) : [optional] predicate to change order.
+
+        """
+        wins = find_visible_windows(self.get_windows_on_ws())
+        self.goto_win(wins, reversed_order)
+
+    def goto_win(self, wins, reversed_order = False):
+        if reversed_order:
+            cycle_windows = cycle(reversed(wins))
+        else:
+            cycle_windows = cycle(wins)
+        for window in cycle_windows:
+            if window.focused:
+                focus_to = next(cycle_windows)
+                self.i3.command('[id="%d"] focus' % focus_to.window)
+                break
+
+    def goto_any(self, reversed_order: bool = False) -> None:
+        """ Focus any next window.
+
+        Args:
+            reversed_order(bool) : [optional] predicate to change order.
+        """
+        wins = self.i3.get_tree().leaves()
+        self.goto_win(wins, reversed_order)
+
+    def focus_next(self) -> None:
+        self.goto_any(reversed_order=False)
+
+    def focus_prev(self) -> None:
+        self.goto_any(reversed_order=True)
+
+    def focus_next_visible(self) -> None:
+        self.goto_visible(reversed_order=False)
+
+    def focus_prev_visible(self) -> None:
+        self.goto_visible(reversed_order=True)
+
+    def goto_nonempty_ws_on_close(self, i3, event) -> None:
         """ Go back for temporary tags like pictures or media.
 
             This function make auto alt-tab for workspaces which should by
