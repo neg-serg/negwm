@@ -16,6 +16,10 @@ window when needed.
 import subprocess
 import uuid
 from typing import List, Callable, Set, Optional
+from contextlib import contextmanager
+from ewmh import EWMH
+import Xlib
+import Xlib.display
 
 import lib.geom as geom
 from singleton import Singleton
@@ -51,6 +55,9 @@ class ns(modi3cfg, Matcher):
         # Initialize superclasses.
         modi3cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
+
+        self.disp = Xlib.display.Display()
+        self.ewmh = EWMH()
 
         # most of initialization doing here.
         self.initialize(i3)
@@ -159,6 +166,17 @@ class ns(modi3cfg, Matcher):
 
         return wswins
 
+    @contextmanager
+    def window_obj(self, win_id):
+        """Simplify dealing with BadWindow (make it either valid or None)"""
+        window_obj = None
+        if win_id:
+            try:
+                window_obj = self.disp.create_resource_object('window', win_id)
+            except Xlib.error.XError:
+                pass
+        yield window_obj
+
     def is_dialog_win(self, w) -> bool:
         """ Check that window [w] is not dialog window
 
@@ -176,25 +194,15 @@ class ns(modi3cfg, Matcher):
                 or w.window_class == "Dialog":
             return True
 
-        xprop = None
-        try:
-            xprop = subprocess.run(
-                ['xprop', '-id', str(w.window), "_NET_WM_WINDOW_TYPE"],
-                stdin=None,
-                stdout=subprocess.PIPE
-            ).stdout
-        except Exception:
-            print_traceback()
+        with self.window_obj(w.window) as win:
+            xprop = self.ewmh.getWmWindowType(win, str=True)
 
-        is_dialog = False
-        if xprop is not None:
-            xprop = xprop.decode('UTF-8').strip().split('\n')
-            if xprop:
-                for tok in xprop:
-                    if '_NET_WM_WINDOW_TYPE(ATOM)' in tok:
-                        is_dialog = '_NET_WM_WINDOW_TYPE_DIALOG' in tok \
-                                or '_NET_WM_STATE_MODAL' in tok
-        return is_dialog
+            is_dialog = False
+            for tok in xprop:
+                if '_NET_WM_WINDOW_TYPE(ATOM)' in tok:
+                    is_dialog = '_NET_WM_WINDOW_TYPE_DIALOG' in tok \
+                            or '_NET_WM_STATE_MODAL' in tok
+            return is_dialog
 
     def dialog_toggle(self) -> None:
         """ Show dialog windows
