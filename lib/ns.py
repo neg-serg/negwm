@@ -13,18 +13,13 @@ your scratchpad from fullscreen and also restore fullsreen state of the
 window when needed.
 """
 
-import subprocess
 import uuid
 from typing import List, Callable, Set, Optional
-from contextlib import contextmanager
-from ewmh import EWMH
-import Xlib
-import Xlib.display
 
 import lib.geom as geom
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import Matcher, notify_msg, print_traceback
+from main import Matcher, notify_msg, print_traceback, NegEWMH
 
 
 class ns(modi3cfg, Matcher):
@@ -55,9 +50,6 @@ class ns(modi3cfg, Matcher):
         # Initialize superclasses.
         modi3cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
-
-        self.disp = Xlib.display.Display()
-        self.ewmh = EWMH()
 
         # most of initialization doing here.
         self.initialize(i3)
@@ -166,50 +158,8 @@ class ns(modi3cfg, Matcher):
 
         return wswins
 
-    @contextmanager
-    def window_obj(self, win_id):
-        """Simplify dealing with BadWindow (make it either valid or None)"""
-        window_obj = None
-        if win_id:
-            try:
-                window_obj = self.disp.create_resource_object('window', win_id)
-            except Xlib.error.XError:
-                pass
-        yield window_obj
-
-    def is_dialog_win(self, w) -> bool:
-        """ Check that window [w] is not dialog window
-
-            Unfortunately for now external xprop application used for it,
-            because of i3ipc gives no information about what windows dialog or
-            not, shown/hidden or about _NET_WM_STATE_HIDDEN attribute or
-            "custom" window attributes, etc.
-
-            Args:
-                w : target window to check
-        """
-        if w.window_instance == "Places" \
-                or w.window_role in {"GtkFileChooserDialog", "confirmEx",
-                                     "gimp-file-open"} \
-                or w.window_class == "Dialog":
-            return True
-
-        with self.window_obj(w.window) as win:
-            xprop = self.ewmh.getWmWindowType(win, str=True)
-
-            is_dialog = False
-            for tok in xprop:
-                if '_NET_WM_WINDOW_TYPE(ATOM)' in tok:
-                    is_dialog = '_NET_WM_WINDOW_TYPE_DIALOG' in tok \
-                            or '_NET_WM_STATE_MODAL' in tok
-            return is_dialog
-
     def dialog_toggle(self) -> None:
         """ Show dialog windows
-
-            This function using self.is_dialog_win, which use information
-            extracted from xprop application. And because of this it's not so
-            fast. But this operation is pretty rare, so no problem here.
         """
         self.focus('transients', hide=False)
 
@@ -579,7 +529,7 @@ class ns(modi3cfg, Matcher):
                 event.container.
         """
         win = event.container
-        is_dialog_win = self.is_dialog_win(win)
+        is_dialog_win = NegEWMH.is_dialog_win(win)
 
         self.winlist = self.i3.get_tree()
         for tag in self.cfg:
@@ -641,7 +591,7 @@ class ns(modi3cfg, Matcher):
         self.winlist = self.i3.get_tree()
         leaves = self.winlist.leaves()
         for win in leaves:
-            is_dialog_win = self.is_dialog_win(win)
+            is_dialog_win = NegEWMH.is_dialog_win(win)
             for tag in self.cfg:
                 if not is_dialog_win and tag != "transients":
                     if self.match(win, tag):
