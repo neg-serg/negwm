@@ -82,6 +82,22 @@ class NegEWMH():
                             or '_NET_WM_STATE_MODAL' in tok
             return is_dialog
 
+    def find_visible_windows(windows_on_ws: List) -> List:
+        """ Find windows visible on the screen now.
+
+        Args:
+            windows_on_ws: windows list which going to be filtered with this
+                        function.
+        """
+        visible_windows = []
+        for w in windows_on_ws:
+            with NegEWMH.window_obj(NegEWMH.disp, w.window) as win:
+                xprop = NegEWMH.ewmh.getWmState(win, str=True)
+                if '_NET_WM_STATE_HIDDEN' not in xprop:
+                    visible_windows.append(w)
+
+        return visible_windows
+
 
 def create_dir(dirname):
     try:
@@ -127,35 +143,6 @@ def notify_msg(msg: str, prefix: str = " "):
         "</span>"
     ]
     subprocess.run(notify_msg)
-
-
-def find_visible_windows(windows_on_ws: List) -> List:
-    """ Find windows visible on the screen now.
-
-    Unfortunately for now external xprop application used for it,
-    because of i3ipc gives no information about what windows
-    shown/hidden or about _NET_WM_STATE_HIDDEN attributes
-
-    Args:
-        windows_on_ws: windows list which going to be filtered with this
-                       function.
-    """
-    visible_windows = []
-    for w in windows_on_ws:
-        xprop = None
-        try:
-            xprop = subprocess.run(
-                ['xprop', '-id', str(w.window), '_NET_WM_STATE_HIDDEN'],
-                stdout=subprocess.PIPE
-            ).stdout
-        except Exception:
-            print("get some problem in [find_visible_windows] in [main]")
-        if xprop is not None:
-            xprop = xprop.decode('UTF-8').strip()
-            if xprop == '_NET_WM_STATE_HIDDEN:  not found.':
-                visible_windows.append(w)
-
-    return visible_windows
 
 
 class Negi3ModsDisplay():

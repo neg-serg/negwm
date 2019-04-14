@@ -8,7 +8,7 @@ window may be closed, and then you cannot focus it.
 
 from typing import List, Iterator
 from singleton import Singleton
-from main import find_visible_windows
+from main import NegEWMH
 from modi3cfg import modi3cfg
 from collections import deque
 from itertools import cycle
@@ -117,7 +117,7 @@ class flast(modi3cfg):
             reversed_order(bool) : [optional] predicate to change order.
 
         """
-        wins = find_visible_windows(self.get_windows_on_ws())
+        wins = NegEWMH.find_visible_windows(self.get_windows_on_ws())
         self.goto_win(wins, reversed_order)
 
     def goto_win(self, wins, reversed_order = False):
