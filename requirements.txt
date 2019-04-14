@@ -3,3 +3,5 @@ inotify
 toml
 aionotify
 aiofiles
+Xlib
+ewmh
