@@ -76,11 +76,6 @@ class menu(modi3cfg):
         self.anchor = self.conf("anchor")
         self.matching = self.conf("matching")
         self.prompt = self.conf("prompt")
-
-        self.scratchpad_color = self.conf("scratchpad_color")
-        self.ws_name_color = self.conf("ws_name_color")
-        self.wm_class_color = self.conf("wm_class_color")
-
         self.lhs_br = self.conf('left_bracket')
         self.rhs_br = self.conf('right_bracket')
 
@@ -204,59 +199,6 @@ class menu(modi3cfg):
             for w in leaves:
                 if w.name == win_name:
                     w.command(cmd)
-
-    def win_act_pretty(self, cmd: str, prompt: str) -> None:
-        """ Run beautiful selection dialog for window with given action
-            Args:
-                cmd (string): action for window to run.
-                prompt (string): custom prompt for rofi.
-        """
-        tree = self.i3.get_tree()
-        leaves = tree.leaves()
-        focused = tree.find_focused()
-
-        winlist, scratchlist, wlist = [], [], []
-        for win in leaves:
-            if win.id != focused.id:
-                ws_name = win.parent.parent.name
-                if ws_name == '__i3_scratch':
-                    ws_name = self.colorize(
-                        ' scratchpad', self.scratchpad_color
-                    )
-                    scratchlist.append(
-                        f'{ws_name:<58} {self.colorize(win.window_class, "{self.wm_class_color}"):<64} {re.sub("<[^<]+?>", "", win.name)}'
-                    )
-                else:
-                    ws_name = self.colorize(ws_name, self.ws_name_color)
-                    wlist.append(
-                        f'{ws_name:<58} {self.colorize(win.window_class, "{self.wm_class_color}"):<64} {re.sub("<[^<]+?>", "", win.name)}'
-                    )
-        winlist = wlist + scratchlist
-
-        winlist_len = len(winlist)
-        if winlist and winlist_len > 1:
-            win_name = subprocess.run(
-                self.rofi_args(
-                    lnum=winlist_len,
-                    width=int(self.screen_width * 0.75),
-                    prompt=f"{prompt} {self.prompt}",
-                    markup_rows='-markup-rows'
-                ),
-                stdout=subprocess.PIPE,
-                input=bytes('\n'.join(winlist), 'UTF-8')
-            ).stdout
-        elif winlist_len:
-            win_name = winlist[0]
-
-        if win_name is not None and win_name:
-            win_name = win_name.decode('UTF-8').strip()
-            for w in leaves:
-                if w.name in win_name:
-                    w.command(cmd)
-
-    @staticmethod
-    def colorize(s: str, color: str, weight: str = 'normal') -> str:
-        return f"<span weight='{weight}' color='{color}'>{s}</span>"
 
     def wrap_str(self, s: str) -> str:
         return self.lhs_br + s + self.rhs_br
