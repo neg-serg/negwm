@@ -10,7 +10,7 @@ space, etc.
 
 import collections
 from typing import List, Mapping
-from main import Negi3ModsDisplay
+from display import Display
 from singleton import Singleton
 from modi3cfg import modi3cfg
 
@@ -44,7 +44,7 @@ class wm3(Singleton, modi3cfg):
         )
 
         # we need to know current resolution for almost all operations here.
-        self.current_resolution = Negi3ModsDisplay.get_screen_resolution()
+        self.current_resolution = Display.get_screen_resolution()
 
         # here we load information about useless gaps
         self.load_useless_gaps()

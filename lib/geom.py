@@ -7,7 +7,7 @@
 
 import re
 from typing import List
-from main import Negi3ModsDisplay
+from display import Display
 
 
 class geom():
@@ -24,7 +24,7 @@ class geom():
         self.parsed_geom = {}
 
         # set current screen resolution
-        self.current_resolution = Negi3ModsDisplay.get_screen_resolution()
+        self.current_resolution = Display.get_screen_resolution()
 
         # external config
         self.cfg = cfg

@@ -20,7 +20,8 @@ import pulsectl
 import configparser
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import Misc, Negi3ModsDisplay
+from main import Misc
+from display import Display
 from functools import partial
 from typing import List, Callable, Optional
 
@@ -67,7 +68,7 @@ class menu(modi3cfg):
         self.delim = "@"
 
         # cache screen width
-        self.screen_width = Negi3ModsDisplay.get_screen_resolution()["width"]
+        self.screen_width = Display.get_screen_resolution()["width"]
 
         # set up settings for rofi, dmenu, whatever
         self.launcher_font = self.conf("font") + " " + \
@@ -328,7 +329,7 @@ class menu(modi3cfg):
             )
 
     def change_resolution_xrandr(self):
-        xrandr_data = Negi3ModsDisplay.xrandr_resolution_list()
+        xrandr_data = Display.xrandr_resolution_list()
         resolution_sel = subprocess.run(
             self.rofi_args(
                 cnum=8,
@@ -352,7 +353,7 @@ class menu(modi3cfg):
         width, height = ret_list[0].strip(), ret_list[1].strip()
 
         print(f'Set size to {width}x{height}')
-        Negi3ModsDisplay.set_screen_size(size_id)
+        Display.set_screen_size(size_id)
 
     def change_gtk_theme(self):
         gtk_themes_list = []
