@@ -20,7 +20,6 @@ import os
 import sys
 import subprocess
 from contextlib import contextmanager
-import traceback
 import re
 import errno
 import asyncio
@@ -97,10 +96,6 @@ class NegEWMH():
 
 class Misc():
     @staticmethod
-    def print_traceback() -> None:
-        print(traceback.format_exc())
-
-    @staticmethod
     def create_dir(dirname):
         try:
             os.makedirs(dirname)
@@ -112,9 +107,7 @@ class Misc():
     def i3path() -> str:
         """ Easy way to return i3 config path. May be improved.
         """
-        xdg_config_path = os.environ.get("XDG_CONFIG_HOME")
-        i3_path = xdg_config_path + "/i3/"
-        return i3_path
+        return os.environ.get("XDG_CONFIG_HOME") + "/i3/"
 
     @staticmethod
     def extract_xrdb_value(field: str) -> str:
@@ -144,7 +137,7 @@ class Misc():
             prefix + msg +
             "</span>"
         ]
-        subprocess.run(notify_msg)
+        subprocess.Popen(notify_msg)
 
 
 class Negi3ModsDisplay():
@@ -335,7 +328,7 @@ class daemon_manager():
                     try:
                         self.mods[name].switch(args)
                     except Exception:
-                        Misc.print_traceback()
+                        pass
 
     def add_ipc(self, name: str) -> None:
         """ Add negi3mods IPC.

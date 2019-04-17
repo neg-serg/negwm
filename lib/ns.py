@@ -247,12 +247,9 @@ class ns(modi3cfg, Matcher):
                 w for w in class_list if w in subtag_classes_set
             ]
             if not len(subtag_classes_matched):
-                try:
-                    prog_str = self.extract_prog_str(self.conf(tag, subtag))
-                    self.i3.command(f'exec {prog_str}')
-                    self.focus_win_flag = [True, tag]
-                except Exception:
-                    print_traceback()
+                prog_str = self.extract_prog_str(self.conf(tag, subtag))
+                self.i3.command(f'exec {prog_str}')
+                self.focus_win_flag = [True, tag]
             else:
                 self.focus_sub_tag(tag, subtag_classes_set)
         else:
