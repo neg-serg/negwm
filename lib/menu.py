@@ -113,10 +113,10 @@ class menu(modi3cfg):
             "xrandr_resolution": self.change_resolution_xrandr,
         }[args[0]](*args[1:])
 
-    def rofi_args(self, prompt: str = None, cnum: int = 16,
+    def rofi_args(self, prompt: str = '', cnum: int = 16,
                   lnum: int = 2,
-                  width: Optional[int] = None,
-                  markup_rows: Optional[str] = None,
+                  width: Optional[int] = 12,
+                  markup_rows: Optional[str] = '',
                   auto_selection="-no-auto-selection") -> List[str]:
         prompt = prompt or self.prompt
         width = width or self.screen_width - 20
@@ -607,12 +607,8 @@ class menu(modi3cfg):
             # nothing to do
             return 0
 
-        debug = False
-        ok = False
-        notify_msg = ""
-
-        args = None
-        prev_args = None
+        debug, ok, notify_msg = False, False, ""
+        args, prev_args = None, None
         while not (ok or args == ['<end>'] or args == []):
             if debug:
                 print(f"evaluated cmd=[{cmd}] args=[{self.i3_cmd_args(cmd)}]")
