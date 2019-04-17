@@ -25,7 +25,7 @@ set $wm3 exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send wm3
 set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send vol
 set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send executor
 
-set $scratchpad_dialog floating enable, move position 180 20, resize set 1556 620, move scratchpad
+set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
 
 # ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀ #
 # ░█░░░█░█░█░░░█░█░█▀▄░▀▀█ #
@@ -68,10 +68,6 @@ show_marks no
 # ░█▀▀░█▀█░█▀█░█▀▀
 # ░█░█░█▀█░█▀▀░▀▀█
 # ░▀▀▀░▀░▀░▀░░░▀▀▀
-smart_gaps on
-smart_borders on
-gaps inner 16
-gaps outer 8
 hide_edge_borders both
 
 # ░█░█░█▄█░█▀▀
