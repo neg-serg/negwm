@@ -111,7 +111,6 @@ set $vim [instance="^(wim|nwim|oni)$"]
 set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
 set $jetbrains [class="^jetbrains-(idea|clion|andrond-studio).*"]
 set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
-set $java_dialogs [instance="sun-awt-X11-(XWindowPeer|XDialogPeer|XFramePeer)"]
 set $office [class="^(libreoffice|abiword).*$"]
 
 title_align left
@@ -155,7 +154,7 @@ for_window [class="^(draw|darktable|inkscape|gimp)$"] move workspace $draw
 # ░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀
 for_window $vim move workspace $dev, focus
 for_window $not_vim move workspace $dev
-for_window {$jetbrains,$java_dialogs} move workspace $ide
+for_window {$jetbrains} move workspace $ide
 
 # ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
