@@ -148,7 +148,9 @@ class env():
                 "-e", "dash", "-c"
             ]
         elif terminal == "alacritty-custom":
-            custom_config = self.generate_alacritty_config(self.alacritty_cfg_dir, cfg, name)
+            custom_config = self.generate_alacritty_config(
+                self.alacritty_cfg_dir, cfg, name
+            )
             Process(
                 target=self.fileprocess, args=(custom_config,), daemon=True
             ).start()
@@ -160,7 +162,9 @@ class env():
                 "-e", "dash", "-c"
             ]
         elif terminal == "alacritty-custom-silent":
-            custom_config = self.generate_alacritty_config(self.alacritty_cfg_dir, cfg, name)
+            custom_config = self.generate_alacritty_config(
+                self.alacritty_cfg_dir, cfg, name
+            )
             Process(
                 target=self.fileprocess, args=(custom_config,), daemon=True
             ).start()
