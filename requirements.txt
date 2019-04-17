@@ -5,3 +5,7 @@ aionotify
 aiofiles
 Xlib
 ewmh
+yamlloader
+rapidjson
+python-rapidjson
+pulsectl
