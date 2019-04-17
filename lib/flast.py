@@ -10,7 +10,6 @@ from typing import List, Iterator
 from singleton import Singleton
 from main import NegEWMH
 from modi3cfg import modi3cfg
-from collections import deque
 from itertools import cycle
 
 
@@ -110,7 +109,7 @@ class flast(modi3cfg):
             self.i3.get_tree().find_focused().workspace().descendents()
         )
 
-    def goto_visible(self, reversed_order = False):
+    def goto_visible(self, reversed_order=False):
         """ Focus next visible window.
 
         Args:
@@ -120,7 +119,7 @@ class flast(modi3cfg):
         wins = NegEWMH.find_visible_windows(self.get_windows_on_ws())
         self.goto_win(wins, reversed_order)
 
-    def goto_win(self, wins, reversed_order = False):
+    def goto_win(self, wins, reversed_order=False):
         if reversed_order:
             cycle_windows = cycle(reversed(wins))
         else:
