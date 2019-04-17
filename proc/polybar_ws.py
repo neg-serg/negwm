@@ -42,7 +42,7 @@ import asyncio
 import i3ipc
 import re
 from threading import Thread, Event
-from main import extract_xrdb_value
+from main import Misc
 
 class polybar_ws(modconfig):
     def __init__(self):
@@ -68,8 +68,8 @@ class polybar_ws(modconfig):
 
         self.ws_color_field = self.conf("ws_color_field")
         self.binding_color_field = self.conf("binding_color_field")
-        self.ws_color = extract_xrdb_value(self.ws_color_field)
-        self.binding_color = extract_xrdb_value(self.binding_color_field)
+        self.ws_color = Misc.extract_xrdb_value(self.ws_color_field)
+        self.binding_color = Misc.extract_xrdb_value(self.binding_color_field)
         self.ws_name = ""
 
         for ws in self.i3.get_workspaces():

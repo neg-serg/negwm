@@ -36,7 +36,7 @@ import sys
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
 sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
 from basic_config import modconfig
-from main import extract_xrdb_value
+from main import Misc
 
 
 class polybar_vol(modconfig):
@@ -76,9 +76,9 @@ class polybar_vol(modconfig):
         self.bright_color_field = self.conf("bright_color_field")
         self.foreground_color_field = self.conf("foreground_color_field")
 
-        self.bracket_color = extract_xrdb_value(self.bracket_color_field)
-        self.bright_color = extract_xrdb_value(self.bright_color_field)
-        self.foreground_color = extract_xrdb_value(self.foreground_color_field)
+        self.bracket_color = Misc.extract_xrdb_value(self.bracket_color_field)
+        self.bright_color = Misc.extract_xrdb_value(self.bright_color_field)
+        self.foreground_color = Misc.extract_xrdb_value(self.foreground_color_field)
 
         self.right_bracket = ""
 
