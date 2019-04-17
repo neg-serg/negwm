@@ -19,6 +19,7 @@ year :: 2019
 """
 
 import os
+import sys
 import timeit
 from sys import intern
 import subprocess
@@ -198,13 +199,13 @@ class negi3mods(modconfig):
     def run_procs(self):
         for proc in self.conf("proc_list"):
             # Start echo server as separated process
-            subprocess.run(['pkill', '-f', f'proc/{proc}.py'])
+            subprocess.run(['pkill', '-f', f'proc.{proc}'])
             subprocess.run(
-                [self.i3_path + f'proc/{proc}.py &'],
+                [sys.executable + f' -m proc.{proc} &'],
                 shell=True,
-                cwd=self.i3_path + '/proc'
+                cwd=self.i3_path
             )
-            print(f'run proc {self.i3_path} proc/{proc}.py &')
+            print(f'run module proc.{proc}')
 
     def run(self):
         """ Run negi3mods here.

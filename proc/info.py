@@ -11,18 +11,15 @@ with asyncio or something like this in the future.
 import socket
 import i3ipc
 from threading import Thread
-import os
-import sys
 import subprocess
 import shlex
 import collections
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
-from locker import get_lock
-from singleton import Singleton
-from modi3cfg import modi3cfg
-from ns import ns
-from circle import circle
+
+from lib.locker import get_lock
+from lib.singleton import Singleton
+from lib.modi3cfg import modi3cfg
+from lib.ns import ns
+from lib.circle import circle
 
 
 class info(modi3cfg):

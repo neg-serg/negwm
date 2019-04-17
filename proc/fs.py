@@ -8,12 +8,10 @@ for example wayland-friendly.
 import i3ipc
 from subprocess import run
 import os
-import sys
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
-from singleton import Singleton
-from locker import get_lock
-from basic_config import modconfig
+
+from lib.singleton import Singleton
+from lib.locker import get_lock
+from lib.basic_config import modconfig
 
 
 class fs(Singleton, modconfig):

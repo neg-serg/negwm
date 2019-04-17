@@ -33,16 +33,15 @@ year :: 2019
 
 """
 
-import os
 import sys
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3")
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/i3/lib")
-from basic_config import modconfig
 import asyncio
 import i3ipc
 import re
 from threading import Thread, Event
-from main import Misc
+
+from lib.basic_config import modconfig
+from lib.main import Misc
+
 
 class polybar_ws(modconfig):
     def __init__(self):
