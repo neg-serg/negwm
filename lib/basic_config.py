@@ -10,7 +10,7 @@ import toml
 import traceback
 import asyncio
 import aionotify
-from main import i3path, notify_msg
+from main import Misc
 
 
 class modconfig(object):
@@ -22,7 +22,7 @@ class modconfig(object):
         self.mod = self.__class__.__name__
 
         # config dir path
-        self.i3_cfg_path = i3path() + '/cfg/'
+        self.i3_cfg_path = Misc.i3path() + '/cfg/'
 
         # negi3mod config path
         self.mod_cfg_path = self.i3_cfg_path + self.mod + '.cfg'
@@ -94,7 +94,7 @@ class modconfig(object):
             event = await watcher.get_event()
             if event.name == self.mod + '.cfg':
                 self.reload_config()
-                notify_msg(f'[Reloaded {self.mod} ]')
+                Misc.notify_msg(f'[Reloaded {self.mod} ]')
         watcher.close()
 
     def run_inotify_watchers(self):

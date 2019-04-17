@@ -30,7 +30,7 @@ import i3ipc
 import shutil
 from threading import Thread
 from lib.locker import get_lock
-from lib.main import daemon_manager, notify_msg, i3path, extract_xrdb_value
+from lib.main import daemon_manager, Misc
 from lib.basic_config import modconfig
 
 
@@ -44,7 +44,7 @@ class negi3mods(modconfig):
 
         # i3 path used to get i3 config path for "send" binary, _config needed
         # by ppi3 path and another configs.
-        self.i3_path = i3path()
+        self.i3_path = Misc.i3path()
 
         # setup asyncio loop
         loop = asyncio.get_event_loop()
@@ -74,7 +74,7 @@ class negi3mods(modconfig):
         # stuff for startup notifications
         self.notification_text = "Wow! It's time to start mods!\n\n"
         notification_color_field = self.conf("notification_color_field")
-        notification_color = extract_xrdb_value(notification_color_field)
+        notification_color = Misc.extract_xrdb_value(notification_color_field)
         prefix = self.conf("prefix")
         self.msg_prefix = f"<span weight='normal' \
                            color='{notification_color}'> {prefix} </span>"
@@ -139,13 +139,13 @@ class negi3mods(modconfig):
                     subprocess.run(
                         [self.i3_path + 'send', changed_mod, 'reload']
                     )
-                    notify_msg(f'[Reloaded {changed_mod}]')
+                    Misc.notify_msg(f'[Reloaded {changed_mod}]')
                 else:
                     for mod in self.mods.keys():
                         subprocess.run(
                             [self.i3_path + 'send', mod, 'reload']
                         )
-                    notify_msg(
+                    Misc.notify_msg(
                         '[Reloaded {' + ','.join(self.mods.keys()) + '} ]'
                     )
         watcher.close()
@@ -234,7 +234,7 @@ class negi3mods(modconfig):
               args=(self.loop,), daemon=True).start, 'mainloop')
 
         print('... everything loaded ...')
-        notify_msg(self.notification_text)
+        Misc.notify_msg(self.notification_text)
         try:
             self.i3.main()
         except KeyboardInterrupt:

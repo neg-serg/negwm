@@ -19,7 +19,7 @@ from typing import List, Callable, Set, Optional
 import lib.geom as geom
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import Matcher, notify_msg, print_traceback, NegEWMH
+from main import Matcher, Misc, NegEWMH
 
 
 class ns(modi3cfg, Matcher):
@@ -403,7 +403,7 @@ class ns(modi3cfg, Matcher):
         """
         self.geom_auto_save = save
         if with_notification:
-            notify_msg(f"geometry autosave={save}")
+            Misc.notify_msg(f"geometry autosave={save}")
 
     def autosave_toggle(self) -> None:
         """ Toggle autosave mode.

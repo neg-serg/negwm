@@ -11,7 +11,7 @@ import sys
 from typing import Set, Callable
 import toml
 import traceback
-from main import i3path
+from main import Misc
 
 
 class modi3cfg(object):
@@ -20,7 +20,7 @@ class modi3cfg(object):
         self.mod = self.__class__.__name__
 
         # negi3mod config path
-        self.i3_cfg_mod_path = i3path() + '/cfg/' + self.mod + '.cfg'
+        self.i3_cfg_mod_path = Misc.i3path() + '/cfg/' + self.mod + '.cfg'
 
         # convert config values or not
         self.convert_me = convert_me

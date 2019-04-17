@@ -36,10 +36,6 @@ from typing import List, Iterator
 from singleton import Singleton
 
 
-def print_traceback() -> None:
-    print(traceback.format_exc())
-
-
 class NegEWMH():
     disp = Xlib.display.Display()
     ewmh = EWMH()
@@ -99,50 +95,56 @@ class NegEWMH():
         return visible_windows
 
 
-def create_dir(dirname):
-    try:
-        os.makedirs(dirname)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+class Misc():
+    @staticmethod
+    def print_traceback() -> None:
+        print(traceback.format_exc())
 
+    @staticmethod
+    def create_dir(dirname):
+        try:
+            os.makedirs(dirname)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
-def i3path() -> str:
-    """ Easy way to return i3 config path. May be improved.
-    """
-    xdg_config_path = os.environ.get("XDG_CONFIG_HOME")
-    i3_path = xdg_config_path + "/i3/"
-    return i3_path
+    @staticmethod
+    def i3path() -> str:
+        """ Easy way to return i3 config path. May be improved.
+        """
+        xdg_config_path = os.environ.get("XDG_CONFIG_HOME")
+        i3_path = xdg_config_path + "/i3/"
+        return i3_path
 
+    @staticmethod
+    def extract_xrdb_value(field: str) -> str:
+        """ Extracts field from xrdb executable.
+        """
+        out = subprocess.run(
+            f"xrdb -query | rg '{field}' | awk '{{print $2}}'",
+            shell=True,
+            stdout=subprocess.PIPE
+        ).stdout
+        if out is not None and out:
+            ret = out.decode('UTF-8').split()[0]
+            return ret
 
-def extract_xrdb_value(field: str) -> str:
-    """ Extracts field from xrdb executable.
-    """
-    out = subprocess.run(
-        f"xrdb -query | rg '{field}' | awk '{{print $2}}'",
-        shell=True,
-        stdout=subprocess.PIPE
-    ).stdout
-    if out is not None and out:
-        ret = out.decode('UTF-8').split()[0]
-        return ret
+    @classmethod
+    def notify_msg(cls, msg: str, prefix: str = " "):
+        """ Send messages via notify-osd based notifications.
 
-
-def notify_msg(msg: str, prefix: str = " "):
-    """ Send messages via notify-osd based notifications.
-
-        Args:
-            msg: message string.
-            prefix: optional prefix for message string.
-    """
-    foreground_color = extract_xrdb_value('\\*.foreground')
-    notify_msg = [
-        'notify-send',
-        f"<span weight='normal' color='{foreground_color}'>" +
-        prefix + msg +
-        "</span>"
-    ]
-    subprocess.run(notify_msg)
+            Args:
+                msg: message string.
+                prefix: optional prefix for message string.
+        """
+        foreground_color = cls.extract_xrdb_value('\\*.foreground')
+        notify_msg = [
+            'notify-send',
+            f"<span weight='normal' color='{foreground_color}'>" +
+            prefix + msg +
+            "</span>"
+        ]
+        subprocess.run(notify_msg)
 
 
 class Negi3ModsDisplay():
@@ -333,7 +335,7 @@ class daemon_manager():
                     try:
                         self.mods[name].switch(args)
                     except Exception:
-                        print_traceback()
+                        Misc.print_traceback()
 
     def add_ipc(self, name: str) -> None:
         """ Add negi3mods IPC.

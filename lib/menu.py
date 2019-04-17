@@ -20,7 +20,7 @@ import pulsectl
 import configparser
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import i3path, Negi3ModsDisplay
+from main import Misc, Negi3ModsDisplay
 from functools import partial
 from typing import List, Callable, Optional
 
@@ -36,7 +36,7 @@ class menu(modi3cfg):
         self.i3 = i3
 
         # i3 path used to get "send" binary path
-        self.i3_path = i3path()
+        self.i3_path = Misc.i3path()
 
         # i3-msg application name
         self.i3cmd = self.conf("i3cmd")

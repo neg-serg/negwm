@@ -19,7 +19,7 @@ from os.path import expanduser
 from modi3cfg import modi3cfg
 from singleton import Singleton
 from multiprocessing import Process
-from main import create_dir
+from main import Misc
 
 
 class env():
@@ -41,8 +41,8 @@ class env():
         self.alacritty_cfg_dir = expanduser('/dev/shm/alacritty_cfg')
         self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
         self.default_alacritty_cfg_path = "~/.config/alacritty/alacritty.yml"
-        create_dir(self.tmux_socket_dir)
-        create_dir(self.alacritty_cfg_dir)
+        Misc.create_dir(self.tmux_socket_dir)
+        Misc.create_dir(self.alacritty_cfg_dir)
         try:
             os.makedirs(self.tmux_socket_dir)
         except OSError as e:
