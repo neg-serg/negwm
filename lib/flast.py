@@ -7,10 +7,11 @@ window may be closed, and then you cannot focus it.
 """
 
 from typing import List, Iterator
-from singleton import Singleton
-from main import NegEWMH
-from modi3cfg import modi3cfg
 from itertools import cycle
+
+from singleton import Singleton
+from modi3cfg import modi3cfg
+from negewmh import NegEWMH
 
 
 class flast(modi3cfg):
