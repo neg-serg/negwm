@@ -19,7 +19,7 @@ from typing import List, Callable, Set, Optional
 import lib.geom as geom
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import Matcher
+from matcher import Matcher
 from misc import Misc
 from negewmh import NegEWMH
 

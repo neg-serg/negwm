@@ -15,7 +15,7 @@ of issues here in detection of existing/visible windows, etc.
 """
 
 from typing import List
-from main import Matcher
+from matcher import Matcher
 from modi3cfg import modi3cfg
 from singleton import Singleton
 
