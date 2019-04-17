@@ -10,7 +10,7 @@ import toml
 import traceback
 import asyncio
 import aionotify
-from main import Misc
+from misc import Misc
 
 
 class modconfig(object):

@@ -19,7 +19,7 @@ from os.path import expanduser
 from modi3cfg import modi3cfg
 from singleton import Singleton
 from multiprocessing import Process
-from main import Misc
+from misc import Misc
 
 
 class env():

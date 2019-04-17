@@ -40,7 +40,7 @@ import re
 from threading import Thread, Event
 
 from lib.basic_config import modconfig
-from lib.main import Misc
+from lib.misc import Misc
 
 
 class polybar_ws(modconfig):

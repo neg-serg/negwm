@@ -34,7 +34,7 @@ import asyncio
 import sys
 
 from lib.basic_config import modconfig
-from lib.main import Misc
+from lib.misc import Misc
 
 
 class polybar_vol(modconfig):

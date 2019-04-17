@@ -20,7 +20,7 @@ import pulsectl
 import configparser
 from singleton import Singleton
 from modi3cfg import modi3cfg
-from main import Misc
+from misc import Misc
 from display import Display
 from functools import partial
 from typing import List, Callable, Optional

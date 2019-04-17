@@ -31,7 +31,8 @@ import i3ipc
 import shutil
 from threading import Thread
 from lib.locker import get_lock
-from lib.main import daemon_manager, Misc
+from lib.main import daemon_manager
+from lib.misc import Misc
 from lib.basic_config import modconfig
 
 

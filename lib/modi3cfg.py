@@ -11,7 +11,7 @@ import sys
 from typing import Set, Callable
 import toml
 import traceback
-from main import Misc
+from misc import Misc
 
 
 class modi3cfg(object):
