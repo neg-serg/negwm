@@ -19,19 +19,19 @@ import os
 import pulsectl
 import configparser
 from singleton import Singleton
-from modi3cfg import modi3cfg
+from cfg import cfg
 from misc import Misc
 from display import Display
 from functools import partial
 from typing import List, Callable, Optional
 
 
-class menu(modi3cfg):
+class menu(cfg):
     __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:
-        # Initialize modi3cfg.
-        modi3cfg.__init__(self, i3)
+        # Initialize cfg.
+        cfg.__init__(self, i3)
 
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3

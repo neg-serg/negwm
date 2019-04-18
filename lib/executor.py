@@ -16,7 +16,7 @@ import yamlloader
 from collections import OrderedDict
 from typing import List
 from os.path import expanduser
-from modi3cfg import modi3cfg
+from cfg import cfg
 from singleton import Singleton
 from multiprocessing import Process
 from misc import Misc
@@ -28,7 +28,7 @@ class env():
         settings of application, like used terminal enumator, fonts, all path
         settings, etc.
     Parents:
-        modi3cfg: configuration manager to autosave/autoload
+        cfg: configuration manager to autosave/autoload
                   TOML-configutation with inotify
 
     Metaclass:
@@ -199,14 +199,14 @@ class env():
             ]
 
 
-class executor(modi3cfg):
+class executor(cfg):
     """ Tmux Manager class. Easy and consistent way to create tmux sessions on
         dedicated sockets. Also it can run simply run applications without
         Tmux. The main advantage is dynamic config reloading and simplicity of
         adding or modifing of various parameters.
 
     Parents:
-        modi3cfg: configuration manager to autosave/autoload
+        cfg: configuration manager to autosave/autoload
                   TOML-configutation with inotify
 
     Metaclass:
@@ -225,7 +225,7 @@ class executor(modi3cfg):
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread(not used).
         """
-        modi3cfg.__init__(self, i3, convert_me=False)
+        cfg.__init__(self, i3, convert_me=False)
         self.envs = {}
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)

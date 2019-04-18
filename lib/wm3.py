@@ -12,10 +12,10 @@ import collections
 from typing import List, Mapping
 from display import Display
 from singleton import Singleton
-from modi3cfg import modi3cfg
+from cfg import cfg
 
 
-class wm3(Singleton, modi3cfg):
+class wm3(Singleton, cfg):
     def __init__(self, i3, loop=None) -> None:
         """ Init function
 
@@ -26,8 +26,8 @@ class wm3(Singleton, modi3cfg):
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
-        # Initialize modi3cfg.
-        modi3cfg.__init__(self, i3)
+        # Initialize cfg.
+        cfg.__init__(self, i3)
         self.initialize(i3)
 
     def initialize(self, i3) -> None:

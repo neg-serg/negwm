@@ -14,7 +14,7 @@ import traceback
 from misc import Misc
 
 
-class modi3cfg(object):
+class cfg(object):
     def __init__(self, i3, convert_me: bool = False, loop=None) -> None:
         # detect current negi3mod
         self.mod = self.__class__.__name__

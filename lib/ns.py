@@ -18,17 +18,17 @@ from typing import List, Callable, Set, Optional
 
 import lib.geom as geom
 from singleton import Singleton
-from modi3cfg import modi3cfg
+from cfg import cfg
 from matcher import Matcher
 from misc import Misc
 from negewmh import NegEWMH
 
 
-class ns(modi3cfg, Matcher):
+class ns(cfg, Matcher):
     """ Named scratchpad class
 
     Parents:
-        modi3cfg: configuration manager to autosave/autoload
+        cfg: configuration manager to autosave/autoload
                   TOML-configutation with inotify
         Matcher: class to check that window can be tagged with given tag by
                  WM_CLASS, WM_INSTANCE, regexes, etc
@@ -50,7 +50,7 @@ class ns(modi3cfg, Matcher):
                   you need to bypass asyncio-loop to the thread
         """
         # Initialize superclasses.
-        modi3cfg.__init__(self, i3, convert_me=True)
+        cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
 
         # most of initialization doing here.

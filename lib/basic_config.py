@@ -1,6 +1,6 @@
 """ Dynamic TOML-based config for basic negi3mods.
 
-It is the simplified version of modi3cfg for modules like polybar_vol, etc.
+It is the simplified version of cfg for modules like polybar_vol, etc.
 There are no external dependecies like i3 or asyncio.
 
 """
@@ -76,7 +76,7 @@ class modconfig(object):
             self.cfg = toml.load(fp)
 
     def cfg_watcher(self):
-        """ modi3cfg watcher to update modules config in realtime.
+        """ cfg watcher to update modules config in realtime.
         """
         watcher = aionotify.Watcher()
         watcher.watch(alias='cfg', path=self.i3_cfg_path,

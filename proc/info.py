@@ -17,12 +17,12 @@ import collections
 
 from lib.locker import get_lock
 from lib.singleton import Singleton
-from lib.modi3cfg import modi3cfg
+from lib.cfg import cfg
 from lib.ns import ns
 from lib.circle import circle
 
 
-class info(modi3cfg):
+class info(cfg):
     __metaclass__ = Singleton
 
     def __init__(self, i3):
@@ -32,8 +32,8 @@ class info(modi3cfg):
             i3: i3ipc connection.
         """
 
-        # modi3cfg init.
-        modi3cfg.__init__(self, i3)
+        # cfg init.
+        cfg.__init__(self, i3)
 
         # server addresses.
         self.echo_addr = self.conf("echo_addr")

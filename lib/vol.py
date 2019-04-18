@@ -11,10 +11,10 @@ import socket
 import asyncio
 from typing import List
 from singleton import Singleton
-from modi3cfg import modi3cfg
+from cfg import cfg
 
 
-class vol(Singleton, modi3cfg):
+class vol(Singleton, cfg):
     def __init__(self, i3, loop) -> None:
         """ Init function
 
@@ -23,8 +23,8 @@ class vol(Singleton, modi3cfg):
             loop: asyncio loop. It's need to be given as parameter because of
                   you need to bypass asyncio-loop to the thread
         """
-        # Initialize modi3cfg.
-        modi3cfg.__init__(self, i3, loop=loop)
+        # Initialize cfg.
+        cfg.__init__(self, i3, loop=loop)
 
         # i3ipc connection, bypassed by negi3mods runner.
         self.i3 = i3

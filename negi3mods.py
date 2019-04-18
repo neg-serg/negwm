@@ -107,7 +107,7 @@ class negi3mods(modconfig):
         print(overall_msg)
 
     def mods_cfg_watcher(self):
-        """ modi3cfg watcher to update modules config in realtime.
+        """ cfg watcher to update modules config in realtime.
         """
         watcher = aionotify.Watcher()
         watcher.watch(alias='configs', path=self.i3_cfg_path,
@@ -130,7 +130,7 @@ class negi3mods(modconfig):
             default.
 
             Args:
-                watcher: watcher for modi3cfg.
+                watcher: watcher for cfg.
         """
         await watcher.setup(self.loop)
         while True:
