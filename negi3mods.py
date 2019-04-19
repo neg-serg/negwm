@@ -33,7 +33,7 @@ from threading import Thread
 from lib.locker import get_lock
 from lib.main import daemon_manager
 from lib.misc import Misc
-from lib.basic_config import modconfig
+from lib.standalone_cfg import modconfig
 
 
 class negi3mods(modconfig):

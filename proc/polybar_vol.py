@@ -33,7 +33,7 @@ year :: 2019
 import asyncio
 import sys
 
-from lib.basic_config import modconfig
+from lib.standalone_cfg import modconfig
 from lib.misc import Misc
 
 

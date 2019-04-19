@@ -39,7 +39,7 @@ import i3ipc
 import re
 from threading import Thread, Event
 
-from lib.basic_config import modconfig
+from lib.standalone_cfg import modconfig
 from lib.misc import Misc
 
 

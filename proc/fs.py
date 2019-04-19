@@ -11,7 +11,7 @@ import os
 
 from lib.singleton import Singleton
 from lib.locker import get_lock
-from lib.basic_config import modconfig
+from lib.standalone_cfg import modconfig
 
 
 class fs(Singleton, modconfig):
