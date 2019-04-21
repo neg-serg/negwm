@@ -16,14 +16,15 @@ import re
 import subprocess
 import sys
 import os
-import pulsectl
 import configparser
+import importlib
+
 from singleton import Singleton
 from cfg import cfg
 from misc import Misc
 from display import Display
 from functools import partial
-from typing import List, Callable, Optional
+from typing import List, Callable
 
 
 class menu(cfg):
@@ -82,10 +83,9 @@ class menu(cfg):
 
         self.gap = self.conf('gap')
 
-        self.pulse = pulsectl.Pulse('neg-pulse-selector')
-        self.pulse_data = {}
-
         self.gtk_config = configparser.ConfigParser()
+
+        self.pulsectl = None
 
     def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
@@ -116,8 +116,8 @@ class menu(cfg):
 
     def rofi_args(self, prompt: str = '', cnum: int = 16,
                   lnum: int = 2,
-                  width: Optional[int] = 12,
-                  markup_rows: Optional[str] = '',
+                  width: int = 12,
+                  markup_rows: str = '',
                   auto_selection="-no-auto-selection") -> List[str]:
         prompt = prompt or self.prompt
         width = width or self.screen_width - 20
@@ -241,6 +241,13 @@ class menu(cfg):
             return None
 
     def pulseaudio_output(self):
+        if self.pulsectl is None:
+            try:
+                self.pulsectl = importlib.import_module('pulsectl')
+            except Exception:
+                return
+            self.pulse = self.pulsectl.Pulse('neg-pulse-selector')
+
         self.pulse_data = {
             "app_list": [],
             "sink_output_list": [],
