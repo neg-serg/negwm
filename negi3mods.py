@@ -89,13 +89,12 @@ class negi3mods(modconfig):
             benchmarks.
         """
         mod_startup_times = []
-        self.manager = daemon_manager(self.mods)
         print()
         for mod in self.mods.keys():
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
-            self.manager.add_ipc(mod)
+            daemon_manager.create_ipc_object(mod)
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}s'
             mod_text = f'[{mod}]'
@@ -232,8 +231,8 @@ class negi3mods(modconfig):
         self.run_procs()
 
         # Start modules mainloop.
-        start(Thread(target=self.manager.mainloop,
-              args=(self.loop,), daemon=True).start, 'mainloop')
+        start(Thread(target=daemon_manager.mainloop,
+              args=(self.loop, self.mods,), daemon=True).start, 'mainloop')
 
         print('... everything loaded ...')
         Misc.notify_msg(self.notification_text)

@@ -19,33 +19,24 @@ Daemon manager and mod daemon:
 import os
 import asyncio
 import aiofiles
-from typing import List
-
-from singleton import Singleton
 
 
 class daemon_manager():
     """ Daemon manager. Rules by negi3mods, dispatch messages.
 
         Every module has indivisual main loop with indivisual neg-ipc-file.
-
-    Metaclass:
-        Use Singleton metaclass from singleton module.
     """
-    __metaclass__ = Singleton
+    files = {}  # file list
 
-    def __init__(self, mods: List) -> None:
-        self.files = {}  # file list
-        self.mods = mods  # mods list
-
-    async def ipc_listner(self, name: str) -> None:
+    @classmethod
+    async def ipc_listner(cls, name: str) -> None:
         """ Async neg-ipc-file listner
 
             Args:
                 name(str): module name.
         """
         while True:
-            async with aiofiles.open(self.files[name], mode='r') as fd:
+            async with aiofiles.open(cls.files[name], mode='r') as fd:
                 while True:
                     data = await fd.read()
                     if not len(data):
@@ -53,14 +44,15 @@ class daemon_manager():
                     eval_str = data.split('\n', 1)[0]
                     args = list(filter(lambda x: x != '', eval_str.split(' ')))
                     try:
-                        self.mods[name].switch(args)
+                        cls.mods[name].switch(args)
                     except Exception:
                         pass
 
-    def add_ipc(self, name: str) -> None:
+    @classmethod
+    def create_ipc_object(cls, name: str) -> None:
         """ Add negi3mods IPC.
         """
-        self.files[name] = self.create_ipc(name)
+        cls.files[name] = cls.create_ipc(name)
 
     @staticmethod
     def create_ipc(name: str) -> str:
@@ -78,15 +70,17 @@ class daemon_manager():
         finally:
             return neg_ipc_file
 
-    def mainloop(self, loop) -> None:
+    @classmethod
+    def mainloop(cls, loop, mods) -> None:
         """ Mainloop for module. Started by negi3mods in separated thread.
 
             Args:
                 loop: asyncio.loop should be bypassed to function if you are
                 using new thread.
         """
+        cls.mods = mods
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
-            asyncio.wait([self.ipc_listner(m) for m in self.mods])
+            asyncio.wait([cls.ipc_listner(m) for m in mods])
         )
 
