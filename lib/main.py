@@ -8,6 +8,7 @@ Daemon manager and mod daemon:
 """
 
 import os
+from contextlib import suppress
 import asyncio
 import aiofiles
 
@@ -26,15 +27,18 @@ class daemon_manager():
             Args:
                 name(str): module name.
         """
-        while True:
-            async with aiofiles.open(cls.files[name], mode='r') as fd:
-                while True:
-                    data = await fd.read()
-                    if not len(data):
-                        break
-                    eval_str = data.split('\n', 1)[0]
-                    args = list(filter(lambda x: x != '', eval_str.split(' ')))
-                    cls.mods[name].switch(args)
+        with suppress(Exception):
+            while True:
+                async with aiofiles.open(cls.files[name], mode='r') as fd:
+                    while True:
+                        data = await fd.read()
+                        if not len(data):
+                            break
+                        eval_str = data.split('\n', 1)[0]
+                        args = list(
+                            filter(lambda x: x != '', eval_str.split(' '))
+                        )
+                        cls.mods[name].switch(args)
 
     @classmethod
     def create_ipc_object(cls, name: str) -> None:
