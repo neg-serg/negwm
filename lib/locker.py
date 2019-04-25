@@ -8,8 +8,13 @@ import socket
 
 
 def get_lock(process_name: str) -> None:
-    # Without holding a reference to our socket somewhere it gets garbage
-    # collected when the function exits
+    """
+    Without holding a reference to our socket somewhere it gets garbage
+    collected when the function exits
+
+    Args:
+        process_name (str): process name to bind.
+    """
     get_lock._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
 
     try:
