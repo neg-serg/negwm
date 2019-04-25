@@ -39,14 +39,15 @@ class NegEWMH():
             return True
 
         with NegEWMH.window_obj(NegEWMH.disp, w.window) as win:
-            xprop = NegEWMH.ewmh.getWmWindowType(win, str=True)
+            win_type = NegEWMH.ewmh.getWmWindowType(win, str=True)
+            if '_NET_WM_WINDOW_TYPE_DIALOG' in win_type:
+                return True
 
-            is_dialog = False
-            for tok in xprop:
-                if '_NET_WM_WINDOW_TYPE(ATOM)' in tok:
-                    is_dialog = '_NET_WM_WINDOW_TYPE_DIALOG' in tok \
-                            or '_NET_WM_STATE_MODAL' in tok
-            return is_dialog
+            win_state = NegEWMH.ewmh.getWmState(win, str=True)
+            if '_NET_WM_STATE_MODAL' in win_state:
+                return True
+
+            return False
 
     def find_visible_windows(windows_on_ws: List) -> List:
         """ Find windows visible on the screen now.
@@ -58,8 +59,8 @@ class NegEWMH():
         visible_windows = []
         for w in windows_on_ws:
             with NegEWMH.window_obj(NegEWMH.disp, w.window) as win:
-                xprop = NegEWMH.ewmh.getWmState(win, str=True)
-                if '_NET_WM_STATE_HIDDEN' not in xprop:
+                win_state = NegEWMH.ewmh.getWmState(win, str=True)
+                if '_NET_WM_STATE_HIDDEN' not in win_state:
                     visible_windows.append(w)
 
         return visible_windows
