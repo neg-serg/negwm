@@ -15,7 +15,20 @@ from singleton import Singleton
 from cfg import cfg
 
 
-class wm3(Singleton, cfg):
+class wm3(cfg):
+    """ Named scratchpad class
+
+    Parents:
+        cfg: configuration manager to autosave/autoload
+                  TOML-configutation with inotify
+
+    Metaclass:
+        Use Singleton metaclass from singleton module.
+
+    """
+
+    __metaclass__ = Singleton
+
     def __init__(self, i3, loop=None) -> None:
         """ Init function
 
