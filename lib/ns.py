@@ -61,7 +61,7 @@ class ns(cfg, Matcher):
 
     def initialize(self, i3) -> None:
         # winlist is used to reduce calling i3.get_tree() too many times.
-        self.winlist = i3.get_tree()
+        self.winlist = []
 
         # fullscreen_list is used to perform fullscreen hacks
         self.fullscreen_list = []
