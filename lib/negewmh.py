@@ -1,3 +1,7 @@
+"""
+In this module we have EWMH routines to detect dialog windows, visible windows,
+etc using python-xlib and python-ewmh.
+"""
 from typing import List
 from contextlib import contextmanager
 
@@ -24,10 +28,9 @@ class NegEWMH():
     def is_dialog_win(w) -> bool:
         """ Check that window [w] is not dialog window
 
-            Unfortunately for now external xprop application used for it,
-            because of i3ipc gives no information about what windows dialog or
-            not, shown/hidden or about _NET_WM_STATE_HIDDEN attribute or
-            "custom" window attributes, etc.
+            At first check typical window roles and classes, because of it more
+            fast, then using python EWMH module to detect dialog window type or
+            modal state of window.
 
             Args:
                 w : target window to check
