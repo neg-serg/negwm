@@ -1,19 +1,10 @@
 """ Module contains routines used by several another modules.
 
-There are several superclasses and generic modules here.
-The main reason is "don't repeat yourself", DRY.
-
-Matcher:
-    Matcher: class to check that window can be tagged with given tag by
-    WM_CLASS, WM_INSTANCE, regexes, etc. It can be used by named scrachpad,
-    circle run-or-raise, etc.
-
 Daemon manager and mod daemon:
     Mod daemon creates appropriate files in the /dev/shm directory.
 
     Daemon manager handles all requests to this named pipe based API with help
     of asyncio.
-
 """
 
 import os
@@ -26,7 +17,7 @@ class daemon_manager():
 
         Every module has indivisual main loop with indivisual neg-ipc-file.
     """
-    files = {}  # file list
+    files = {}
 
     @classmethod
     async def ipc_listner(cls, name: str) -> None:
@@ -43,10 +34,7 @@ class daemon_manager():
                         break
                     eval_str = data.split('\n', 1)[0]
                     args = list(filter(lambda x: x != '', eval_str.split(' ')))
-                    try:
-                        cls.mods[name].switch(args)
-                    except Exception:
-                        pass
+                    cls.mods[name].switch(args)
 
     @classmethod
     def create_ipc_object(cls, name: str) -> None:
