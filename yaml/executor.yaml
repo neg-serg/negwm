@@ -1,0 +1,55 @@
+---
+term:
+  window_class: term
+  term: alacritty-custom-silent
+  font: Iosevka Term
+  font_size: 18
+  colorscheme: dark3
+ranger:
+  window_class: ranger
+  term: alacritty-custom-silent
+  font: Iosevka Term
+  font_size: 18
+  postfix: -n ranger ranger\; set status off
+  colorscheme: dark3
+teardrop:
+  window_class: teardrop
+  term: alacritty-custom
+  font: Iosevka Term
+  font_size: 18
+  postfix: -n pulsemixer pulsemixer \; neww -n atop atop \; neww -n stig stig \; neww
+    -n tasksh tasksh \; select-window -t 2
+  colorscheme: dark3
+ncmpcpp:
+  window_class: ncmpcpp
+  term: alacritty-custom-silent
+  font: Iosevka Custom
+  font_size: 14
+  tmuxed: 0
+  prog: ncmpcpp
+  x_padding: 4
+  y_padding: 4
+  colorscheme: dark3
+mutt:
+  window_class: mutt
+  term: alacritty-custom-silent
+  font: Iosevka Term
+  font_size: 14
+  tmuxed: 0
+  prog_detach: neomutt
+  colorscheme: dark3
+weechat:
+  window_class: weechat
+  term: alacritty-custom-silent
+  font: Iosevka Term
+  font_size: 14
+  postfix: -n weechat weechat
+  colorscheme: dark3
+youtube-get:
+  window_class: youtube-get
+  term: alacritty-custom-silent
+  font: Iosevka Term
+  font_size: 14
+  tmuxed: 0
+  prog: /home/neg/bin/scripts/yr
+  colorscheme: dark3

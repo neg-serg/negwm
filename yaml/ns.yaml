@@ -1,0 +1,75 @@
+im:
+  class:
+  - ViberPC
+  - VK
+  - zoom
+  class_r:
+  - '[Tt]elegram.*'
+  - '[Ss]kype.*'
+  geom: 548x1037+1372+127
+  tel:
+    prog: telegram-desktop
+    class:
+    - TelegramDesktop
+    - Telegram-desktop
+    - telegram-desktop
+  skype:
+    prog: skypeforlinux
+    class:
+    - skype
+    - Skype
+ncmpcpp:
+  instance:
+  - ncmpcpp
+  geom: 1192x600+400+400
+  spawn: ncmpcpp
+ncmpcpp_fun:
+  class:
+  - cool-retro-term
+  geom: 1188x600+400+400
+  prog: cool-retro-term --program ncmpcpp
+weechat:
+  instance:
+  - weechat
+  geom: 1736x1091+112+33
+  spawn: weechat
+mutt:
+  instance:
+  - mailspring
+  - mutt
+  geom: 1835x1114+52+0
+  prog: mailspring
+ranger:
+  instance:
+  - ranger
+  geom: 1916x816+3+1
+  spawn: ranger
+teardrop:
+  instance:
+  - teardrop
+  geom: 1844x704+39+4
+  spawn: teardrop
+volcontrol:
+  class:
+  - Pavucontrol
+  geom: 895x314+1023+824
+  prog: pavucontrol
+youtube:
+  instance:
+  - youtube-get
+  geom: 1339x866+247+13
+  spawn: youtube-get
+webcam:
+  instance:
+  - webcam
+  geom: 1234x771+667+363
+  prog: ~/bin/webcam
+discord:
+  prog: discord
+  class:
+  - discord
+  geom: 944x1036+974+127
+transients:
+  match_all:
+  - 'True'
+  geom: 1844x704+39+4

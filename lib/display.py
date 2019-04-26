@@ -1,3 +1,6 @@
+""" Handle X11 screen tasks with randr extension
+"""
+
 from Xlib import display
 from Xlib.ext import randr
 

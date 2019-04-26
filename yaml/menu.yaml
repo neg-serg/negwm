@@ -1,0 +1,42 @@
+---
+i3cmd: i3-msg
+host: '::'
+port: 31888
+workspaces:
+- '1 ::  α:term'
+- '2 ::  β:web'
+- '3 ::  γ:doc'
+- '4 ::  δ:dev'
+- '5 ::  ε:gfx'
+- '6 ::  ζ:draw'
+- '7 ::  η:sys'
+- '8 ::  θ:ide'
+- '9 ::  ι:steam'
+- '10 ::  κ:torrent'
+- '11 ::  λ:vm'
+- '12 ::  μ:wine'
+- '13 ::  ν:spotify'
+- '14 ::  ξ:pic'
+- '15 ::  ο:remote'
+xprops_list:
+- WM_CLASS
+- WM_NAME
+- WM_WINDOW_ROLE
+- WM_TRANSIENT_FOR
+- _NET_WM_WINDOW_TYPE
+- _NET_WM_STATE
+- _NET_WM_PID
+rules_xprop:
+- WM_CLASS
+- WM_WINDOW_ROLE
+- WM_NAME
+- _NET_WM_NAME
+font: Iosevka Bold
+font_size: '14'
+location: south
+anchor: south
+matching: fuzzy
+prompt: 〉〉
+left_bracket: ⟬
+right_bracket: ⟭
+gap: '38'
