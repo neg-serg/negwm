@@ -75,13 +75,13 @@ sudo pip install -r requirements.txt --upgrade
 or
 
 ```
-sudo pip install --upgrade --force-reinstall inotify gevent i3ipc toml aionotify aiofiles
+sudo pip install --upgrade --force-reinstall inotify i3ipc toml aionotify aiofiles
 ```
 
 In case of pypy it may be something like
 
 ```
-sudo pypy3 -m pip install --upgrade --force-reinstall inotify gevent i3ipc toml aionotify aiofiles
+sudo pypy3 -m pip install --upgrade --force-reinstall inotify i3ipc toml aionotify aiofiles
 ```
 
 or
