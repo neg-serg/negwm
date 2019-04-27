@@ -1,4 +1,5 @@
 #!/usr/bin/pypy3
+
 """ i3 negi3mods daemon script.
 
 This module loads all negi3mods an start it via main's daemon_manager
@@ -231,8 +232,12 @@ class negi3mods(modconfig):
         self.run_procs()
 
         # Start modules mainloop.
-        start(Thread(target=daemon_manager.mainloop,
-              args=(self.loop, self.mods,), daemon=True).start, 'mainloop')
+        mainloop = Thread(
+            target=daemon_manager.mainloop,
+            args=(self.loop, self.mods,),
+            daemon=True
+        )
+        start((mainloop).start, 'mainloop')
 
         print('... everything loaded ...')
         Misc.notify_msg(self.notification_text)
