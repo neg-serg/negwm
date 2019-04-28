@@ -31,8 +31,5 @@ class Manager():
             response = str((await reader.read(255)).decode('utf8')) + '\n'
             rlist = response.split()
             name = rlist[0]
-            del rlist[0]
-
-            args = list(filter(lambda x: x != '', rlist))
-            cls.mods[name].switch(args)
+            cls.mods[name].switch(rlist[1:])
 
