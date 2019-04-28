@@ -87,7 +87,7 @@ class ns(cfg, Matcher):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
 
-    def make_mark_str(self, tag: str) -> str:
+    def mark_uuid_tag(self, tag: str) -> str:
         """ Generate unique mark for the given [tag]
 
             Args:
@@ -344,7 +344,7 @@ class ns(cfg, Matcher):
             del self.marked[tag][idx]
 
             # then make a new mark and move scratchpad
-            win_cmd = f"{self.make_mark_str(tag)}, \
+            win_cmd = f"{self.mark_uuid_tag(tag)}, \
                 move scratchpad, {self.nsgeom.get_geom(tag)}"
             win.command(win_cmd)
             self.marked[tag].append(win)
@@ -513,7 +513,7 @@ class ns(cfg, Matcher):
                     hide_cmd = ''
                     if hide:
                         hide_cmd = '[con_id=__focused__] scratchpad show'
-                    win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
+                    win_cmd = f"{self.mark_uuid_tag(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
@@ -535,12 +535,12 @@ class ns(cfg, Matcher):
             if not is_dialog_win and tag != "transients":
                 if self.match(win, tag):
                     # scratch_move
-                    win_cmd = f"{self.make_mark_str(tag)}, move scratchpad, \
+                    win_cmd = f"{self.mark_uuid_tag(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
             if is_dialog_win:
-                win_cmd = f"{self.make_mark_str('transients')}, move scratchpad"
+                win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
                 win.command(win_cmd)
                 self.marked["transients"].append(win)
         self.winlist = self.i3.get_tree()
@@ -598,13 +598,13 @@ class ns(cfg, Matcher):
                         hide_cmd = ''
                         if hide:
                             hide_cmd = '[con_id=__focused__] scratchpad show'
-                        win_cmd = f"{self.make_mark_str(tag)}, \
+                        win_cmd = f"{self.mark_uuid_tag(tag)}, \
                             move scratchpad, \
                             {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
                 if is_dialog_win:
-                    win_cmd = f"{self.make_mark_str('transients')}, move scratchpad"
+                    win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
                     self.marked["transients"].append(win)
         self.winlist = self.i3.get_tree()
 
