@@ -43,7 +43,7 @@ class Matcher(object):
 
     def class_r(self) -> bool:
         for pattern in self.matched_list:
-            cls_by_regex = self.find_classed(self.winlist, pattern)
+            cls_by_regex = self.find_classed([self.win], pattern)
             if cls_by_regex:
                 for class_regex in cls_by_regex:
                     if self.win.window_class == class_regex.window_class:
@@ -52,7 +52,7 @@ class Matcher(object):
 
     def instance_r(self) -> bool:
         for pattern in self.matched_list:
-            inst_by_regex = self.find_instanced(self.winlist, pattern)
+            inst_by_regex = self.find_instanced([self.win], pattern)
             if inst_by_regex:
                 for inst_regex in inst_by_regex:
                     if self.win.window_instance == inst_regex.window_instance:
@@ -61,7 +61,7 @@ class Matcher(object):
 
     def role_r(self) -> bool:
         for pattern in self.matched_list:
-            role_by_regex = self.find_by_role(self.winlist, pattern)
+            role_by_regex = self.find_by_role([self.win], pattern)
             if role_by_regex:
                 for role_regex in role_by_regex:
                     if self.win.window_role == role_regex.window_role:
@@ -70,7 +70,7 @@ class Matcher(object):
 
     def name_r(self) -> bool:
         for pattern in self.matched_list:
-            name_by_regex = self.find_named(self.winlist, pattern)
+            name_by_regex = self.find_named([self.win], pattern)
             if name_by_regex:
                 for name_regex in name_by_regex:
                     if self.win.name == name_regex.name:
