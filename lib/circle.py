@@ -79,6 +79,7 @@ class circle(cfg, Matcher):
 
         # winlist is used to reduce calling i3.get_tree() too many times.
         self.winlist = self.i3.get_tree().leaves()
+        self.win = None
 
         # used for subtag info caching
         self.subtag_info = {}
@@ -378,7 +379,7 @@ class circle(cfg, Matcher):
                 except KeyError:
                     self.tag_windows()
                     self.add_wins(i3, event)
-        self.winlist = self.i3.get_tree().leaves()
+        self.win = win
 
     def del_wins(self, i3, event) -> None:
         """ Delete tag from window if it's closed.
@@ -401,7 +402,7 @@ class circle(cfg, Matcher):
                     self.tag_windows()
                     self.del_wins(i3, event)
         self.subtag_info = {}
-        self.winlist = self.i3.get_tree().leaves()
+        self.win = win
 
     def set_curr_win(self, i3, event) -> None:
         """ Cache the current window.
