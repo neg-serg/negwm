@@ -234,12 +234,12 @@ class negi3mods(modconfig):
         self.run_procs()
 
         # Start modules mainloop.
-        mainloop = Thread(
-            target=Manager.mainloop,
+        mainloop_socket = Thread(
+            target=Manager.mainloop_socket,
             args=(self.loop, self.mods,),
             daemon=True
         )
-        start((mainloop).start, 'mainloop')
+        start((mainloop_socket).start, 'mainloop_socket')
 
         print('... everything loaded ...')
         Misc.notify_msg(self.notification_text)
