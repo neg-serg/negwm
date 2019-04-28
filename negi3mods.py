@@ -97,7 +97,6 @@ class negi3mods(modconfig):
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
-            Manager.create_ipc_object(mod)
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}s'
             mod_text = f'[{mod}]'
@@ -234,12 +233,12 @@ class negi3mods(modconfig):
         self.run_procs()
 
         # Start modules mainloop.
-        mainloop_socket = Thread(
-            target=Manager.mainloop_socket,
+        mainloop = Thread(
+            target=Manager.mainloop,
             args=(self.loop, self.mods,),
             daemon=True
         )
-        start((mainloop_socket).start, 'mainloop_socket')
+        start((mainloop).start, 'mainloop')
 
         print('... everything loaded ...')
         Misc.notify_msg(self.notification_text)
