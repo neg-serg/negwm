@@ -13,7 +13,7 @@ import shlex
 import shutil
 import yaml
 import yamlloader
-from collections import OrderedDict
+
 from typing import List
 from os.path import expanduser
 from cfg import cfg
@@ -115,7 +115,7 @@ class env():
     def fileprocess(self, custom_config: str) -> None:
         with open(custom_config, "r") as fp:
             try:
-                conf = yaml.load(fp, Loader=yamlloader.ordereddict.CLoader)
+                conf = yaml.load(fp, Loader=yamlloader.ordereddict.CSafeLoader)
                 if conf is not None:
                     conf["font"]["normal"]["family"] = self.font
                     conf["font"]["bold"]["family"] = self.font
