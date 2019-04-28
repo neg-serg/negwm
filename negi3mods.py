@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/pypy3
 
 """ i3 negi3mods daemon script.
 
