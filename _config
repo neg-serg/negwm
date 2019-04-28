@@ -161,13 +161,19 @@ for_window {$wine_apps,$windows_exe_by_title,$windows_exe_by_class} move workspa
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
 #░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░░▀▀▀
-for_window [class="^(telegram-desktop|Telegram-desktop|TelegramDesktop|Skype|ViberPC|VK)$"] move scratchpad, move position 1372 127, resize set 528 1029
-for_window [{instance,class}="ncmpcpp"] move scratchpad, move position 400 400, resize set 1200 600
-for_window [instance="mutt"] move scratchpad, move position 293 0, resize set 1250 700
-for_window [{instance,class}="ranger"] move scratchpad, move position 170 18, resize set 1132 760
-for_window [{instance,class}="teardrop"] move scratchpad, move position 39 4, resize set 1844 704
-for_window [{instance,class}="youtube-get"] move scratchpad, move position 247 13, resize set 1339 866
-for_window [{instance,class}="weechat"] move scratchpad, move position 112 33, resize set 1736 1091
+for_window [class="^(ViberPC|VK|zoom)$"] move scratchpad, move absolute position 1372 127, resize set 548 1037
+for_window [class="^([Tt]elegram|[Ss]kype).*$"] move scratchpad, move absolute position 1372 127, resize set 548 1037
+for_window [instance="ncmpcpp"] move scratchpad, move absolute position 276 326, resize set 1389 696
+for_window [class="cool-retro-term"] move scratchpad, move absolute position 276 326, resize set 1389 696
+for_window [instance="weechat"] move scratchpad, move absolute position 112 33, resize set 1736 1091
+for_window [instance="^(mailspring|mutt)$"] move scratchpad, move absolute position 52 0, resize set 1835 1114
+for_window [instance="ranger"] move scratchpad, move absolute position 3 1, resize set 1916 816
+for_window [instance="teardrop"] move scratchpad, move absolute position 39 4, resize set 1844 704
+for_window [class="Pavucontrol"] move scratchpad, move absolute position 1023 824, resize set 895 314
+for_window [instance="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
+for_window [instance="webcam"] move scratchpad, move absolute position 667 363, resize set 1234 771
+for_window [class="discord"] move scratchpad, move absolute position 974 127, resize set 944 1036
+
 for_window [instance="webcam"] floating enable, move container to workspace current, move scratchpad, move position center, resize set 1280 720, focus
 
 #░█▀▄░▀█▀░█▀█░█░░░█▀█░█▀▀░█▀▀
@@ -205,8 +211,6 @@ bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
 bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+4 exec --no-startup-id flameshot gui
 bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
-
-bindsym $m4+$c+{w,a,s,d} move {up,left,down,right}
 #----------------------------------------------
 # ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
 # ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
