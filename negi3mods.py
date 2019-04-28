@@ -2,7 +2,7 @@
 
 """ i3 negi3mods daemon script.
 
-This module loads all negi3mods an start it via main's daemon_manager
+This module loads all negi3mods an start it via main's manager
 mailoop. Inotify-based watchers for all negi3mods TOML-based configuration
 spawned here, to use it just start it from any place without parameters. Also
 there is i3 config watcher to convert it from ppi3 format to plain i3
@@ -20,19 +20,21 @@ year :: 2019
 """
 
 import os
-import sys
 import timeit
-from sys import intern
+import atexit
+import sys
 import subprocess
 import importlib
-import atexit
-import asyncio
-import aionotify
-import i3ipc
 import shutil
 from threading import Thread
+
+import asyncio
+import aionotify
+
+import i3ipc
+
 from lib.locker import get_lock
-from lib.main import daemon_manager
+from lib.manager import Manager
 from lib.misc import Misc
 from lib.standalone_cfg import modconfig
 
@@ -57,7 +59,7 @@ class negi3mods(modconfig):
         self.loop = loop
         self.mods = {}
         for mod in self.conf("module_list"):
-            self.mods[intern(mod)] = None
+            self.mods[sys.intern(mod)] = None
 
         self.prepare_notification()
 
@@ -85,7 +87,7 @@ class negi3mods(modconfig):
     def load_modules(self):
         """ Load modules.
 
-            This function init daemon_manager, use importlib to load all the
+            This function init Manager, use importlib to load all the
             stuff, then add_ipc and update notification with startup
             benchmarks.
         """
@@ -95,7 +97,7 @@ class negi3mods(modconfig):
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
-            daemon_manager.create_ipc_object(mod)
+            Manager.create_ipc_object(mod)
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}s'
             mod_text = f'[{mod}]'
@@ -233,7 +235,7 @@ class negi3mods(modconfig):
 
         # Start modules mainloop.
         mainloop = Thread(
-            target=daemon_manager.mainloop,
+            target=Manager.mainloop,
             args=(self.loop, self.mods,),
             daemon=True
         )

@@ -13,7 +13,7 @@ import asyncio
 import aiofiles
 
 
-class daemon_manager():
+class Manager():
     """ Daemon manager. Rules by negi3mods, dispatch messages.
 
         Every module has indivisual main loop with indivisual neg-ipc-file.
