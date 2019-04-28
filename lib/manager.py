@@ -8,6 +8,7 @@ Daemon manager and mod daemon:
 """
 
 import asyncio
+from contextlib import suppress
 
 
 class Manager():
@@ -25,11 +26,10 @@ class Manager():
         loop.run_forever()
 
     @classmethod
-    async def handle_client(cls, reader, writer):
-        request = None
-        while request != 'quit':
-            response = str((await reader.read(255)).decode('utf8')) + '\n'
-            rlist = response.split()
-            name = rlist[0]
-            cls.mods[name].switch(rlist[1:])
+    async def handle_client(cls, reader, _) -> None:
+        with suppress(Exception):
+            while True:
+                response = (await reader.read(255)).decode('utf8').split()
+                name = response[0]
+                cls.mods[name].switch(response[1:])
 
