@@ -517,7 +517,7 @@ class ns(cfg, Matcher):
                         {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
-        self.winlist = self.i3.get_tree()
+        self.winlist = self.i3.get_tree().leaves()
 
     def mark_tag(self, i3, event) -> None:
         """ Add unique mark to the new window.
@@ -530,7 +530,7 @@ class ns(cfg, Matcher):
         win = event.container
         is_dialog_win = NegEWMH.is_dialog_win(win)
 
-        self.winlist = self.i3.get_tree()
+        self.winlist = self.i3.get_tree().leaves()
         for tag in self.cfg:
             if not is_dialog_win and tag != "transients":
                 if self.match(win, tag):
@@ -563,7 +563,7 @@ class ns(cfg, Matcher):
                 event.container.
         """
         win_ev = event.container
-        self.winlist = self.i3.get_tree()
+        self.winlist = self.i3.get_tree().leaves()
         for tag in self.cfg:
             if tag != 'transients':
                 for _, win in enumerate(self.marked[tag]):
@@ -576,7 +576,7 @@ class ns(cfg, Matcher):
                         break
         if win_ev.fullscreen_mode:
             self.apply_to_current_tag(self.unfocus)
-        self.winlist = self.i3.get_tree()
+        self.winlist = self.i3.get_tree().leaves()
 
     def mark_all_tags(self, hide: bool = True) -> None:
         """ Add marks to the all tags.
@@ -587,9 +587,8 @@ class ns(cfg, Matcher):
                              Because of I've think that is't better to make
                              screen clear after (re)start.
         """
-        self.winlist = self.i3.get_tree()
-        leaves = self.winlist.leaves()
-        for win in leaves:
+        self.winlist = self.i3.get_tree().leaves()
+        for win in self.winlist:
             is_dialog_win = NegEWMH.is_dialog_win(win)
             for tag in self.cfg:
                 if not is_dialog_win and tag != "transients":
@@ -606,5 +605,5 @@ class ns(cfg, Matcher):
                 if is_dialog_win:
                     win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
                     self.marked["transients"].append(win)
-        self.winlist = self.i3.get_tree()
+        self.winlist = self.i3.get_tree().leaves()
 

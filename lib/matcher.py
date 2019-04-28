@@ -44,7 +44,7 @@ class Matcher(object):
     def class_r(self) -> bool:
         for pattern in self.matched_list:
             cls_by_regex = self.find_classed(
-                self.winlist.leaves(),
+                self.winlist,
                 pattern
             )
             if cls_by_regex:
@@ -56,7 +56,7 @@ class Matcher(object):
     def instance_r(self) -> bool:
         for pattern in self.matched_list:
             inst_by_regex = self.find_instanced(
-                self.winlist.leaves(),
+                self.winlist,
                 pattern
             )
             if inst_by_regex:
@@ -68,7 +68,7 @@ class Matcher(object):
     def role_r(self) -> bool:
         for pattern in self.matched_list:
             role_by_regex = self.find_by_role(
-                self.winlist.leaves(),
+                self.winlist,
                 pattern
             )
             if role_by_regex:
@@ -80,7 +80,7 @@ class Matcher(object):
     def name_r(self) -> bool:
         for pattern in self.matched_list:
             name_by_regex = self.find_named(
-                self.winlist.leaves(),
+                self.winlist,
                 pattern
             )
             if name_by_regex:
