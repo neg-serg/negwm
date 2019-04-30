@@ -122,10 +122,8 @@ class ns(cfg, Matcher):
         """
         if self.geom_auto_save:
             self.geom_save(tag)
-        [
+        for win in self.marked[tag]:
             win.command('move scratchpad')
-            for win in self.marked[tag]
-        ]
         self.restore_fullscreens()
 
     def unfocus_all_but_current(self, tag: str, current_win) -> None:
