@@ -110,7 +110,7 @@ set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$
 set $office [class="^(libreoffice|abiword).*$"]
 
 title_align left
-for_window [class=".*"] title_format " >_ %title "
+for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
 # ░█░█░█▄█░░░░░█▀▄░█░█░█░░░█▀▀░█▀▀
 # ░█▄█░█░█░░░░░█▀▄░█░█░█░░░█▀▀░▀▀█
 # ░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
