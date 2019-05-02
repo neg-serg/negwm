@@ -152,7 +152,7 @@ class ns(cfg, Matcher):
         if focused is None:
             focused = self.i3.get_tree().find_focused()
 
-        for win in focused.workspace().descendents():
+        for win in focused.workspace().leaves():
             if win.window is not None:
                 wswins.append(win)
 
@@ -192,7 +192,7 @@ class ns(cfg, Matcher):
                         f'exec ~/.config/i3/send executor run {spawn_str}'
                     )
 
-        if self.visible_count_on_tag(tag) > 0:
+        if self.visible_window_with_tag(tag):
             self.unfocus(tag)
             return
 
@@ -261,18 +261,18 @@ class ns(cfg, Matcher):
         [win.command('fullscreen toggle') for win in self.fullscreen_list]
         self.fullscreen_list = []
 
-    def visible_count_on_tag(self, tag: str) -> int:
+    def visible_window_with_tag(self, tag: str) -> bool:
         """ Counts visible windows for given tag
 
             Args:
                 tag (str): denotes the target tag.
         """
         visible_windows = self.find_current_workspace_wins()
-        vmarked = 0
         for w in visible_windows:
             for i in self.marked[tag]:
-                vmarked += (w.id == i.id)
-        return vmarked
+                if w.id == i.id:
+                    return True
+        return False
 
     def get_current_tag(self, focused) -> str:
         """ Get the current tag
