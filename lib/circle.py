@@ -199,46 +199,46 @@ class circle(cfg, Matcher):
                 if win.window_class in subtag_win_classes:
                     return self.tagged[tag][subidx]
 
+    def need_priority_check(self, tag):
+        return "priority" in self.conf(tag) and \
+            self.current_win.window_class not in set(self.conf(tag, "class"))
+
+    def not_priority_win_class(self, tag, win):
+        return win.window_class in self.conf(tag, "class") and \
+                win.window_class != self.conf(tag, "priority")
+
+    def no_prioritized_wins(self, tag):
+        return not len([
+            win for win in self.tagged[tag]
+            if win.window_class == self.conf(tag, "priority")
+        ])
+
     def go_next(self, tag: str) -> None:
         """ Circle over windows. Function "called" from the user-side.
 
         Args:
             tag (str): denotes target [tag]
         """
-        try:
-            self.sort_by_parent(tag)
-            if len(self.tagged[tag]) == 0:
-                self.run_prog(tag)
-            elif len(self.tagged[tag]) <= 1:
-                idx = 0
-                self.focus_next(tag, idx, fullscreen_handler=False)
-            else:
-                idx = self.current_position[tag] % len(self.tagged[tag])
-                if ("priority" in self.conf(tag)) \
-                        and self.current_win.window_class \
-                        not in set(self.conf(tag, "class")):
-
-                    if not len([win for win in self.tagged[tag]
-                                if win.window_class ==
-                                self.conf(tag, "priority")]):
+        self.sort_by_parent(tag)
+        if len(self.tagged[tag]) == 0:
+            self.run_prog(tag)
+        elif len(self.tagged[tag]) == 1:
+            idx = 0
+            self.focus_next(tag, idx, fullscreen_handler=False)
+        else:
+            idx = self.current_position[tag] % len(self.tagged[tag])
+            if self.need_priority_check(tag):
+                for win in self.tagged[tag]:
+                    if self.no_prioritized_wins(tag):
                         self.run_prog(tag)
                         return
-
-                    for idx, item in enumerate(self.tagged[tag]):
-                        if item.window_class == self.conf(tag, "priority"):
-                            for win in self.fullscreened:
-                                if win.window_class in self.conf(tag, "class") and \
-                                        win.window_class != self.conf(tag, "priority"):
-                                    self.interactive = False
-                                    win.command('fullscreen disable')
-                            self.focus_next(tag, idx, inc_counter=False)
-                elif self.current_win.id == self.twin(tag, idx).id:
-                    self.find_next_not_the_same_win(tag)
-                else:
-                    self.focus_next(tag, idx)
-        except KeyError:
-            self.tag_windows()
-            self.go_next(tag)
+                for idx, win in enumerate(self.tagged[tag]):
+                    if win.window_class == self.conf(tag, "priority"):
+                        self.focus_next(tag, idx, inc_counter=False)
+            elif self.current_win.id == self.twin(tag, idx).id:
+                self.find_next_not_the_same_win(tag)
+            else:
+                self.focus_next(tag, idx)
 
     def go_subtag(self, tag: str, subtag: str) -> None:
         """ Circle over subtag windows. Function "called" from the user-side.
@@ -374,11 +374,7 @@ class circle(cfg, Matcher):
         win = event.container
         for tag in self.cfg:
             if self.match(win, tag):
-                try:
-                    self.tagged[tag].append(win)
-                except KeyError:
-                    self.tag_windows()
-                    self.add_wins(i3, event)
+                self.tagged[tag].append(win)
         self.win = win
 
     def del_wins(self, i3, event) -> None:
@@ -392,15 +388,10 @@ class circle(cfg, Matcher):
         win = event.container
         for tag in self.cfg:
             if self.match(win, tag):
-                try:
-                    if self.tagged[tag] is not None:
-                        for win in self.tagged[tag]:
-                            if win.id in self.restore_fullscreen:
-                                self.restore_fullscreen.remove(win.id)
-                    del self.tagged[tag]
-                except KeyError:
-                    self.tag_windows()
-                    self.del_wins(i3, event)
+                for win in self.tagged[tag]:
+                    if win.id in self.restore_fullscreen:
+                        self.restore_fullscreen.remove(win.id)
+                self.tagged[tag].remove(win)
         self.subtag_info = {}
         self.win = win
 
