@@ -166,9 +166,10 @@ class flast(cfg):
         """
         workspace = i3.get_tree().find_focused().workspace()
         focused_ws_name = workspace.name
-        wswins = workspace.descendents()
+        wswins = workspace.leaves()
         if not len(wswins):
             for ws_substr in self.autoback:
                 if focused_ws_name.endswith(ws_substr):
-                    self.i3.command('workspace back_and_forth')
+                    self.alt_tab()
+                    return
 
