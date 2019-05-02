@@ -107,7 +107,7 @@ class flast(cfg):
         """
         return filter(
             lambda x: x.window,
-            self.i3.get_tree().find_focused().workspace().descendents()
+            self.i3.get_tree().find_focused().workspace().leaves()
         )
 
     def goto_visible(self, reversed_order=False):
