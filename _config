@@ -383,8 +383,8 @@ mode "-inner" {
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
 exec_always zsh ~/bin/scripts/i3_prepare.sh
-exec --no-startup-id /usr/lib/gsd-xsettings
-exec --no-startup-id caffeine &
+exec /usr/lib/gsd-xsettings
+exec caffeine &
 exec_always ~/bin/scripts/gnome_settings
-exec --no-startup-id sleep 3s && ${XDG_CONFIG_HOME}/i3/send circle next term
+exec sleep 3s && ${XDG_CONFIG_HOME}/i3/send circle next term
 # vim:filetype=i3
