@@ -254,7 +254,7 @@ bindsym $m4+m exec $menu xprop, $exit
 bindsym $m4+$S+a $menu attach
 bindsym $m4+g $menu ws
 bindsym $m4+$c+g $menu movews
-bindsym $m4+$c+grave $menu run
+bindsym $m4+$c+grave $menu i3cmd
 bindsym $m4+$S+s $menu autoprop
 #-------------------------------------------------------
 bindsym $alt+Tab $flast switch
