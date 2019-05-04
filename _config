@@ -77,7 +77,7 @@ set $term "1 ::  α:term"
 set $web "2 ::  β:web"
 set $doc "3 ::  γ:doc"
 set $dev "4 ::  δ:dev"
-set $gfx "5 ::  ε:gfx"
+set $gfx "5 ::  ε:gfx"
 set $draw "6 ::  ζ:draw"
 set $sys "7 ::  η:sys"
 set $ide "8 ::  θ:ide"
@@ -95,7 +95,7 @@ set $remote "15 ::  ο:remote"
 set $browsers [class="^(Firefox|Nightly|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(dota2|darkest.bin.x86_64|PillarsOfEternityII|lutris|Lutris|Civ6|warframe.x64.exe)$"]
-set $wine_apps [class="^(wine|Crossover)$"]
+set $wine_apps [class="^(Wine|wine|Crossover)$"]
 set $windows_exe_by_title [title="^.*.exe$"]
 set $windows_exe_by_class [class="^.*.exe$"]
 set $pdf [class="^(Okular|Apvlv|Zathura|Evince|XDvi)$"]
@@ -254,7 +254,7 @@ bindsym $m4+m exec $menu xprop, $exit
 bindsym $m4+$S+a $menu attach
 bindsym $m4+g $menu ws
 bindsym $m4+$c+g $menu movews
-bindsym $m4+$c+grave $menu i3cmd
+bindsym $m4+$c+grave $menu cmd_menu
 bindsym $m4+$S+s $menu autoprop
 #-------------------------------------------------------
 bindsym $alt+Tab $flast switch
