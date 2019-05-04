@@ -3,7 +3,7 @@ from functools import partial
 from typing import Callable
 
 
-class winact_menu():
+class winact():
     def __init__(self, menu):
         self.menu = menu
         self.workspaces = menu.conf("workspaces")

@@ -10,21 +10,12 @@
         - i3-cmd menu with autocompletion.
 """
 
-import configparser
-
 from singleton import Singleton
 from cfg import cfg
 from misc import Misc
 from display import Display
 from typing import List
-
-import menu_mods.winact
-import menu_mods.pulse_menu
-import menu_mods.xprop
-import menu_mods.props
-import menu_mods.xrandr
-import menu_mods.gtk
-import menu_mods.i3menu
+import importlib
 
 
 class menu(cfg):
@@ -46,9 +37,6 @@ class menu(cfg):
         # Window properties shown by xprop menu.
         self.xprops_list = self.conf("xprops_list")
 
-        # Magic delimiter used by add_prop / del_prop routines.
-        self.delim = "@"
-
         # cache screen width
         self.screen_width = Display.get_screen_resolution()["width"]
 
@@ -64,15 +52,9 @@ class menu(cfg):
 
         self.gap = self.conf('gap')
 
-        self.gtk_config = configparser.ConfigParser()
-
-        self.i3menu = menu_mods.i3menu.i3menu(self)
-        self.winact = menu_mods.winact.winact_menu(self)
-        self.pulse_menu = menu_mods.pulse_menu.pulse_menu(self)
-        self.xprop = menu_mods.xprop.xprop(self)
-        self.props = menu_mods.props.props(self)
-        self.gtk = menu_mods.gtk.gtk(self)
-        self.xrandr = menu_mods.xrandr.xrandr(self)
+        for mod in self.cfg['modules']:
+            module = importlib.import_module('menu_mods.' + mod)
+            setattr(self, mod, getattr(module, mod)(self))
 
     def switch(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
@@ -89,6 +71,7 @@ class menu(cfg):
             "cmd_menu": self.i3menu.cmd_menu,
 
             "xprop": self.xprop.xprop_menu,
+
             "autoprop": self.props.autoprop,
             "show_props": self.props.show_props,
 
