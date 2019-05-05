@@ -87,6 +87,11 @@ class ns(cfg, Matcher):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
 
+    def taglist(self):
+        tl = list(self.cfg.keys())
+        tl.remove('transients')
+        return tl
+
     def mark_uuid_tag(self, tag: str) -> str:
         """ Generate unique mark for the given [tag]
 
@@ -106,7 +111,7 @@ class ns(cfg, Matcher):
         """
         win_to_focus = None
         for win in self.marked[tag]:
-            win.command('move container to workspace current')
+            win.command('move window to workspace current')
             win_to_focus = win
         if hide:
             if tag != 'transients':
@@ -137,7 +142,7 @@ class ns(cfg, Matcher):
                 if win.id != current_win.id:
                     win.command('move scratchpad')
                 else:
-                    win.command('move container to workspace current')
+                    win.command('move window to workspace current')
 
     def find_current_workspace_wins(
             self, focused: Optional[bool] = None) -> List:
@@ -313,7 +318,7 @@ class ns(cfg, Matcher):
             for idx, win in enumerate(self.marked[tag]):
                 if focused_win.id != win.id:
                     self.marked[tag][idx].command(
-                        'move container to workspace current'
+                        'move window to workspace current'
                     )
                     self.marked[tag].insert(
                         len(self.marked[tag]),
@@ -537,7 +542,7 @@ class ns(cfg, Matcher):
                         {self.nsgeom.get_geom(tag)}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
-            if is_dialog_win:
+            elif is_dialog_win and tag == "transients":
                 win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
                 win.command(win_cmd)
                 self.marked["transients"].append(win)
@@ -561,16 +566,15 @@ class ns(cfg, Matcher):
         """
         win_ev = event.container
         self.win = win_ev
-        for tag in self.cfg:
-            if tag != 'transients':
-                for _, win in enumerate(self.marked[tag]):
-                    if win.id == win_ev.id:
-                        del self.marked[tag][_]
-                        self.focus(tag)
-                        for tr in self.marked["transients"]:
-                            if tr.id == win.id:
-                                self.marked["transients"].remove(tr)
-                        break
+        for tag in self.taglist():
+            for win in self.marked[tag]:
+                if win.id == win_ev.id:
+                    for tr in self.marked["transients"]:
+                        if tr.id == win.id:
+                            self.marked["transients"].remove(tr)
+                    self.marked[tag].remove(win)
+                    self.focus(tag)
+                    break
         if win_ev.fullscreen_mode:
             self.apply_to_current_tag(self.unfocus)
 
@@ -584,13 +588,13 @@ class ns(cfg, Matcher):
                              screen clear after (re)start.
         """
         winlist = self.i3.get_tree().leaves()
+        hide_cmd = ''
+
         for win in winlist:
             is_dialog_win = NegEWMH.is_dialog_win(win)
             for tag in self.cfg:
                 if not is_dialog_win and tag != "transients":
                     if self.match(win, tag):
-                        # scratch move
-                        hide_cmd = ''
                         if hide:
                             hide_cmd = '[con_id=__focused__] scratchpad show'
                         win_cmd = f"{self.mark_uuid_tag(tag)}, \
