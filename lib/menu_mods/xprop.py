@@ -20,13 +20,14 @@ class xprop():
                 if 'not found' not in line:
                     xprops.append(line)
 
-        params = dict()
-        params["cnum"] = 1
-        params["lnum"] = len(xprops)
-        params["width"] = int(self.menu.screen_width * 0.75)
-        params["prompt"] = f'{self.menu.wrap_str("xprop")} {self.menu.prompt}'
+        rofi_params = {
+            'cnum': 1,
+            'lnum': len(xprops),
+            'width': int(self.menu.screen_width * 0.75),
+            'prompt': f'{self.menu.wrap_str("xprop")} {self.menu.prompt}'
+        }
         xprop_sel = subprocess.run(
-            self.menu.rofi_args(params),
+            self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(xprops), 'UTF-8')
         ).stdout

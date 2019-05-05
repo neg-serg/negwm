@@ -17,13 +17,14 @@ class winact():
         leaves = self.menu.i3.get_tree().leaves()
         winlist = [win.name for win in leaves]
         winlist_len = len(winlist)
-        params = dict()
-        params["cnum"] = winlist_len
-        params["width"] = int(self.menu.screen_width * 0.75)
-        params["prompt"] = f"{prompt} {self.menu.prompt}"
+        rofi_params = {
+            'cnum': winlist_len,
+            'width': int(self.menu.screen_width * 0.75),
+            'prompt': f"{prompt} {self.menu.prompt}"
+        }
         if winlist and winlist_len > 1:
             win_name = subprocess.run(
-                self.menu.rofi_args(params),
+                self.menu.rofi_args(rofi_params),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(winlist), 'UTF-8')
             ).stdout
@@ -54,13 +55,15 @@ class winact():
         if use_wslist:
             wslist = self.workspaces
         else:
-            wslist = [ws.name for ws in self.menu.i3.get_workspaces()] + ["[empty]"]
-        params = dict()
-        params["cnum"] = len(wslist)
-        params["width"] = int(self.screen_width * 0.66)
-        params["prompt"] = f'{self.wrap_str("ws")} {self.prompt}'
+            wslist = [ws.name for ws in self.menu.i3.get_workspaces()] + \
+                ["[empty]"]
+        rofi_params = {
+            'cnum': len(wslist),
+            'width': int(self.screen_width * 0.66),
+            'prompt': f'{self.wrap_str("ws")} {self.prompt}',
+        }
         ws = subprocess.run(
-            self.menu.rofi_args(params),
+            self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(wslist), 'UTF-8')
         ).stdout
