@@ -24,6 +24,8 @@ import timeit
 import atexit
 import sys
 import subprocess
+import signal
+import functools
 import importlib
 import shutil
 from threading import Thread
@@ -51,12 +53,22 @@ class negi3mods(modconfig):
         # by ppi3 path and another configs.
         self.i3_path = Misc.i3path()
 
-        # setup asyncio loop
-        loop = asyncio.get_event_loop()
+        def loop_exit(signame):
+            print(f"Got signal {signame}: exit")
+            loop.stop()
+            os._exit(0)
+
+        loop = asyncio.new_event_loop()
+        for signame in {'SIGINT', 'SIGTERM'}:
+            loop.add_signal_handler(
+                getattr(signal, signame),
+                functools.partial(loop_exit, signame))
+        loop.set_exception_handler(None)
 
         modconfig.__init__(self, loop)
 
         self.loop = loop
+
         self.mods = {}
         for mod in self.conf("module_list"):
             self.mods[sys.intern(mod)] = None
@@ -77,12 +89,12 @@ class negi3mods(modconfig):
 
     def prepare_notification(self):
         # stuff for startup notifications
-        self.notification_text = "Wow! It's time to start mods!\n\n"
+        self.notification_text = "Starting negi3mods\n\n"
         notification_color_field = self.conf("notification_color_field")
         notification_color = Misc.extract_xrdb_value(notification_color_field)
         prefix = self.conf("prefix")
         self.msg_prefix = f"<span weight='normal' \
-                           color='{notification_color}'> {prefix} </span>"
+            color='{notification_color}'> {prefix} </span>"
 
     def load_modules(self):
         """ Load modules.
@@ -99,13 +111,12 @@ class negi3mods(modconfig):
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}s'
-            mod_text = f'[{mod}]'
-            mod_loaded_info = f'Loaded {mod_text:<10s} ~ {time_elapsed:>10s}'
+            mod_loaded_info = f'{mod:<10s} ~ {time_elapsed:>10s}'
             self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
             print(mod_loaded_info, flush=True)
-        overall_msg = f'Overall time = {sum(mod_startup_times):6f}s'
-        self.notification_text += overall_msg
-        print(overall_msg)
+        loading_time_msg = f'Loading time = {sum(mod_startup_times):6f}s'
+        self.notification_text += loading_time_msg
+        print(loading_time_msg)
 
     def mods_cfg_watcher(self):
         """ cfg watcher to update modules config in realtime.
