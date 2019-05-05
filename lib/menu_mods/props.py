@@ -35,12 +35,12 @@ class props():
             mod (str): module name string.
             lst (List[str]): list of rofi input.
         """
+        params = dict()
+        params['cnum'] = len(lst)
+        params['width'] = int(self.menu.screen_width * 0.75)
+        params['prompt'] = f'{self.menu.wrap_str(mod)} {self.menu.prompt}'
         rofi_tag = subprocess.run(
-            self.menu.rofi_args(
-                cnum=len(lst),
-                width=int(self.menu.screen_width * 0.75),
-                prompt=f'{self.menu.wrap_str(mod)} {self.menu.prompt}'
-            ),
+            self.menu.rofi_args(params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(lst), 'UTF-8')
         ).stdout
@@ -74,13 +74,13 @@ class props():
     def get_mod(self) -> str:
         """ Select negi3mod for add_prop by rofi.
         """
+        params = dict()
+        params["cnum"] = len(self.possible_mods)
+        params["lnum"] = 1
+        params["width"] = int(self.menu.screen_width * 0.75)
+        params["prompt"] = f'{self.menu.wrap_str("selmod")} {self.menu.prompt}'
         mod = subprocess.run(
-            self.menu.rofi_args(
-                cnum=len(self.possible_mods),
-                lnum=1,
-                width=int(self.menu.screen_width * 0.75),
-                prompt=f'{self.menu.wrap_str("selmod")} {self.menu.prompt}'
-            ),
+            self.menu.rofi_args(params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.possible_mods), 'UTF-8')
         ).stdout

@@ -32,17 +32,16 @@ class pulse_menu():
         pass
 
     def pulseaudio_select_app(self):
+        params = dict()
+        params["cnum"] = 1
+        params["lnum"] = len(self.pulse_data["app_list"])
+        params["auto_selection"] = '-auto-select'
+        params["width"] = int(self.menu.screen_width * 0.55)
+        params["prompt"] = f'{self.menu.wrap_str("pulse app")} {self.menu.prompt}'
         rofi_app_sel = subprocess.run(
-            self.menu.rofi_args(
-                cnum=1,
-                lnum=len(self.pulse_data["app_list"]),
-                auto_selection='-auto-select',
-                width=int(self.menu.screen_width * 0.55),
-                prompt=f'{self.menu.wrap_str("pulse app")} {self.menu.prompt}',
-            ),
+            self.menu.rofi_args(params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(
-                self.pulse_data["app_list"]), 'UTF-8')
+            input=bytes('\n'.join(self.pulse_data["app_list"]), 'UTF-8')
         ).stdout
 
         if rofi_app_sel is not None:

@@ -25,13 +25,15 @@ class gtk():
                         )]
 
         ret = ""
+
+        params = dict()
+        params['cnum'] = 1
+        params['lnum'] = len(gtk_themes_list)
+        params['width'] = int(self.screen_width * 0.55)
+        params['prompt'] = f'{self.wrap_str("gtk_theme")} {self.prompt}'
+
         gtk_theme_sel = subprocess.run(
-            self.menu.rofi_args(
-                cnum=1,
-                lnum=len(gtk_themes_list),
-                width=int(self.screen_width * 0.55),
-                prompt=f'{self.wrap_str("gtk_theme")} {self.prompt}'
-            ),
+            self.menu.rofi_args(params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(gtk_themes_list), 'UTF-8')
         ).stdout

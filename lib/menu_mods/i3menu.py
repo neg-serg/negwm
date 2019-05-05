@@ -75,6 +75,9 @@ class i3menu():
 
         debug, ok, notify_msg = False, False, ""
         args, prev_args = None, None
+        rofi_params = dict()
+        rofi_params['prompt'] = f"{self.menu.wrap_str('i3cmd')}" + \
+            " {self.menu.prompt} " + cmd
         while not (ok or args == ['<end>'] or args == []):
             if debug:
                 print(f"evaluated cmd=[{cmd}] args=[{self.i3_cmd_args(cmd)}]")
@@ -96,10 +99,7 @@ class i3menu():
                         if args == prev_args:
                             return 0
                         cmd_rerun = subprocess.run(
-                            self.rofi_args(
-                                f"{self.menu.wrap_str('i3cmd')}" +
-                                " {self.menu.prompt} " + cmd
-                            ),
+                            self.rofi_args(rofi_params),
                             stdout=subprocess.PIPE,
                             input=bytes('\n'.join(args), 'UTF-8')
                         ).stdout

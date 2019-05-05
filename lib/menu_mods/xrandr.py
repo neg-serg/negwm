@@ -11,12 +11,12 @@ class xrandr():
 
     def change_resolution_xrandr(self):
         xrandr_data = Display.xrandr_resolution_list()
+        params = dict()
+        params["cnum"] = 8
+        params["width"] = int(self.menu.screen_width * 0.55)
+        params["prompt"] = f'{self.wrap_str("gtk_theme")} {self.prompt}'
         resolution_sel = subprocess.run(
-            self.menu.rofi_args(
-                cnum=8,
-                width=int(self.menu.screen_width * 0.55),
-                prompt=f'{self.wrap_str("gtk_theme")} {self.prompt}'
-            ),
+            self.menu.rofi_args(params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(xrandr_data), 'UTF-8')
         ).stdout

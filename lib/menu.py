@@ -89,35 +89,34 @@ class menu(cfg):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def rofi_args(self, prompt: str = '>', cnum: int = 16,
-                  lnum: int = 2,
-                  width: int = 0,
-                  markup_rows: str = '',
-                  auto_selection="-no-auto-selection") -> List[str]:
-        prompt = prompt or self.prompt
-        width = width or int(self.screen_width * 0.85)
-        markup_rows = markup_rows or '-no-markup-rows'
+    def rofi_args(self, params: dict()) -> List[str]:
+        params['width'] = params.get('width', 0) or \
+            int(self.screen_width * 0.85)
+        params['prompt'] = params.get('prompt', 0) or self.prompt
+        params['cnum'] = params.get('cnum', 0) or 16
+        params['lnum'] = params.get('lnum', 0) or 2
+        params['markup_rows'] = params.get('markup_rows', 0) or \
+            '-no-markup-rows'
+        params['auto_selection'] = params.get('auto_selection', 0) or \
+            "-no-auto-selection"
 
         """ Returns arguments list for rofi runner.
 
         Args:
-            prompt (str): rofi prompt, optional.
-            cnum (int): number of columns, optional.
-            lnum (int): number of lines, optional.
-            width (int): width of rofi menu, optional.
-            markup_rows (str): markup rows setting.
+            params(dict): dict for rofi parameters.
         """
         return [
             'rofi', '-show', '-dmenu',
-            '-columns', str(cnum), '-lines', str(lnum),
+            '-columns', str(params['cnum']),
+            '-lines', str(params['lnum']),
             '-disable-history',
-            auto_selection,
-            markup_rows,
-            '-p', prompt,
+            params['auto_selection'],
+            params['markup_rows'],
+            '-p', params['prompt'],
             '-i',  # non case-sensitive
             '-matching', f'{self.matching}',
             '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
-            '-theme-str', f'#window {{ width:{width}; y-offset: -{self.gap}; \
+            '-theme-str', f'#window {{ width:{params["width"]}; y-offset: -{self.gap}; \
             location: {self.location}; \
             anchor: {self.anchor}; }}',
         ]
