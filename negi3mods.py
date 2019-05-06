@@ -10,7 +10,7 @@ automatically. Moreover it contains pid-lock which prevents running several
 times.
 
 Usage:
-    negi3mods.py
+    ./negi3mods.py
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -104,7 +104,7 @@ class negi3mods(modconfig):
             benchmarks.
         """
         mod_startup_times = []
-        print()
+        print('Loading modules')
         for mod in self.mods.keys():
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
@@ -195,7 +195,7 @@ class negi3mods(modconfig):
         if len(check_config):
             error_data = check_config.encode('utf-8')
             print(error_data)
-            subprocess.Popen(["notify-send", error_data])
+            Misc.notify_msg(error_data, "Error >")
 
             # remove invalid config
             os.remove(self.test_cfg_path)
@@ -231,12 +231,10 @@ class negi3mods(modconfig):
                     name: routine name.
                     args: routine args, optional.
             """
-            print(f'[{name} loading ', end='', flush=True)
             if args is None:
                 func()
             elif args is not None:
                 func(*args)
-            print(f'... {name} loaded]', flush=True)
 
         start(self.load_modules, 'modules')
         start(self.run_inotify_watchers, 'inotify watchers')
