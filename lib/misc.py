@@ -14,7 +14,7 @@ class Misc():
 
     @staticmethod
     def i3path() -> str:
-        """ Easy way to return i3 config path. May be improved.
+        """ Easy way to return i3 config path.
         """
         return os.environ.get("XDG_CONFIG_HOME") + "/i3/"
 
