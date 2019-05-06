@@ -11,17 +11,17 @@ import asyncio
 from contextlib import suppress
 
 
-class Manager():
+class MsgBroker():
     """ Daemon manager. Rules by negi3mods, dispatch messages.
 
         Every module has indivisual main loop with indivisual neg-ipc-file.
     """
     @classmethod
-    def mainloop(cls, loop, mods) -> None:
+    def mainloop(cls, loop, mods, port) -> None:
         cls.mods = mods
         asyncio.set_event_loop(loop)
         loop.create_task(asyncio.start_server(
-            cls.handle_client, 'localhost', 15555)
+            cls.handle_client, 'localhost', port)
         )
         loop.run_forever()
 
@@ -31,5 +31,5 @@ class Manager():
             while True:
                 response = (await reader.read(255)).decode('utf8').split()
                 name = response[0]
-                cls.mods[name].switch(response[1:])
+                cls.mods[name].send_msg(response[1:])
 

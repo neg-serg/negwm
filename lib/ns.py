@@ -455,7 +455,7 @@ class ns(cfg, Matcher):
         """
         self.del_props(tag, prop_str)
 
-    def switch(self, args: List) -> None:
+    def send_msg(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
             bindings.
 

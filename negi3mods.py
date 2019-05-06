@@ -36,7 +36,7 @@ import aionotify
 import i3ipc
 
 from lib.locker import get_lock
-from lib.manager import Manager
+from lib.msgbroker import MsgBroker
 from lib.misc import Misc
 from lib.standalone_cfg import modconfig
 
@@ -83,6 +83,8 @@ class negi3mods(modconfig):
             os.path.expandvars('$HOME/tmp/config_test')
         )
 
+        self.port = int(self.conf('port'))
+
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
         self.i3 = i3ipc.Connection()
@@ -99,7 +101,7 @@ class negi3mods(modconfig):
     def load_modules(self):
         """ Load modules.
 
-            This function init Manager, use importlib to load all the
+            This function init MsgBroker, use importlib to load all the
             stuff, then add_ipc and update notification with startup
             benchmarks.
         """
@@ -243,8 +245,8 @@ class negi3mods(modconfig):
 
         # Start modules mainloop.
         mainloop = Thread(
-            target=Manager.mainloop,
-            args=(self.loop, self.mods,),
+            target=MsgBroker.mainloop,
+            args=(self.loop, self.mods, self.port,),
             daemon=True
         )
         start((mainloop).start, 'mainloop')

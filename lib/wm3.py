@@ -74,7 +74,7 @@ class wm3(cfg):
         # coeff to shrink window in all dimensions
         self.shrink_coeff = self.conf("shrink_coeff")
 
-    def switch(self, args: List) -> None:
+    def send_msg(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
         bindings.
 

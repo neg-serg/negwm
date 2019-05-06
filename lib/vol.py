@@ -112,7 +112,7 @@ class vol(Singleton, cfg):
                     # TODO: add function to wait for MPD port here.
                     break
 
-    def switch(self, args: List) -> None:
+    def send_msg(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
         bindings.
 

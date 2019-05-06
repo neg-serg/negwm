@@ -54,7 +54,7 @@ class flast(cfg):
         """
         self.__init__(self.i3)
 
-    def switch(self, args: List) -> None:
+    def send_msg(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
         bindings.
 

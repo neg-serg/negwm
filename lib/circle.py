@@ -261,7 +261,7 @@ class circle(cfg, Matcher):
                 idx = 0
                 self.focus_next(tag, idx, subtagged=True)
 
-    def switch(self, args: List) -> None:
+    def send_msg(self, args: List) -> None:
         """ Defines pipe-based IPC for cirled module. With appropriate
             function bindings.
 

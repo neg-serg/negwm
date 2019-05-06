@@ -56,7 +56,7 @@ class menu(cfg):
             module = importlib.import_module('menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
 
-    def switch(self, args: List) -> None:
+    def send_msg(self, args: List) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
             bindings.
 
