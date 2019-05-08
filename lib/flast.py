@@ -41,7 +41,7 @@ class flast(cfg):
         self.window_history = []
 
         # depth of history list
-        self.max_win_history = 64
+        self.max_win_history = 4
 
         # workspaces with auto alt-tab when close
         self.autoback = self.conf('autoback')
