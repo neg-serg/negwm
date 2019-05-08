@@ -1,8 +1,10 @@
 """ Handle X11 screen tasks with randr extension
 """
 
+import subprocess
 from Xlib import display
 from Xlib.ext import randr
+
 
 class Display():
     d = display.Display()
@@ -43,5 +45,4 @@ class Display():
     @classmethod
     def set_screen_size(cls, size_id=0) -> None:
         subprocess.run(['xrandr', '-s', str(size_id)])
-
 
