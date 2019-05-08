@@ -16,6 +16,7 @@ class MsgBroker():
 
         Every module has indivisual main loop with indivisual neg-ipc-file.
     """
+    lock = asyncio.Lock()
     @classmethod
     def mainloop(cls, loop, mods, port) -> None:
         cls.mods = mods
@@ -29,7 +30,8 @@ class MsgBroker():
     async def handle_client(cls, reader, _) -> None:
         with suppress(Exception):
             while True:
-                response = (await reader.read(255)).decode('utf8').split()
-                name = response[0]
-                cls.mods[name].send_msg(response[1:])
+                async with cls.lock:
+                    response = (await reader.read(255)).decode('utf8').split()
+                    name = response[0]
+                    cls.mods[name].send_msg(response[1:])
 
