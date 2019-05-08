@@ -11,6 +11,8 @@ import os
 import errno
 import shlex
 import shutil
+import threading
+import multiprocessing
 import yaml
 import yamlloader
 
@@ -18,7 +20,6 @@ from typing import List
 from os.path import expanduser
 from cfg import cfg
 from singleton import Singleton
-from multiprocessing import Process
 from misc import Misc
 
 
@@ -95,6 +96,12 @@ class env():
 
         self.create_term_params(cfg, name)
 
+        def join_processes():
+            for prc in multiprocessing.active_children():
+                prc.join()
+
+        threading.Thread(target=join_processes, args=(), daemon=True).start()
+
     @staticmethod
     def generate_alacritty_config(
             alacritty_cfg_dir, cfg: dict, name: str) -> str:
@@ -151,7 +158,7 @@ class env():
             custom_config = self.generate_alacritty_config(
                 self.alacritty_cfg_dir, cfg, name
             )
-            Process(
+            multiprocessing.Process(
                 target=self.fileprocess, args=(custom_config,), daemon=True
             ).start()
             self.term_opts = [
@@ -165,7 +172,7 @@ class env():
             custom_config = self.generate_alacritty_config(
                 self.alacritty_cfg_dir, cfg, name
             )
-            Process(
+            multiprocessing.Process(
                 target=self.fileprocess, args=(custom_config,), daemon=True
             ).start()
             self.term_opts = [
