@@ -52,7 +52,7 @@ font pango: $myfont
 # ░█░█░█░█░█░█░▀▀█░█▀▀░▄▀░░█▀▀░█░█░█░░░█░█░▀▀█
 # ░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░░░▀░░░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 focus_follows_mouse no
-focus_on_window_activation urgent
+focus_on_window_activation none
 # warp the mouse to the middle of the window when changing to a different screen
 mouse_warping none
 focus_wrapping yes
@@ -68,7 +68,11 @@ show_marks no
 # ░█▀▀░█▀█░█▀█░█▀▀
 # ░█░█░█▀█░█▀▀░▀▀█
 # ░▀▀▀░▀░▀░▀░░░▀▀▀
+# smart_gaps on
+smart_borders on
 hide_edge_borders both
+gaps inner 0
+gaps outer 0
 
 # ░█░█░█▄█░█▀▀
 # ░█▄█░█░█░▀▀█
@@ -307,7 +311,7 @@ mode "" {
     bindsym c $wm3 center none
     bindsym $S+c $wm3 center resize
     #-------------------------------------------------------
-    bindsym $S+g mode ""
+    bindsym g mode ""
     #-------------------------------------------------------
 	bindsym $c+{a,3} layout toggle all
 	bindsym $c+s     layout toggle split
