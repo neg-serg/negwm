@@ -25,21 +25,44 @@ class Matcher(object):
     negi3mods.
 
     """
-    def find_classed(self, wlist: List, pattern: str) -> Iterator:
-        return (c for c in wlist
+
+    def __init__(self):
+        self.factors = [
+            sys.intern("class"),
+            sys.intern("instance"),
+            sys.intern("role"),
+            sys.intern("class_r"),
+            sys.intern("instance_r"),
+            sys.intern("name_r"),
+            sys.intern("role_r"),
+            sys.intern('match_all')
+        ]
+
+        self.match_dict = {
+            sys.intern("class"): lambda: self.win.window_class in self.matched_list,
+            sys.intern("instance"): lambda: self.win.window_instance in self.matched_list,
+            sys.intern("role"): lambda: self.win.window_role in self.matched_list,
+            sys.intern("class_r"): self.class_r,
+            sys.intern("instance_r"): self.instance_r,
+            sys.intern("role_r"): self.role_r,
+            sys.intern("name_r"): self.name_r,
+            sys.intern("match_all"): self.match_all
+        }
+
+    def find_classed(self, win: List, pattern: str) -> Iterator:
+        return (c for c in win
                 if c.window_class and re.search(pattern, c.window_class))
 
-    def find_instanced(self, wlist: List, pattern: str) -> Iterator:
-        return (c for c in wlist
+    def find_instanced(self, win: List, pattern: str) -> Iterator:
+        return (c for c in win
                 if c.window_instance and re.search(pattern, c.window_instance))
 
-    def find_by_role(self, wlist: List, pattern: str) -> Iterator:
-        return (c for c in wlist
+    def find_by_role(self, win: List, pattern: str) -> Iterator:
+        return (c for c in win
                 if c.window_role and re.search(pattern, c.window_role))
 
-    def find_named(self, wlist: List, pattern: str) -> Iterator:
-        return (c for c in wlist
-                if c.name and re.search(pattern, c.name))
+    def find_named(self, win: List, pattern: str) -> Iterator:
+        return (c for c in win if c.name and re.search(pattern, c.name))
 
     def class_r(self) -> bool:
         for pattern in self.matched_list:
@@ -78,38 +101,14 @@ class Matcher(object):
         return False
 
     def match_all(self) -> bool:
-        return len(self.matched_list) > 0
+        return True
 
     def match(self, win, tag: str) -> bool:
         self.win = win
-        factors = [
-            sys.intern("class"),
-            sys.intern("instance"),
-            sys.intern("role"),
-            sys.intern("class_r"),
-            sys.intern("instance_r"),
-            sys.intern("name_r"),
-            sys.intern("role_r"),
-            sys.intern('match_all')
-        ]
 
-        match = {
-            sys.intern("class"): lambda: win.window_class in self.matched_list,
-            sys.intern("instance"): lambda: win.window_instance in self.matched_list,
-            sys.intern("role"): lambda: win.window_role in self.matched_list,
-            sys.intern("class_r"): self.class_r,
-            sys.intern("instance_r"): self.instance_r,
-            sys.intern("role_r"): self.role_r,
-            sys.intern("name_r"): self.name_r,
-            sys.intern("match_all"): self.match_all,
-        }
-
-        for f in factors:
+        for f in self.factors:
             self.matched_list = self.cfg.get(tag, {}).get(f, {})
-            if self.matched_list is not None and self.matched_list != []:
-                if match[f]():
-                    return True
-            else:
-                print(f'error for ftor={f} and match_list={self.matched_list}')
+            if self.matched_list and self.match_dict[f]():
+                return True
         return False
 
