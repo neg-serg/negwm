@@ -1,4 +1,4 @@
-CFLAGS += -std=gnu11 -march=native -Os -pedantic -D_FORCE_OCLOEXEC
+CFLAGS += -std=gnu11 -march=native -Os -pedantic
 GLFW3 := $(shell pkg-config --libs glfw3)
 LIBS := $(GLFW3) -lGL -lm -lGLU -lGLEW
 
