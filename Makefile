@@ -13,5 +13,5 @@ wm_class: wm_class.c
 	$(CC) $(CFLAGS) -lX11 $@.c -o $@
 
 send: send.c
-	$(CC) $(CFLAGS) $@.c -o $@
+	$(CC) $(CFLAGS) $@.c -lbsd -o $@
 
