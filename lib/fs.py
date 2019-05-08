@@ -32,35 +32,28 @@ class fs(cfg):
             "classes_to_hide_panel", []
         )
 
-        self.panel_use_xdo = lambda act: subprocess.Popen(['xdo', act, '-N', 'Polybar'])
-        self.panel_use_polybar = lambda act: subprocess.Popen(['polybar-msg', 'cmd', act])
+        self.show_panel_on_close = False
 
-        self.panel_use = self.panel_use_xdo
-
-        self.i3.on('window::fullscreen_mode', self.on_fullscreen_mode)
         self.i3.on('window::close', self.on_window_close)
         self.i3.on('workspace::focus', self.on_workspace_focus)
 
     def on_workspace_focus(self, i3, event):
-        fullscreens = i3.get_tree().find_fullscreen()
+        for tgt_ws in self.ws_fullscreen:
+            if event.current.name.endswith(tgt_ws):
+                self.panel_action('hide', restore=False)
+                return
 
-        for tgt_workspace in self.ws_fullscreen:
-            for ws_win in event.current:
-                for fs in fullscreens:
-                    if tgt_workspace in event.current.name \
-                            and fs.id == ws_win.id:
-                        self.panel_action('hide', restore=True)
-                        return
-
-        for tgt_workspace in self.ws_fullscreen:
-            if tgt_workspace in event.old.name and \
-                    tgt_workspace not in event.current.name:
-                if self.panel_should_be_restored:
-                    self.panel_action('show', restore=False)
-                    return
+        for tgt_ws in self.ws_fullscreen:
+            if not event.current.name.endswith(tgt_ws):
+                self.panel_action('show', restore=False)
+                return
 
     def panel_action(self, action, restore):
-        self.panel_use(action)
+        proc = subprocess.Popen(
+            ['xdo', action, '-N', 'Polybar'], stdout=subprocess.PIPE
+        )
+        proc.communicate()[0]
+
         if restore is not None:
             self.panel_should_be_restored = restore
 
@@ -78,20 +71,19 @@ class fs(cfg):
 
         self.fullscreen_hide(i3)
 
-    def fullscreen_hide(self, i3):
-        i3_tree = i3.get_tree()
+    def fullscreen_hide(self):
+        i3_tree = self.i3.get_tree()
         fullscreens = i3_tree.find_fullscreen()
+        focused_ws = i3_tree.find_focused().workspace().name
 
         if fullscreens:
-            focused_ws = i3_tree.find_focused().workspace().name
             for win in fullscreens:
                 for tgt_class in self.classes_to_hide_panel:
                     if win.window_class == tgt_class:
-                        for ws in self.ws_fullscreen:
-                            if ws in focused_ws:
-                                self.panel_action('hide', restore=True)
+                        for tgt_ws in self.ws_fullscreen:
+                            if focused_ws.endswith(tgt_ws):
+                                self.panel_action('hide', restore=False)
                                 break
-                        return
 
     def on_window_close(self, i3, event):
         """ If there are no fullscreen windows then show panel closing window.
@@ -104,8 +96,9 @@ class fs(cfg):
         if event.container.window_class in self.panel_classes:
             return
 
-        if not i3.get_tree().find_fullscreen():
-            self.panel_action('show', restore=True)
+        if self.show_panel_on_close:
+            if not i3.get_tree().find_fullscreen():
+                self.panel_action('show', restore=True)
 
     def send_msg(self, args) -> None:
         """ Defines pipe-based IPC for nsd module. With appropriate function
@@ -120,5 +113,6 @@ class fs(cfg):
         """
         {
             "reload": self.reload_config,
+            "fullscreen": self.fullscreen_hide,
         }[args[0]](*args[1:])
 
