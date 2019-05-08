@@ -5,39 +5,35 @@ I am simply use xset here. There is better solution possible,
 for example wayland-friendly.
 """
 
-import i3ipc
-from subprocess import run
-import os
-
+import subprocess
+from cfg import cfg
 from lib.singleton import Singleton
-from lib.locker import get_lock
-from lib.standalone_cfg import modconfig
 
 
-class fs(Singleton, modconfig):
+class fs(cfg):
+    __metaclass__ = Singleton
+
     def __init__(self, i3, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3ipc.Connection()
+        self.i3 = i3
         self.panel_should_be_restored = False
 
         # Initialize modcfg.
-        super().__init__(loop)
-
-        cfg = self.cfg
+        cfg.__init__(self, i3, convert_me=False)
 
         # default panel classes
-        self.panel_classes = cfg.get("panel_classes", [])
+        self.panel_classes = self.cfg.get("panel_classes", [])
 
         # fullscreened workspaces
-        self.ws_fullscreen = cfg.get("ws_fullscreen", [])
+        self.ws_fullscreen = self.cfg.get("ws_fullscreen", [])
 
         # for which windows we shoudn't show panel
-        self.classes_to_hide_panel = cfg.get(
+        self.classes_to_hide_panel = self.cfg.get(
             "classes_to_hide_panel", []
         )
 
-        self.panel_use_xdo = lambda act: run(['xdo', act, '-N', 'Polybar'])
-        self.panel_use_polybar = lambda act: run(['polybar-msg', 'cmd', act])
+        self.panel_use_xdo = lambda act: subprocess.Popen(['xdo', act, '-N', 'Polybar'])
+        self.panel_use_polybar = lambda act: subprocess.Popen(['polybar-msg', 'cmd', act])
 
         self.panel_use = self.panel_use_xdo
 
@@ -46,8 +42,7 @@ class fs(Singleton, modconfig):
         self.i3.on('workspace::focus', self.on_workspace_focus)
 
     def on_workspace_focus(self, i3, event):
-        i3_tree = i3.get_tree()
-        fullscreens = i3_tree.find_fullscreen()
+        fullscreens = i3.get_tree().find_fullscreen()
 
         for tgt_workspace in self.ws_fullscreen:
             for ws_win in event.current:
@@ -112,10 +107,18 @@ class fs(Singleton, modconfig):
         if not i3.get_tree().find_fullscreen():
             self.panel_action('show', restore=True)
 
+    def send_msg(self, args) -> None:
+        """ Defines pipe-based IPC for nsd module. With appropriate function
+            bindings.
 
-if __name__ == '__main__':
-    get_lock(os.path.basename(__file__))
-    locals()[os.path.basename(__file__)[:2]](
-        i3ipc.Connection()
-    ).i3.main()
+            This function defines bindings to the named_scratchpad methods that
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate FIFO.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
+        {
+            "reload": self.reload_config,
+        }[args[0]](*args[1:])
 
