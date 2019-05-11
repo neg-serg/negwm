@@ -60,6 +60,11 @@ class ns(cfg, Matcher):
         i3.on('window::close', self.unmark_tag)
 
     def initialize(self, i3) -> None:
+        """ Initialization function for named scratchpad
+
+            Args:
+                i3: i3ipc connection
+        """
         # winlist is used to reduce calling i3.get_tree() too many times.
         self.win = None
 
@@ -87,12 +92,31 @@ class ns(cfg, Matcher):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
 
-    def taglist(self):
-        tl = list(self.cfg.keys())
-        tl.remove('transients')
-        return tl
+    def taglist(self) -> List:
+        """ Returns list of tags without transients windows.
+        """
+        tag_list = list(self.cfg.keys())
+        tag_list.remove('transients')
+        return tag_list
 
-    def mark_uuid_tag(self, tag: str) -> str:
+    @staticmethod
+    def check_win_marked(win, tag: str) -> bool:
+        """ Delete property via [prop_str] to the target [tag].
+
+            This function used for add_prop/delete_prop methods to not make the
+            same actions twice. We use [tag] as prefix to the unique mark name.
+
+            Args:
+                win: this windows will be checked for mark on/off.
+                tag (str): tag, which used as prefix to the mark name.
+        """
+        for mrk in win.marks:
+            if tag + "-" in mrk:
+                return True
+        return False
+
+    @staticmethod
+    def mark_uuid_tag(tag: str) -> str:
         """ Generate unique mark for the given [tag]
 
             Args:
@@ -179,7 +203,7 @@ class ns(cfg, Matcher):
             Args:
                 tag (str): denotes the target tag.
         """
-        if not len(self.marked.get(tag, {})):
+        if not self.marked.get(tag, []):
             prog_str = self.extract_prog_str(self.conf(tag))
             if prog_str:
                 self.i3.command(f'exec {prog_str}')
@@ -200,7 +224,7 @@ class ns(cfg, Matcher):
         # regardless it focused or not
         focused = self.i3.get_tree().find_focused()
 
-        if len(self.marked.get(tag, {})):
+        if self.marked.get(tag, []):
             self.toggle_fs(focused)
             self.show_scratchpad(tag)
 
@@ -214,7 +238,6 @@ class ns(cfg, Matcher):
                                           another.
         """
         focused = self.i3.get_tree().find_focused()
-
         self.toggle_fs(focused)
 
         if focused.window_class in subtag_classes_set:
@@ -222,16 +245,10 @@ class ns(cfg, Matcher):
 
         self.show_scratchpad(tag)
 
-        visible_windows = self.find_visible_windows(focused)
-        for w in visible_windows:
-            for i in self.marked[tag]:
-                if w.window_class in subtag_classes_set and w.id == i.id:
-                    self.i3.command(f'[con_id={w.id}] focus')
-
         for _ in self.marked[tag]:
-            focused = self.i3.get_tree().find_focused()
             if focused.window_class not in subtag_classes_set:
                 self.next_win_on_curr_tag()
+                focused = self.i3.get_tree().find_focused()
 
     def run_subtag(self, tag: str, subtag: str) -> None:
         """ Run-or-focus the application for subtag
@@ -246,7 +263,7 @@ class ns(cfg, Matcher):
             subtag_classes_matched = [
                 w for w in class_list if w in subtag_classes_set
             ]
-            if not len(subtag_classes_matched):
+            if not subtag_classes_matched:
                 prog_str = self.extract_prog_str(self.conf(tag, subtag))
                 self.i3.command(f'exec {prog_str}')
                 self.focus_win_flag = [True, tag]
@@ -258,7 +275,8 @@ class ns(cfg, Matcher):
     def restore_fullscreens(self) -> None:
         """ Restore all fullscreen windows
         """
-        [win.command('fullscreen toggle') for win in self.fullscreen_list]
+        for win in self.fullscreen_list:
+            win.command('fullscreen toggle')
         self.fullscreen_list = []
 
     def visible_window_with_tag(self, tag: str) -> bool:
@@ -267,9 +285,9 @@ class ns(cfg, Matcher):
             Args:
                 tag (str): denotes the target tag.
         """
-        for w in self.find_visible_windows():
+        for win in self.find_visible_windows():
             for i in self.marked[tag]:
-                if w.id == i.id:
+                if win.id == i.id:
                     return True
         return False
 
@@ -286,11 +304,14 @@ class ns(cfg, Matcher):
                 if focused.id == i.id:
                     return tag
 
+        return ""
+
     def apply_to_current_tag(self, func: Callable) -> bool:
         """ Apply function [func] to the current tag
 
-            This is the generic function used in next_win_on_curr_tag, hide_current
-            and another to perform actions on the currently selected tag.
+            This is the generic function used in next_win_on_curr_tag,
+            hide_current and another to perform actions on the currently
+            selected tag.
 
             Args:
                 func(Callable) : function to apply.
@@ -305,10 +326,13 @@ class ns(cfg, Matcher):
         """ Show the next window for the currently selected tag.
 
             Args:
-                hide(bool) : hide another windows for the current tag or not.
+                hide (bool): hide window or not. Primarly used to cleanup
+                             "garbage" that can appear after i3 (re)start, etc.
+                             Because of I've think that is't better to make
+                             screen clear after (re)start.
         """
         def next_win(tag: str) -> None:
-            self.show_scratchpad(tag, Hide)
+            self.show_scratchpad(tag, hide_)
             for idx, win in enumerate(self.marked[tag]):
                 if focused_win.id != win.id:
                     self.marked[tag][idx].command(
@@ -319,9 +343,9 @@ class ns(cfg, Matcher):
                         self.marked[tag].pop(idx)
                     )
                     win.command('move scratchpad')
-            self.show_scratchpad(tag, Hide)
+            self.show_scratchpad(tag, hide_)
 
-        Hide = hide
+        hide_ = hide
         focused_win = self.i3.get_tree().find_focused()
         self.apply_to_current_tag(next_win)
 
@@ -358,7 +382,7 @@ class ns(cfg, Matcher):
                 tag(str) : denotes target tag.
         """
         focused = self.i3.get_tree().find_focused()
-        for idx, win in enumerate(self.marked[tag]):
+        for win in self.marked[tag]:
             if win.id == focused.id:
                 self.conf[tag]["geom"] = f"{focused.rect.width}x" + \
                     f"{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
@@ -372,7 +396,7 @@ class ns(cfg, Matcher):
                 tag(str) : denotes target tag.
         """
         focused = self.i3.get_tree().find_focused()
-        for idx, win in enumerate(self.marked[tag]):
+        for win in self.marked[tag]:
             if win.id == focused.id:
                 self.conf[tag]["geom"] = f"{focused.rect.width}x\
                     {focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
@@ -419,22 +443,22 @@ class ns(cfg, Matcher):
         """
         self.apply_to_current_tag(self.geom_save)
 
-    def add_prop(self, tag: str, prop_str: str) -> None:
+    def add_prop(self, tag_to_add: str, prop_str: str) -> None:
         """ Add property via [prop_str] to the target [tag].
 
             Args:
-                tag (str): denotes the target tag.
+                tag_to_add (str): denotes the target tag.
                 prop_str (str): string in i3-match format used to add/delete
                                 target window in/from scratchpad.
         """
-        if tag in self.cfg:
-            self.add_props(tag, prop_str)
+        if tag_to_add in self.cfg:
+            self.add_props(tag_to_add, prop_str)
 
-        for t in self.cfg:
-            if t != tag:
-                self.del_props(t, prop_str)
-                if self.marked[t] != []:
-                    for win in self.marked[t]:
+        for tag in self.cfg:
+            if tag != tag_to_add:
+                self.del_props(tag, prop_str)
+                if self.marked[tag] != []:
+                    for win in self.marked[tag]:
                         win.command('unmark')
 
         self.initialize(self.i3)
@@ -476,45 +500,6 @@ class ns(cfg, Matcher):
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,
         }[args[0]](*args[1:])
-
-    def check_win_marked(self, win, tag: str) -> bool:
-        """ Delete property via [prop_str] to the target [tag].
-
-            This function used for add_prop/delete_prop methods to not make the
-            same actions twice. We use [tag] as prefix to the unique mark name.
-
-            Args:
-                win: this windows will be checked for mark on/off.
-                tag (str): tag, which used as prefix to the mark name.
-        """
-        for mrk in win.marks:
-            if tag + "-" in mrk:
-                return True
-        return False
-
-    def mark(self, tag: str, hide: bool = True) -> None:
-        """ Add unique mark to the target [tag] with optional [hide].
-
-            Args:
-                tag (str): denotes the target tag.
-                hide (bool): hide window or not. Primarly used to cleanup
-                             "garbage" that can appear after i3 (re)start, etc.
-                             Because of I've think that is't better to make
-                             screen clear after (re)start.
-        """
-        leaves = self.i3.get_tree().leaves()
-        for win in leaves:
-            if self.match(win, tag):
-                if not self.check_win_marked(win, tag):
-                    # scratch move
-                    hide_cmd = ''
-                    if hide:
-                        hide_cmd = '[con_id=__focused__] scratchpad show'
-                    win_cmd = f"{self.mark_uuid_tag(tag)}, move scratchpad, \
-                        {self.nsgeom.get_geom(tag)}, {hide_cmd}"
-                    win.command(win_cmd)
-                    self.marked[tag].append(win)
-        self.win = win
 
     def mark_tag(self, i3, event) -> None:
         """ Add unique mark to the new window.
@@ -564,14 +549,15 @@ class ns(cfg, Matcher):
         for tag in self.taglist():
             for win in self.marked[tag]:
                 if win.id == win_ev.id:
-                    for tr in self.marked["transients"]:
-                        if tr.id == win.id:
-                            self.marked["transients"].remove(tr)
                     self.marked[tag].remove(win)
                     self.show_scratchpad(tag)
                     break
         if win_ev.fullscreen_mode:
             self.apply_to_current_tag(self.hide_scratchpad)
+
+        for transient in self.marked["transients"]:
+            if transient.id == win_ev.id:
+                self.marked["transients"].remove(transient)
 
     def mark_all_tags(self, hide: bool = True) -> None:
         """ Add marks to the all tags.
@@ -599,6 +585,7 @@ class ns(cfg, Matcher):
                         self.marked[tag].append(win)
                 if is_dialog_win:
                     win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
+                    win.command(win_cmd)
                     self.marked["transients"].append(win)
             self.win = win
 
