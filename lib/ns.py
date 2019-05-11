@@ -56,8 +56,8 @@ class ns(cfg, Matcher):
         # most of initialization doing here.
         self.initialize(i3)
 
-        self.i3.on('window::new', self.mark_tag)
-        self.i3.on('window::close', self.unmark_tag)
+        i3.on('window::new', self.mark_tag)
+        i3.on('window::close', self.unmark_tag)
 
     def initialize(self, i3) -> None:
         # winlist is used to reduce calling i3.get_tree() too many times.
@@ -100,7 +100,7 @@ class ns(cfg, Matcher):
         """
         return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
-    def focus(self, tag: str, hide: bool = True) -> None:
+    def show_scratchpad(self, tag: str, hide: bool = True) -> None:
         """ Show given [tag]
 
             Args:
@@ -113,17 +113,16 @@ class ns(cfg, Matcher):
         for win in self.marked[tag]:
             win.command('move window to workspace current')
             win_to_focus = win
-        if hide:
-            if tag != 'transients':
-                self.unfocus_all_but_current(tag, win_to_focus)
+        if hide and tag != 'transients':
+            self.hide_scratchpad_all_but_current(tag, win_to_focus)
         if win_to_focus is not None:
             win_to_focus.command('focus')
 
-    def unfocus(self, tag: str) -> None:
+    def hide_scratchpad(self, tag: str) -> None:
         """ Hide given [tag]
 
             Args:
-                tag: tag string
+                tag (str): scratchpad name to hide
         """
         if self.geom_auto_save:
             self.geom_save(tag)
@@ -131,7 +130,7 @@ class ns(cfg, Matcher):
             win.command('move scratchpad')
         self.restore_fullscreens()
 
-    def unfocus_all_but_current(self, tag: str, current_win) -> None:
+    def hide_scratchpad_all_but_current(self, tag: str, current_win) -> None:
         """ Hide all tagged windows except current.
 
             Args:
@@ -144,7 +143,7 @@ class ns(cfg, Matcher):
                 else:
                     win.command('move window to workspace current')
 
-    def find_current_workspace_wins(
+    def find_visible_windows(
             self, focused: Optional[bool] = None) -> List:
         """ Find windows on the current workspace, which is enough for
         scratchpads.
@@ -153,20 +152,16 @@ class ns(cfg, Matcher):
                 focused: denotes that [focused] window should be extracted from
                          i3.get_tree() or not
         """
-        wswins = []
         if focused is None:
             focused = self.i3.get_tree().find_focused()
-
-        for win in focused.workspace().leaves():
-            if win.window is not None:
-                wswins.append(win)
-
-        return wswins
+        return NegEWMH.find_visible_windows(
+            focused.workspace().leaves()
+        )
 
     def dialog_toggle(self) -> None:
         """ Show dialog windows
         """
-        self.focus('transients', hide=False)
+        self.show_scratchpad('transients', hide=False)
 
     def toggle_fs(self, win) -> None:
         """ Toggles fullscreen on/off and show/hide requested scratchpad after.
@@ -198,7 +193,7 @@ class ns(cfg, Matcher):
                     )
 
         if self.visible_window_with_tag(tag):
-            self.unfocus(tag)
+            self.hide_scratchpad(tag)
             return
 
         # We need to hide scratchpad it is visible,
@@ -207,7 +202,7 @@ class ns(cfg, Matcher):
 
         if len(self.marked.get(tag, {})):
             self.toggle_fs(focused)
-            self.focus(tag)
+            self.show_scratchpad(tag)
 
     def focus_sub_tag(self, tag: str, subtag_classes_set: Set) -> None:
         """ Cycle over the subtag windows.
@@ -225,9 +220,9 @@ class ns(cfg, Matcher):
         if focused.window_class in subtag_classes_set:
             return
 
-        self.focus(tag)
+        self.show_scratchpad(tag)
 
-        visible_windows = self.find_current_workspace_wins(focused)
+        visible_windows = self.find_visible_windows(focused)
         for w in visible_windows:
             for i in self.marked[tag]:
                 if w.window_class in subtag_classes_set and w.id == i.id:
@@ -236,7 +231,7 @@ class ns(cfg, Matcher):
         for _ in self.marked[tag]:
             focused = self.i3.get_tree().find_focused()
             if focused.window_class not in subtag_classes_set:
-                self.next_win()
+                self.next_win_on_curr_tag()
 
     def run_subtag(self, tag: str, subtag: str) -> None:
         """ Run-or-focus the application for subtag
@@ -272,8 +267,7 @@ class ns(cfg, Matcher):
             Args:
                 tag (str): denotes the target tag.
         """
-        visible_windows = self.find_current_workspace_wins()
-        for w in visible_windows:
+        for w in self.find_visible_windows():
             for i in self.marked[tag]:
                 if w.id == i.id:
                     return True
@@ -295,7 +289,7 @@ class ns(cfg, Matcher):
     def apply_to_current_tag(self, func: Callable) -> bool:
         """ Apply function [func] to the current tag
 
-            This is the generic function used in next_win, hide_current
+            This is the generic function used in next_win_on_curr_tag, hide_current
             and another to perform actions on the currently selected tag.
 
             Args:
@@ -307,14 +301,14 @@ class ns(cfg, Matcher):
             func(curr_tag)
         return curr_tag_exits
 
-    def next_win(self, hide: bool = True) -> None:
+    def next_win_on_curr_tag(self, hide: bool = True) -> None:
         """ Show the next window for the currently selected tag.
 
             Args:
                 hide(bool) : hide another windows for the current tag or not.
         """
-        def next_win_(tag: str) -> None:
-            self.focus(tag, Hide)
+        def next_win(tag: str) -> None:
+            self.show_scratchpad(tag, Hide)
             for idx, win in enumerate(self.marked[tag]):
                 if focused_win.id != win.id:
                     self.marked[tag][idx].command(
@@ -325,16 +319,16 @@ class ns(cfg, Matcher):
                         self.marked[tag].pop(idx)
                     )
                     win.command('move scratchpad')
-            self.focus(tag, Hide)
+            self.show_scratchpad(tag, Hide)
 
         Hide = hide
         focused_win = self.i3.get_tree().find_focused()
-        self.apply_to_current_tag(next_win_)
+        self.apply_to_current_tag(next_win)
 
     def hide_current(self) -> None:
         """ Hide the currently selected tag.
         """
-        self.apply_to_current_tag(self.unfocus)
+        self.apply_to_current_tag(self.hide_scratchpad)
 
     def geom_restore(self, tag: str) -> None:
         """ Show the next window for the current selected tag.
@@ -467,9 +461,9 @@ class ns(cfg, Matcher):
                 args (List): argument list for the selected function.
         """
         {
-            "show": self.focus,
-            "hide": self.unfocus_all_but_current,
-            "next": self.next_win,
+            "show": self.show_scratchpad,
+            "hide": self.hide_scratchpad_all_but_current,
+            "next": self.next_win_on_curr_tag,
             "toggle": self.toggle,
             "hide_current": self.hide_current,
             "geom_restore": self.geom_restore_current,
@@ -546,15 +540,16 @@ class ns(cfg, Matcher):
                 win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
                 win.command(win_cmd)
                 self.marked["transients"].append(win)
-        self.dialog_toggle()
 
         # Special hack to invalidate windows after subtag start
         if self.focus_win_flag[0]:
             special_tag = self.focus_win_flag[1]
             if special_tag in self.cfg:
-                self.focus(special_tag, hide=True)
+                self.show_scratchpad(special_tag, hide=True)
             self.focus_win_flag[0] = False
             self.focus_win_flag[1] = ""
+
+        self.dialog_toggle()
 
     def unmark_tag(self, i3, event) -> None:
         """ Delete unique mark from the closed window.
@@ -573,10 +568,10 @@ class ns(cfg, Matcher):
                         if tr.id == win.id:
                             self.marked["transients"].remove(tr)
                     self.marked[tag].remove(win)
-                    self.focus(tag)
+                    self.show_scratchpad(tag)
                     break
         if win_ev.fullscreen_mode:
-            self.apply_to_current_tag(self.unfocus)
+            self.apply_to_current_tag(self.hide_scratchpad)
 
     def mark_all_tags(self, hide: bool = True) -> None:
         """ Add marks to the all tags.
