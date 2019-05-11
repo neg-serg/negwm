@@ -107,7 +107,7 @@ class negi3mods(modconfig):
         """
         mod_startup_times = []
         print('Loading modules')
-        for mod in self.mods.keys():
+        for mod in self.mods:
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
@@ -157,7 +157,7 @@ class negi3mods(modconfig):
                     )
                     Misc.notify_msg(f'[Reloaded {changed_mod}]')
                 else:
-                    for mod in self.mods.keys():
+                    for mod in self.mods:
                         subprocess.run(
                             [self.i3_path + 'send', mod, 'reload']
                         )
@@ -194,7 +194,7 @@ class negi3mods(modconfig):
             ['i3', '-c', self.test_cfg_path, '-C'],
             stdout=subprocess.PIPE
         ).stdout.decode('utf-8')
-        if len(check_config):
+        if check_config:
             error_data = check_config.encode('utf-8')
             print(error_data)
             Misc.notify_msg(error_data, "Error >")
@@ -225,7 +225,7 @@ class negi3mods(modconfig):
     def run(self):
         """ Run negi3mods here.
         """
-        def start(func, name, args=None):
+        def start(func, args=None):
             """ Helper for pretty-printing of loading process.
 
                 Args:
@@ -238,8 +238,8 @@ class negi3mods(modconfig):
             elif args is not None:
                 func(*args)
 
-        start(self.load_modules, 'modules')
-        start(self.run_inotify_watchers, 'inotify watchers')
+        start(self.load_modules)
+        start(self.run_inotify_watchers)
 
         self.run_procs()
 
@@ -249,7 +249,7 @@ class negi3mods(modconfig):
             args=(self.loop, self.mods, self.port,),
             daemon=True
         )
-        start((mainloop).start, 'mainloop')
+        start((mainloop).start)
 
         print('... everything loaded ...')
         Misc.notify_msg(self.notification_text)
