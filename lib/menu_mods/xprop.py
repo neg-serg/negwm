@@ -5,18 +5,18 @@ class xprop():
     def __init__(self, menu):
         self.menu = menu
 
-    def xprop_menu(self) -> None:
+    def xprop(self) -> None:
         """ Menu to show X11 atom attributes for current window.
         """
         xprops = []
-        w = self.menu.i3.get_tree().find_focused()
-        xprop = subprocess.run(
-            ['xprop', '-id', str(w.window)] + self.menu.xprops_list,
+        target_win = self.menu.i3.get_tree().find_focused()
+        xprop_ret = subprocess.run(
+            ['xprop', '-id', str(target_win.window)] + self.menu.xprops_list,
             stdout=subprocess.PIPE
         ).stdout
-        if xprop is not None:
-            xprop = xprop.decode().split('\n')
-            for line in xprop:
+        if xprop_ret is not None:
+            xprop_ret = xprop_ret.decode().split('\n')
+            for line in xprop_ret:
                 if 'not found' not in line:
                     xprops.append(line)
 
