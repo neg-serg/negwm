@@ -70,7 +70,7 @@ class menu(cfg):
         {
             "cmd_menu": self.i3menu.cmd_menu,
 
-            "xprop": self.xprop.xprop_menu,
+            "xprop": self.xprop.xprop,
 
             "autoprop": self.props.autoprop,
             "show_props": self.props.show_props,
