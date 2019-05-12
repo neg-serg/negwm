@@ -342,26 +342,17 @@ class circle(cfg, Matcher):
             Args:
                 tag (str): target tag to sort.
         """
-        parent_lst = []
-        idx = 0
+        i = 0
 
         try:
-            for tag in self.cfg:
-                if self.tagged[tag]:
-                    for tagged_win in self.tagged[tag]:
-                        if tagged_win.parent not in parent_lst:
-                            for container_win in tagged_win.parent:
-                                if container_win in self.tagged[tag]:
-                                    oldidx = self.tagged[tag].index(
-                                        container_win
-                                    )
-                                    self.tagged[tag].insert(
-                                        idx, self.tagged[tag].pop(oldidx)
-                                    )
-                                    idx += 1
-                        parent_lst.append(tagged_win.parent)
-                else:
-                    break
+            for tagged_win in self.tagged[tag]:
+                for container_win in tagged_win.parent:
+                    if container_win in self.tagged[tag]:
+                        oldidx = self.tagged[tag].index(container_win)
+                        self.tagged[tag].insert(
+                            i, self.tagged[tag].pop(oldidx)
+                        )
+                        i += 1
         except TypeError:
             pass
 
