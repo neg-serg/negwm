@@ -45,12 +45,12 @@ class i3menu():
                 ret = [
                     t.replace("'", '') for t in
                     re.split('\\s*, \\s*', json.loads(
-                                out.decode('UTF-8')
-                            )[0]['error'])[1:]
+                        out.decode('UTF-8')
+                    )[0]['error'])[1:]
                 ]
             return ret
         except Exception:
-            return None
+            return [""]
 
     def cmd_menu(self) -> int:
         """ Menu for i3 commands with hackish autocompletion.
@@ -60,14 +60,14 @@ class i3menu():
 
         try:
             cmd_rofi = subprocess.run(
-                self.menu.rofi_args(),
+                self.menu.rofi_args({}),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(self.i3_cmds()), 'UTF-8')
             ).stdout
             if cmd_rofi is not None and cmd_rofi:
                 cmd = cmd_rofi.decode('UTF-8').strip()
-        except subprocess.CalledProcessError as e:
-            sys.exit(e.returncode)
+        except subprocess.CalledProcessError as call_e:
+            sys.exit(call_e.returncode)
 
         if not cmd:
             # nothing to do
@@ -77,7 +77,7 @@ class i3menu():
         args, prev_args = None, None
         rofi_params = {
             'prompt': f"{self.menu.wrap_str('i3cmd')}" +
-            " {self.menu.prompt} " + cmd,
+            f" {self.menu.prompt} " + cmd,
         }
         while not (ok or args == ['<end>'] or args == []):
             if debug:
@@ -88,9 +88,8 @@ class i3menu():
                 stderr=subprocess.PIPE,
             ).stdout
             if out is not None and out:
-                r = json.loads(out.decode('UTF-8').strip())
-                result = r[0].get('success', '')
-                err = r[0].get('error', '')
+                ret = json.loads(out.decode('UTF-8').strip())[0]
+                result, err = ret.get('success', ''), ret.get('error', '')
                 ok = True
                 if not result:
                     ok = False
@@ -100,14 +99,14 @@ class i3menu():
                         if args == prev_args:
                             return 0
                         cmd_rerun = subprocess.run(
-                            self.rofi_args(rofi_params),
+                            self.menu.rofi_args(rofi_params),
                             stdout=subprocess.PIPE,
                             input=bytes('\n'.join(args), 'UTF-8')
                         ).stdout
                         cmd += ' ' + cmd_rerun.decode('UTF-8').strip()
                         prev_args = args
-                    except subprocess.CalledProcessError as e:
-                        return e.returncode
+                    except subprocess.CalledProcessError as call_e:
+                        return call_e.returncode
 
         if not ok:
             subprocess.run(notify_msg)
