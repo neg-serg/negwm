@@ -33,9 +33,9 @@ class winact():
 
         if win_name is not None and win_name:
             win_name = win_name.decode('UTF-8').strip()
-            for w in leaves:
-                if w.name == win_name:
-                    w.command(cmd)
+            for win in leaves:
+                if win.name == win_name:
+                    win.command(cmd)
 
     def goto_win(self) -> None:
         """ Run rofi goto selection dialog
@@ -59,16 +59,16 @@ class winact():
                 ["[empty]"]
         rofi_params = {
             'cnum': len(wslist),
-            'width': int(self.screen_width * 0.66),
-            'prompt': f'{self.wrap_str("ws")} {self.prompt}',
+            'width': int(self.menu.screen_width * 0.66),
+            'prompt': f'{self.menu.wrap_str("ws")} {self.menu.prompt}',
         }
-        ws = subprocess.run(
+        workspace_name = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(wslist), 'UTF-8')
         ).stdout
 
-        return ws.decode('UTF-8').strip()
+        return workspace_name.decode('UTF-8').strip()
 
     @staticmethod
     def apply_to_ws(ws_func: Callable) -> None:
@@ -79,19 +79,19 @@ class winact():
     def goto_ws(self, use_wslist: bool = True) -> None:
         """ Go to workspace menu.
         """
-        ws = self.select_ws(use_wslist)
-        if ws is not None and ws:
+        workspace_name = self.select_ws(use_wslist)
+        if workspace_name is not None and workspace_name:
             self.apply_to_ws(
-                partial(self.menu.i3.command, f'workspace {ws}')
+                partial(self.menu.i3.command, f'workspace {workspace_name}')
             )
 
     def move_to_ws(self, use_wslist: bool = True) -> None:
         """ Move current window to the selected workspace
         """
-        ws = self.select_ws(use_wslist)
-        if ws is not None and ws:
+        workspace_name = self.select_ws(use_wslist)
+        if workspace_name is not None and workspace_name:
             self.apply_to_ws(
                 partial(self.menu.i3.command,
-                        f'[con_id=__focused__] move to workspace {ws}')
+                        f'[con_id=__focused__] move to workspace {workspace_name}')
             )
 
