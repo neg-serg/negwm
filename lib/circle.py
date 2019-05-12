@@ -49,8 +49,6 @@ class circle(cfg, Matcher):
         cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
 
-        self.sort_wins = False
-
         # most of initialization doing here.
         self.initialize(i3)
 
@@ -334,22 +332,6 @@ class circle(cfg, Matcher):
         for tag in self.cfg:
             self.tagged[tag] = []
             self.find_acceptable_windows(tag)
-
-    # def sort_by_parent(self, tag) -> None:
-    #     """
-    #         Sort windows by window_name.
-    #
-    #         Args:
-    #             tag (str): target tag to sort.
-    #     """
-    #     if not self.tagged[tag]:
-    #         return
-    #
-    #     try:
-    #         self.tagged[tag].sort(key=lambda win: win.name)
-    #     except:
-    #         import traceback
-    #         traceback.print_exc()
 
     def add_wins(self, _, event) -> None:
         """ Tag window if it is match defined rules.
