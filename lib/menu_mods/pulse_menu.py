@@ -17,15 +17,15 @@ class pulse_menu():
             "pulse_app_list": self.pulse.sink_input_list(),
         }
 
-        for t in self.pulse_data["pulse_app_list"]:
-            app_name = t.proplist["media.name"] + ' -- ' + \
-                t.proplist["application.name"]
+        for app in self.pulse_data["pulse_app_list"]:
+            app_name = app.proplist["media.name"] + ' -- ' + \
+                app.proplist["application.name"]
             self.pulse_data["app_list"] += [app_name]
-            self.pulse_data["app_props"][app_name] = t
+            self.pulse_data["app_props"][app_name] = app
 
-        if len(self.pulse_data["app_list"]) > 0:
+        if self.pulse_data["app_list"] > 0:
             app_ret = self.pulseaudio_select_app()
-            if len(self.pulse_data["sink_output_list"]) > 0:
+            if self.pulse_data["sink_output_list"] > 0:
                 self.pulseaudio_select_output(app_ret)
 
     def pulseaudio_input(self):
@@ -51,23 +51,23 @@ class pulse_menu():
         exclude_device_name = ""
         sel_app_props = \
             self.pulse_data["app_props"][app_ret].proplist
-        for t in self.pulse.stream_restore_list():
-            if t is not None:
-                if t.device is not None:
-                    if t.name == sel_app_props['module-stream-restore.id']:
-                        exclude_device_name = t.device
+        for stream in self.pulse.stream_restore_list():
+            if stream is not None:
+                if stream.device is not None:
+                    if stream.name == sel_app_props['module-stream-restore.id']:
+                        exclude_device_name = stream.device
 
-        for n, t in enumerate(self.pulse_data["pulse_sink_list"]):
-            if t.proplist.get('udev.id', ''):
-                if t.proplist['udev.id'].split('.')[0] == \
+        for _, sink in enumerate(self.pulse_data["pulse_sink_list"]):
+            if sink.proplist.get('udev.id', ''):
+                if sink.proplist['udev.id'].split('.')[0] == \
                         exclude_device_name.split('.')[1]:
                     continue
-            if t.proplist.get('device.profile.name', ''):
-                if t.proplist['device.profile.name'] == \
+            if sink.proplist.get('device.profile.name', ''):
+                if sink.proplist['device.profile.name'] == \
                         exclude_device_name.split('.')[-1]:
                     continue
             self.pulse_data["sink_output_list"] += \
-                [str(t.index) + ' -- ' + t.description]
+                [str(sink.index) + ' -- ' + sink.description]
 
         return app_ret
 
@@ -77,12 +77,15 @@ class pulse_menu():
             'lnum': len(self.pulse_data["sink_output_list"]),
             'auto_selection': '-auto-select',
             'width': int(self.menu.screen_width * 0.55),
-            'prompt': f'{self.wrap_str("pulse output")} {self.prompt}'
+            'prompt': f'{self.menu.wrap_str("pulse output")} {self.menu.prompt}'
         }
         rofi_output_sel = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(self.pulse_data["sink_output_list"]), 'UTF-8')
+            input=bytes(
+                '\n'.join(self.pulse_data["sink_output_list"]),
+                'UTF-8'
+            )
         ).stdout
 
         if rofi_output_sel is not None:
