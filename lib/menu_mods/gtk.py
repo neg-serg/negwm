@@ -10,7 +10,7 @@ class gtk():
 
     def change_gtk_theme(self):
         gtk_themes_list = []
-        for root, dirs, files in os.walk(os.path.expanduser("~/.themes")):
+        for root, _, files in os.walk(os.path.expanduser("~/.themes")):
             for file in files:
                 if file == 'gtk.css':
                     target_dir_path = os.path.join(root, os.pardir)
@@ -29,8 +29,8 @@ class gtk():
         rofi_params = {
             'cnum': 1,
             'lnum': len(gtk_themes_list),
-            'width': int(self.screen_width * 0.55),
-            'prompt': f'{self.wrap_str("gtk_theme")} {self.prompt}'
+            'width': int(self.menu.screen_width * 0.55),
+            'prompt': f'{self.menu.wrap_str("gtk_theme")} {self.menu.prompt}'
         }
 
         gtk_theme_sel = subprocess.run(
