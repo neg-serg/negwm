@@ -49,6 +49,8 @@ class circle(cfg, Matcher):
         cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
 
+        self.sort_wins = False
+
         # most of initialization doing here.
         self.initialize(i3)
 
@@ -147,8 +149,8 @@ class circle(cfg, Matcher):
         """ Exit from fullscreen.
         """
         now_focused = self.twin(tag, idx).id
-        for id in self.restore_fullscreen:
-            if id == now_focused:
+        for win_id in self.restore_fullscreen:
+            if win_id == now_focused:
                 self.need_handle_fullscreen = False
                 self.i3.command(
                     f'[con_id={now_focused}] fullscreen enable'
@@ -199,6 +201,8 @@ class circle(cfg, Matcher):
                 if win.window_class in subtag_win_classes:
                     return self.tagged[tag][subidx]
 
+        return self.tagged[tag][0]
+
     def need_priority_check(self, tag):
         return "priority" in self.conf(tag) and \
             self.current_win.window_class not in set(self.conf(tag, "class"))
@@ -208,10 +212,10 @@ class circle(cfg, Matcher):
                 win.window_class != self.conf(tag, "priority")
 
     def no_prioritized_wins(self, tag):
-        return not len([
+        return not [
             win for win in self.tagged[tag]
             if win.window_class == self.conf(tag, "priority")
-        ])
+        ]
 
     def go_next(self, tag: str) -> None:
         """ Circle over windows. Function "called" from the user-side.
@@ -219,8 +223,7 @@ class circle(cfg, Matcher):
         Args:
             tag (str): denotes target [tag]
         """
-        self.sort_by_parent(tag)
-        if len(self.tagged[tag]) == 0:
+        if not self.tagged[tag]:
             self.run_prog(tag)
         elif len(self.tagged[tag]) == 1:
             idx = 0
@@ -255,7 +258,7 @@ class circle(cfg, Matcher):
             tagged_win_classes = {
                 w.window_class for w in self.tagged.get(tag, {})
             }
-            if not (tagged_win_classes & subtagged_class_set):
+            if not tagged_win_classes & subtagged_class_set:
                 self.run_prog(tag, subtag)
             else:
                 idx = 0
@@ -280,7 +283,7 @@ class circle(cfg, Matcher):
             "reload": self.reload_config,
         }[args[0]](*args[1:])
 
-    def add_prop(self, tag: str, prop_str: str) -> None:
+    def add_prop(self, tag_to_add: str, prop_str: str) -> None:
         """ Add property via [prop_str] to the target [tag].
 
         Args:
@@ -288,11 +291,11 @@ class circle(cfg, Matcher):
             prop_str (str): string in i3-match format used to add/delete
                             target window in/from scratchpad.
         """
-        if tag in self.cfg:
-            self.add_props(tag, prop_str)
+        if tag_to_add in self.cfg:
+            self.add_props(tag_to_add, prop_str)
 
         for tag in self.cfg:
-            if tag != tag:
+            if tag != tag_to_add:
                 self.del_props(tag, prop_str)
 
         self.initialize(self.i3)
@@ -332,42 +335,27 @@ class circle(cfg, Matcher):
             self.tagged[tag] = []
             self.find_acceptable_windows(tag)
 
-    def sort_by_parent(self, tag: str) -> None:
-        """
-            Sort windows by some infernal logic: At first sort by parent
-            container order, than in any order.
+    # def sort_by_parent(self, tag) -> None:
+    #     """
+    #         Sort windows by window_name.
+    #
+    #         Args:
+    #             tag (str): target tag to sort.
+    #     """
+    #     if not self.tagged[tag]:
+    #         return
+    #
+    #     try:
+    #         self.tagged[tag].sort(key=lambda win: win.name)
+    #     except:
+    #         import traceback
+    #         traceback.print_exc()
 
-            Args:
-                tag (str): target tag to sort.
-        """
-        parent_lst = []
-        idx = 0
-
-        try:
-            for tag in self.cfg:
-                if self.tagged[tag]:
-                    for tagged_win in self.tagged[tag]:
-                        if tagged_win.parent not in parent_lst:
-                            for container_win in tagged_win.parent:
-                                if container_win in self.tagged[tag]:
-                                    oldidx = self.tagged[tag].index(
-                                        container_win
-                                    )
-                                    self.tagged[tag].insert(
-                                        idx, self.tagged[tag].pop(oldidx)
-                                    )
-                                    idx += 1
-                        parent_lst.append(tagged_win.parent)
-                else:
-                    break
-        except TypeError:
-            pass
-
-    def add_wins(self, i3, event) -> None:
+    def add_wins(self, _, event) -> None:
         """ Tag window if it is match defined rules.
 
             Args:
-                i3: i3ipc connection.
+                _: i3ipc connection.
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
@@ -377,11 +365,11 @@ class circle(cfg, Matcher):
                 self.tagged[tag].append(win)
         self.win = win
 
-    def del_wins(self, i3, event) -> None:
+    def del_wins(self, _, event) -> None:
         """ Delete tag from window if it's closed.
 
             Args:
-                i3: i3ipc connection.
+                _: i3ipc connection.
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
@@ -395,17 +383,17 @@ class circle(cfg, Matcher):
         self.subtag_info = {}
         self.win = win
 
-    def set_curr_win(self, i3, event) -> None:
+    def set_curr_win(self, _, event) -> None:
         """ Cache the current window.
 
             Args:
-                i3: i3ipc connection.
+                _: i3ipc connection.
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
         self.current_win = event.container
 
-    def handle_fullscreen(self, i3, event) -> None:
+    def handle_fullscreen(self, _, event) -> None:
         """ Performs actions over the restore_fullscreen list.
 
             This function memorize the current state of the fullscreen property
@@ -413,7 +401,7 @@ class circle(cfg, Matcher):
             set/unset fullscreen state of the window correctly.
 
             Args:
-                i3: i3ipc connection.
+                _: i3ipc connection.
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
