@@ -14,7 +14,7 @@ class xrandr():
         rofi_params = {
             'cnum': 8,
             'width': int(self.menu.screen_width * 0.55),
-            'prompt': f'{self.wrap_str("gtk_theme")} {self.prompt}',
+            'prompt': f'{self.menu.wrap_str("gtk_theme")} {self.menu.prompt}',
         }
         resolution_sel = subprocess.run(
             self.menu.rofi_args(rofi_params),
