@@ -304,7 +304,7 @@ class ns(cfg, Matcher):
                 if focused.id == i.id:
                     return tag
 
-        return ""
+        return None
 
     def apply_to_current_tag(self, func: Callable) -> bool:
         """ Apply function [func] to the current tag
