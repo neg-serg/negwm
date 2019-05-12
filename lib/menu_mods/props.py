@@ -49,6 +49,8 @@ class props():
         if rofi_tag is not None and rofi_tag:
             return rofi_tag.decode('UTF-8').strip()
 
+        return ""
+
     def autoprop(self) -> None:
         """ Start autoprop menu to move current module to smth.
         """
@@ -89,8 +91,8 @@ class props():
 
         if mod is not None and mod:
             return mod.decode('UTF-8').strip()
-        else:
-            return ""
+
+        return ""
 
     def show_props(self) -> None:
         """ Send notify-osd message about current properties.
@@ -109,9 +111,9 @@ class props():
             optional.
         """
         xprops = []
-        w = self.menu.i3.get_tree().find_focused()
+        win = self.menu.i3.get_tree().find_focused()
         xprop = subprocess.run(
-            ['xprop', '-id', str(w.window)] + self.menu.xprops_list,
+            ['xprop', '-id', str(win.window)] + self.menu.xprops_list,
             stdout=subprocess.PIPE
         ).stdout
         if xprop is not None:
@@ -124,9 +126,9 @@ class props():
                     founded_attr = re.search("[A-Z]+(.*) = ", xattr).group(0)
                     xattr = re.sub("[A-Z]+(.*) = ", '', xattr).split(', ')
                     if "WM_CLASS" in founded_attr:
-                        if xattr[0] is not None and len(xattr[0]):
+                        if xattr[0] is not None and xattr[0]:
                             ret.append(f'instance={xattr[0]}{self.delim}')
-                        if xattr[1] is not None and len(xattr[1]):
+                        if xattr[1] is not None and xattr[1]:
                             ret.append(f'class={xattr[1]}{self.delim}')
                     if with_role and "WM_WINDOW_ROLE" in founded_attr:
                         ret.append(f'window_role={xattr[0]}{self.delim}')
