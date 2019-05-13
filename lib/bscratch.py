@@ -16,7 +16,7 @@ window when needed.
 import uuid
 from typing import List, Callable, Set, Optional
 
-import geom as geom
+import geom
 from singleton import Singleton
 from cfg import cfg
 from matcher import Matcher
@@ -42,8 +42,6 @@ class bscratch(cfg, Matcher):
     def __init__(self, i3, loop=None) -> None:
         """ Init function
 
-        Main part is in self.initialize, which performs initialization itself.
-
         Args:
             i3: i3ipc connection
             loop: asyncio loop. It's need to be given as parameter because of
@@ -53,18 +51,8 @@ class bscratch(cfg, Matcher):
         cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
 
-        # most of initialization doing here.
-        self.initialize(i3)
+        # Initialization
 
-        i3.on('window::new', self.mark_tag)
-        i3.on('window::close', self.unmark_tag)
-
-    def initialize(self, i3) -> None:
-        """ Initialization function for named scratchpad
-
-            Args:
-                i3: i3ipc connection
-        """
         # winlist is used to reduce calling i3.get_tree() too many times.
         self.win = None
 
@@ -91,6 +79,9 @@ class bscratch(cfg, Matcher):
 
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
+
+        i3.on('window::new', self.mark_tag)
+        i3.on('window::close', self.unmark_tag)
 
     def taglist(self) -> List:
         """ Returns list of tags without transients windows.
@@ -501,11 +492,11 @@ class bscratch(cfg, Matcher):
             "dialog": self.dialog_toggle,
         }[args[0]](*args[1:])
 
-    def mark_tag(self, i3, event) -> None:
+    def mark_tag(self, _, event) -> None:
         """ Add unique mark to the new window.
 
             Args:
-                i3: i3ipc connection.
+                _: i3ipc connection.
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
@@ -536,11 +527,11 @@ class bscratch(cfg, Matcher):
 
         self.dialog_toggle()
 
-    def unmark_tag(self, i3, event) -> None:
+    def unmark_tag(self, _, event) -> None:
         """ Delete unique mark from the closed window.
 
             Args:
-                i3: i3ipc connection.
+                _: i3ipc connection.
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
