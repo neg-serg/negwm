@@ -9,8 +9,9 @@ import re
 import os
 import sys
 from typing import Set, Callable
-import toml
 import traceback
+
+import toml
 from misc import Misc
 
 
@@ -58,7 +59,8 @@ class cfg(object):
                 ret = ret.get(part)
         return ret
 
-    def extract_prog_str(self, conf_part: str,
+    @staticmethod
+    def extract_prog_str(conf_part: str,
                          prog_field: str = "prog", exe_file: bool = True):
         """ Helper to extract prog(by default) string from config
 
@@ -67,7 +69,7 @@ class cfg(object):
             prog_field (str): string name to extract.
         """
         if conf_part is None:
-            return
+            return ""
 
         if exe_file:
             return re.sub(
@@ -75,27 +77,36 @@ class cfg(object):
                 os.path.realpath(os.path.expandvars("$HOME")),
                 conf_part.get(prog_field, "")
             )
-        else:
-            return conf_part.get(prog_field, "")
 
-    def cfg_regex_props(self) -> Set[str]:
+        return conf_part.get(prog_field, "")
+
+    @staticmethod
+    def cfg_regex_props() -> Set[str]:
+        """ Props with regexes """
         # regex cfg properties
         return {"class_r", "instance_r", "name_r", "role_r"}
 
     def win_all_props(self):
+        """ All window props """
         # basic + regex props
         return self.cfg_props() | self.cfg_regex_props()
 
-    def possible_props(self) -> Set[str]:
+    @staticmethod
+    def possible_props() -> Set[str]:
+        """ Possible window props """
         # windows properties used for props add / del
         return {'class', 'instance', 'window_role', 'title'}
 
-    def cfg_props(self) -> Set[str]:
+    @staticmethod
+    def cfg_props() -> Set[str]:
+        """ basic window props """
         # basic cfg properties, without regexes
         return {'class', 'instance', 'name', 'role'}
 
-    def subtag_attr_list(self) -> Set[str]:
-        return self.possible_props()
+    @staticmethod
+    def subtag_attr_list() -> Set[str]:
+        """ Helper to create subtag attr list. """
+        return cfg.possible_props()
 
     def reload_config(self, *arg) -> None:
         """ Reload config for current selected module.
@@ -124,16 +135,17 @@ class cfg(object):
         """ Convert set attributes to list, because of set cannot be saved
             / restored to / from TOML-files corretly.
         """
-        self.dict_apply(lambda key: list(key), self.deconvert_subtag)
+        self.dict_apply(lambda key: list(key), cfg.deconvert_subtag)
 
-    def convert_subtag(self, subtag: str) -> None:
+    def convert_subtag(subtag: str) -> None:
         """ Convert subtag attributes to set for the better performance.
 
             Args:
                 subtag (str): target subtag.
         """
-        self.subtag_apply(subtag, lambda key: set(key))
+        cfg.subtag_apply(subtag, lambda key: set(key))
 
+    @staticmethod
     def deconvert_subtag(self, subtag: str) -> None:
         """ Convert set attributes to list, because of set cannot be saved
         / restored to / from TOML-files corretly.
@@ -141,7 +153,7 @@ class cfg(object):
             Args:
                 subtag (str): target subtag.
         """
-        self.subtag_apply(subtag, lambda key: list(key))
+        cfg.subtag_apply(subtag, lambda key: list(key))
 
     def dict_apply(self, field_conv: Callable, subtag_conv: Callable) -> None:
         """ Convert list attributes to set for the better performance.
@@ -159,7 +171,8 @@ class cfg(object):
                 elif key == "subtag":
                     subtag_conv(string[sys.intern(key)])
 
-    def subtag_apply(self, subtag: str, field_conv: Callable) -> None:
+    @staticmethod
+    def subtag_apply(subtag: str, field_conv: Callable) -> None:
         """ Convert subtag attributes to set for the better performance.
 
             Args:
@@ -168,26 +181,26 @@ class cfg(object):
         """
         for val in subtag.values():
             for key in val:
-                if key in self.subtag_attr_list():
+                if key in cfg.subtag_attr_list():
                     val[sys.intern(key)] = field_conv(val[sys.intern(key)])
 
     def load_config(self) -> None:
         """ Reload config itself and convert lists in it to sets for the better
             performance.
         """
-        with open(self.i3_cfg_mod_path, "r") as fp:
-            self.cfg = toml.load(fp)
+        with open(self.i3_cfg_mod_path, "r") as negi3modcfg:
+            self.cfg = toml.load(negi3modcfg)
         if self.convert_me:
             self.dict_converse()
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging.
         """
-        with open(self.i3_cfg_mod_path, "r+") as fp:
+        with open(self.i3_cfg_mod_path, "r+") as negi3modcfg:
             if self.convert_me:
                 self.dict_deconverse()
-            toml.dump(self.cfg, fp)
-            self.cfg = toml.load(fp)
+            toml.dump(self.cfg, negi3modcfg)
+            self.cfg = toml.load(negi3modcfg)
         if self.convert_me:
             self.dict_converse()
 
@@ -198,14 +211,14 @@ class cfg(object):
         """
         self.win_attrs = {}
         prop_str = prop_str[1:-1]
-        for t in prop_str.split('@'):
-            if len(t):
-                toks = t.split('=')
+        for token in prop_str.split('@'):
+            if token:
+                toks = token.split('=')
                 attr = toks[0]
                 value = toks[1]
                 if value[0] == value[-1] and value[0] in {'"', "'"}:
                     value = value[1:-1]
-                if attr in self.subtag_attr_list():
+                if attr in cfg.subtag_attr_list():
                     self.win_attrs[self.conv_props.get(attr, {})] = value
 
     def add_props(self, tag: str, prop_str: str) -> None:
@@ -217,55 +230,57 @@ class cfg(object):
         self.property_to_winattrib(prop_str)
         ftors = self.cfg_props() & set(self.win_attrs.keys())
         if tag in self.cfg:
-            for t in ftors:
-                if self.win_attrs[t] not in self.cfg.get(tag, {}).get(t, {}):
-                    if t in self.cfg[tag]:
-                        if type(self.cfg[tag][t]) == str:
-                            self.cfg[tag][t] = {self.win_attrs[t]}
-                        elif type(self.cfg[tag][t]) == set:
-                            self.cfg[tag][t].add(self.win_attrs[t])
+            for tok in ftors:
+                if self.win_attrs[tok] not in self.cfg.get(tag, {}).get(tok, {}):
+                    if tok in self.cfg[tag]:
+                        if isinstance(self.cfg[tag][tok], str):
+                            self.cfg[tag][tok] = {self.win_attrs[tok]}
+                        elif isinstance(self.cfg[tag][tok], set):
+                            self.cfg[tag][tok].add(self.win_attrs[tok])
                     else:
-                        self.cfg[tag].update({t: self.win_attrs[t]})
+                        self.cfg[tag].update({tok: self.win_attrs[tok]})
                     # special fix for the case where attr
                     # is just attr not {attr}
-                    if type(self.conf(tag, t)) == str:
-                        self.cfg[tag][t] = {self.win_attrs[t]}
+                    if isinstance(self.conf(tag, tok), str):
+                        self.cfg[tag][tok] = {self.win_attrs[tok]}
 
-    def del_direct_props(self, tag: str) -> None:
+    def del_direct_props(self, target_tag: str) -> None:
         """ Remove basic(non-regex) properties of window from target tag.
             Args:
                 tag (str): target tag
         """
         # Delete 'direct' props:
-        for t in self.cfg[tag].copy():
-            if t in self.cfg_props():
-                if type(self.conf(tag, t)) is str:
-                    del self.cfg[tag][t]
-                elif type(self.conf(tag, t)) is set:
-                    for tok in self.cfg[tag][t].copy():
-                        if self.win_attrs[t] == tok:
-                            self.cfg[tag][t].remove(tok)
+        for prop in self.cfg[target_tag].copy():
+            if prop in self.cfg_props():
+                if isinstance(self.conf(target_tag, prop), str):
+                    del self.cfg[target_tag][prop]
+                elif isinstance(self.conf(target_tag, prop), set):
+                    for tok in self.cfg[target_tag][prop].copy():
+                        if self.win_attrs[prop] == tok:
+                            self.cfg[target_tag][prop].remove(tok)
 
-    def del_regex_props(self, tag: str) -> None:
+    def del_regex_props(self, target_tag: str) -> None:
         """ Remove regex properties of window from target tag.
             Args:
-                tag (str): target tag
+                target_tag (str): target tag
         """
         # Delete appropriate regexes
-        for t in self.cfg[tag].copy():
-            if t in self.cfg_regex_props():
-                for reg in self.cfg[tag][t].copy():
-                    if t == "class_r":
+        for prop in self.cfg[target_tag].copy():
+            if prop in self.cfg_regex_props():
+                for reg in self.cfg[target_tag][prop].copy():
+                    if prop == "class_r":
                         lst_by_reg = self.i3.get_tree().find_classed(reg)
-                    if t == "instance_r":
+                    if prop == "instance_r":
                         lst_by_reg = self.i3.get_tree().find_instanced(reg)
-                    if t == "role_r":
+                    if prop == "role_r":
                         lst_by_reg = self.i3.get_tree().find_by_role(reg)
+                    winattr = self.win_attrs[prop[:-2]]
                     for l in lst_by_reg:
-                        if (t == "class_r" and self.win_attrs[t[:-2]] == l.window_class) \
-                            or (t == "instance_r" and self.win_attrs[t[:-2]] == l.window_instance) \
-                                or (t == "role_r" and self.win_attrs[t[:-2]] == l.window_role):
-                                    self.cfg[tag][t].remove(reg)
+                        class_r_check = (prop == "class_r" and winattr == l.window_class)
+                        instance_r_check = (prop == "instance_r" and winattr == l.window_instance)
+                        role_r_check = (prop == "role_r" and winattr == l.window_role)
+                        if class_r_check or instance_r_check or role_r_check:
+                            self.cfg[target_tag][prop].remove(target_tag)
 
     def del_props(self, tag: str, prop_str: str) -> None:
         """ Remove window from some tag.
@@ -278,7 +293,7 @@ class cfg(object):
         self.del_regex_props(tag)
 
         # Cleanup
-        for t in self.cfg_regex_props() | self.cfg_props():
-            if t in self.conf(tag) and self.conf(tag, t) == set():
-                del self.cfg[tag][t]
+        for prop in self.cfg_regex_props() | self.cfg_props():
+            if prop in self.conf(tag) and self.conf(tag, prop) == set():
+                del self.cfg[tag][prop]
 
