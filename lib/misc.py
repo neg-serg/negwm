@@ -1,4 +1,7 @@
 """ Various helper functions
+
+    Class for this is created for the more well defined namespacing and more
+    simple import.
 """
 import os
 import subprocess
