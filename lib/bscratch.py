@@ -91,22 +91,6 @@ class bscratch(cfg, Matcher):
         return tag_list
 
     @staticmethod
-    def check_win_marked(win, tag: str) -> bool:
-        """ Delete property via [prop_str] to the target [tag].
-
-            This function used for add_prop/delete_prop methods to not make the
-            same actions twice. We use [tag] as prefix to the unique mark name.
-
-            Args:
-                win: this windows will be checked for mark on/off.
-                tag (str): tag, which used as prefix to the mark name.
-        """
-        for mrk in win.marks:
-            if tag + "-" in mrk:
-                return True
-        return False
-
-    @staticmethod
     def mark_uuid_tag(tag: str) -> str:
         """ Generate unique mark for the given [tag]
 
@@ -356,7 +340,7 @@ class bscratch(cfg, Matcher):
             del self.marked[tag][idx]
 
             # then make a new mark and move scratchpad
-            win_cmd = f"{self.mark_uuid_tag(tag)}, \
+            win_cmd = f"{bscratch.mark_uuid_tag(tag)}, \
                 move scratchpad, {self.nsgeom.get_geom(tag)}"
             win.command(win_cmd)
             self.marked[tag].append(win)
@@ -508,12 +492,12 @@ class bscratch(cfg, Matcher):
             if not is_dialog_win and tag != "transients":
                 if self.match(win, tag):
                     # scratch_move
-                    win_cmd = f"{self.mark_uuid_tag(tag)}, move scratchpad, \
+                    win_cmd = f"{bscratch.mark_uuid_tag(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}"
                     win.command(win_cmd)
                     self.marked[tag].append(win)
             elif is_dialog_win and tag == "transients":
-                win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
+                win_cmd = f"{bscratch.mark_uuid_tag('transients')}, move scratchpad"
                 win.command(win_cmd)
                 self.marked["transients"].append(win)
 
@@ -569,13 +553,13 @@ class bscratch(cfg, Matcher):
                     if self.match(win, tag):
                         if hide:
                             hide_cmd = '[con_id=__focused__] scratchpad show'
-                        win_cmd = f"{self.mark_uuid_tag(tag)}, \
+                        win_cmd = f"{bscratch.mark_uuid_tag(tag)}, \
                             move scratchpad, \
                             {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
                 if is_dialog_win:
-                    win_cmd = f"{self.mark_uuid_tag('transients')}, move scratchpad"
+                    win_cmd = f"{bscratch.mark_uuid_tag('transients')}, move scratchpad"
                     win.command(win_cmd)
                     self.marked["transients"].append(win)
             self.win = win
