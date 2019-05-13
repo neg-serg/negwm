@@ -5,10 +5,10 @@ import pulsectl
 class pulse_menu():
     def __init__(self, menu):
         self.menu = menu
+        self.pulse = pulsectl.Pulse('neg-pulse-selector')
+        self.pulse_data = {}
 
     def pulseaudio_output(self):
-        self.pulse = pulsectl.Pulse('neg-pulse-selector')
-
         self.pulse_data = {
             "app_list": [],
             "sink_output_list": [],
@@ -23,9 +23,9 @@ class pulse_menu():
             self.pulse_data["app_list"] += [app_name]
             self.pulse_data["app_props"][app_name] = app
 
-        if self.pulse_data["app_list"] > 0:
+        if self.pulse_data["app_list"]:
             app_ret = self.pulseaudio_select_app()
-            if self.pulse_data["sink_output_list"] > 0:
+            if self.pulse_data["sink_output_list"]:
                 self.pulseaudio_select_output(app_ret)
 
     def pulseaudio_input(self):
