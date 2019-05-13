@@ -77,15 +77,7 @@ class circle(cfg, Matcher):
         # Should the special fullscreen-related actions to be performed or not.
         self.need_handle_fullscreen = True
 
-        # most of initialization doing here.
-        self.initialize(i3)
-
-        self.i3.on('window::new', self.add_wins)
-        self.i3.on('window::close', self.del_wins)
-        self.i3.on("window::focus", self.set_curr_win)
-        self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
-
-    def initialize(self, i3) -> None:
+        # Initialize
         i3tree = self.i3.get_tree()
 
         # prepare for prefullscreen
@@ -102,6 +94,11 @@ class circle(cfg, Matcher):
 
         # tag all windows after start
         self.tag_windows(invalidate_winlist=False)
+
+        self.i3.on('window::new', self.add_wins)
+        self.i3.on('window::close', self.del_wins)
+        self.i3.on("window::focus", self.set_curr_win)
+        self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
 
     def run_prog(self, tag: str, subtag: str = '') -> None:
         """ Run the appropriate application for the current tag/subtag.
@@ -173,6 +170,7 @@ class circle(cfg, Matcher):
                                         because of i3 is not perfect in it.
                                         For example you need it for different
                                         workspaces.
+            subtagged (bool): this flag denotes to subtag using.
         """
         if fullscreen_handler:
             self.prefullscreen(tag)
@@ -196,23 +194,41 @@ class circle(cfg, Matcher):
         """
         if not with_subtag:
             return self.tagged[tag][idx]
-        else:
-            subtag_win_classes = self.subtag_info.get("class", {})
-            for subidx, win in enumerate(self.tagged[tag]):
-                if win.window_class in subtag_win_classes:
-                    return self.tagged[tag][subidx]
+
+        subtag_win_classes = self.subtag_info.get("class", {})
+        for subidx, win in enumerate(self.tagged[tag]):
+            if win.window_class in subtag_win_classes:
+                return self.tagged[tag][subidx]
 
         return self.tagged[tag][0]
 
     def need_priority_check(self, tag):
+        """ Checks that priority string is defined, then thecks that currrent
+        window not in class set.
+
+            Args:
+                tag(str): target tag name
+
+        """
         return "priority" in self.conf(tag) and \
             self.current_win.window_class not in set(self.conf(tag, "class"))
 
     def not_priority_win_class(self, tag, win):
+        """ Window class is not priority class for the given tag
+
+            Args:
+                tag(str): target tag name
+                win: window
+        """
         return win.window_class in self.conf(tag, "class") and \
-                win.window_class != self.conf(tag, "priority")
+            win.window_class != self.conf(tag, "priority")
 
     def no_prioritized_wins(self, tag):
+        """ Checks all tagged windows for the priority win.
+
+            Args:
+                tag(str): target tag name
+        """
         return not [
             win for win in self.tagged[tag]
             if win.window_class == self.conf(tag, "priority")
