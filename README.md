@@ -17,7 +17,7 @@ ppi3+i3 and modules on python. Also handles TOML-configs updating.
 
 *ns* : named ion3-like scratchpads with a whistles and fakes.
 
-*flast* : alt-tab to the previous window, not the workspace.
+*win_history* : alt-tab to the previous window, not the workspace.
 
 *circle* : better run-or-raise, with jump in a circle, subtags, priorities
 and more.

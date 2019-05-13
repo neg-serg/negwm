@@ -14,7 +14,7 @@ from cfg import cfg
 from negewmh import NegEWMH
 
 
-class flast(cfg):
+class win_history(cfg):
     """ Advanced alt-tab class.
 
     Metaclass:

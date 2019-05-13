@@ -19,7 +19,7 @@ set $i3 ${XDG_CONFIG_HOME}/i3
 
 set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send circle
 set $ns exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send ns
-set $flast exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send flast
+set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send win_history
 set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
 set $wm3 exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send wm3
 set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send vol
@@ -243,10 +243,10 @@ bindsym $m4+$S+o $circle next obs
 # ░█░█░█▄█░▀▀█
 # ░█▄█░█░█░░▀▄
 # ░▀░▀░▀░▀░▀▀░
-bindsym $m4+grave $flast focus_next_visible
-bindsym $m4+$S+grave $flast focus_prev_visible
-# bindsym $m4+Tab $flast focus_next
-# bindsym $m4+$S+Tab $flast focus_prev
+bindsym $m4+grave $win_history focus_next_visible
+bindsym $m4+$S+grave $win_history focus_prev_visible
+# bindsym $m4+Tab $win_history focus_next
+# bindsym $m4+$S+Tab $win_history focus_prev
 
 bindsym $m4+q fullscreen toggle
 
@@ -261,8 +261,8 @@ bindsym $m4+$c+g $menu movews
 bindsym $m4+$c+grave $menu cmd_menu
 bindsym $m4+$S+s $menu autoprop
 #-------------------------------------------------------
-bindsym $alt+Tab $flast switch
-bindsym $m4+slash $flast switch
+bindsym $alt+Tab $win_history switch
+bindsym $m4+slash $win_history switch
 #-------------------------------------------------------
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀█░█▀█░█▀▀░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▀░█▀█░▀▀█░▀▀█
