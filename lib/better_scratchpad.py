@@ -16,7 +16,7 @@ window when needed.
 import uuid
 from typing import List, Callable, Set, Optional
 
-import lib.geom as geom
+import geom as geom
 from singleton import Singleton
 from cfg import cfg
 from matcher import Matcher
