@@ -49,15 +49,6 @@ class circle(cfg, Matcher):
         cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
 
-        # most of initialization doing here.
-        self.initialize(i3)
-
-        self.i3.on('window::new', self.add_wins)
-        self.i3.on('window::close', self.del_wins)
-        self.i3.on("window::focus", self.set_curr_win)
-        self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
-
-    def initialize(self, i3) -> None:
         # i3ipc connection, bypassed by negi3mods runner.
         self.i3 = i3
 
@@ -77,8 +68,7 @@ class circle(cfg, Matcher):
         # how many attempts taken to find window with priority
         self.repeats = 0
 
-        # winlist is used to reduce calling i3.get_tree() too many times.
-        self.winlist = self.i3.get_tree().leaves()
+        # win cache for the fast matching
         self.win = None
 
         # used for subtag info caching
@@ -87,18 +77,31 @@ class circle(cfg, Matcher):
         # Should the special fullscreen-related actions to be performed or not.
         self.need_handle_fullscreen = True
 
+        # most of initialization doing here.
+        self.initialize(i3)
+
+        self.i3.on('window::new', self.add_wins)
+        self.i3.on('window::close', self.del_wins)
+        self.i3.on("window::focus", self.set_curr_win)
+        self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
+
+    def initialize(self, i3) -> None:
+        i3tree = self.i3.get_tree()
+
+        # prepare for prefullscreen
+        self.fullscreened = i3tree.find_fullscreen()
+
+        # store the current window here to cache get_tree().find_focused value.
+        self.current_win = i3tree.find_focused()
+
+        # winlist is used to reduce calling i3.get_tree() too many times.
+        self.winlist = i3tree.leaves()
         for tag in self.cfg:
             self.tagged[tag] = []
             self.current_position[tag] = 0
 
         # tag all windows after start
-        self.tag_windows()
-
-        # prepare for prefullscreen
-        self.fullscreened = self.i3.get_tree().find_fullscreen()
-
-        # store the current window here to cache get_tree().find_focused value.
-        self.current_win = self.i3.get_tree().find_focused()
+        self.tag_windows(invalidate_winlist=False)
 
     def run_prog(self, tag: str, subtag: str = '') -> None:
         """ Run the appropriate application for the current tag/subtag.
@@ -320,14 +323,15 @@ class circle(cfg, Matcher):
             if self.match(win, tag):
                 self.tagged.get(tag, {}).append(win)
 
-    def tag_windows(self) -> None:
+    def tag_windows(self, invalidate_winlist=True) -> None:
         """ Find acceptable windows for the all tags and add it to the
             tagged[tag] list.
 
             Args:
                 tag (str): denotes the target tag.
         """
-        self.winlist = self.i3.get_tree().leaves()
+        if invalidate_winlist:
+            self.winlist = self.i3.get_tree().leaves()
         self.tagged = {}
 
         for tag in self.cfg:
