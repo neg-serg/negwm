@@ -35,19 +35,16 @@ sending 0, 9 keys to the mpv window if not.
 *executor*: module to create various terminal windows with custom config
 and/or tmux session handling. Supports a lot of terminal emulators.
 
+*fs*: fullscreen panel hacking. Works unstable, so disable it for now.
+
 ## procs to run by negi3mods as another process
 
-There are processes, not threads, separated from the main negi3mods event
-loop to reach better performance or another goals.
+~~There are processes, not threads, separated from the main negi3mods event
+loop to reach better performance or another goals.~~
 
-*info* : module to extract info from running i3-mods via `AF_INET6` socket.
-For example it used to send information to the *polybar* as current workspace
-or i3-binding mode because of native polybar i3-interaction tends to race
-condition when you try to switch workspaces backward-forward to quickly.
-Can be used as helper for another modules, like `polybar_ws`.
-
-*fs* : module to disable dpms, when fullscreen mode are toggled on. Also it
-handles polybar show / hide to mimic ion3 default fullscreen behaviour.
+For now there are no any processes started by negi3mods. I've considered that
+this scheme of loading can cause various race condictions and another
+stability issues.
 
 ## procs to run from polybar
 
@@ -59,11 +56,15 @@ handles polybar show / hide to mimic ion3 default fullscreen behaviour.
 
 ## Modern python3 with modules:
 
-+ i3ipc -- for i3 ipc interaction.
++ i3ipc -- for i3 ipc interaction, installed from master
 + toml -- to save/load human-readable configuration files.
 + inotify -- to reload configs in realtime without reloading.
 + aionotify -- async inotify bindings
 + aiofiles -- async file input-output
++ Xlib -- xlib bindings to work with `NET_WM_` parameters, etc.
++ ewmh -- used to create EWMH helper.
++ yamlloader -- module for the more fast yaml file loading.
++ pulsectl -- used for menu to change pulseaudio input / output sinks
 
 
 To install it you may use pip:
@@ -75,13 +76,13 @@ sudo pip install -r requirements.txt --upgrade
 or
 
 ```
-sudo pip install --upgrade --force-reinstall inotify i3ipc toml aionotify aiofiles
+sudo pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master inotify toml aionotify aiofiles Xlib ewmh yamlloader pulsectl
 ```
 
 In case of pypy it may be something like
 
 ```
-sudo pypy3 -m pip install --upgrade --force-reinstall inotify i3ipc toml aionotify aiofiles
+sudo pypy3 -m pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master inotify toml aionotify aiofiles Xlib ewmh yamlloader pulsectl
 ```
 
 or
@@ -131,7 +132,7 @@ Also you can try
 kernprof -l -v ./negi3mods.py
 ```
 
-for the more detail function/line-based profiling. As far as I know Pypy3 is
+for the more detail function/line-based profiling. As far as I know PyPy3 is
 not supported yet.
 
 
