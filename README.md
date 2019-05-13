@@ -15,7 +15,7 @@ ppi3+i3 and modules on python. Also handles TOML-configs updating.
 
 ## modules
 
-*ns* : named ion3-like scratchpads with a whistles and fakes.
+*better_scratchpad* : named ion3-like scratchpads with a whistles and fakes.
 
 *win_history* : alt-tab to the previous window, not the workspace.
 
