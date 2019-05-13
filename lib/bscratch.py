@@ -24,7 +24,7 @@ from misc import Misc
 from negewmh import NegEWMH
 
 
-class better_scratchpad(cfg, Matcher):
+class bscratch(cfg, Matcher):
     """ Named scratchpad class
 
     Parents:

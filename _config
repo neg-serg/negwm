@@ -18,7 +18,7 @@ set $S   Shift
 set $i3 ${XDG_CONFIG_HOME}/i3
 
 set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send circle
-set $better_scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send better_scratchpad
+set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send bscratch
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send win_history
 set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
 set $wm3 exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send wm3
@@ -219,13 +219,13 @@ bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
 # ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
 # ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
 # ░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀░░░░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░
-bindsym $m4+{f,e,d,a} $better_scratchpad toggle {ncmpcpp,im,teardrop,youtube}
-bindsym $m4+$S+{p,e} $better_scratchpad toggle {volcontrol,weechat}
-bindsym $m4+v $better_scratchpad toggle discord
+bindsym $m4+{f,e,d,a} $bscratch toggle {ncmpcpp,im,teardrop,youtube}
+bindsym $m4+$S+{p,e} $bscratch toggle {volcontrol,weechat}
+bindsym $m4+v $bscratch toggle discord
 
-bindsym $m4+$c+$S+{R,D,S} $better_scratchpad {geom_restore,geom_dump,geom_autosave_mode}
-bindsym $m4+3 $better_scratchpad next
-bindsym $m4+s $better_scratchpad hide_current
+bindsym $m4+$c+$S+{R,D,S} $bscratch {geom_restore,geom_dump,geom_autosave_mode}
+bindsym $m4+3 $bscratch next
+bindsym $m4+s $bscratch hide_current
 
 # ░█▀▀░▀█▀░█▀▄░█▀▀░█░░░█▀▀
 # ░█░░░░█░░█▀▄░█░░░█░░░█▀▀
@@ -326,7 +326,7 @@ mode "" {
     #-------------------------------------------------------
     bindsym c mode "pass "
     bindsym e mode "default", [urgent=latest] focus
-    bindsym a mode "default", $better_scratchpad dialog
+    bindsym a mode "default", $bscratch dialog
 
     bindsym 5 mode "default", $circle subtag web tor
     bindsym y mode "default", $circle subtag web yandex
@@ -342,11 +342,11 @@ mode "" {
     bindsym $S+s exec ~/bin/pls -switch, $exit
     bindsym {i,o,$S+O} mode "default", exec ~/bin/pls -{output,sink,vol}
     #-------------------------------------------------------
-    bindsym {$m4,$alt,}+s $better_scratchpad subtag im skype, mode "default"
-    bindsym {$m4+t,$alt+t,t} $better_scratchpad subtag im tel, mode "default"
-    bindsym m $better_scratchpad toggle mutt, mode "default"
-    bindsym w $better_scratchpad toggle webcam, mode "default"
-    bindsym $S+r $better_scratchpad toggle ranger, mode "default"
+    bindsym {$m4,$alt,}+s $bscratch subtag im skype, mode "default"
+    bindsym {$m4+t,$alt+t,t} $bscratch subtag im tel, mode "default"
+    bindsym m $bscratch toggle mutt, mode "default"
+    bindsym w $bscratch toggle webcam, mode "default"
+    bindsym $S+r $bscratch toggle ranger, mode "default"
     #-------------------------------------------------------
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
