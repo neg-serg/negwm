@@ -1,15 +1,24 @@
+""" Various helper functions
+"""
 import os
 import subprocess
 import errno
 
 
 class Misc():
+    """ Implements various helper functions
+    """
     @staticmethod
     def create_dir(dirname):
+        """ Helper function to create directory
+
+            Args:
+                dirname(str): directory name to create
+        """
         try:
             os.makedirs(dirname)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
+        except OSError as oserr:
+            if oserr.errno != errno.EEXIST:
                 raise
 
     @staticmethod
@@ -30,6 +39,7 @@ class Misc():
         if out is not None and out:
             ret = out.decode('UTF-8').split()[0]
             return ret
+        return ""
 
     @classmethod
     def notify_msg(cls, msg: str, prefix: str = " "):
