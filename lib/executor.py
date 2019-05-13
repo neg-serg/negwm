@@ -29,14 +29,14 @@ class env():
         settings of application, like used terminal enumator, fonts, all path
         settings, etc.
     Parents:
-        cfg: configuration manager to autosave/autoload
-                  TOML-configutation with inotify
+        config: configuration manager to autosave/autoload
+                TOML-configutation with inotify
 
     Metaclass:
         Use Singleton metaclass from singleton module.
 
     """
-    def __init__(self, name: str, cfg: dict) -> None:
+    def __init__(self, name: str, config: dict) -> None:
         self.name = name
         self.tmux_socket_dir = expanduser('/dev/shm/tmux_sockets')
         self.alacritty_cfg_dir = expanduser('/dev/shm/alacritty_cfg')
@@ -46,55 +46,55 @@ class env():
         Misc.create_dir(self.alacritty_cfg_dir)
         try:
             os.makedirs(self.tmux_socket_dir)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
+        except OSError as dir_not_created:
+            if dir_not_created.errno != errno.EEXIST:
                 raise
 
         try:
             os.makedirs(self.alacritty_cfg_dir)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
+        except OSError as dir_not_created:
+            if dir_not_created.errno != errno.EEXIST:
                 raise
 
-        self.window_class = cfg.get(name, {}).get("window_class", {})
+        self.window_class = config.get(name, {}).get("window_class", {})
 
         # get terminal from config, use Alacritty by default
-        self.term = cfg.get(name, {}).get("term", "alacritty").lower()
+        self.term = config.get(name, {}).get("term", "alacritty").lower()
 
-        self.font = cfg.get("default_font", "")
+        self.font = config.get("default_font", "")
         if not self.font:
-            self.font = cfg.get(name, {}).get("font", "Iosevka Term")
-        self.font_size = cfg.get("default_font_size", "")
+            self.font = config.get(name, {}).get("font", "Iosevka Term")
+        self.font_size = config.get("default_font_size", "")
         if not self.font_size:
-            self.font_size = cfg.get(name, {}).get("font_size", "18")
+            self.font_size = config.get(name, {}).get("font_size", "18")
 
         self.tmux_session_attach = \
             f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = \
             f"tmux -S {self.sockpath} new-session -s {name}"
-        colorscheme = cfg.get("colorscheme", "")
+        colorscheme = config.get("colorscheme", "")
         if not colorscheme:
-            colorscheme = cfg.get(name, {}).get("colorscheme", 'dark3')
+            colorscheme = config.get(name, {}).get("colorscheme", 'dark3')
         self.set_colorscheme = \
             f"{expanduser('~/bin/dynamic-colors')} switch {colorscheme};"
-        self.postfix = cfg.get(name, {}).get("postfix", '')
+        self.postfix = config.get(name, {}).get("postfix", '')
         if self.postfix and self.postfix[0] != '-':
             self.postfix = '\\; ' + self.postfix
-        self.tmuxed = int(cfg.get(name, {}).get("tmuxed", 1))
+        self.tmuxed = int(config.get(name, {}).get("tmuxed", 1))
         if not self.tmuxed:
-            prog_to_dtach = cfg.get(name, {}).get('prog_detach', '')
+            prog_to_dtach = config.get(name, {}).get('prog_detach', '')
             if prog_to_dtach:
                 self.prog = \
                     f'dtach -A ~/1st_level/{name}.session {prog_to_dtach}'
             else:
-                self.prog = cfg.get(name, {}).get('prog', 'true')
-        self.set_wm_class = cfg.get(name, {}).get('set_wm_class', '')
-        self.set_instance = cfg.get(name, {}).get('set_instance', '')
+                self.prog = config.get(name, {}).get('prog', 'true')
+        self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
+        self.set_instance = config.get(name, {}).get('set_instance', '')
 
-        self.x_pad = cfg.get(name, {}).get('x_padding', '2')
-        self.y_pad = cfg.get(name, {}).get('y_padding', '2')
+        self.x_pad = config.get(name, {}).get('x_padding', '2')
+        self.y_pad = config.get(name, {}).get('y_padding', '2')
 
-        self.create_term_params(cfg, name)
+        self.create_term_params(config, name)
 
         def join_processes():
             for prc in multiprocessing.active_children():
@@ -104,10 +104,22 @@ class env():
 
     @staticmethod
     def generate_alacritty_config(
-            alacritty_cfg_dir, cfg: dict, name: str) -> str:
-        alacritty_suffix = cfg.get(name, {}).get('alacritty_suffix', {})
+            alacritty_cfg_dir, config: dict, name: str) -> str:
+        """ Config generator for alacritty.
+            We need it because of alacritty cannot bypass most of user
+            parameters with command line now.
+
+            Args:
+                alacritty_cfg_dir: alacritty config dir
+                config: config dirtionary
+                name(str): name of config to generate
+
+            Return:
+               cfgname(str): configname
+        """
+        alacritty_suffix = config.get(name, {}).get('alacritty_suffix', {})
         if not alacritty_suffix:
-            alacritty_suffix = cfg.get(name, {}).get('window_class')
+            alacritty_suffix = config.get(name, {}).get('window_class')
 
         alacritty_suffix = expanduser(alacritty_suffix + '.yml')
         cfgname = expanduser(f'{alacritty_cfg_dir}/{alacritty_suffix}')
@@ -119,10 +131,16 @@ class env():
             )
         return cfgname
 
-    def fileprocess(self, custom_config: str) -> None:
-        with open(custom_config, "r") as fp:
+    def yaml_config_create(self, custom_config: str) -> None:
+        """ Create config for alacritty
+
+            Args:
+                custom_config(str): config name to create
+        """
+        with open(custom_config, "r") as cfg_file:
             try:
-                conf = yaml.load(fp, Loader=yamlloader.ordereddict.CSafeLoader)
+                conf = yaml.load(
+                    cfg_file, Loader=yamlloader.ordereddict.CSafeLoader)
                 if conf is not None:
                     conf["font"]["normal"]["family"] = self.font
                     conf["font"]["bold"]["family"] = self.font
@@ -130,8 +148,8 @@ class env():
                     conf["font"]["size"] = self.font_size
                     conf["window"]["padding"]['x'] = int(self.x_pad)
                     conf["window"]["padding"]['y'] = int(self.y_pad)
-            except yaml.YAMLError as e:
-                print(e)
+            except yaml.YAMLError as yamlerror:
+                print(yamlerror)
 
         with open(custom_config, 'w', encoding='utf8') as outfile:
             try:
@@ -144,11 +162,17 @@ class env():
                     explicit_start=True,
                     Dumper=yamlloader.ordereddict.CDumper
                 )
-            except yaml.YAMLError as e:
-                print(e)
+            except yaml.YAMLError as yamlerror:
+                print(yamlerror)
 
-    def create_term_params(self, cfg: dict, name: str) -> None:
-        terminal = cfg.get(name, {}).get("term")
+    def create_term_params(self, config: dict, name: str) -> None:
+        """ This function fill self.term_opts for settings.abs
+
+            Args:
+                config(dict): config dictionary which should be adopted to
+                commandline options or settings.
+        """
+        terminal = config.get(name, {}).get("term")
         if terminal == "alacritty":
             self.term_opts = ["alacritty"] + [
                 "-t", self.window_class,
@@ -156,10 +180,11 @@ class env():
             ]
         elif terminal == "alacritty-custom":
             custom_config = self.generate_alacritty_config(
-                self.alacritty_cfg_dir, cfg, name
+                self.alacritty_cfg_dir, config, name
             )
             multiprocessing.Process(
-                target=self.fileprocess, args=(custom_config,), daemon=True
+                target=self.yaml_config_create, args=(custom_config,),
+                daemon=True
             ).start()
             self.term_opts = [
                 "alacritty", "--live-config-reload", "--config-file",
@@ -170,10 +195,11 @@ class env():
             ]
         elif terminal == "alacritty-custom-silent":
             custom_config = self.generate_alacritty_config(
-                self.alacritty_cfg_dir, cfg, name
+                self.alacritty_cfg_dir, config, name
             )
             multiprocessing.Process(
-                target=self.fileprocess, args=(custom_config,), daemon=True
+                target=self.yaml_config_create, args=(custom_config,),
+                daemon=True
             ).start()
             self.term_opts = [
                 "alacritty", '-qq', "--live-config-reload", "--config-file",
@@ -238,8 +264,8 @@ class executor(cfg):
             self.envs[app] = env(app, self.cfg)
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        for env in self.envs:
-            del env
+        for envi in self.envs:
+            del envi
 
     def run_app(self, args: List) -> None:
         """ Wrapper to run selected application in background.
