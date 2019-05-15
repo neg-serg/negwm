@@ -7,3 +7,4 @@ Xlib
 ewmh
 yamlloader
 pulsectl
+docopt

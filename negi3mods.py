@@ -10,7 +10,9 @@ automatically. Moreover it contains pid-lock which prevents running several
 times.
 
 Usage:
-    ./negi3mods.py
+    ./negi3mods.py [--prof]
+
+    --prof          disables signal handlers for profiling.
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -40,9 +42,11 @@ from lib.msgbroker import MsgBroker
 from lib.misc import Misc
 from lib.standalone_cfg import modconfig
 
+from docopt import docopt
+
 
 class negi3mods(modconfig):
-    def __init__(self):
+    def __init__(self, cmd_args):
         """ Init function
 
             Using of self.intern for better performance, create i3ipc
@@ -52,18 +56,19 @@ class negi3mods(modconfig):
         # i3 path used to get i3 config path for "send" binary, _config needed
         # by ppi3 path and another configs.
         self.i3_path = Misc.i3path()
-
-        def loop_exit(signame):
-            print(f"Got signal {signame}: exit")
-            loop.stop()
-            os._exit(0)
-
         loop = asyncio.new_event_loop()
-        for signame in {'SIGINT', 'SIGTERM'}:
-            loop.add_signal_handler(
-                getattr(signal, signame),
-                functools.partial(loop_exit, signame))
-        loop.set_exception_handler(None)
+
+        if not cmd_args['--prof']:
+            def loop_exit(signame):
+                print(f"Got signal {signame}: exit")
+                loop.stop()
+                os._exit(0)
+
+            for signame in {'SIGINT', 'SIGTERM'}:
+                loop.add_signal_handler(
+                    getattr(signal, signame),
+                    functools.partial(loop_exit, signame))
+            loop.set_exception_handler(None)
 
         modconfig.__init__(self, loop)
 
@@ -266,5 +271,7 @@ if __name__ == '__main__':
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(lambda: os._exit(0))
 
-    negi3mods().run()
+    cmd_args = docopt(__doc__, version='0.8')
+
+    negi3mods(cmd_args).run()
 
