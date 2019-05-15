@@ -29,7 +29,7 @@ class bscratch(cfg, Matcher):
 
     Parents:
         cfg: configuration manager to autosave/autoload
-                  TOML-configutation with inotify
+             TOML-configutation with inotify
         Matcher: class to check that window can be tagged with given tag by
                  WM_CLASS, WM_INSTANCE, regexes, etc
 
