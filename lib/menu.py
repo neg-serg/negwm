@@ -56,18 +56,7 @@ class menu(cfg):
             module = importlib.import_module('menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
 
-    def send_msg(self, args: List) -> None:
-        """ Defines pipe-based IPC for nsd module. With appropriate function
-            bindings.
-
-            This function defines bindings to the named_scratchpad methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate FIFO.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        {
+        self.bindings = {
             "cmd_menu": self.i3menu.cmd_menu,
 
             "xprop": self.xprop.xprop,
@@ -87,7 +76,20 @@ class menu(cfg):
             "xrandr_resolution": self.xrandr.change_resolution_xrandr,
 
             "reload": self.reload_config,
-        }[args[0]](*args[1:])
+        }
+
+    def send_msg(self, args: List) -> None:
+        """ Creates bindings from socket IPC to current module public function
+            calls.
+
+            This function defines bindings to the module methods that
+            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            [send] binary which can send commands to the appropriate socket.
+
+            Args:
+                args (List): argument list for the selected function.
+        """
+        self.bindings[args[0]](*args[1:])
 
     def rofi_args(self, params: dict()) -> List[str]:
         params['width'] = params.get('width', 0) or \

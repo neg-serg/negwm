@@ -62,6 +62,12 @@ class vol(Singleton, cfg):
         # MPD status string, which we need send to extract most of information.
         self.status_cmd_str = "status\n"
 
+        self.bindings = {
+            "u": self.volume_up,
+            "d": self.volume_down,
+            "reload": self.reload_config,
+        }
+
         # Initial state for the current_win
         self.current_win = self.i3.get_tree().find_focused()
 
@@ -113,21 +119,17 @@ class vol(Singleton, cfg):
                     break
 
     def send_msg(self, args: List) -> None:
-        """ Defines pipe-based IPC for nsd module. With appropriate function
-        bindings.
+        """ Creates bindings from socket IPC to current module public function
+            calls.
 
-            This function defines bindings to the named_scratchpad methods that
+            This function defines bindings to the module methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate FIFO.
+            [send] binary which can send commands to the appropriate socket.
 
             Args:
                 args (List): argument list for the selected function.
         """
-        {
-            "u": self.volume_up,
-            "d": self.volume_down,
-            "reload": self.reload_config,
-        }[args[0]](*args[1:])
+        self.bindings[args[0]](*args[1:])
 
     def change_volume(self, val: int) -> None:
         """ Change volume here.

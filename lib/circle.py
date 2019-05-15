@@ -95,6 +95,14 @@ class circle(cfg, Matcher):
         # tag all windows after start
         self.tag_windows(invalidate_winlist=False)
 
+        self.bindings = {
+            "next": self.go_next,
+            "subtag": self.go_subtag,
+            "add_prop": self.add_prop,
+            "del_prop": self.del_prop,
+            "reload": self.reload_config,
+        }
+
         self.i3.on('window::new', self.add_wins)
         self.i3.on('window::close', self.del_wins)
         self.i3.on("window::focus", self.set_curr_win)
@@ -283,23 +291,17 @@ class circle(cfg, Matcher):
                 self.focus_next(tag, idx, subtagged=True)
 
     def send_msg(self, args: List) -> None:
-        """ Defines pipe-based IPC for cirled module. With appropriate
-            function bindings.
+        """ Creates bindings from socket IPC to current module public function
+            calls.
 
-            This function defines bindings to the named_scratchpad methods that
+            This function defines bindings to the module methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate FIFO.
+            [send] binary which can send commands to the appropriate socket.
 
             Args:
                 args (List): argument list for the selected function.
         """
-        {
-            "next": self.go_next,
-            "subtag": self.go_subtag,
-            "add_prop": self.add_prop,
-            "del_prop": self.del_prop,
-            "reload": self.reload_config,
-        }[args[0]](*args[1:])
+        self.bindings[args[0]](*args[1:])
 
     def add_prop(self, tag_to_add: str, prop_str: str) -> None:
         """ Add property via [prop_str] to the target [tag].

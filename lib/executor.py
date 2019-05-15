@@ -36,6 +36,7 @@ class env():
         Use Singleton metaclass from singleton module.
 
     """
+
     def __init__(self, name: str, config: dict) -> None:
         self.name = name
         self.tmux_socket_dir = expanduser('/dev/shm/tmux_sockets')
@@ -263,6 +264,11 @@ class executor(cfg):
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)
 
+        self.bindings = {
+            "run": self.run,
+            "reload": self.reload_config,
+        }
+
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         for envi in self.envs:
             del envi
@@ -289,20 +295,17 @@ class executor(cfg):
             )
 
     def send_msg(self, args: List) -> None:
-        """ Defines pipe-based IPC for cirled module. With appropriate
-            function bindings.
+        """ Creates bindings from socket IPC to current module public function
+            calls.
 
-            This function defines bindings to the named_scratchpad methods that
+            This function defines bindings to the module methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate FIFO.
+            [send] binary which can send commands to the appropriate socket.
 
             Args:
                 args (List): argument list for the selected function.
         """
-        {
-            "run": self.run,
-            "reload": self.reload_config,
-        }[args[0]](*args[1:])
+        self.bindings[args[0]](*args[1:])
 
     @staticmethod
     def detect_session_bind(sockpath, name) -> str:

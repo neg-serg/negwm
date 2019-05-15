@@ -80,6 +80,23 @@ class bscratch(cfg, Matcher):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
 
+        self.bindings = {
+            "show": self.show_scratchpad,
+            "hide": self.hide_scratchpad_all_but_current,
+            "next": self.next_win_on_curr_tag,
+            "toggle": self.toggle,
+            "hide_current": self.hide_current,
+            "geom_restore": self.geom_restore_current,
+            "geom_dump": self.geom_dump_current,
+            "geom_save": self.geom_save_current,
+            "geom_autosave_mode": self.autosave_toggle,
+            "subtag": self.run_subtag,
+            "add_prop": self.add_prop,
+            "del_prop": self.del_prop,
+            "reload": self.reload_config,
+            "dialog": self.dialog_toggle,
+        }
+
         i3.on('window::new', self.mark_tag)
         i3.on('window::close', self.unmark_tag)
 
@@ -449,32 +466,17 @@ class bscratch(cfg, Matcher):
         self.del_props(tag, prop_str)
 
     def send_msg(self, args: List) -> None:
-        """ Defines pipe-based IPC for nsd module. With appropriate function
-            bindings.
+        """ Creates bindings from socket IPC to current module public function
+            calls.
 
-            This function defines bindings to the named_scratchpad methods that
+            This function defines bindings to the module methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate FIFO.
+            [send] binary which can send commands to the appropriate socket.
 
             Args:
                 args (List): argument list for the selected function.
         """
-        {
-            "show": self.show_scratchpad,
-            "hide": self.hide_scratchpad_all_but_current,
-            "next": self.next_win_on_curr_tag,
-            "toggle": self.toggle,
-            "hide_current": self.hide_current,
-            "geom_restore": self.geom_restore_current,
-            "geom_dump": self.geom_dump_current,
-            "geom_save": self.geom_save_current,
-            "geom_autosave_mode": self.autosave_toggle,
-            "subtag": self.run_subtag,
-            "add_prop": self.add_prop,
-            "del_prop": self.del_prop,
-            "reload": self.reload_config,
-            "dialog": self.dialog_toggle,
-        }[args[0]](*args[1:])
+        self.bindings[args[0]](*args[1:])
 
     def mark_tag(self, _, event) -> None:
         """ Add unique mark to the new window.

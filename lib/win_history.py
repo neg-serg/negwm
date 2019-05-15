@@ -46,6 +46,15 @@ class win_history(cfg):
         # workspaces with auto alt-tab when close
         self.autoback = self.conf('autoback')
 
+        self.bindings = {
+            "switch": self.alt_tab,
+            "reload": self.reload_config,
+            "focus_next": self.focus_next,
+            "focus_prev": self.focus_prev,
+            "focus_next_visible": self.focus_next_visible,
+            "focus_prev_visible": self.focus_prev_visible,
+        }
+
         self.i3.on('window::focus', self.on_window_focus)
         self.i3.on('window::close', self.goto_nonempty_ws_on_close)
 
@@ -55,24 +64,17 @@ class win_history(cfg):
         self.__init__(self.i3)
 
     def send_msg(self, args: List) -> None:
-        """ Defines pipe-based IPC for nsd module. With appropriate function
-        bindings.
+        """ Creates bindings from socket IPC to current module public function
+            calls.
 
-            This function defines bindings to the named_scratchpad methods that
+            This function defines bindings to the module methods that
             can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate FIFO.
+            [send] binary which can send commands to the appropriate socket.
 
             Args:
                 args (List): argument list for the selected function.
         """
-        {
-            "switch": self.alt_tab,
-            "reload": self.reload_config,
-            "focus_next": self.focus_next,
-            "focus_prev": self.focus_prev,
-            "focus_next_visible": self.focus_next_visible,
-            "focus_prev_visible": self.focus_prev_visible,
-        }[args[0]](*args[1:])
+        self.bindings[args[0]](*args[1:])
 
     def alt_tab(self) -> None:
         """ Focus previous window.
