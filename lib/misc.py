@@ -65,7 +65,7 @@ class Misc():
         if get_pids('dunst'):
             foreground_color = cls.extract_xrdb_value('\\*.foreground')
             notify_msg = [
-                'notify-send',
+                'dunstify',
                 f"<span weight='normal' color='{foreground_color}'>" +
                 prefix + msg +
                 "</span>"
