@@ -52,12 +52,23 @@ class Misc():
                 msg: message string.
                 prefix: optional prefix for message string.
         """
-        foreground_color = cls.extract_xrdb_value('\\*.foreground')
-        notify_msg = [
-            'notify-send',
-            f"<span weight='normal' color='{foreground_color}'>" +
-            prefix + msg +
-            "</span>"
-        ]
-        subprocess.Popen(notify_msg)
+
+        def get_pids(process):
+            try:
+                pidlist = map(
+                    int, subprocess.check_output(["pidof", process]).split()
+                )
+            except subprocess.CalledProcessError:
+                pidlist = []
+            return pidlist
+
+        if get_pids('dunst'):
+            foreground_color = cls.extract_xrdb_value('\\*.foreground')
+            notify_msg = [
+                'notify-send',
+                f"<span weight='normal' color='{foreground_color}'>" +
+                prefix + msg +
+                "</span>"
+            ]
+            subprocess.Popen(notify_msg)
 
