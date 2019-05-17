@@ -72,7 +72,9 @@ class menu(cfg):
             "attach": self.winact.attach_win,
             "movews": self.winact.move_to_ws,
 
-            "gtk_theme": self.gtk.change_gtk_theme,
+            "gtk_theme": self.gnome.change_gtk_theme,
+            "icon_theme": self.gnome.change_icon_theme,
+
             "xrandr_resolution": self.xrandr.change_resolution_xrandr,
 
             "reload": self.reload_config,

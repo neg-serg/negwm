@@ -7,7 +7,7 @@ import glob
 import path
 
 
-class gtk():
+class gnome():
     """
     Change gtk / icons themes and another gnome settings using
     gsd-xsettings.
