@@ -3,6 +3,8 @@
 import os
 import configparser
 import subprocess
+import glob
+import path
 
 
 class gtk():
@@ -14,6 +16,38 @@ class gtk():
     def __init__(self, menu):
         self.menu = menu
         self.gtk_config = configparser.ConfigParser()
+
+    def change_icon_theme(self):
+        """ Changes icon theme with help of gsd-xsettings """
+        icon_dirs = []
+        icons_path = path.Path('~/.icons').expanduser()
+        icons = glob.glob(icons_path + '/*')
+        for icon in icons:
+            if icon:
+                icon_dirs += [path.Path(icon).name]
+
+        ret = ""
+
+        rofi_params = {
+            'cnum': 1,
+            'lnum': len(icon_dirs),
+            'width': int(self.menu.screen_width * 0.55),
+            'prompt': f'{self.menu.wrap_str("icon_theme")} {self.menu.prompt}'
+        }
+
+        icon_theme_sel = subprocess.run(
+            self.menu.rofi_args(rofi_params),
+            stdout=subprocess.PIPE,
+            input=bytes('\n'.join(icon_dirs), 'UTF-8')
+        ).stdout
+
+        if icon_theme_sel is not None:
+            ret = icon_theme_sel.decode('UTF-8').strip()
+
+        if ret is not None and ret != '':
+            subprocess.call([
+                os.path.expanduser('~/bin/scripts/gnome_settings'), '-i', ret
+            ])
 
     def change_gtk_theme(self):
         """ Changes gtk theme with help of gsd-xsettings """
