@@ -16,76 +16,61 @@ class gtk():
     def __init__(self, menu):
         self.menu = menu
         self.gtk_config = configparser.ConfigParser()
+        self.gnome_settings_script = os.path.expanduser(
+            '~/bin/scripts/gnome_settings'
+        )
+
+    def rofi_params(self, length, prompt):
+        return {
+            'cnum': length / 2,
+            'lnum': 2,
+            'width': int(self.menu.screen_width * 0.55),
+            'prompt': f'{self.menu.wrap_str(prompt)} {self.menu.prompt}'
+        }
+
+    def apply_settings(self, selection, *cmd_opts):
+        """ Apply selected gnome settings """
+        ret = ""
+        if selection is not None:
+            ret = selection.decode('UTF-8').strip()
+
+            if ret is not None and ret != '':
+                subprocess.call([
+                    self.gnome_settings_script, *cmd_opts, ret
+                ])
 
     def change_icon_theme(self):
         """ Changes icon theme with help of gsd-xsettings """
         icon_dirs = []
         icons_path = path.Path('~/.icons').expanduser()
-        icons = glob.glob(icons_path + '/*')
-        for icon in icons:
+        for icon in glob.glob(icons_path + '/*'):
             if icon:
                 icon_dirs += [path.Path(icon).name]
 
-        ret = ""
+        rofi_params = self.rofi_params(len(icon_dirs), 'icon theme')
 
-        rofi_params = {
-            'cnum': 1,
-            'lnum': len(icon_dirs),
-            'width': int(self.menu.screen_width * 0.55),
-            'prompt': f'{self.menu.wrap_str("icon_theme")} {self.menu.prompt}'
-        }
-
-        icon_theme_sel = subprocess.run(
+        selection = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(icon_dirs), 'UTF-8')
         ).stdout
 
-        if icon_theme_sel is not None:
-            ret = icon_theme_sel.decode('UTF-8').strip()
-
-        if ret is not None and ret != '':
-            subprocess.call([
-                os.path.expanduser('~/bin/scripts/gnome_settings'), '-i', ret
-            ])
+        self.apply_settings(selection, '-i')
 
     def change_gtk_theme(self):
         """ Changes gtk theme with help of gsd-xsettings """
-        gtk_themes_list = []
-        for root, _, files in os.walk(os.path.expanduser("~/.themes")):
-            for file in files:
-                if file == 'gtk.css':
-                    target_dir_path = os.path.join(root, os.pardir)
-                    gtk_settings = self.gtk_config.read(
-                        os.path.abspath(
-                            os.path.join(target_dir_path, 'index.theme')
-                        )
-                    )
-                    if gtk_settings:
-                        gtk_themes_list += [os.path.basename(
-                            os.path.abspath(target_dir_path)
-                        )]
+        theme_dirs = []
+        gtk_theme_path = path.Path('~/.themes').expanduser()
+        for theme in glob.glob(gtk_theme_path + '/*/*/gtk.css'):
+            if theme:
+                theme_dirs += [path.Path(theme).dirname().dirname().name]
 
-        ret = ""
-
-        rofi_params = {
-            'cnum': 1,
-            'lnum': len(gtk_themes_list),
-            'width': int(self.menu.screen_width * 0.55),
-            'prompt': f'{self.menu.wrap_str("gtk_theme")} {self.menu.prompt}'
-        }
-
-        gtk_theme_sel = subprocess.run(
+        rofi_params = self.rofi_params(len(theme_dirs), 'gtk theme')
+        selection = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(gtk_themes_list), 'UTF-8')
+            input=bytes('\n'.join(theme_dirs), 'UTF-8')
         ).stdout
 
-        if gtk_theme_sel is not None:
-            ret = gtk_theme_sel.decode('UTF-8').strip()
-
-        if ret is not None and ret != '':
-            subprocess.call([
-                os.path.expanduser('~/bin/scripts/gnome_settings'), '-a', ret
-            ])
+        self.apply_settings(selection, '-a')
 
