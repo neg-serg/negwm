@@ -1,14 +1,22 @@
+""" Change gtk / icons themes and another gnome settings
+"""
 import os
 import configparser
 import subprocess
 
 
 class gtk():
+    """
+    Change gtk / icons themes and another gnome settings using
+    gsd-xsettings.
+    """
+
     def __init__(self, menu):
         self.menu = menu
         self.gtk_config = configparser.ConfigParser()
 
     def change_gtk_theme(self):
+        """ Changes gtk theme with help of gsd-xsettings """
         gtk_themes_list = []
         for root, _, files in os.walk(os.path.expanduser("~/.themes")):
             for file in files:
