@@ -98,7 +98,7 @@ set $remote "15 ::  ο:remote"
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
 set $browsers [class="^(Firefox|Nightly|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
-set $games [class="^(dota2|darkest.bin.x86_64|PillarsOfEternityII|lutris|Lutris|Civ6|warframe.x64.exe)$"]
+set $games [class="^(steam_app.*|dota2|darkest.bin.x86_64|PillarsOfEternityII|lutris|Lutris|Civ6|warframe.x64.exe)$"]
 set $wine_apps [class="^(Wine|wine|Crossover)$"]
 set $windows_exe_by_title [title="^.*.exe$"]
 set $windows_exe_by_class [class="^.*.exe$"]
