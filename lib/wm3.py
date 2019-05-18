@@ -9,12 +9,13 @@ space, etc.
 """
 
 import collections
-from typing import List, Mapping
+from typing import Mapping
 from display import Display
 from cfg import cfg
+from negi3mod import negi3mod
 
 
-class wm3(cfg):
+class wm3(negi3mod, cfg):
     """ Named scratchpad class
 
     Parents:
@@ -81,19 +82,6 @@ class wm3(cfg):
             "center": self.move_center,
             "revert_maximize": self.revert_maximize,
         }
-
-    def send_msg(self, args: List) -> None:
-        """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        self.bindings[args[0]](*args[1:])
 
     def load_useless_gaps(self) -> None:
         """ Load useless gaps settings.

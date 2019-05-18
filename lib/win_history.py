@@ -6,14 +6,15 @@ information about previous windows. We need this because previously selected
 window may be closed, and then you cannot focus it.
 """
 
-from typing import List, Iterator
+from typing import Iterator
 from itertools import cycle
 
 from cfg import cfg
 from negewmh import NegEWMH
+from negi3mod import negi3mod
 
 
-class win_history(cfg):
+class win_history(negi3mod, cfg):
     """ Advanced alt-tab class.
     """
 
@@ -56,19 +57,6 @@ class win_history(cfg):
         """ Reloads config. Dummy.
         """
         self.__init__(self.i3)
-
-    def send_msg(self, args: List) -> None:
-        """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        self.bindings[args[0]](*args[1:])
 
     def alt_tab(self) -> None:
         """ Focus previous window.

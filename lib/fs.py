@@ -7,10 +7,11 @@ for example wayland-friendly.
 
 import subprocess
 from typing import List
+from negi3mod import negi3mod
 from cfg import cfg
 
 
-class fs(cfg):
+class fs(negi3mod, cfg):
     def __init__(self, i3, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3
@@ -102,17 +103,4 @@ class fs(cfg):
         if self.show_panel_on_close:
             if not i3.get_tree().find_fullscreen():
                 self.panel_action('show', restore=True)
-
-    def send_msg(self, args: List) -> None:
-        """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        self.bindings[args[0]](*args[1:])
 

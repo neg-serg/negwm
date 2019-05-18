@@ -9,11 +9,11 @@ window is not focused or via sending 0, 9 keyboard commands if it is.
 import subprocess
 import socket
 import asyncio
-from typing import List
 from cfg import cfg
+from negi3mod import negi3mod
 
 
-class vol(cfg):
+class vol(negi3mod, cfg):
     def __init__(self, i3, loop) -> None:
         """ Init function
 
@@ -116,19 +116,6 @@ class vol(cfg):
                 if writer.transport._conn_lost:
                     # TODO: add function to wait for MPD port here.
                     break
-
-    def send_msg(self, args: List) -> None:
-        """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        self.bindings[args[0]](*args[1:])
 
     def change_volume(self, val: int) -> None:
         """ Change volume here.

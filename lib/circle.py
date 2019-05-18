@@ -14,12 +14,12 @@ window with the correct fullscreen state, where normal i3 behaviour has a lot
 of issues here in detection of existing/visible windows, etc.
 """
 
-from typing import List
+from negi3mod import negi3mod
 from matcher import Matcher
 from cfg import cfg
 
 
-class circle(cfg, Matcher):
+class circle(negi3mod, cfg, Matcher):
     """ Circle over windows class
 
     Parents:
@@ -284,19 +284,6 @@ class circle(cfg, Matcher):
             else:
                 idx = 0
                 self.focus_next(tag, idx, subtagged=True)
-
-    def send_msg(self, args: List) -> None:
-        """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        self.bindings[args[0]](*args[1:])
 
     def add_prop(self, tag_to_add: str, prop_str: str) -> None:
         """ Add property via [prop_str] to the target [tag].

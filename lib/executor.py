@@ -16,6 +16,7 @@ import multiprocessing
 import yaml
 import yamlloader
 
+from negi3mod import negi3mod
 from typing import List
 from os.path import expanduser
 from cfg import cfg
@@ -228,7 +229,7 @@ class env():
             ]
 
 
-class executor(cfg):
+class executor(negi3mod, cfg):
     """ Tmux Manager class. Easy and consistent way to create tmux sessions on
         dedicated sockets. Also it can run simply run applications without
         Tmux. The main advantage is dynamic config reloading and simplicity of
@@ -282,19 +283,6 @@ class executor(cfg):
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-
-    def send_msg(self, args: List) -> None:
-        """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        self.bindings[args[0]](*args[1:])
 
     @staticmethod
     def detect_session_bind(sockpath, name) -> str:

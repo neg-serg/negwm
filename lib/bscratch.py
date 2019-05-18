@@ -21,9 +21,10 @@ from cfg import cfg
 from matcher import Matcher
 from misc import Misc
 from negewmh import NegEWMH
+from negi3mod import negi3mod
 
 
-class bscratch(cfg, Matcher):
+class bscratch(negi3mod, cfg, Matcher):
     """ Named scratchpad class
 
     Parents:
@@ -458,19 +459,6 @@ class bscratch(cfg, Matcher):
                                 target window in/from scratchpad.
         """
         self.del_props(tag, prop_str)
-
-    def send_msg(self, args: List) -> None:
-        """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
-        self.bindings[args[0]](*args[1:])
 
     def mark_tag(self, _, event) -> None:
         """ Add unique mark to the new window.
