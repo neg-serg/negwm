@@ -216,17 +216,6 @@ class negi3mods(modconfig):
         asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
         asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
 
-    def run_procs(self):
-        for proc in self.conf("proc_list"):
-            # Start echo server as separated process
-            subprocess.run(['pkill', '-f', f'proc.{proc}'])
-            subprocess.run(
-                [sys.executable + f' -m proc.{proc} &'],
-                shell=True,
-                cwd=self.i3_path
-            )
-            print(f'run module proc.{proc}')
-
     def run(self):
         """ Run negi3mods here.
         """
@@ -245,8 +234,6 @@ class negi3mods(modconfig):
 
         start(self.load_modules)
         start(self.run_inotify_watchers)
-
-        self.run_procs()
 
         # Start modules mainloop.
         mainloop = Thread(
