@@ -6,7 +6,6 @@ for example wayland-friendly.
 """
 
 import subprocess
-from typing import List
 from negi3mod import negi3mod
 from cfg import cfg
 
