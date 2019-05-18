@@ -11,7 +11,6 @@ space, etc.
 import collections
 from typing import List, Mapping
 from display import Display
-from singleton import Singleton
 from cfg import cfg
 
 
@@ -22,12 +21,7 @@ class wm3(cfg):
         cfg: configuration manager to autosave/autoload
                   TOML-configutation with inotify
 
-    Metaclass:
-        Use Singleton metaclass from singleton module.
-
     """
-
-    __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:
         """ Init function

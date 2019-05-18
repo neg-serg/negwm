@@ -9,19 +9,13 @@ window may be closed, and then you cannot focus it.
 from typing import List, Iterator
 from itertools import cycle
 
-from singleton import Singleton
 from cfg import cfg
 from negewmh import NegEWMH
 
 
 class win_history(cfg):
     """ Advanced alt-tab class.
-
-    Metaclass:
-        Use Singleton metaclass from singleton module.
-
     """
-    __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:
         """ Init function

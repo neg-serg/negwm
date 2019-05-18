@@ -10,7 +10,6 @@
         - i3-cmd menu with autocompletion.
 """
 
-from singleton import Singleton
 from cfg import cfg
 from misc import Misc
 from display import Display
@@ -19,8 +18,6 @@ import importlib
 
 
 class menu(cfg):
-    __metaclass__ = Singleton
-
     def __init__(self, i3, loop=None) -> None:
         # Initialize cfg.
         cfg.__init__(self, i3)

@@ -17,7 +17,6 @@ import uuid
 from typing import List, Callable, Set, Optional
 
 import geom
-from singleton import Singleton
 from cfg import cfg
 from matcher import Matcher
 from misc import Misc
@@ -32,12 +31,7 @@ class bscratch(cfg, Matcher):
              TOML-configutation with inotify
         Matcher: class to check that window can be tagged with given tag by
                  WM_CLASS, WM_INSTANCE, regexes, etc
-
-    Metaclass:
-        Use Singleton metaclass from singleton module.
-
     """
-    __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:
         """ Init function

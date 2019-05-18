@@ -10,11 +10,10 @@ import subprocess
 import socket
 import asyncio
 from typing import List
-from singleton import Singleton
 from cfg import cfg
 
 
-class vol(Singleton, cfg):
+class vol(cfg):
     def __init__(self, i3, loop) -> None:
         """ Init function
 

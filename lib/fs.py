@@ -8,12 +8,9 @@ for example wayland-friendly.
 import subprocess
 from typing import List
 from cfg import cfg
-from lib.singleton import Singleton
 
 
 class fs(cfg):
-    __metaclass__ = Singleton
-
     def __init__(self, i3, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
         self.i3 = i3

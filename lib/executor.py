@@ -19,7 +19,6 @@ import yamlloader
 from typing import List
 from os.path import expanduser
 from cfg import cfg
-from singleton import Singleton
 from misc import Misc
 
 
@@ -31,10 +30,6 @@ class env():
     Parents:
         config: configuration manager to autosave/autoload
                 TOML-configutation with inotify
-
-    Metaclass:
-        Use Singleton metaclass from singleton module.
-
     """
 
     def __init__(self, name: str, config: dict) -> None:
@@ -242,13 +237,7 @@ class executor(cfg):
     Parents:
         cfg: configuration manager to autosave/autoload
                   TOML-configutation with inotify
-
-    Metaclass:
-        Use Singleton metaclass from singleton module.
-
     """
-    __metaclass__ = Singleton
-
     def __init__(self, i3, loop=None) -> None:
         """ Init function.
 

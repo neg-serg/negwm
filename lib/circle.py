@@ -17,7 +17,6 @@ of issues here in detection of existing/visible windows, etc.
 from typing import List
 from matcher import Matcher
 from cfg import cfg
-from singleton import Singleton
 
 
 class circle(cfg, Matcher):
@@ -29,11 +28,7 @@ class circle(cfg, Matcher):
         Matcher: class to check that window can be tagged with given tag by
                  WM_CLASS, WM_INSTANCE, regexes, etc
 
-    Metaclass:
-        Use Singleton metaclass from singleton module.
-
     """
-    __metaclass__ = Singleton
 
     def __init__(self, i3, loop=None) -> None:
         """ Init function
