@@ -10,9 +10,11 @@ automatically. Moreover it contains pid-lock which prevents running several
 times.
 
 Usage:
-    ./negi3mods.py [--prof]
+    ./negi3mods.py [--debug|--tracemalloc]
 
-    --prof          disables signal handlers for profiling.
+    --debug         disables signal handlers for debug.
+    --tracemalloc   calculates and shows memory tracing with help of
+                    tracemalloc.
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -30,6 +32,7 @@ import signal
 import functools
 import importlib
 import shutil
+import tracemalloc
 from threading import Thread
 
 import asyncio
@@ -58,7 +61,15 @@ class negi3mods(modconfig):
         self.i3_path = Misc.i3path()
         loop = asyncio.new_event_loop()
 
-        if not cmd_args['--prof']:
+        self.tracemalloc_enabled = False
+
+        if cmd_args["--tracemalloc"]:
+            self.tracemalloc_enabled = True
+
+        if self.tracemalloc_enabled:
+            tracemalloc.start()
+
+        if not (cmd_args['--debug'] or self.tracemalloc_enabled):
             def loop_exit(signame):
                 print(f"Got signal {signame}: exit")
                 loop.stop()
@@ -78,7 +89,7 @@ class negi3mods(modconfig):
         for mod in self.conf("module_list"):
             self.mods[sys.intern(mod)] = None
 
-        self.prepare_notification()
+        self.prepare_notification_text()
 
         # i3 path used to get "send" binary path
         self.i3_cfg_path = self.i3_path + '/cfg/'
@@ -94,8 +105,8 @@ class negi3mods(modconfig):
         # modules here.
         self.i3 = i3ipc.Connection()
 
-    def prepare_notification(self):
-        # stuff for startup notifications
+    def prepare_notification_text(self):
+        """ stuff for startup notifications """
         self.notification_text = "Starting negi3mods\n\n"
         notification_color_field = self.conf("notification_color_field")
         notification_color = Misc.extract_xrdb_value(notification_color_field)
@@ -181,10 +192,10 @@ class negi3mods(modconfig):
         while True:
             event = await watcher.get_event()
             if event.name == '_config':
-                with open(self.test_cfg_path, "w") as fp:
+                with open(self.test_cfg_path, "w") as fconf:
                     subprocess.run(
                         ['ppi3', self.i3_path + '_config'],
-                        stdout=fp
+                        stdout=fconf
                     )
                     config_is_valid = self.validate_i3_config()
                 if config_is_valid:
@@ -260,5 +271,14 @@ if __name__ == '__main__':
 
     cmd_args = docopt(__doc__, version='0.8')
 
-    negi3mods(cmd_args).run()
+    negi3mods_instance = negi3mods(cmd_args)
+    negi3mods_instance.run()
+
+    if negi3mods_instance.tracemalloc_enabled:
+        snapshot = tracemalloc.take_snapshot()
+        top_stats = snapshot.statistics('lineno')
+
+        print("[ Top 10 ]")
+        for stat in top_stats[:10]:
+            print(stat)
 
