@@ -12,6 +12,7 @@ times.
 Usage:
     ./negi3mods.py [--debug|--tracemalloc]
 
+Options:
     --debug         disables signal handlers for debug.
     --tracemalloc   calculates and shows memory tracing with help of
                     tracemalloc.
