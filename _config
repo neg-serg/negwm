@@ -142,7 +142,7 @@ for_window {$fb2,$pdf}, move workspace $doc, focus
 # ░█░█░█▀█░█▀▄░░░░░█▀▀░█░░░█▀█░█▀█░▀█▀░▀█▀░█▀█░█▀▀
 # ░▀▄▀░█▀█░█▀▄░░░░░█▀▀░█░░░█░█░█▀█░░█░░░█░░█░█░█░█
 # ░░▀░░▀░▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░▀▀▀
-for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gpick|rdesktop)$"] floating enable
+for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gpick|rdesktop|Arandr)$"] floating enable
 
 # ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
 # ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
