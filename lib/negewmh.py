@@ -11,9 +11,11 @@ from ewmh import EWMH
 
 
 class NegEWMH():
+    """ Custom EWMH support functions """
     disp = Xlib.display.Display()
     ewmh = EWMH()
 
+    @staticmethod
     @contextmanager
     def window_obj(disp, win_id):
         """Simplify dealing with BadWindow (make it either valid or None)"""
@@ -25,8 +27,9 @@ class NegEWMH():
                 pass
         yield window_obj
 
-    def is_dialog_win(w) -> bool:
-        """ Check that window [w] is not dialog window
+    @staticmethod
+    def is_dialog_win(win) -> bool:
+        """ Check that window [win] is not dialog window
 
             At first check typical window roles and classes, because of it more
             fast, then using python EWMH module to detect dialog window type or
@@ -35,23 +38,26 @@ class NegEWMH():
             Args:
                 w : target window to check
         """
-        if w.window_instance == "Places" \
-                or w.window_role in {"GtkFileChooserDialog", "confirmEx",
-                                     "gimp-file-open"} \
-                or w.window_class == "Dialog":
+        if win.window_instance == "Places" \
+                or win.window_role in {
+                        "GtkFileChooserDialog",
+                        "confirmEx",
+                        "gimp-file-open"} \
+                or win.window_class == "Dialog":
             return True
 
-        with NegEWMH.window_obj(NegEWMH.disp, w.window) as win:
-            win_type = NegEWMH.ewmh.getWmWindowType(win, str=True)
+        with NegEWMH.window_obj(NegEWMH.disp, win.window) as win_obj:
+            win_type = NegEWMH.ewmh.getWmWindowType(win_obj, str=True)
             if '_NET_WM_WINDOW_TYPE_DIALOG' in win_type:
                 return True
 
-            win_state = NegEWMH.ewmh.getWmState(win, str=True)
+            win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)
             if '_NET_WM_STATE_MODAL' in win_state:
                 return True
 
             return False
 
+    @staticmethod
     def find_visible_windows(windows_on_ws: List) -> List:
         """ Find windows visible on the screen now.
 
@@ -60,11 +66,11 @@ class NegEWMH():
                         function.
         """
         visible_windows = []
-        for w in windows_on_ws:
-            with NegEWMH.window_obj(NegEWMH.disp, w.window) as win:
-                win_state = NegEWMH.ewmh.getWmState(win, str=True)
+        for win in windows_on_ws:
+            with NegEWMH.window_obj(NegEWMH.disp, win.window) as win_obj:
+                win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)
                 if '_NET_WM_STATE_HIDDEN' not in win_state:
-                    visible_windows.append(w)
+                    visible_windows.append(win)
 
         return visible_windows
 
