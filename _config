@@ -124,7 +124,6 @@ for_window $vms move workspace $vm, focus
 for_window $office move workspace $doc, focus
 for_window [{class,instance}="^term$"] move workspace $term, focus
 for_window $mplayer move workspace $gfx, focus
-for_window $webcam move workspace $gfx, focus
 for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
 for_window [class="^lollypop$"] move workspace $gfx, focus
 for_window [class="spotify"] move workspace $spotify, focus
@@ -177,8 +176,6 @@ for_window [class="Pavucontrol"] move scratchpad, move absolute position 1023 82
 for_window [instance="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
 for_window [instance="webcam"] move scratchpad, move absolute position 667 363, resize set 1234 771
 for_window [class="discord"] move scratchpad, move absolute position 974 127, resize set 944 1036
-
-for_window [instance="webcam"] floating enable, move container to workspace current, move scratchpad, move position center, resize set 1280 720, focus
 
 #░█▀▄░▀█▀░█▀█░█░░░█▀█░█▀▀░█▀▀
 #░█░█░░█░░█▀█░█░░░█░█░█░█░▀▀█
