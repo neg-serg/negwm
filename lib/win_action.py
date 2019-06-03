@@ -15,7 +15,7 @@ from cfg import cfg
 from negi3mod import negi3mod
 
 
-class wm3(negi3mod, cfg):
+class win_action(negi3mod, cfg):
     """ Named scratchpad class
 
     Parents:
