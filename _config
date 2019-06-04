@@ -21,7 +21,7 @@ set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send circle
 set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send bscratch
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send win_history
 set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
-set $wm3 exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send wm3
+set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send win_action
 set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send vol
 set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send executor
 
@@ -188,7 +188,6 @@ for_window [class="Places"] $scratchpad_dialog
 # ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
 # ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
 set $exit mode "default"
-bindsym $m4+{h,l} focus {left,right}
 bindsym $alt+e mode ""               # special mode
 bindsym $m4+r mode ""                # resize mode
 bindsym $m4+minus mode ""            # window-manager / split / tiling mode
@@ -237,16 +236,35 @@ bindsym $m4+$c+f $circle next looking_glass
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
 
-# ░█░█░█▄█░▀▀█
-# ░█▄█░█░█░░▀▄
-# ░▀░▀░▀░▀░▀▀░
+# ░█░█░▀█▀░█▀█░░░░░█▀█░█▀▀░▀█▀░▀█▀░█▀█░█▀█
+# ░█▄█░░█░░█░█░░░░░█▀█░█░░░░█░░░█░░█░█░█░█
+# ░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀▀░░▀░░▀▀▀░▀▀▀░▀░▀
 bindsym $m4+grave $win_history focus_next_visible
 bindsym $m4+$S+grave $win_history focus_prev_visible
-# bindsym $m4+Tab $win_history focus_next
-# bindsym $m4+$S+Tab $win_history focus_prev
+
+bindsym $m4+{h,l,j,k} focus {left,right,down,up}
+
+# resize window (you can also use the mouse for that)
+# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▄░█▀▀░█▀▀░▀█▀░▀▀█░█▀▀
+# ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▄░█▀▀░▀▀█░░█░░▄▀░░█▀▀
+# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
+mode "" {
+    bindsym {h,$S+h} $win_action resize left {4,-4}
+    bindsym {j,$S+j} $win_action resize bottom {4,-4}
+    bindsym {k,$S+k} $win_action resize top {4,-4}
+    bindsym {l,$S+l} $win_action resize right {4,-4}
+
+    bindsym {a,$S+a} $win_action resize left {4,-4}
+    bindsym {s,$S+s} $win_action resize bottom {4,-4}
+    bindsym {w,$S+w} $win_action resize top {4,-4}
+    bindsym {d,$S+d} $win_action resize right {4,-4}
+
+    #-------------------------------------------------------
+    bindsym {semicolon,$S+colon} resize {shrink,grow} right 4
+    bindsym {Return,Escape,space,$c+C,$c+G} $exit
+}
 
 bindsym $m4+q fullscreen toggle
-
 # ░█▄█░█▀▀░█▀█░█░█
 # ░█░█░█▀▀░█░█░█░█
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀
@@ -268,24 +286,6 @@ mode "pass " {
     bindsym {c,p} exec ~/bin/scripts/lpwd {,type}, $exit
     bindsym {Return,Escape,$c+C,$c+G}, $exit
 }
-# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▄░█▀▀░█▀▀░▀█▀░▀▀█░█▀▀
-# ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▄░█▀▀░▀▀█░░█░░▄▀░░█▀▀
-# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
-# resize window (you can also use the mouse for that)
-mode "" {
-    bindsym {$S+h,h} resize {shrink,grow} left 4
-    bindsym {$S+j,j} resize {shrink,grow} down 4
-    bindsym {$S+k,k} resize {shrink,grow} up 4
-    bindsym {$S+l,l} resize {shrink,grow} right 4
-
-    bindsym {$S+a,a} resize {shrink,grow} left 4
-    bindsym {$S+s,s} resize {shrink,grow} down 4
-    bindsym {$S+w,w} resize {shrink,grow} up 4
-    bindsym {$S+d,d} resize {shrink,grow} right 4
-    #-------------------------------------------------------
-    bindsym {semicolon,$S+colon} resize {shrink,grow} right 4
-    bindsym {Return,Escape,space,$c+C,$c+G} $exit
-}
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█░█░▀█▀░█▀█░░░░░█▄█░█▀█░█▀█░█▀█░█▀▀░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▄█░░█░░█░█░░░░░█░█░█▀█░█░█░█▀█░█░█░█▀▀
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀▀
@@ -297,16 +297,16 @@ mode "" {
     # ░█░█░█▄█░▀▀█
     # ░█▄█░█░█░░▀▄
     # ░▀░▀░▀░▀░▀▀░
-	bindsym m $wm3 maximize
-    bindsym $S+m $wm3 revert_maximize
-    bindsym {x,y} $wm3 {maxhor,maxvert}
-    bindsym $S+x $wm3 revert_maximize
-    bindsym $S+y $wm3 revert_maximize
-    bindsym {1,2,3,4} $wm3 quad {1,2,3,4}
-    bindsym $S+{w,a,s,d} $wm3 x2 {hup,vleft,hdown,vright}
-    bindsym $S+{plus,minus} $wm3 {grow,shrink}
-    bindsym c $wm3 center none
-    bindsym $S+c $wm3 center resize
+	bindsym m $win_action maximize
+    bindsym $S+m $win_action revert_maximize
+    bindsym {x,y} $win_action {maxhor,maxvert}
+    bindsym $S+x $win_action revert_maximize
+    bindsym $S+y $win_action revert_maximize
+    bindsym {1,2,3,4} $win_action quad {1,2,3,4}
+    bindsym $S+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
+    bindsym $S+{plus,minus} $win_action {grow,shrink}
+    bindsym c $win_action center none
+    bindsym $S+c $win_action center resize
     #-------------------------------------------------------
     bindsym g mode ""
     #-------------------------------------------------------

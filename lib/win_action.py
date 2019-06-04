@@ -6,6 +6,9 @@ which may reminds you 2bwm, subtle, or another similar window managers.
 You can change window geometry, move it to the half or quad size of the screen
 space, etc.
 
+Partially code is taken from https://github.com/miseran/i3-tools, thanks to
+you, miseran(https://github.com/miseran)
+
 """
 
 import collections
@@ -36,9 +39,6 @@ class win_action(negi3mod, cfg):
         """
         # Initialize cfg.
         cfg.__init__(self, i3)
-        self.initialize(i3)
-
-    def initialize(self, i3) -> None:
         # i3ipc connection, bypassed by negi3mods runner.
         self.i3 = i3
 
@@ -81,6 +81,9 @@ class win_action(negi3mod, cfg):
             "shrink": self.shrink,
             "center": self.move_center,
             "revert_maximize": self.revert_maximize,
+            "resize": self.resize,
+            "tab-focus": self.focus_tab,
+            "tab-move": self.move_tab,
         }
 
     def load_useless_gaps(self) -> None:
@@ -88,9 +91,8 @@ class win_action(negi3mod, cfg):
         """
         try:
             self.useless_gaps = self.cfg.get("useless_gaps", {
-                    "w": 12, "a": 12, "s": 12, "d": 12
-                }
-            )
+                "w": 12, "a": 12, "s": 12, "d": 12
+            })
             for field in ["w", "a", "s", "d"]:
                 if self.useless_gaps[field] < 0:
                     self.useless_gaps[field] = abs(self.useless_gaps[field])
@@ -141,12 +143,12 @@ class win_action(negi3mod, cfg):
 
         """
         focused = self.i3.get_tree().find_focused()
-        if "default" == resize or "none" == resize:
+        if resize in {"default", "none"}:
             geom = self.center_geom(focused)
-            self.set_geom(focused, geom)
-        elif "resize" == resize or "on" == resize or "yes" == resize:
+            win_action.set_geom(focused, geom)
+        elif resize in {"resize", "on", "yes"}:
             geom = self.center_geom(focused, change_geom=True)
-            self.set_geom(focused, geom)
+            win_action.set_geom(focused, geom)
         else:
             return
 
@@ -161,7 +163,8 @@ class win_action(negi3mod, cfg):
         )
         return self.geom_list[-1]["geom"]
 
-    def multiple_geom(self, win, coeff: float) -> Mapping[str, int]:
+    @staticmethod
+    def multiple_geom(win, coeff: float) -> Mapping[str, int]:
         """ Generic function to shrink/grow floating window geometry.
 
             Args:
@@ -180,15 +183,15 @@ class win_action(negi3mod, cfg):
         """ Grow floating window geometry by [self.grow_coeff].
         """
         focused = self.i3.get_tree().find_focused()
-        geom = self.multiple_geom(focused, self.grow_coeff)
-        self.set_geom(focused, geom)
+        geom = win_action.multiple_geom(focused, self.grow_coeff)
+        win_action.set_geom(focused, geom)
 
     def shrink(self) -> None:
         """ Shrink floating window geometry by [self.shrink_coeff].
         """
         focused = self.i3.get_tree().find_focused()
-        geom = self.multiple_geom(focused, self.shrink_coeff)
-        self.set_geom(focused, geom)
+        geom = win_action.multiple_geom(focused, self.shrink_coeff)
+        win_action.set_geom(focused, geom)
 
     def x2(self, mode: str) -> None:
         """ Move window to the 1st or 2nd half of the screen space with the
@@ -250,7 +253,7 @@ class win_action(negi3mod, cfg):
                 if prev != self.current_win.id:
                     geom = self.get_prev_geom()
 
-            self.set_geom(self.current_win, geom)
+            win_action.set_geom(self.current_win, geom)
 
     def quad(self, mode: int) -> None:
         """ Move window to the 1,2,3,4 quad of 2D screen space
@@ -317,7 +320,7 @@ class win_action(negi3mod, cfg):
                 if prev != self.current_win.id:
                     geom = self.get_prev_geom()
 
-            self.set_geom(self.current_win, geom)
+            win_action.set_geom(self.current_win, geom)
 
     def maximize(self, by: str = 'XY') -> None:
         """ Maximize window by attribute.
@@ -350,7 +353,7 @@ class win_action(negi3mod, cfg):
                 max_geom = self.maximized_geom(
                     geom.copy(), byX=False, byY=True
                 )
-            self.set_geom(self.current_win, max_geom)
+            win_action.set_geom(self.current_win, max_geom)
 
     def revert_maximize(self) -> None:
         """ Revert changed window state.
@@ -358,7 +361,7 @@ class win_action(negi3mod, cfg):
         try:
             focused = self.i3.get_tree().find_focused()
             if self.geom_list[-1].get("geom", {}):
-                self.set_geom(focused, self.geom_list[-1]["geom"])
+                win_action.set_geom(focused, self.geom_list[-1]["geom"])
             del self.geom_list[-1]
         except (KeyError, TypeError, AttributeError):
             pass
@@ -383,7 +386,8 @@ class win_action(negi3mod, cfg):
             geom['height'] = self.current_resolution['height'] - gaps['s'] * 2
         return geom
 
-    def set_geom(self, win, geom: dict) -> dict:
+    @staticmethod
+    def set_geom(win, geom: dict) -> dict:
         """ Generic function to set geometry.
 
         Args:
@@ -393,7 +397,101 @@ class win_action(negi3mod, cfg):
         win.command(f"move absolute position {geom['x']} {geom['y']}")
         win.command(f"resize set {geom['width']} {geom['height']} px")
 
-    def create_geom_from_rect(self, rect) -> dict:
+    @staticmethod
+    def set_resize_params_single(direction, amount):
+        """ Set resize parameters for the single window """
+        if direction == "natural":
+            direction = "horizontal"
+        elif direction == "orthogonal":
+            direction = "vertical"
+
+        if int(amount) < 0:
+            mode = "plus"
+            amount = -amount
+        else:
+            mode = "minus"
+
+        return direction, mode, int(amount)
+
+    @staticmethod
+    def set_resize_params_multiple(direction, amount, vertical):
+        """ Set resize parameters for the block of windows """
+        mode = ""
+
+        if direction == "horizontal":
+            direction = "width"
+        elif direction == "vertical":
+            direction = "height"
+        elif direction == "natural":
+            direction = "height" if vertical else "width"
+        elif direction == "orthogonal":
+            direction = "width" if vertical else "height"
+        elif direction == "top":
+            direction = "up"
+        elif direction == "bottom":
+            direction = "down"
+
+        if int(amount) < 0:
+            mode = "shrink"
+            amount = -int(amount)
+        else:
+            mode = "grow"
+
+        return direction, mode, int(amount)
+
+    def resize(self, direction, amount):
+        """
+            Resize the current container along to the given direction.
+            If there is only a single container, resize by adjusting gaps.
+            If the direction is "natural", resize vertically in a splitv container, else
+            horizontally. If it is "orhtogonal", do the opposite.
+        """
+        if direction not in [
+                "natural", "orthogonal", "horizontal", "vertical",
+                "top", "bottom", "left", "right",
+                ]:
+            try:
+                amount = int(amount)
+            except ValueError:
+                print("Bad resize amount given.")
+                return
+
+        node = self.i3.get_tree().find_focused()
+        single, vertical = True, False
+
+        # Check if there is only a single leaf.
+        # If not, check if the curent container is in a vertical split.
+        while True:
+            parent = node.parent
+            if node.type == "workspace" or not parent:
+                break
+            elif parent.type == "floating_con":
+                single = False
+                break
+            elif len(parent.nodes) > 1 and parent.layout == "splith":
+                single = False
+                break
+            elif len(parent.nodes) > 1 and parent.layout == "splitv":
+                single = False
+                vertical = True
+                break
+            node = parent
+
+        if single:
+            direction, mode, amount = self.set_resize_params_single(
+                direction, amount
+            )
+            self.i3.command(f"gaps {direction} current {mode} {amount}")
+        else:
+            direction, mode, amount = self.set_resize_params_multiple(
+                direction, amount, vertical
+            )
+            self.i3.command(
+                f"resize {mode} {direction} {amount} px or {amount//16} ppt"
+            )
+
+    @staticmethod
+    def create_geom_from_rect(rect) -> dict:
         """ Create geometry from the given rectangle.
 
         Args:
@@ -417,5 +515,126 @@ class win_action(negi3mod, cfg):
         """
         if target_win is None:
             target_win = self.current_win
-        return self.create_geom_from_rect(target_win.rect)
+        return win_action.create_geom_from_rect(target_win.rect)
+
+    @staticmethod
+    def focused_order(node):
+        """Iterate through the children of "node"
+           in most recently focused order.
+        """
+        for focus_id in node.focus:
+            yield next(n for n in node.nodes if n.id == focus_id)
+
+    @staticmethod
+    def focused_child(node):
+        """Return the most recently focused child of "node"."""
+        return next(win_action.focused_order(node))
+
+    @staticmethod
+    def is_in_line(old, new, direction):
+        """
+        Return true if container "new" can reasonably be considered to be in
+        direction "direction" of container "old".
+        """
+        if direction in {"up", "down"}:
+            return new.rect.x <= old.rect.x + old.rect.width*0.9 \
+                and new.rect.x + new.rect.width >= old.rect.x + old.rect.width * 0.1
+
+        if direction in {"left", "right"}:
+            return new.rect.y <= old.rect.y + old.rect.height*0.9 \
+                and new.rect.y + new.rect.height >= old.rect.y + old.rect.height * 0.1
+
+        return None
+
+    def output_in_direction(self, output, window, direction):
+        """
+            Return the output in direction "direction" of window "window" on
+            output "output".
+        """
+        tree = self.i3.get_tree().find_focused()
+        for new in self.focused_order(tree):
+            if new.name == "__i3":
+                continue
+            if not self.is_in_line(window, new, direction):
+                continue
+            orct = output.rect
+            nrct = new.rect
+            if (direction == "left" and nrct.x + nrct.width == orct.x) \
+                    or (direction == "right" and nrct.x == orct.x + orct.width) \
+                    or (direction == "up" and nrct.y + nrct.height == orct.y) \
+                    or (direction == "down" and nrct.y == orct.y + orct.height):
+                return new
+
+        return None
+
+    def focus_tab(self, direction):
+        """
+            Cycle through the innermost stacked or tabbed ancestor container,
+            or through floating containers.
+        """
+        if direction == "next":
+            delta = 1
+        elif direction == "prev":
+            delta = -1
+        else:
+            return
+
+        tree = self.i3.get_tree()
+        node = tree.find_focused()
+
+        # Find innermost tabbed or stacked container, or detect floating.
+        while True:
+            parent = node.parent
+            if not parent or node.type != "con":
+                return
+            if parent.layout in {"tabbed", "stacked"} or parent.type == "floating_con":
+                break
+            node = parent
+
+        if parent.type == "floating_con":
+            node = parent
+            parent = node.parent
+            # The order of floating_nodes is not useful, sort it somehow.
+            parent_nodes = sorted(parent.floating_nodes, key=lambda n: n.id)
+        else:
+            parent_nodes = parent.nodes
+
+        index = parent_nodes.index(node)
+        node = parent_nodes[(index + delta) % len(parent_nodes)]
+
+        # Find most recently focused leaf in new tab.
+        while node.nodes:
+            node = self.focused_child(node)
+
+        self.i3.command(f'[con_id="{node.id}"] focus')
+
+    def move_tab(self, direction):
+        """
+            Move the innermost stacked or tabbed ancestor container.
+        """
+        if direction == "next":
+            delta = 1
+        elif direction == "prev":
+            delta = -1
+        else:
+            return
+
+        node = self.i3.get_tree().find_focused()
+
+        # Find innermost tabbed or stacked container.
+        while True:
+            parent = node.parent
+            if not parent or node.type != "con":
+                return
+            if parent.layout in ["tabbed", "stacked"]:
+                break
+            node = parent
+
+        index = parent.nodes.index(node)
+
+        if 0 <= index + delta < len(parent.nodes):
+            other = parent.nodes[index + delta]
+            self.i3.command(
+                f'[con_id="{node.id}"] swap container with con_id {other.id}'
+            )
 
