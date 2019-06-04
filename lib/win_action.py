@@ -211,28 +211,28 @@ class win_action(negi3mod, cfg):
         double_dgaps = int(gaps['d'] * 2)
         double_sgaps = int(gaps['s'] * 2)
 
-        if 'h1' == mode or 'hup' == mode:
+        if mode in {'h1', 'hup'}:
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
                 'width': curr_scr['width'] - double_dgaps,
                 'height': half_height - double_sgaps,
             }
-        elif 'h2' == mode or 'hdown' == mode:
+        elif mode in {'h2', 'hdown'}:
             geom = {
                 'x': gaps['a'],
                 'y': half_height + gaps['w'],
                 'width': curr_scr['width'] - double_dgaps,
                 'height': half_height - double_sgaps,
             }
-        elif 'v1' == mode or 'vleft' == mode:
+        elif mode in {'v1', 'vleft'}:
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
                 'width': half_width - double_dgaps,
                 'height': curr_scr['height'] - double_sgaps,
             }
-        elif 'v2' == mode or 'vright' == mode:
+        elif mode in {'v2', 'vright'}:
             geom = {
                 'x': gaps['a'] + half_width,
                 'y': gaps['w'],
@@ -278,28 +278,28 @@ class win_action(negi3mod, cfg):
         double_dgaps = int(gaps['d'] * 2)
         double_sgaps = int(gaps['s'] * 2)
 
-        if 1 == mode:
+        if mode == 1:
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'],
                 'width': half_width - double_dgaps,
                 'height': half_height - double_sgaps,
             }
-        elif 2 == mode:
+        elif mode == 2:
             geom = {
                 'x': half_width + gaps['a'],
                 'y': gaps['w'],
                 'width': half_width - double_dgaps,
                 'height': half_height - double_sgaps,
             }
-        elif 3 == mode:
+        elif mode == 3:
             geom = {
                 'x': gaps['a'],
                 'y': gaps['w'] + half_height,
                 'width': half_width - double_dgaps,
                 'height': half_height - double_sgaps,
             }
-        elif 4 == mode:
+        elif mode == 4:
             geom = {
                 'x': gaps['a'] + half_width,
                 'y': gaps['w'] + half_height,
@@ -338,15 +338,15 @@ class win_action(negi3mod, cfg):
                 else:
                     # do nothing
                     return
-            if 'XY' == by or 'YX' == by:
+            if by in {'XY', 'YX'}:
                 max_geom = self.maximized_geom(
                     geom.copy(), byX=True, byY=True
                 )
-            elif 'X' == by:
+            elif by == 'X':
                 max_geom = self.maximized_geom(
                     geom.copy(), byX=True, byY=False
                 )
-            elif 'Y' == by:
+            elif by == 'Y':
                 max_geom = self.maximized_geom(
                     geom.copy(), byX=False, byY=True
                 )
