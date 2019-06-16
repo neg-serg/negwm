@@ -30,7 +30,7 @@ more.
 stopped then handles mpv with mpvc if the current window is mpv, or with
 sending 0, 9 keys to the mpv window if not.
 
-*wm3*: various stuff to emulate some 2bwm UX.
+*win_action*: various stuff to emulate some 2bwm UX.
 
 *executor*: module to create various terminal windows with custom config
 and/or tmux session handling. Supports a lot of terminal emulators.
@@ -65,6 +65,7 @@ stability issues.
 + ewmh -- used to create EWMH helper.
 + yamlloader -- module for the more fast yaml file loading.
 + pulsectl -- used for menu to change pulseaudio input / output sinks
++ docopt -- for cli options in negi3mods script
 
 
 To install it you may use pip:
@@ -76,13 +77,17 @@ sudo pip install -r requirements.txt --upgrade
 or
 
 ```
-sudo pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master inotify toml aionotify aiofiles Xlib ewmh yamlloader pulsectl
+sudo pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
+    inotify toml aionotify aiofiles Xlib \
+    ewmh yamlloader pulsectl docopt
 ```
 
 In case of pypy it may be something like
 
 ```
-sudo pypy3 -m pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master inotify toml aionotify aiofiles Xlib ewmh yamlloader pulsectl
+sudo pypy3 -m pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
+    inotify toml aionotify aiofiles Xlib \
+    ewmh yamlloader pulsectl docopt
 ```
 
 or
@@ -110,19 +115,7 @@ because of i3 connection will be closed after i3 restart and then started by
 
 # Performance
 
-~~I recommend you to use *stackless python* for better performance. Nuitka / pypy
-/ cython are *not* the best choise here: native python3 performance looks
-better on my machine.~~
-
-*Upd*: for some reason with stackless python I've got not correct return for
-`focused.workspace().descendents()` case, maybe it's my fault, but I can't
-fix that. As the result the nsd.py behaviour is not always corrent for now
-with stackless python 3.6 or 3.7, but ok with `CPython 3.6`.
-
-It seems that for now `pypy3 5.10.1-1` works very nice. Maybe this is because
-of code changes over the time.
-
-# Performance profiling
+## Performance profiling
 
 You can check measure startup performance with tools like pycallgraph.
 
@@ -134,6 +127,8 @@ kernprof -l -v ./negi3mods.py
 
 for the more detail function/line-based profiling. As far as I know PyPy3 is
 not supported yet.
+
+For now negi3mods using cpython interpreter because of more fast startup.
 
 
 # Why
