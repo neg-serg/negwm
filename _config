@@ -169,7 +169,6 @@ for_window [class="^(ViberPC|VK|zoom)$"] move scratchpad, move absolute position
 for_window [class="^([Tt]elegram|[Ss]kype).*$"] move scratchpad, move absolute position 1372 127, resize set 548 1037
 for_window [instance="ncmpcpp"] move scratchpad, move absolute position 276 326, resize set 1389 696
 for_window [class="cool-retro-term"] move scratchpad, move absolute position 276 326, resize set 1389 696
-for_window [instance="weechat"] move scratchpad, move absolute position 112 33, resize set 1736 1091
 for_window [instance="^(mailspring|mutt)$"] move scratchpad, move absolute position 52 0, resize set 1835 1114
 for_window [instance="ranger"] move scratchpad, move absolute position 3 1, resize set 1916 816
 for_window [instance="teardrop"] move scratchpad, move absolute position 39 4, resize set 1844 704
@@ -217,7 +216,7 @@ bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
 # ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
 # ░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀░░░░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░
 bindsym $m4+{f,e,d,a} $bscratch toggle {ncmpcpp,im,teardrop,youtube}
-bindsym $m4+$S+{p,e} $bscratch toggle {volcontrol,weechat}
+bindsym $m4+$S+p $bscratch toggle volcontrol
 bindsym $m4+v $bscratch toggle discord
 
 bindsym $m4+$c+$S+{R,D,S} $bscratch {geom_restore,geom_dump,geom_autosave_mode}
@@ -232,7 +231,8 @@ bindsym $m4+$S+c $circle subtag sxiv wallpaper
 bindsym $m4+{x,1} $circle next {term,nwim}
 bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
 bindsym $m4+F3 $circle next emacs
-bindsym $m4+$c+{v,e} $circle next {vm,steam}
+bindsym $m4+$c+{v,e} $circle next {vm,steam_valve}
+bindsym $m4+$S+e $circle next lutris
 bindsym $m4+$c+f $circle next looking_glass
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
