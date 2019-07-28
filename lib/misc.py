@@ -35,7 +35,7 @@ class Misc():
         """ Extracts field from xrdb executable.
         """
         out = subprocess.run(
-            f"xrdb -query | rg '{field}' | awk '{{print $2}}'",
+            f"xrescat '{field}'",
             shell=True,
             stdout=subprocess.PIPE
         ).stdout
