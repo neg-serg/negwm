@@ -93,6 +93,7 @@ set $wine "12 ::  μ:wine"
 set $spotify "13 ::  ν:spotify"
 set $pic "14 ::  ξ:pic"
 set $remote "15 ::  ο:remote"
+set $sound "16 ::  ο:sound"
 
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
@@ -113,6 +114,7 @@ set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
 set $jetbrains [class="^jetbrains-(idea|clion|andrond-studio).*"]
 set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
 set $office [class="^(libreoffice|abiword).*$"]
+set $daw [class="Bitwig Studio"]
 
 title_align left
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
@@ -133,6 +135,7 @@ for_window $torrent_apps move workspace $torrent, focus
 for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote
 for_window [class="albert"] move workspace current, focus
+for_window $daw move workspace $sound, focus
 
 # ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
 # ░█▀▄░█▀▀░█▀█░█░█░█▀▀░█▀▄░▀▀█
@@ -207,6 +210,7 @@ bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
 bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw-list"
 bindsym $m4+$S+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
 bindsym $m4+$C+5 $circle next remote
+bindsym $m4+$C+b $circle next bitwig
 bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
 bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+4 exec --no-startup-id flameshot gui
