@@ -76,16 +76,21 @@ class polybar_vol(modconfig):
 
         self.bracket_color = Misc.extract_xrdb_value(self.bracket_color_field)
         self.bright_color = Misc.extract_xrdb_value(self.bright_color_field)
-        self.foreground_color = Misc.extract_xrdb_value(self.foreground_color_field)
+        self.foreground_color = Misc.extract_xrdb_value(
+            self.foreground_color_field
+        )
 
         self.right_bracket = ""
 
         # set string for the empty output
         if self.conf('show_volume').startswith('y'):
-            self.empty_str = f"%{{F{self.bracket_color}}}{self.delimiter}%{{F{self.bright_color}}}" + \
-                f"{self.vol_prefix}%{{F{self.foreground_color}}}n/a%{{F-}} %{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}"
+            self.empty_str = f"%{{F{self.bracket_color}}}{self.delimiter}" + \
+                f"%{{F{self.bright_color}}}" + \
+                f"{self.vol_prefix}%{{F{self.foreground_color}}}n/a%{{F-}}" + \
+                f" %{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}"
         else:
-            self.empty_str = f" %{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}"
+            self.empty_str = f" %{{F{self.bracket_color}}}" + \
+                f"{self.right_bracket}%{{F-}}"
 
         # run mainloop
         self.main()
@@ -106,15 +111,17 @@ class polybar_vol(modconfig):
     def print_volume(self):
         """ Create nice and shiny output for polybar.
         """
-        return f'%{{F{self.bracket_color}}}{self.delimiter}%{{F-}}%{{F{self.foreground_color}}}' + \
-            f'{self.vol_prefix}{self.volume}{self.vol_suffix}%{{F-}}%{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}'
+        return f'%{{F{self.bracket_color}}}{self.delimiter}%{{F-}}' + \
+            f'%{{F{self.foreground_color}}}' + \
+            f'{self.vol_prefix}{self.volume}{self.vol_suffix}%{{F-}}' + \
+            f'%{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}'
 
     def empty_output(self):
         """ This output will be used if no information about volume.
         """
         sys.stdout.write(f'{self.empty_str}\n')
 
-    async def initial_mpd_volume(self, loop, reader, writer):
+    async def initial_mpd_volume(self, reader, writer):
         """ Load MPD volume state when script started.
         """
         mpd_stopped = None
@@ -131,8 +138,8 @@ class polybar_vol(modconfig):
             else:
                 sys.stdout.write(f" \n")
         else:
-            for t in parsed:
-                if t == 'state: stop':
+            for token in parsed:
+                if token == 'state: stop':
                     mpd_stopped = True
                     break
             if mpd_stopped:
@@ -148,7 +155,7 @@ class polybar_vol(modconfig):
         reader, writer = await asyncio.open_connection(
             host=self.addr, port=self.port, loop=loop
         )
-        if await self.initial_mpd_volume(loop, reader, writer):
+        if await self.initial_mpd_volume(reader, writer):
             while True:
                 writer.write(self.idle_mixer.encode(encoding='utf-8'))
                 data = await reader.read(self.buf_size)
