@@ -40,13 +40,12 @@ import asyncio
 import aionotify
 
 import i3ipc
+from docopt import docopt
 
 from lib.locker import get_lock
 from lib.msgbroker import MsgBroker
 from lib.misc import Misc
 from lib.standalone_cfg import modconfig
-
-from docopt import docopt
 
 
 class negi3mods(modconfig):
@@ -264,7 +263,8 @@ class negi3mods(modconfig):
         print('... exit ...')
 
 
-if __name__ == '__main__':
+def main():
+    """ Run negi3mods from here """
     get_lock(os.path.basename(__file__))
 
     # We need it because of thread_wait on Ctrl-C.
@@ -282,4 +282,8 @@ if __name__ == '__main__':
         print("[ Top 10 ]")
         for stat in top_stats[:10]:
             print(stat)
+
+
+if __name__ == '__main__':
+    main()
 
