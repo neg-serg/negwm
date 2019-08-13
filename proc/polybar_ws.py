@@ -35,9 +35,9 @@ year :: 2019
 
 import sys
 import asyncio
-import i3ipc
-import re
 from threading import Thread, Event
+import re
+import i3ipc
 
 from lib.standalone_cfg import modconfig
 from lib.misc import Misc
@@ -56,7 +56,7 @@ class polybar_ws(modconfig):
 
         self.i3 = i3ipc.Connection()
         self.i3.on('workspace::focus', self.on_ws_focus)
-        self.i3.on('binding', self.on_eventent)
+        self.i3.on('binding', self.on_event)
 
         self.ws_name = ""
         self.binding_mode = ""
@@ -84,10 +84,11 @@ class polybar_ws(modconfig):
         self.ws_name = ws_name.split(' :: ')[1:][0]
         self.event.set()
 
-    def colorize(self, s, color):
+    @staticmethod
+    def colorize(s, color):
         return f"%{{T4}}%{{F{color}}}{s}%{{F-}}%{{T-}}"
 
-    def on_eventent(self, i3, event):
+    def on_event(self, i3, event):
         bind_cmd = event.binding.command
         for t in re.split(self.split_by, bind_cmd):
             if 'mode' in t:
@@ -98,7 +99,9 @@ class polybar_ws(modconfig):
                         self.binding_mode = ''
                     else:
                         self.binding_mode = \
-                            self.colorize(ret, color=self.binding_color) + ' '
+                            polybar_ws.colorize(
+                                ret, color=self.binding_color
+                            ) + ' '
                     self.event.set()
 
     def special_reload(self):
@@ -113,24 +116,31 @@ class polybar_ws(modconfig):
         """
         asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(
-            self.update_status(self.loop),
+            self.update_status(),
         )
 
-    async def update_status(self, loop):
+    async def update_status(self):
         """ Print workspace information here. Event-based.
         """
         while True:
             if self.event.wait():
-                ws = self.ws_name
-                if not ws[0].isalpha():
-                    ws = self.colorize(ws[0], color=self.ws_color) + ws[1:]
-                sys.stdout.write(f"{self.binding_mode + ws}\n")
+                workspace = self.ws_name
+                if not workspace[0].isalpha():
+                    workspace = polybar_ws.colorize(
+                        workspace[0], color=self.ws_color
+                    ) + workspace[1:]
+                sys.stdout.write(f"{self.binding_mode + workspace}\n")
                 self.event.clear()
                 await asyncio.sleep(0)
 
 
-if __name__ == '__main__':
+def main():
+    """ Start polybar_ws from here """
     loop = polybar_ws()
     Thread(target=loop.main, daemon=False).start()
     loop.i3.main()
+
+
+if __name__ == '__main__':
+    main()
 
