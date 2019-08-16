@@ -235,7 +235,7 @@ bindsym $m4+$S+c $circle subtag sxiv wallpaper
 bindsym $m4+{x,1} $circle next {term,nwim}
 bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
 bindsym $m4+F3 $circle next emacs
-bindsym $m4+$c+{v,e} $circle next {vm,steam_valve}
+bindsym $m4+$c+{v,e} $circle next {vm,steam}
 bindsym $m4+$S+e $circle next lutris
 bindsym $m4+$c+f $circle next looking_glass
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
