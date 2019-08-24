@@ -68,7 +68,8 @@ class winact():
             input=bytes('\n'.join(wslist), 'UTF-8')
         ).stdout
 
-        return workspace_name.decode('UTF-8').strip()
+        selected_ws = workspace_name.decode('UTF-8').strip()
+        return str(wslist.index(selected_ws) + 1) + ' :: ' + selected_ws
 
     @staticmethod
     def apply_to_ws(ws_func: Callable) -> None:
