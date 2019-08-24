@@ -2,6 +2,7 @@ import subprocess
 
 
 class xprop():
+    """ Setup screen resolution """
     def __init__(self, menu):
         self.menu = menu
 
@@ -24,7 +25,8 @@ class xprop():
             'cnum': 1,
             'lnum': len(xprops),
             'width': int(self.menu.screen_width * 0.75),
-            'prompt': f'{self.menu.wrap_str("xprop")} {self.menu.prompt}'
+            'prompt':
+                f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'
         }
         xprop_sel = subprocess.run(
             self.menu.rofi_args(rofi_params),

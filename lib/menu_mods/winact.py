@@ -20,7 +20,7 @@ class winact():
         rofi_params = {
             'cnum': winlist_len,
             'width': int(self.menu.screen_width * 0.75),
-            'prompt': f"{prompt} {self.menu.prompt}"
+            'prompt': f"{prompt} {self.menu.conf('prompt')}"
         }
         if winlist and winlist_len > 1:
             win_name = subprocess.run(
@@ -60,7 +60,7 @@ class winact():
         rofi_params = {
             'cnum': len(wslist),
             'width': int(self.menu.screen_width * 0.66),
-            'prompt': f'{self.menu.wrap_str("ws")} {self.menu.prompt}',
+            'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}',
         }
         workspace_name = subprocess.run(
             self.menu.rofi_args(rofi_params),

@@ -10,22 +10,23 @@
         - i3-cmd menu with autocompletion.
 """
 
+import importlib
+from typing import List
+
 from cfg import cfg
 from misc import Misc
-from display import Display
-from typing import List
 from negi3mod import negi3mod
-
-import importlib
 
 
 class menu(negi3mod, cfg):
-    def __init__(self, i3, loop=None) -> None:
+    """ Base class for menu module """
+
+    def __init__(self, i3ipc, loop=None) -> None:
         # Initialize cfg.
-        cfg.__init__(self, i3)
+        cfg.__init__(self, i3ipc)
 
         # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3
+        self.i3 = i3ipc
 
         # i3 path used to get "send" binary path
         self.i3_path = Misc.i3path()
@@ -37,19 +38,11 @@ class menu(negi3mod, cfg):
         self.xprops_list = self.conf("xprops_list")
 
         # cache screen width
-        self.screen_width = Display.get_screen_resolution()["width"]
-
-        # set up settings for rofi, dmenu, whatever
-        self.launcher_font = self.conf("font") + " " + \
-            str(self.conf("font_size"))
-        self.location = self.conf("location")
-        self.anchor = self.conf("anchor")
-        self.matching = self.conf("matching")
-        self.prompt = self.conf("prompt")
-        self.lhs_br = self.conf('left_bracket')
-        self.rhs_br = self.conf('right_bracket')
-
-        self.gap = self.conf('gap')
+        if not self.conf("use_default_width"):
+            from display import Display
+            self.screen_width = Display.get_screen_resolution()["width"]
+        else:
+            self.screen_width = int(self.conf('use_default_width'))
 
         for mod in self.cfg['modules']:
             module = importlib.import_module('menu_mods.' + mod)
@@ -80,9 +73,18 @@ class menu(negi3mod, cfg):
         }
 
     def rofi_args(self, params: dict()) -> List[str]:
+        """ Create run parameters to spawn rofi process from dict
+
+            Args:
+                params(dict): parameters for rofi
+            Return:
+                List(str) to do rofi subprocessing
+        """
+        prompt = self.conf("prompt")
+
         params['width'] = params.get('width', 0) or \
             int(self.screen_width * 0.85)
-        params['prompt'] = params.get('prompt', 0) or self.prompt
+        params['prompt'] = params.get('prompt', 0) or prompt
         params['cnum'] = params.get('cnum', 0) or 16
         params['lnum'] = params.get('lnum', 0) or 2
         params['markup_rows'] = params.get('markup_rows', 0) or \
@@ -90,12 +92,14 @@ class menu(negi3mod, cfg):
         params['auto_selection'] = params.get('auto_selection', 0) or \
             "-no-auto-selection"
 
-        """ Returns arguments list for rofi runner.
+        launcher_font = self.conf("font") + " " + \
+            str(self.conf("font_size"))
+        location = self.conf("location")
+        anchor = self.conf("anchor")
+        matching = self.conf("matching")
+        gap = self.conf("gap")
 
-        Args:
-            params(dict): dict for rofi parameters.
-        """
-        return [
+        rofi_params = [
             'rofi', '-show', '-dmenu',
             '-columns', str(params['cnum']),
             '-lines', str(params['lnum']),
@@ -103,14 +107,19 @@ class menu(negi3mod, cfg):
             params['auto_selection'],
             params['markup_rows'],
             '-p', params['prompt'],
-            '-i',  # non case-sensitive
-            '-matching', f'{self.matching}',
-            '-theme-str', f'* {{ font: "{self.launcher_font}"; }}',
-            '-theme-str', f'#window {{ width:{params["width"]}; y-offset: -{self.gap}; \
-            location: {self.location}; \
-            anchor: {self.anchor}; }}',
+            '-i',
+            '-matching', f'{matching}',
+            '-theme-str',
+            f'* {{ font: "{launcher_font}"; }}',
+            '-theme-str',
+            f'#window {{ width:{params["width"]}; y-offset: -{gap}; \
+            location: {location}; \
+            anchor: {anchor}; }}',
         ]
 
-    def wrap_str(self, s: str) -> str:
-        return self.lhs_br + s + self.rhs_br
+        return rofi_params
+
+    def wrap_str(self, string: str) -> str:
+        """ String wrapper to make it beautiful """
+        return self.conf('left_bracket') + string + self.conf('right_bracket')
 

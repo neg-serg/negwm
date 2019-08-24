@@ -38,7 +38,7 @@ class props():
         rofi_params = {
             'cnum': len(lst),
             'width': int(self.menu.screen_width * 0.75),
-            'prompt': f'{self.menu.wrap_str(mod)} {self.menu.prompt}',
+            'prompt': f'{self.menu.wrap_str(mod)} {self.menu.conf("prompt")}',
         }
         rofi_tag = subprocess.run(
             self.menu.rofi_args(rofi_params),
@@ -81,7 +81,7 @@ class props():
             'cnum': len(self.possible_mods),
             'lnum': 1,
             'width': int(self.menu.screen_width * 0.75),
-            'prompt': f'{self.menu.wrap_str("selmod")} {self.menu.prompt}'
+            'prompt': f'{self.menu.wrap_str("selmod")} {self.menu.conf("prompt")}'
         }
         mod = subprocess.run(
             self.menu.rofi_args(rofi_params),

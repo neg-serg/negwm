@@ -76,8 +76,8 @@ class i3menu():
         debug, ok, notify_msg = False, False, ""
         args, prev_args = None, None
         rofi_params = {
-            'prompt': f"{self.menu.wrap_str('i3cmd')}" +
-            f" {self.menu.prompt} " + cmd,
+            'prompt': f"{self.menu.wrap_str('i3cmd')} \
+                {self.menu.conf('prompt')} " + cmd,
         }
         while not (ok or args == ['<end>'] or args == []):
             if debug:
