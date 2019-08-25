@@ -61,15 +61,8 @@ focus_wrapping yes
 # ░█░█░▀█▀░█▀█░█▀▀
 # ░█▄█░░█░░█░█░▀▀█
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀
-#popup_during_fullscreen leave_fullscreen
-default_border pixel 2
-default_floating_border pixel 3
-show_marks no
-
-# ░█▀▀░█▀█░█▀█░█▀▀
-# ░█░█░█▀█░█▀▀░▀▀█
-# ░▀▀▀░▀░▀░▀░░░▀▀▀
-# smart_gaps on
+default_border pixel 1
+show_marks yes
 smart_borders on
 hide_edge_borders both
 gaps inner 0
