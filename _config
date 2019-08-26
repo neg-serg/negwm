@@ -61,7 +61,7 @@ focus_wrapping yes
 # ░█░█░▀█▀░█▀█░█▀▀
 # ░█▄█░░█░░█░█░▀▀█
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀
-default_border pixel 1
+default_border pixel 2
 show_marks yes
 smart_borders on
 hide_edge_borders both
