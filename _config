@@ -126,7 +126,7 @@ for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="Sxiv"] move workspace $pic, focus
 for_window $torrent_apps move workspace $torrent, focus
 for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
-for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote
+for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote, focus
 for_window [class="albert"] move workspace current, focus
 for_window $daw move workspace $sound, focus
 
@@ -266,8 +266,9 @@ bindsym $m4+q fullscreen toggle
 # ░█▄█░█▀▀░█▀█░█░█
 # ░█░█░█▀▀░█░█░█░█
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀
-bindsym $alt+g exec $menu goto_win
-bindsym $m4+m exec $menu xprop, $exit
+bindsym $alt+g $menu goto_win
+bindsym $m4+$S+i $menu xprop, $exit
+bindsym $m4+m exec ~/bin/scripts/nmcli_dmenu, $exit
 bindsym $m4+$S+a $menu attach
 bindsym $m4+g $menu ws
 bindsym $m4+$c+g $menu movews
