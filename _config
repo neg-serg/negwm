@@ -107,7 +107,7 @@ set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
 set $jetbrains [class="^jetbrains-(idea|clion|andrond-studio).*"]
 set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
 set $office [class="^(libreoffice|abiword).*$"]
-set $daw [class="^(Bitwig Studio|airwave-host-32.exe)$"]
+set $daw [class="Bitwig Studio" instance="airwave-host-32.exe"]
 
 title_align left
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
@@ -156,7 +156,6 @@ for_window {$jetbrains} move workspace $ide
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀
 for_window {$sclient,$games} move workspace $steam
-for_window {$wine_apps,$windows_exe_by_title,$windows_exe_by_class} move workspace $wine
 
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
