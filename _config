@@ -107,7 +107,7 @@ set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
 set $jetbrains [class="^jetbrains-(idea|clion|andrond-studio).*"]
 set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
 set $office [class="^(libreoffice|abiword).*$"]
-set $daw [class="Bitwig Studio"]
+set $daw [class="^(Bitwig Studio|airwave-host-32.exe)$"]
 
 title_align left
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
@@ -228,8 +228,8 @@ bindsym $m4+$S+c $circle subtag sxiv wallpaper
 bindsym $m4+{x,1} $circle next {term,nwim}
 bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
 bindsym $m4+F3 $circle next emacs
-bindsym $m4+$c+{v,e} $circle next {vm,steam}
-bindsym $m4+$S+e $circle next lutris
+bindsym $m4+$c+{v,s} $circle next {vm,steam}
+bindsym $m4+$c+e $circle next lutris
 bindsym $m4+$c+f $circle next looking_glass
 bindsym $m4+{w,b,o} $circle next {web,vid,doc}
 bindsym $m4+$S+o $circle next obs
