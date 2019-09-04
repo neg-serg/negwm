@@ -127,6 +127,7 @@ for_window [class="Sxiv"] move workspace $pic, focus
 for_window $torrent_apps move workspace $torrent, focus
 for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote, focus
+for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
 for_window [class="albert"] move workspace current, focus
 for_window $daw move workspace $sound, focus
 
