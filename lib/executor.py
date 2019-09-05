@@ -53,10 +53,11 @@ class env():
             if dir_not_created.errno != errno.EEXIST:
                 raise
 
-        self.window_class = config.get(name, {}).get("window_class", {})
-
         # get terminal from config, use Alacritty by default
         self.term = config.get(name, {}).get("term", "alacritty").lower()
+
+        self.wclass = config.get(name, {}).get("class", self.term)
+        self.title = config.get(name, {}).get("title", self.term)
 
         self.font = config.get("default_font", "")
         if not self.font:
@@ -77,8 +78,8 @@ class env():
         self.postfix = config.get(name, {}).get("postfix", '')
         if self.postfix and self.postfix[0] != '-':
             self.postfix = '\\; ' + self.postfix
-        self.tmuxed = int(config.get(name, {}).get("tmuxed", 1))
-        if not self.tmuxed:
+        self.run_tmux = int(config.get(name, {}).get("run_tmux", 1))
+        if not self.run_tmux:
             prog_to_dtach = config.get(name, {}).get('prog_detach', '')
             if prog_to_dtach:
                 self.prog = \
@@ -114,12 +115,12 @@ class env():
             Return:
                cfgname(str): configname
         """
-        alacritty_suffix = config.get(name, {}).get('alacritty_suffix', {})
-        if not alacritty_suffix:
-            alacritty_suffix = config.get(name, {}).get('window_class')
+        app_name = config.get(name, {}).get('app_name', {})
+        if not app_name:
+            app_name = config.get(name, {}).get('class')
 
-        alacritty_suffix = expanduser(alacritty_suffix + '.yml')
-        cfgname = expanduser(f'{alacritty_cfg_dir}/{alacritty_suffix}')
+        app_name = expanduser(app_name + '.yml')
+        cfgname = expanduser(f'{alacritty_cfg_dir}/{app_name}')
 
         if not os.path.exists(cfgname):
             shutil.copyfile(
@@ -169,28 +170,7 @@ class env():
                 config(dict): config dictionary which should be adopted to
                 commandline options or settings.
         """
-        terminal = config.get(name, {}).get("term")
-        if terminal == "alacritty":
-            self.term_opts = ["alacritty"] + [
-                "-t", self.window_class,
-                "-e", "dash", "-c"
-            ]
-        elif terminal == "alacritty-custom":
-            custom_config = self.generate_alacritty_config(
-                self.alacritty_cfg_dir, config, name
-            )
-            multiprocessing.Process(
-                target=self.yaml_config_create, args=(custom_config,),
-                daemon=True
-            ).start()
-            self.term_opts = [
-                "alacritty", "--live-config-reload", "--config-file",
-                expanduser(custom_config)
-            ] + [
-                "--class", self.window_class,
-                "-e", "dash", "-c"
-            ]
-        elif terminal == "alacritty-custom-silent":
+        if self.term == "alacritty":
             custom_config = self.generate_alacritty_config(
                 self.alacritty_cfg_dir, config, name
             )
@@ -202,28 +182,29 @@ class env():
                 "alacritty", '-qq', "--live-config-reload", "--config-file",
                 expanduser(custom_config)
             ] + [
-                "--class", self.window_class,
+                "--class", self.wclass,
+                "-t", self.title,
                 "-e", "dash", "-c"
             ]
-        elif terminal == "st":
+        elif self.term == "st":
             self.term_opts = ["st"] + [
-                "-c", self.window_class,
+                "-c", self.wclass,
                 "-f", self.font + ":size=" + str(self.font_size),
                 "-e", "dash", "-c",
             ]
-        elif terminal == "urxvt":
+        elif self.term == "urxvt":
             self.term_opts = ["urxvt"] + [
-                "-name", self.window_class,
+                "-name", self.wclass,
                 "-fn", "xft:" + self.font + ":size=" + str(self.font_size),
                 "-e", "dash", "-c",
             ]
-        elif terminal == "xterm":
+        elif self.term == "xterm":
             self.term_opts = ["xterm"] + [
-                '-class', self.window_class,
+                '-class', self.wclass,
                 '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
                 "-e", "dash", "-c",
             ]
-        elif terminal == "cool-retro-term":
+        elif self.term == "cool-retro-term":
             self.term_opts = ["cool-retro-term"] + [
                 "-e", "dash", "-c",
             ]
@@ -310,7 +291,7 @@ class executor(negi3mod, cfg):
         """ Search for selected window class.
         """
         return subprocess.run(
-            shlex.split(f"xdotool search --classname {self.env.window_class}"),
+            shlex.split(f"xdotool search --classname {self.env.wclass}"),
             stdout=subprocess.PIPE
         ).stdout
 
@@ -326,13 +307,13 @@ class executor(negi3mod, cfg):
 
     def run(self, name: str) -> None:
         """ Entry point, run application with Tmux on dedicated socket(in most
-            cases), or without tmux, if config value tmuxed=0.
+            cases), or without tmux, if config value run_tmux=0.
             Args:
                 name (str): target application name, with configuration taken
                             from TOML.
         """
         self.env = self.envs[name]
-        if self.env.tmuxed:
+        if self.env.run_tmux:
             if self.env.name in self.detect_session_bind(
                     self.env.sockpath, self.env.name):
                 wid = self.search_classname()
