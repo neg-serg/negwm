@@ -139,4 +139,3 @@ class geom():
         cg.append(int(int(g[3])*cr['height'] / rd['height']))
 
         return "move absolute position {2} {3}, resize set {0} {1}".format(*cg)
-
