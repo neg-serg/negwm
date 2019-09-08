@@ -109,4 +109,3 @@ class fs(negi3mod, cfg):
         if self.show_panel_on_close:
             if not i3conn.get_tree().find_fullscreen():
                 self.panel_action('show', restore=True)
-
