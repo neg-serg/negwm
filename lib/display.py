@@ -45,4 +45,3 @@ class Display():
     @classmethod
     def set_screen_size(cls, size_id=0) -> None:
         subprocess.run(['xrandr', '-s', str(size_id)])
-
