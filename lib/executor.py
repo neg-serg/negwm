@@ -287,7 +287,7 @@ class executor(negi3mod, cfg):
             [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
         )
 
-    def search_classname(self) -> str:
+    def search_classname(self) -> bytes:
         """ Search for selected window class.
         """
         return subprocess.run(
@@ -330,4 +330,3 @@ class executor(negi3mod, cfg):
                     self.env.set_colorscheme + self.env.prog
                 ]
             )
-
