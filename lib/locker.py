@@ -23,4 +23,3 @@ def get_lock(process_name: str) -> None:
     except socket.error:
         print('lock exists')
         sys.exit()
-
