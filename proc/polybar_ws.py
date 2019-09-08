@@ -77,7 +77,7 @@ class polybar_ws(modconfig):
                 self.ws_name = ws_name.split(' :: ')[1:][0]
                 break
 
-    def on_ws_focus(self, i3, event):
+    def on_ws_focus(self, _, event):
         """ Get workspace name and throw event.
         """
         ws_name = event.current.name
@@ -88,7 +88,7 @@ class polybar_ws(modconfig):
     def colorize(s, color):
         return f"%{{T4}}%{{F{color}}}{s}%{{F-}}%{{T-}}"
 
-    def on_event(self, i3, event):
+    def on_event(self, _, event):
         bind_cmd = event.binding.command
         for t in re.split(self.split_by, bind_cmd):
             if 'mode' in t:
@@ -143,4 +143,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

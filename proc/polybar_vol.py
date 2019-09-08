@@ -184,4 +184,3 @@ class polybar_vol(modconfig):
 
 if __name__ == '__main__':
     polybar_vol()
-
