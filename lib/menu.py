@@ -72,7 +72,7 @@ class menu(negi3mod, cfg):
             "reload": self.reload_config,
         }
 
-    def rofi_args(self, params: dict()) -> List[str]:
+    def rofi_args(self, params: dict) -> List[str]:
         """ Create run parameters to spawn rofi process from dict
 
             Args:
@@ -122,4 +122,3 @@ class menu(negi3mod, cfg):
     def wrap_str(self, string: str) -> str:
         """ String wrapper to make it beautiful """
         return self.conf('left_bracket') + string + self.conf('right_bracket')
-
