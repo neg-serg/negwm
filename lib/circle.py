@@ -45,7 +45,7 @@ class circle(negi3mod, cfg, Matcher):
         Matcher.__init__(self)
 
         # i3ipc connection, bypassed by negi3mods runner.
-        self.i3 = i3
+        self.i3ipc = i3
 
         # map of tag to the tagged windows.
         self.tagged = {}
@@ -73,7 +73,7 @@ class circle(negi3mod, cfg, Matcher):
         self.need_handle_fullscreen = True
 
         # Initialize
-        i3tree = self.i3.get_tree()
+        i3tree = self.i3ipc.get_tree()
 
         # prepare for prefullscreen
         self.fullscreened = i3tree.find_fullscreen()
@@ -98,10 +98,10 @@ class circle(negi3mod, cfg, Matcher):
             "reload": self.reload_config,
         }
 
-        self.i3.on('window::new', self.add_wins)
-        self.i3.on('window::close', self.del_wins)
-        self.i3.on("window::focus", self.set_curr_win)
-        self.i3.on("window::fullscreen_mode", self.handle_fullscreen)
+        self.i3ipc.on('window::new', self.add_wins)
+        self.i3ipc.on('window::close', self.del_wins)
+        self.i3ipc.on("window::focus", self.set_curr_win)
+        self.i3ipc.on("window::fullscreen_mode", self.handle_fullscreen)
 
     def run_prog(self, tag: str, subtag: str = '') -> None:
         """ Run the appropriate application for the current tag/subtag.
@@ -118,13 +118,13 @@ class circle(negi3mod, cfg, Matcher):
                     self.conf(tag, subtag)
                 )
             if prog_str:
-                self.i3.command(f'exec {prog_str}')
+                self.i3ipc.command(f'exec {prog_str}')
             else:
                 spawn_str = self.extract_prog_str(
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
-                    self.i3.command(
+                    self.i3ipc.command(
                         f'exec ~/.config/i3/send executor run {spawn_str}'
                     )
 
@@ -153,7 +153,7 @@ class circle(negi3mod, cfg, Matcher):
         for win_id in self.restore_fullscreen:
             if win_id == now_focused:
                 self.need_handle_fullscreen = False
-                self.i3.command(
+                self.i3ipc.command(
                     f'[con_id={now_focused}] fullscreen enable'
                 )
 
@@ -300,7 +300,7 @@ class circle(negi3mod, cfg, Matcher):
             if tag != tag_to_add:
                 self.del_props(tag, prop_str)
 
-        self.initialize(self.i3)
+        self.initialize(self.i3ipc)
 
     def del_prop(self, tag: str, prop_str: str) -> None:
         """ Delete property via [prop_str] to the target [tag].
@@ -331,7 +331,7 @@ class circle(negi3mod, cfg, Matcher):
                 tag (str): denotes the target tag.
         """
         if invalidate_winlist:
-            self.winlist = self.i3.get_tree().leaves()
+            self.winlist = self.i3ipc.get_tree().leaves()
         self.tagged = {}
 
         for tag in self.cfg:
@@ -415,7 +415,7 @@ class circle(negi3mod, cfg, Matcher):
                 event.container.
         """
         win = event.container
-        self.fullscreened = self.i3.get_tree().find_fullscreen()
+        self.fullscreened = self.i3ipc.get_tree().find_fullscreen()
         if self.need_handle_fullscreen:
             if win.fullscreen_mode:
                 if win.id not in self.restore_fullscreen:

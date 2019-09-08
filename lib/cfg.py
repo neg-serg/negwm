@@ -40,7 +40,7 @@ class cfg(object):
             'title': 'name',
         }
 
-        self.i3 = i3
+        self.i3ipc = i3
         self.loop = None
         if loop is not None:
             self.loop = loop
@@ -116,9 +116,9 @@ class cfg(object):
         try:
             self.load_config()
             if self.loop is None:
-                self.__init__(self.i3)
+                self.__init__(self.i3ipc)
             else:
-                self.__init__(self.i3, loop=self.loop)
+                self.__init__(self.i3ipc, loop=self.loop)
             print(f"[{self.mod}] config reloaded")
         except Exception:
             print(f"[{self.mod}] config reload failed")
@@ -269,11 +269,11 @@ class cfg(object):
             if prop in self.cfg_regex_props():
                 for reg in self.cfg[target_tag][prop].copy():
                     if prop == "class_r":
-                        lst_by_reg = self.i3.get_tree().find_classed(reg)
+                        lst_by_reg = self.i3ipc.get_tree().find_classed(reg)
                     if prop == "instance_r":
-                        lst_by_reg = self.i3.get_tree().find_instanced(reg)
+                        lst_by_reg = self.i3ipc.get_tree().find_instanced(reg)
                     if prop == "role_r":
-                        lst_by_reg = self.i3.get_tree().find_by_role(reg)
+                        lst_by_reg = self.i3ipc.get_tree().find_by_role(reg)
                     winattr = self.win_attrs[prop[:-2]]
                     for l in lst_by_reg:
                         class_r_check = (prop == "class_r" and winattr == l.window_class)

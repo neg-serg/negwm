@@ -30,7 +30,7 @@ class win_history(negi3mod, cfg):
         cfg.__init__(self, i3)
 
         # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3
+        self.i3ipc = i3
 
         # previous / current window list
         self.window_history = []
@@ -50,23 +50,23 @@ class win_history(negi3mod, cfg):
             "focus_prev_visible": self.focus_prev_visible,
         }
 
-        self.i3.on('window::focus', self.on_window_focus)
-        self.i3.on('window::close', self.goto_nonempty_ws_on_close)
+        self.i3ipc.on('window::focus', self.on_window_focus)
+        self.i3ipc.on('window::close', self.goto_nonempty_ws_on_close)
 
     def reload_config(self) -> None:
         """ Reloads config. Dummy.
         """
-        self.__init__(self.i3)
+        self.__init__(self.i3ipc)
 
     def alt_tab(self) -> None:
         """ Focus previous window.
         """
-        wids = set(w.id for w in self.i3.get_tree().leaves())
+        wids = set(w.id for w in self.i3ipc.get_tree().leaves())
         for wid in self.window_history[1:]:
             if wid not in wids:
                 self.window_history.remove(wid)
             else:
-                self.i3.command(f'[con_id={wid}] focus')
+                self.i3ipc.command(f'[con_id={wid}] focus')
                 return
 
     def on_window_focus(self, i3, event) -> None:
@@ -91,7 +91,7 @@ class win_history(negi3mod, cfg):
         """
         return filter(
             lambda x: x.window,
-            self.i3.get_tree().find_focused().workspace().leaves()
+            self.i3ipc.get_tree().find_focused().workspace().leaves()
         )
 
     def goto_visible(self, reversed_order=False):
@@ -112,7 +112,7 @@ class win_history(negi3mod, cfg):
         for window in cycle_windows:
             if window.focused:
                 focus_to = next(cycle_windows)
-                self.i3.command('[id="%d"] focus' % focus_to.window)
+                self.i3ipc.command('[id="%d"] focus' % focus_to.window)
                 break
 
     def goto_any(self, reversed_order: bool = False) -> None:
@@ -121,7 +121,7 @@ class win_history(negi3mod, cfg):
         Args:
             reversed_order(bool) : [optional] predicate to change order.
         """
-        wins = self.i3.get_tree().leaves()
+        wins = self.i3ipc.get_tree().leaves()
         self.goto_win(wins, reversed_order)
 
     def focus_next(self) -> None:

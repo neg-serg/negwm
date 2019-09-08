@@ -73,7 +73,7 @@ class bscratch(negi3mod, cfg, Matcher):
         self.focus_win_flag = [False, ""]
 
         # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3
+        self.i3ipc = i3
 
         self.bindings = {
             "show": self.show_scratchpad,
@@ -164,7 +164,7 @@ class bscratch(negi3mod, cfg, Matcher):
                          i3.get_tree() or not
         """
         if focused is None:
-            focused = self.i3.get_tree().find_focused()
+            focused = self.i3ipc.get_tree().find_focused()
         return NegEWMH.find_visible_windows(
             focused.workspace().leaves()
         )
@@ -193,13 +193,13 @@ class bscratch(negi3mod, cfg, Matcher):
         if not self.marked.get(tag, []):
             prog_str = self.extract_prog_str(self.conf(tag))
             if prog_str:
-                self.i3.command(f'exec {prog_str}')
+                self.i3ipc.command(f'exec {prog_str}')
             else:
                 spawn_str = self.extract_prog_str(
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
-                    self.i3.command(
+                    self.i3ipc.command(
                         f'exec ~/.config/i3/send executor run {spawn_str}'
                     )
 
@@ -209,7 +209,7 @@ class bscratch(negi3mod, cfg, Matcher):
 
         # We need to hide scratchpad it is visible,
         # regardless it focused or not
-        focused = self.i3.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
 
         if self.marked.get(tag, []):
             self.toggle_fs(focused)
@@ -224,7 +224,7 @@ class bscratch(negi3mod, cfg, Matcher):
                                           which distinguish one subtag from
                                           another.
         """
-        focused = self.i3.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
         self.toggle_fs(focused)
 
         if focused.window_class in subtag_classes_set:
@@ -235,7 +235,7 @@ class bscratch(negi3mod, cfg, Matcher):
         for _ in self.marked[tag]:
             if focused.window_class not in subtag_classes_set:
                 self.next_win_on_curr_tag()
-                focused = self.i3.get_tree().find_focused()
+                focused = self.i3ipc.get_tree().find_focused()
 
     def run_subtag(self, tag: str, subtag: str) -> None:
         """ Run-or-focus the application for subtag
@@ -252,7 +252,7 @@ class bscratch(negi3mod, cfg, Matcher):
             ]
             if not subtag_classes_matched:
                 prog_str = self.extract_prog_str(self.conf(tag, subtag))
-                self.i3.command(f'exec {prog_str}')
+                self.i3ipc.command(f'exec {prog_str}')
                 self.focus_win_flag = [True, tag]
             else:
                 self.focus_sub_tag(tag, subtag_classes_set)
@@ -303,7 +303,7 @@ class bscratch(negi3mod, cfg, Matcher):
             Args:
                 func(Callable) : function to apply.
         """
-        curr_tag = self.get_current_tag(self.i3.get_tree().find_focused())
+        curr_tag = self.get_current_tag(self.i3ipc.get_tree().find_focused())
         curr_tag_exits = (curr_tag is not None)
         if curr_tag_exits:
             func(curr_tag)
@@ -333,7 +333,7 @@ class bscratch(negi3mod, cfg, Matcher):
             self.show_scratchpad(tag, hide_)
 
         hide_ = hide
-        focused_win = self.i3.get_tree().find_focused()
+        focused_win = self.i3ipc.get_tree().find_focused()
         self.apply_to_current_tag(next_win)
 
     def hide_current(self) -> None:
@@ -368,7 +368,7 @@ class bscratch(negi3mod, cfg, Matcher):
             Args:
                 tag(str) : denotes target tag.
         """
-        focused = self.i3.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
         for win in self.marked[tag]:
             if win.id == focused.id:
                 self.conf[tag]["geom"] = f"{focused.rect.width}x" + \
@@ -382,7 +382,7 @@ class bscratch(negi3mod, cfg, Matcher):
             Args:
                 tag(str) : denotes target tag.
         """
-        focused = self.i3.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
         for win in self.marked[tag]:
             if win.id == focused.id:
                 self.conf[tag]["geom"] = f"{focused.rect.width}x\
@@ -448,7 +448,7 @@ class bscratch(negi3mod, cfg, Matcher):
                     for win in self.marked[tag]:
                         win.command('unmark')
 
-        self.initialize(self.i3)
+        self.initialize(self.i3ipc)
 
     def del_prop(self, tag: str, prop_str: str) -> None:
         """ Delete property via [prop_str] to the target [tag].
@@ -481,7 +481,8 @@ class bscratch(negi3mod, cfg, Matcher):
                     win.command(win_cmd)
                     self.marked[tag].append(win)
             elif is_dialog_win and tag == "transients":
-                win_cmd = f"{bscratch.mark_uuid_tag('transients')}, move scratchpad"
+                win_cmd = f"{bscratch.mark_uuid_tag('transients')}, \
+                    move scratchpad"
                 win.command(win_cmd)
                 self.marked["transients"].append(win)
 
@@ -527,7 +528,7 @@ class bscratch(negi3mod, cfg, Matcher):
                              Because of I've think that is't better to make
                              screen clear after (re)start.
         """
-        winlist = self.i3.get_tree().leaves()
+        winlist = self.i3ipc.get_tree().leaves()
         hide_cmd = ''
 
         for win in winlist:
@@ -543,7 +544,8 @@ class bscratch(negi3mod, cfg, Matcher):
                         win.command(win_cmd)
                         self.marked[tag].append(win)
                 if is_dialog_win:
-                    win_cmd = f"{bscratch.mark_uuid_tag('transients')}, move scratchpad"
+                    win_cmd = f"{bscratch.mark_uuid_tag('transients')}, \
+                        move scratchpad"
                     win.command(win_cmd)
                     self.marked["transients"].append(win)
             self.win = win

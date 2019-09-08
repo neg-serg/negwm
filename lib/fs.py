@@ -13,7 +13,7 @@ from cfg import cfg
 class fs(negi3mod, cfg):
     def __init__(self, i3conn, loop=None):
         # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3conn
+        self.i3ipc = i3conn
         self.panel_should_be_restored = False
 
         # Initialize modcfg.
@@ -37,8 +37,8 @@ class fs(negi3mod, cfg):
             "fullscreen": self.hide,
         }
 
-        self.i3.on('window::close', self.on_window_close)
-        self.i3.on('workspace::focus', self.on_workspace_focus)
+        self.i3ipc.on('window::close', self.on_window_close)
+        self.i3ipc.on('workspace::focus', self.on_workspace_focus)
 
     def on_workspace_focus(self, _, event):
         """ Hide panel if it is fullscreen workspace, show panel otherwise """
@@ -80,7 +80,7 @@ class fs(negi3mod, cfg):
 
     def hide(self):
         """ Hide panel for this workspace """
-        i3_tree = self.i3.get_tree()
+        i3_tree = self.i3ipc.get_tree()
         fullscreens = i3_tree.find_fullscreen()
         focused_ws = i3_tree.find_focused().workspace().name
 

@@ -26,7 +26,7 @@ class vol(negi3mod, cfg):
         cfg.__init__(self, i3, loop=loop)
 
         # i3ipc connection, bypassed by negi3mods runner.
-        self.i3 = i3
+        self.i3ipc = i3
 
         # Bypass loop from negi3mods script here.
         self.loop = loop
@@ -50,7 +50,7 @@ class vol(negi3mod, cfg):
         self.use_mpv09 = self.conf("use_mpv09")
 
         # Cache current window on focus.
-        self.i3.on("window::focus", self.set_curr_win)
+        self.i3ipc.on("window::focus", self.set_curr_win)
 
         # Default mpd status is False
         self.mpd_playing = False
@@ -68,7 +68,7 @@ class vol(negi3mod, cfg):
         }
 
         # Initial state for the current_win
-        self.current_win = self.i3.get_tree().find_focused()
+        self.current_win = self.i3ipc.get_tree().find_focused()
 
         # Setup asyncio, because of it is used in another thread.
         asyncio.set_event_loop(self.loop)

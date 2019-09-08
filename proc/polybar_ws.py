@@ -54,9 +54,9 @@ class polybar_ws(modconfig):
         self.event = Event()
         self.event.set()
 
-        self.i3 = i3ipc.Connection()
-        self.i3.on('workspace::focus', self.on_ws_focus)
-        self.i3.on('binding', self.on_event)
+        self.i3ipc = i3ipc.Connection()
+        self.i3ipc.on('workspace::focus', self.on_ws_focus)
+        self.i3ipc.on('binding', self.on_event)
 
         self.ws_name = ""
         self.binding_mode = ""
@@ -71,7 +71,7 @@ class polybar_ws(modconfig):
         self.binding_color = Misc.extract_xrdb_value(self.binding_color_field)
         self.ws_name = ""
 
-        for ws in self.i3.get_workspaces():
+        for ws in self.i3ipc.get_workspaces():
             if ws.focused:
                 ws_name = ws.name
                 self.ws_name = ws_name.split(' :: ')[1:][0]

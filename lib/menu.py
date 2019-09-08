@@ -26,7 +26,7 @@ class menu(negi3mod, cfg):
         cfg.__init__(self, i3ipc)
 
         # i3ipc connection, bypassed by negi3mods runner
-        self.i3 = i3ipc
+        self.i3ipc = i3ipc
 
         # i3 path used to get "send" binary path
         self.i3_path = Misc.i3path()

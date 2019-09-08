@@ -40,7 +40,7 @@ class win_action(negi3mod, cfg):
         # Initialize cfg.
         cfg.__init__(self, i3)
         # i3ipc connection, bypassed by negi3mods runner.
-        self.i3 = i3
+        self.i3ipc = i3
 
         # cache list length
         maxlength = self.conf("cache_list_size")
@@ -142,7 +142,7 @@ class win_action(negi3mod, cfg):
             resize (str): predicate which shows resize target window or not.
 
         """
-        focused = self.i3.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
         if resize in {"default", "none"}:
             geom = self.center_geom(focused)
             win_action.set_geom(focused, geom)
@@ -182,14 +182,14 @@ class win_action(negi3mod, cfg):
     def grow(self) -> None:
         """ Grow floating window geometry by [self.grow_coeff].
         """
-        focused = self.i3.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
         geom = win_action.multiple_geom(focused, self.grow_coeff)
         win_action.set_geom(focused, geom)
 
     def shrink(self) -> None:
         """ Shrink floating window geometry by [self.shrink_coeff].
         """
-        focused = self.i3.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
         geom = win_action.multiple_geom(focused, self.shrink_coeff)
         win_action.set_geom(focused, geom)
 
@@ -202,7 +202,7 @@ class win_action(negi3mod, cfg):
                                 screen space to move.
         """
         curr_scr = self.current_resolution
-        self.current_win = self.i3.get_tree().find_focused()
+        self.current_win = self.i3ipc.get_tree().find_focused()
 
         if self.x2_use_gaps:
             gaps = self.useless_gaps
@@ -269,7 +269,7 @@ class win_action(negi3mod, cfg):
             return
 
         curr_scr = self.current_resolution
-        self.current_win = self.i3.get_tree().find_focused()
+        self.current_win = self.i3ipc.get_tree().find_focused()
 
         if self.quad_use_gaps:
             gaps = self.useless_gaps
@@ -330,7 +330,7 @@ class win_action(negi3mod, cfg):
         """
         geom = {}
 
-        self.current_win = self.i3.get_tree().find_focused()
+        self.current_win = self.i3ipc.get_tree().find_focused()
         if self.current_win is not None:
             if not self.geom_list[-1]:
                 geom = self.get_prev_geom()
@@ -359,7 +359,7 @@ class win_action(negi3mod, cfg):
         """ Revert changed window state.
         """
         try:
-            focused = self.i3.get_tree().find_focused()
+            focused = self.i3ipc.get_tree().find_focused()
             if self.geom_list[-1].get("geom", {}):
                 win_action.set_geom(focused, self.geom_list[-1]["geom"])
             del self.geom_list[-1]
@@ -456,7 +456,7 @@ class win_action(negi3mod, cfg):
                 print("Bad resize amount given.")
                 return
 
-        node = self.i3.get_tree().find_focused()
+        node = self.i3ipc.get_tree().find_focused()
         single, vertical = True, False
 
         # Check if there is only a single leaf.
@@ -481,12 +481,12 @@ class win_action(negi3mod, cfg):
             direction, mode, amount = self.set_resize_params_single(
                 direction, amount
             )
-            self.i3.command(f"gaps {direction} current {mode} {amount}")
+            self.i3ipc.command(f"gaps {direction} current {mode} {amount}")
         else:
             direction, mode, amount = self.set_resize_params_multiple(
                 direction, amount, vertical
             )
-            self.i3.command(
+            self.i3ipc.command(
                 f"resize {mode} {direction} {amount} px or {amount//16} ppt"
             )
 
@@ -551,7 +551,7 @@ class win_action(negi3mod, cfg):
             Return the output in direction "direction" of window "window" on
             output "output".
         """
-        tree = self.i3.get_tree().find_focused()
+        tree = self.i3ipc.get_tree().find_focused()
         for new in self.focused_order(tree):
             if new.name == "__i3":
                 continue
@@ -579,7 +579,7 @@ class win_action(negi3mod, cfg):
         else:
             return
 
-        tree = self.i3.get_tree()
+        tree = self.i3ipc.get_tree()
         node = tree.find_focused()
 
         # Find innermost tabbed or stacked container, or detect floating.
@@ -606,7 +606,7 @@ class win_action(negi3mod, cfg):
         while node.nodes:
             node = self.focused_child(node)
 
-        self.i3.command(f'[con_id="{node.id}"] focus')
+        self.i3ipc.command(f'[con_id="{node.id}"] focus')
 
     def move_tab(self, direction):
         """
@@ -619,7 +619,7 @@ class win_action(negi3mod, cfg):
         else:
             return
 
-        node = self.i3.get_tree().find_focused()
+        node = self.i3ipc.get_tree().find_focused()
 
         # Find innermost tabbed or stacked container.
         while True:
@@ -634,7 +634,7 @@ class win_action(negi3mod, cfg):
 
         if 0 <= index + delta < len(parent.nodes):
             other = parent.nodes[index + delta]
-            self.i3.command(
+            self.i3ipc.command(
                 f'[con_id="{node.id}"] swap container with con_id {other.id}'
             )
 
