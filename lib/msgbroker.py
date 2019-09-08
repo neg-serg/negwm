@@ -12,22 +12,22 @@ from contextlib import suppress
 
 
 class MsgBroker():
-    """ Daemon manager. Rules by negi3mods, dispatch messages.
-
+    """ This is asyncio message broker for negi3mods.
         Every module has indivisual main loop with indivisual neg-ipc-file.
     """
     lock = asyncio.Lock()
     @classmethod
     def mainloop(cls, loop, mods, port) -> None:
+        """ Mainloop by loop create task """
         cls.mods = mods
         asyncio.set_event_loop(loop)
         loop.create_task(asyncio.start_server(
-            cls.handle_client, 'localhost', port)
-        )
+            cls.handle_client, 'localhost', port))
         loop.run_forever()
 
     @classmethod
     async def handle_client(cls, reader, _) -> None:
+        """ Proceed client message here """
         with suppress(Exception):
             while True:
                 async with cls.lock:
