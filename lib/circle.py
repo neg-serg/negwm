@@ -425,4 +425,3 @@ class circle(negi3mod, cfg, Matcher):
                 if win.id in self.restore_fullscreen:
                     self.restore_fullscreen.remove(win.id)
                     return
-
