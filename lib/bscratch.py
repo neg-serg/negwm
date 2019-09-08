@@ -291,7 +291,7 @@ class bscratch(negi3mod, cfg, Matcher):
                 if focused.id == i.id:
                     return tag
 
-        return None
+        return ''
 
     def apply_to_current_tag(self, func: Callable) -> bool:
         """ Apply function [func] to the current tag
@@ -304,10 +304,9 @@ class bscratch(negi3mod, cfg, Matcher):
                 func(Callable) : function to apply.
         """
         curr_tag = self.get_current_tag(self.i3ipc.get_tree().find_focused())
-        curr_tag_exits = (curr_tag is not None)
-        if curr_tag_exits:
+        if curr_tag:
             func(curr_tag)
-        return curr_tag_exits
+        return bool(curr_tag)
 
     def next_win_on_curr_tag(self, hide: bool = True) -> None:
         """ Show the next window for the currently selected tag.
@@ -549,4 +548,3 @@ class bscratch(negi3mod, cfg, Matcher):
                     win.command(win_cmd)
                     self.marked["transients"].append(win)
             self.win = win
-
