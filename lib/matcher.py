@@ -10,7 +10,7 @@ import re
 from typing import List, Iterator
 
 
-class Matcher(object):
+class Matcher():
     """ Generic matcher class
 
     Used by several classes. It can match windows by several criteria, which
@@ -115,7 +115,7 @@ class Matcher(object):
         return False
 
     @staticmethod
-    def match_all(self) -> bool:
+    def match_all() -> bool:
         """ Match every possible window """
         return True
 
@@ -128,4 +128,3 @@ class Matcher(object):
             if self.matched_list and self.match_dict[f]():
                 return True
         return False
-
