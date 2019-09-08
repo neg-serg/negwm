@@ -129,7 +129,7 @@ class cfg(object):
     def dict_converse(self) -> None:
         """ Convert list attributes to set for the better performance.
         """
-        self.dict_apply(lambda key: set(key), self.convert_subtag)
+        self.dict_apply(lambda key: set(key), cfg.convert_subtag)
 
     def dict_deconverse(self) -> None:
         """ Convert set attributes to list, because of set cannot be saved
@@ -137,6 +137,7 @@ class cfg(object):
         """
         self.dict_apply(lambda key: list(key), cfg.deconvert_subtag)
 
+    @staticmethod
     def convert_subtag(subtag: str) -> None:
         """ Convert subtag attributes to set for the better performance.
 
@@ -146,7 +147,7 @@ class cfg(object):
         cfg.subtag_apply(subtag, lambda key: set(key))
 
     @staticmethod
-    def deconvert_subtag(self, subtag: str) -> None:
+    def deconvert_subtag(subtag: str) -> None:
         """ Convert set attributes to list, because of set cannot be saved
         / restored to / from TOML-files corretly.
 
@@ -231,7 +232,8 @@ class cfg(object):
         ftors = self.cfg_props() & set(self.win_attrs.keys())
         if tag in self.cfg:
             for tok in ftors:
-                if self.win_attrs[tok] not in self.cfg.get(tag, {}).get(tok, {}):
+                if self.win_attrs[tok] not in \
+                        self.cfg.get(tag, {}).get(tok, {}):
                     if tok in self.cfg[tag]:
                         if isinstance(self.cfg[tag][tok], str):
                             self.cfg[tag][tok] = {self.win_attrs[tok]}
@@ -264,6 +266,16 @@ class cfg(object):
             Args:
                 target_tag (str): target tag
         """
+        def check_for_win_attrs(win, prop):
+            class_r_check = \
+                (prop == "class_r" and winattr == win.window_class)
+            instance_r_check = \
+                (prop == "instance_r" and winattr == win.window_instance)
+            role_r_check = \
+                (prop == "role_r" and winattr == win.window_role)
+            if class_r_check or instance_r_check or role_r_check:
+                self.cfg[target_tag][prop].remove(target_tag)
+
         # Delete appropriate regexes
         for prop in self.cfg[target_tag].copy():
             if prop in self.cfg_regex_props():
@@ -275,12 +287,8 @@ class cfg(object):
                     if prop == "role_r":
                         lst_by_reg = self.i3ipc.get_tree().find_by_role(reg)
                     winattr = self.win_attrs[prop[:-2]]
-                    for l in lst_by_reg:
-                        class_r_check = (prop == "class_r" and winattr == l.window_class)
-                        instance_r_check = (prop == "instance_r" and winattr == l.window_instance)
-                        role_r_check = (prop == "role_r" and winattr == l.window_role)
-                        if class_r_check or instance_r_check or role_r_check:
-                            self.cfg[target_tag][prop].remove(target_tag)
+                    for win in lst_by_reg:
+                        check_for_win_attrs(win, prop)
 
     def del_props(self, tag: str, prop_str: str) -> None:
         """ Remove window from some tag.
@@ -296,4 +304,3 @@ class cfg(object):
         for prop in self.cfg_regex_props() | self.cfg_props():
             if prop in self.conf(tag) and self.conf(tag, prop) == set():
                 del self.cfg[tag][prop]
-
