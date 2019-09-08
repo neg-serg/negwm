@@ -71,4 +71,3 @@ class Misc():
                 "</span>"
             ]
             subprocess.Popen(notify_msg)
-
