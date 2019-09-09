@@ -14,7 +14,7 @@ class winact():
                 cmd (str): action for window to run.
                 prompt (str): custom prompt for rofi.
         """
-        leaves = self.menu.i3.get_tree().leaves()
+        leaves = self.menu.i3ipc.get_tree().leaves()
         winlist = [win.name for win in leaves]
         winlist_len = len(winlist)
         rofi_params = {
@@ -55,7 +55,7 @@ class winact():
         if use_wslist:
             wslist = self.workspaces
         else:
-            wslist = [ws.name for ws in self.menu.i3.get_workspaces()] + \
+            wslist = [ws.name for ws in self.menu.i3ipc.get_workspaces()] + \
                 ["[empty]"]
         rofi_params = {
             'cnum': len(wslist),
@@ -83,7 +83,7 @@ class winact():
         workspace_name = self.select_ws(use_wslist)
         if workspace_name is not None and workspace_name:
             self.apply_to_ws(
-                partial(self.menu.i3.command, f'workspace {workspace_name}')
+                partial(self.menu.i3ipc.command, f'workspace {workspace_name}')
             )
 
     def move_to_ws(self, use_wslist: bool = True) -> None:
@@ -92,7 +92,7 @@ class winact():
         workspace_name = self.select_ws(use_wslist)
         if workspace_name is not None and workspace_name:
             self.apply_to_ws(
-                partial(self.menu.i3.command,
+                partial(self.menu.i3ipc.command,
                         f'[con_id=__focused__] move to workspace {workspace_name}')
             )
 

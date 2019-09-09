@@ -10,7 +10,7 @@ class xprop():
         """ Menu to show X11 atom attributes for current window.
         """
         xprops = []
-        target_win = self.menu.i3.get_tree().find_focused()
+        target_win = self.menu.i3ipc.get_tree().find_focused()
         xprop_ret = subprocess.run(
             ['xprop', '-id', str(target_win.window)] + self.menu.xprops_list,
             stdout=subprocess.PIPE

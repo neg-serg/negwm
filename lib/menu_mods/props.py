@@ -111,7 +111,7 @@ class props():
             optional.
         """
         xprops = []
-        win = self.menu.i3.get_tree().find_focused()
+        win = self.menu.i3ipc.get_tree().find_focused()
         xprop = subprocess.run(
             ['xprop', '-id', str(win.window)] + self.menu.xprops_list,
             stdout=subprocess.PIPE
