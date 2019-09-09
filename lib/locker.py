@@ -15,10 +15,10 @@ def get_lock(process_name: str) -> None:
     Args:
         process_name (str): process name to bind.
     """
-    lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+    get_lock._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
 
     try:
-        lock_socket.bind('\0' + process_name)
+        get_lock._lock_socket.bind('\0' + process_name)
         print('locking successful')
     except socket.error:
         print('lock exists')
