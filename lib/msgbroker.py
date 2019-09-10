@@ -8,7 +8,6 @@ Daemon manager and mod daemon:
 """
 
 import asyncio
-from contextlib import suppress
 
 
 class MsgBroker():
@@ -20,7 +19,6 @@ class MsgBroker():
     def mainloop(cls, loop, mods, port) -> None:
         """ Mainloop by loop create task """
         cls.mods = mods
-        asyncio.set_event_loop(loop)
         loop.create_task(asyncio.start_server(
             cls.handle_client, 'localhost', port))
         loop.run_forever()
@@ -28,10 +26,10 @@ class MsgBroker():
     @classmethod
     async def handle_client(cls, reader, _) -> None:
         """ Proceed client message here """
-        with suppress(Exception):
+        async with cls.lock:
             while True:
-                async with cls.lock:
-                    response = (await reader.read(255)).decode('utf8').split()
-                    name = response[0]
-                    cls.mods[name].send_msg(response[1:])
-
+                response = (await reader.readline()).decode('utf8').split()
+                if not response:
+                    return
+                name = response[0]
+                cls.mods[name].send_msg(response[1:])
