@@ -69,7 +69,7 @@ class win_history(negi3mod, cfg):
                 self.i3ipc.command(f'[con_id={wid}] focus')
                 return
 
-    def on_window_focus(self, i3, event) -> None:
+    def on_window_focus(self, _, event) -> None:
         """ Store information about current / previous windows.
 
             Args:
@@ -136,7 +136,7 @@ class win_history(negi3mod, cfg):
     def focus_prev_visible(self) -> None:
         self.goto_visible(reversed_order=True)
 
-    def goto_nonempty_ws_on_close(self, i3, event) -> None:
+    def goto_nonempty_ws_on_close(self, i3, _) -> None:
         """ Go back for temporary tags like pictures or media.
 
             This function make auto alt-tab for workspaces which should by
@@ -150,9 +150,8 @@ class win_history(negi3mod, cfg):
         """
         workspace = i3.get_tree().find_focused().workspace()
         focused_ws_name = workspace.name
-        if not len(workspace.leaves()):
+        if not workspace.leaves():
             for ws_substr in self.autoback:
                 if focused_ws_name.endswith(ws_substr):
                     self.alt_tab()
                     return
-
