@@ -17,4 +17,3 @@ class negi3mod():
                 args (List): argument list for the selected function.
         """
         self.bindings[args[0]](*args[1:])
-
