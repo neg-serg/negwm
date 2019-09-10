@@ -343,15 +343,15 @@ class win_action(negi3mod, cfg):
                     return
             if by in {'XY', 'YX'}:
                 max_geom = self.maximized_geom(
-                    geom.copy(), byX=True, byY=True
+                    geom.copy(), gaps={}, byX=True, byY=True
                 )
             elif by == 'X':
                 max_geom = self.maximized_geom(
-                    geom.copy(), byX=True, byY=False
+                    geom.copy(), gaps={}, byX=True, byY=False
                 )
             elif by == 'Y':
                 max_geom = self.maximized_geom(
-                    geom.copy(), byX=False, byY=True
+                    geom.copy(), gaps={}, byX=False, byY=True
                 )
             win_action.set_geom(self.current_win, max_geom)
 
@@ -366,7 +366,7 @@ class win_action(negi3mod, cfg):
         except (KeyError, TypeError, AttributeError):
             pass
 
-    def maximized_geom(self, geom: dict, gaps: dict = {},
+    def maximized_geom(self, geom: dict, gaps: dict,
                        byX: bool = False, byY: bool = False) -> dict:
         """ Return maximized geom.
 
@@ -441,10 +441,10 @@ class win_action(negi3mod, cfg):
 
     def resize(self, direction, amount):
         """
-            Resize the current container along to the given direction.
-            If there is only a single container, resize by adjusting gaps.
-            If the direction is "natural", resize vertically in a splitv container, else
-            horizontally. If it is "orhtogonal", do the opposite.
+            Resize the current container along to the given direction. If there
+            is only a single container, resize by adjusting gaps. If the
+            direction is "natural", resize vertically in a splitv container,
+            else horizontally. If it is "orhtogonal", do the opposite.
         """
         if direction not in [
                 "natural", "orthogonal", "horizontal", "vertical",
@@ -523,7 +523,7 @@ class win_action(negi3mod, cfg):
            in most recently focused order.
         """
         for focus_id in node.focus:
-            yield next(n for n in node.nodes if n.id == focus_id)
+            return next(n for n in node.nodes if n.id == focus_id)
 
     @staticmethod
     def focused_child(node):
@@ -538,11 +538,13 @@ class win_action(negi3mod, cfg):
         """
         if direction in {"up", "down"}:
             return new.rect.x <= old.rect.x + old.rect.width*0.9 \
-                and new.rect.x + new.rect.width >= old.rect.x + old.rect.width * 0.1
+                and new.rect.x + new.rect.width >= \
+                old.rect.x + old.rect.width * 0.1
 
         if direction in {"left", "right"}:
             return new.rect.y <= old.rect.y + old.rect.height*0.9 \
-                and new.rect.y + new.rect.height >= old.rect.y + old.rect.height * 0.1
+                and new.rect.y + new.rect.height >= \
+                old.rect.y + old.rect.height * 0.1
 
         return None
 
@@ -587,7 +589,8 @@ class win_action(negi3mod, cfg):
             parent = node.parent
             if not parent or node.type != "con":
                 return
-            if parent.layout in {"tabbed", "stacked"} or parent.type == "floating_con":
+            if parent.layout in {"tabbed", "stacked"} \
+                    or parent.type == "floating_con":
                 break
             node = parent
 
@@ -637,4 +640,3 @@ class win_action(negi3mod, cfg):
             self.i3ipc.command(
                 f'[con_id="{node.id}"] swap container with con_id {other.id}'
             )
-
