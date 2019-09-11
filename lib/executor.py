@@ -57,7 +57,7 @@ class env():
         self.term = config.get(name, {}).get("term", "alacritty").lower()
 
         self.wclass = config.get(name, {}).get("class", self.term)
-        self.title = config.get(name, {}).get("title", self.term)
+        self.title = config.get(name, {}).get("title", self.wclass)
 
         self.font = config.get("default_font", "")
         if not self.font:
