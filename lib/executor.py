@@ -241,8 +241,7 @@ class executor(negi3mod, cfg):
         }
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        for envi in self.envs:
-            del envi
+        self.envs.clear()
 
     def run_app(self, args: List) -> None:
         """ Wrapper to run selected application in background.
