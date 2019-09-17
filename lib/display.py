@@ -33,12 +33,12 @@ class Display():
             resolution_data = cls.get_screen_resolution_data()
             for size_id, res in enumerate(resolution_data):
                 if res is not None and res:
-                    cls.resolution_list += [(
+                    cls.resolution_list.append(
                         str(size_id) + ': ' +
                         str(res['width_in_pixels']) +
                         delimiter +
                         str(res['height_in_pixels'])
-                    )]
+                    )
 
         return cls.resolution_list
 
