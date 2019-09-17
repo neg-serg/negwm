@@ -341,7 +341,7 @@ class bscratch(negi3mod, cfg, Matcher):
         self.apply_to_current_tag(self.hide_scratchpad)
 
     def geom_restore(self, tag: str) -> None:
-        """ Show the next window for the current selected tag.
+        """ Restore default window geometry
 
             Args:
                 tag(str) : hide another windows for the current tag or not.
