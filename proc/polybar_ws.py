@@ -1,4 +1,4 @@
-#!/usr/bin/pypy3 -u
+#!/usr/bin/python3
 
 """ Current workspace printing daemon.
 
@@ -136,9 +136,9 @@ class polybar_ws(modconfig):
 
 def main():
     """ Start polybar_ws from here """
-    loop = polybar_ws()
-    Thread(target=loop.main, daemon=False).start()
-    loop.i3.main()
+    proc = polybar_ws()
+    Thread(target=proc.main, daemon=False).start()
+    proc.i3ipc.main()
 
 
 if __name__ == '__main__':
