@@ -383,8 +383,6 @@ mode "-inner" {
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
-#for_window [title="Desktop — Plasma"] kill; floating enable; border none
-#exec_always --no-startup-id wmctrl -c Plasma
 for_window [title="Desktop — Plasma"] floating enable; border none
 for_window [class="plasmashell"] floating enable
 for_window [class="Plasma"] floating enable
