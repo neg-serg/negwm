@@ -405,5 +405,4 @@ for_window [window_type="menu"] floating enable
 exec_always ~/bin/scripts/i3_prepare.sh &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
-exec ${XDG_CONFIG_HOME}/i3/send circle next term
 # vim:filetype=i3

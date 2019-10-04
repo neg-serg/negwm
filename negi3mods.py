@@ -10,12 +10,13 @@ automatically. Moreover it contains pid-lock which prevents running several
 times.
 
 Usage:
-    ./negi3mods.py [--debug|--tracemalloc]
+    ./negi3mods.py [--debug|--tracemalloc|--start]
 
 Options:
     --debug         disables signal handlers for debug.
     --tracemalloc   calculates and shows memory tracing with help of
                     tracemalloc.
+    --start         make actions for the start, not reloading
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -68,6 +69,10 @@ class negi3mods(modconfig):
 
         if self.tracemalloc_enabled:
             tracemalloc.start()
+
+        self.first_run = False
+        if cmd_args["--start"]:
+            self.first_run = True
 
         if not (cmd_args['--debug'] or self.tracemalloc_enabled):
             def loop_exit(signame):
@@ -143,6 +148,11 @@ class negi3mods(modconfig):
         watcher.watch(alias='configs', path=self.i3_cfg_path,
                       flags=aionotify.Flags.MODIFY)
         return watcher
+
+    def autostart(self):
+        """ Autostart auto negi3mods initialization """
+        if self.first_run:
+            subprocess.run([self.i3_path + 'send', 'circle', 'next', 'term'])
 
     def i3_config_watcher(self):
         """ i3 config watcher to run ppi3 on write.
@@ -257,6 +267,7 @@ class negi3mods(modconfig):
         print('... everything loaded ...')
         Misc.notify_msg(self.notification_text)
         try:
+            self.autostart()
             self.i3.main()
         except KeyboardInterrupt:
             self.i3.main_quit()
