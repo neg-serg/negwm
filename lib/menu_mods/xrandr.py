@@ -1,20 +1,18 @@
 import subprocess
-from display import Display
 
 
 class xrandr():
     def __init__(self, menu):
         self.menu = menu
 
-        # cache screen width
-        self.screen_width = Display.get_screen_resolution()["width"]
-
     def change_resolution_xrandr(self):
+        from display import Display
         xrandr_data = Display.xrandr_resolution_list()
         rofi_params = {
             'cnum': 8,
-            'width': int(self.menu.screen_width * 0.55),
-            'prompt': f'{self.menu.wrap_str("gtk_theme")} {self.menu.conf("prompt")}',
+            'width': int(Display.get_screen_resolution()["width"] * 0.55),
+            'prompt': f'{self.menu.wrap_str("gtk_theme")} \
+            {self.menu.conf("prompt")}',
         }
         resolution_sel = subprocess.run(
             self.menu.rofi_args(rofi_params),
@@ -36,4 +34,3 @@ class xrandr():
 
         print(f'Set size to {width}x{height}')
         Display.set_screen_size(size_id)
-
