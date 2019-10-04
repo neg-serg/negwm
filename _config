@@ -91,16 +91,16 @@ set $sound "16 ::  ο:sound"
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
-set $browsers [class="^(Firefox|Nightly|Conkeror|Iceweasel|Icecat|Navigator|Waterfox|Vimprobable2|Chromium|brave|Chromium-www|Yandex-browser-beta|Opera|Dwb|Tor Browser)$"]
+set $browsers [class="^(firefox|Nightly|Conkeror|Navigator|Waterfox|Vimprobable2|Chromium|Yandex-browser-beta|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
-set $games [class="^(steam_app.*|dota2|darkest.bin.x86_64|PillarsOfEternityII|lutris|Lutris|Civ6|warframe.x64.exe)$"]
+set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
 set $wine_apps [class="^(Wine|wine|Crossover)$"]
 set $windows_exe_by_title [title="^.*.exe$"]
 set $windows_exe_by_class [class="^.*.exe$"]
 set $pdf [class="^(Okular|Apvlv|Zathura|Evince|XDvi)$"]
 set $fb2 [class="Cr3" instance="cr3"]
 set $torrent_apps [class="^(Vuze|Ktorrent|stig)$"]
-set $mplayer [class="^(MPlayer|mplayer2|mpv|vaapi|vdpau)$"]
+set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
 set $webcam [class="^(cheese|obs)$"]
 set $vim [instance="^(wim|nwim|oni)$"]
 set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
@@ -402,9 +402,9 @@ for_window [window_type="menu"] floating enable
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
-exec_always zsh ~/bin/scripts/i3_prepare.sh
-exec /usr/lib/gsd-xsettings
+exec_always zsh ~/bin/scripts/i3_prepare.sh &
+exec /usr/lib/gsd-xsettings &
 exec caffeine &
-exec_always ~/bin/scripts/gnome_settings
-exec sleep 3s && ${XDG_CONFIG_HOME}/i3/send circle next term
+exec_always ~/bin/scripts/gnome_settings &
+exec { sleep 3s && ${XDG_CONFIG_HOME}/i3/send circle next term } &
 # vim:filetype=i3
