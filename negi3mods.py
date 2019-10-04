@@ -153,6 +153,7 @@ class negi3mods(modconfig):
         """ Autostart auto negi3mods initialization """
         if self.first_run:
             subprocess.run([self.i3_path + 'send', 'circle', 'next', 'term'])
+            subprocess.run(['/home/neg/bin/scripts/panel_run.sh', 'hard'])
 
     def i3_config_watcher(self):
         """ i3 config watcher to run ppi3 on write.
