@@ -406,4 +406,5 @@ exec_always ~/bin/scripts/i3_prepare.sh &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
 exec_always ~/bin/scripts/panel_run.sh hard
+exec /usr/sbin/gpaste-client daemon
 # vim:filetype=i3
