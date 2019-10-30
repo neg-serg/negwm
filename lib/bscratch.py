@@ -475,14 +475,14 @@ class bscratch(negi3mod, cfg, Matcher):
             if not is_dialog_win and tag != "transients":
                 if self.match(win, tag):
                     # scratch_move
-                    win_cmd = f"{bscratch.mark_uuid_tag(tag)}, move scratchpad, \
-                        {self.nsgeom.get_geom(tag)}"
-                    win.command(win_cmd)
+                    win.command(
+                        f"{bscratch.mark_uuid_tag(tag)}, move scratchpad, \
+                        {self.nsgeom.get_geom(tag)}")
                     self.marked[tag].append(win)
             elif is_dialog_win and tag == "transients":
-                win_cmd = f"{bscratch.mark_uuid_tag('transients')}, \
-                    move scratchpad"
-                win.command(win_cmd)
+                win.command(
+                    f"{bscratch.mark_uuid_tag('transients')}, \
+                    move scratchpad")
                 self.marked["transients"].append(win)
 
         # Special hack to invalidate windows after subtag start
@@ -511,6 +511,7 @@ class bscratch(negi3mod, cfg, Matcher):
                     self.marked[tag].remove(win)
                     self.show_scratchpad(tag)
                     break
+
         if win_ev.fullscreen_mode:
             self.apply_to_current_tag(self.hide_scratchpad)
 
