@@ -156,7 +156,7 @@ for_window {$jetbrains} move workspace $ide
 # ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
 # ░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀
-for_window {$sclient,$games} move workspace $steam
+for_window {$sclient,$games} move workspace $steam, focus
 
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
