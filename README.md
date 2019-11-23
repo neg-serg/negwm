@@ -2,7 +2,9 @@
 
 # Screenshots
 
-![shot1](https://i.imgur.com/1cox0ps.png)
+![terminal_shot](https://i.imgur.com/O08SzU3.png)
+![nvim_shot](https://i.imgur.com/Tqfu65R.png)
+![unixporn_like_shot](https://i.imgur.com/z1arTLh.png)
 
 # What is it?
 
