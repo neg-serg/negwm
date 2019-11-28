@@ -91,22 +91,18 @@ set $sound "16 ::  ο:sound"
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
-set $browsers [class="^(firefox|Nightly|Conkeror|Navigator|Waterfox|Vimprobable2|Chromium|Yandex-browser-beta|Tor Browser)$"]
+set $browsers [class="^(firefox|Nightly|Waterfox|Chromium|Yandex-browser-beta|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
 set $wine_apps [class="^(Wine|wine|Crossover)$"]
 set $windows_exe_by_title [title="^.*.exe$"]
 set $windows_exe_by_class [class="^.*.exe$"]
-set $pdf [class="^(Okular|Apvlv|Zathura|Evince|XDvi)$"]
+set $pdf [class="Zathura"]
 set $fb2 [class="Cr3" instance="cr3"]
-set $torrent_apps [class="^(Vuze|Ktorrent|stig)$"]
 set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
 set $webcam [class="^(cheese|obs)$"]
-set $vim [instance="^(wim|nwim|oni)$"]
-set $not_vim [class="^(Emacs|Atom|subl3|Sublime_text)$"]
-set $jetbrains [class="^jetbrains-(idea|clion|andrond-studio).*"]
+set $vim [instance="nwim"]
 set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
-set $office [class="^(libreoffice|abiword).*$"]
 set $daw [class="Bitwig Studio" instance="airwave-host-32.exe"]
 
 title_align left
@@ -117,14 +113,12 @@ for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %ti
 for_window $browsers move workspace $web, focus
 for_window [class="guncharmap"] move workspace $doc
 for_window $vms move workspace $vm, focus
-for_window $office move workspace $doc, focus
 for_window [{class,instance}="^term$"] move workspace $term, focus
 for_window $mplayer move workspace $gfx, focus
 for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
 for_window [class="^lollypop$"] move workspace $gfx, focus
 for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="Sxiv"] move workspace $pic, focus
-for_window $torrent_apps move workspace $torrent, focus
 for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote, focus
 for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
@@ -151,7 +145,6 @@ for_window [class="^(draw|darktable|inkscape|gimp)$"] move workspace $draw
 # ░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀
 for_window $vim move workspace $dev, focus
 for_window $not_vim move workspace $dev
-for_window {$jetbrains} move workspace $ide
 
 # ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
@@ -161,11 +154,11 @@ for_window {$sclient,$games} move workspace $steam, focus
 #░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
 #░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
 #░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░░▀▀▀
-for_window [class="^(ViberPC|VK|zoom)$"] move scratchpad, move absolute position 1372 127, resize set 548 1037
+for_window [class="zoom"] move scratchpad, move absolute position 1372 127, resize set 548 1037
 for_window [class="^([Tt]elegram|[Ss]kype).*$"] move scratchpad, move absolute position 1372 127, resize set 548 1037
 for_window [instance="ncmpcpp"] move scratchpad, move absolute position 276 326, resize set 1389 696
 for_window [class="cool-retro-term"] move scratchpad, move absolute position 276 326, resize set 1389 696
-for_window [instance="^(mailspring|mutt)$"] move scratchpad, move absolute position 52 0, resize set 1835 1114
+for_window [instance="mutt"] move scratchpad, move absolute position 52 0, resize set 1835 1114
 for_window [instance="ranger"] move scratchpad, move absolute position 3 1, resize set 1916 816
 for_window [instance="teardrop"] move scratchpad, move absolute position 39 4, resize set 1844 704
 for_window [class="Pavucontrol"] move scratchpad, move absolute position 1023 824, resize set 895 314
@@ -227,8 +220,6 @@ bindsym $m4+s $bscratch hide_current
 bindsym $m4+$c+c $circle next sxiv
 bindsym $m4+$S+c $circle subtag sxiv wallpaper
 bindsym $m4+{x,1} $circle next {term,nwim}
-bindsym $m4+F{1,2} $circle next jetbrains-{idea,clion}
-bindsym $m4+F3 $circle next emacs
 bindsym $m4+$c+v $circle next vm
 bindsym $m4+$c+e $circle next lutris
 bindsym $m4+$S+e $circle next steam
