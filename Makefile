@@ -10,8 +10,9 @@ clean:
 	@rm -rfv wm_class send
 
 wm_class: wm_class.c
-	$(CC) $(CFLAGS) -lX11 $@.c -o $@
+	$(CC) $(CFLAGS) -lX11 $@.c -o $@ -Os -s
+	strip $@
 
 send: send.c
-	$(CC) $(CFLAGS) $@.c -lbsd -o $@
-
+	$(CC) $(CFLAGS) $@.c -lbsd -o $@ -Os -s
+	strip $@
