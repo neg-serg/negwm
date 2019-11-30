@@ -106,6 +106,9 @@ class negi3mods(modconfig):
 
         self.port = int(self.conf('port'))
 
+        self.echo = Misc.echo_off
+        self.notify = Misc.notify_off
+
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
         self.i3 = i3ipc.Connection()
@@ -127,7 +130,7 @@ class negi3mods(modconfig):
             benchmarks.
         """
         mod_startup_times = []
-        print('Loading modules')
+        self.echo('Loading modules')
         for mod in self.mods:
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
@@ -136,10 +139,10 @@ class negi3mods(modconfig):
             time_elapsed = f'{mod_startup_times[-1]:4f}s'
             mod_loaded_info = f'{mod:<10s} ~ {time_elapsed:>10s}'
             self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
-            print(mod_loaded_info, flush=True)
+            self.echo(mod_loaded_info, flush=True)
         loading_time_msg = f'Loading time = {sum(mod_startup_times):6f}s'
         self.notification_text += loading_time_msg
-        print(loading_time_msg)
+        self.echo(loading_time_msg)
 
     def mods_cfg_watcher(self):
         """ cfg watcher to update modules config in realtime.
@@ -181,13 +184,13 @@ class negi3mods(modconfig):
                     subprocess.run(
                         [self.i3_path + 'send', changed_mod, 'reload']
                     )
-                    Misc.notify_msg(f'[Reloaded {changed_mod}]')
+                    self.notify(f'[Reloaded {changed_mod}]')
                 else:
                     for mod in self.mods:
                         subprocess.run(
                             [self.i3_path + 'send', mod, 'reload']
                         )
-                    Misc.notify_msg(
+                    self.notify(
                         '[Reloaded {' + ','.join(self.mods.keys()) + '} ]'
                     )
         watcher.close()
@@ -209,7 +212,7 @@ class negi3mods(modconfig):
                     )
                     config_is_valid = self.validate_i3_config()
                 if config_is_valid:
-                    print("i3 config is valid!")
+                    Misc.echo("i3 config is valid!")
                     shutil.move(self.test_cfg_path, self.i3_path + 'config')
         watcher.close()
 
@@ -222,8 +225,8 @@ class negi3mods(modconfig):
         ).stdout.decode('utf-8')
         if check_config:
             error_data = check_config.encode('utf-8')
-            print(error_data)
-            Misc.notify_msg(error_data, "Error >")
+            self.echo(error_data)
+            self.notify(error_data, "Error >")
 
             # remove invalid config
             os.remove(self.test_cfg_path)
@@ -264,14 +267,14 @@ class negi3mods(modconfig):
         )
         start((mainloop).start)
 
-        print('... everything loaded ...')
-        Misc.notify_msg(self.notification_text)
+        self.echo('... everything loaded ...')
+        self.notify(self.notification_text)
         try:
             self.autostart()
             self.i3.main()
         except KeyboardInterrupt:
             self.i3.main_quit()
-        print('... exit ...')
+        self.echo('... exit ...')
 
 
 def main():

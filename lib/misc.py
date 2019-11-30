@@ -11,6 +11,7 @@ import errno
 class Misc():
     """ Implements various helper functions
     """
+
     @staticmethod
     def create_dir(dirname):
         """ Helper function to create directory
@@ -71,3 +72,18 @@ class Misc():
                 "</span>"
             ]
             subprocess.Popen(notify_msg)
+
+    @classmethod
+    def notify_off(cls, _dummy_msg: str, _dummy_prefix: str = " "):
+        """ Do nothing """
+        return
+
+    @staticmethod
+    def echo_on(*args, **kwargs):
+        """ print info """
+        print(*args, **kwargs)
+
+    @staticmethod
+    def echo_off(*_dummy_args, **_dummy_kwargs):
+        """ do not print info """
+        return
