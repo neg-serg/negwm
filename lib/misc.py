@@ -35,14 +35,19 @@ class Misc():
     def extract_xrdb_value(field: str) -> str:
         """ Extracts field from xrdb executable.
         """
-        out = subprocess.run(
-            f"xrescat '{field}'",
-            shell=True,
-            stdout=subprocess.PIPE
-        ).stdout
-        if out is not None and out:
-            ret = out.decode('UTF-8').split()[0]
-            return ret
+        try:
+            out = subprocess.run(
+                f"xrescat '{field}'",
+                shell=True,
+                stdout=subprocess.PIPE,
+                check=True
+            ).stdout
+            if out is not None and out:
+                ret = out.decode('UTF-8').split()[0]
+                return ret
+        except CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
+
         return ""
 
     @classmethod
