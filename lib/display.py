@@ -5,6 +5,8 @@ import subprocess
 from Xlib import display
 from Xlib.ext import randr
 
+from misc import Misc
+
 
 class Display():
     d = display.Display()
@@ -44,4 +46,7 @@ class Display():
 
     @classmethod
     def set_screen_size(cls, size_id=0) -> None:
-        subprocess.run(['xrandr', '-s', str(size_id)])
+        try:
+            subprocess.run(['xrandr', '-s', str(size_id)], check=True)
+        except CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
