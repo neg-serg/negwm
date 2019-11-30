@@ -152,14 +152,16 @@ class vol(negi3mod, cfg):
                     '--delay', '0', str(mpv_key) * abs(val)
                 ],
                 stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL,
+                check=False
             )
         elif self.use_mpv09:
             subprocess.run([
                     'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
                 ],
                 stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL,
+                check=False
             )
         else:
             return
