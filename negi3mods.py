@@ -230,7 +230,7 @@ class negi3mods(modconfig):
                     except CalledProcessError as proc_err:
                         Misc.print_run_exception_info(proc_err)
                 if config_is_valid:
-                    Misc.echo("i3 config is valid!")
+                    self.echo("i3 config is valid!")
                     shutil.move(self.test_cfg_path, self.i3_path + 'config')
         watcher.close()
 
