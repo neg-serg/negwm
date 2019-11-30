@@ -5,7 +5,8 @@ import configparser
 import subprocess
 import glob
 import path
-import Misc
+
+from misc import Misc
 
 
 class gnome():
