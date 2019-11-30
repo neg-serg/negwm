@@ -270,12 +270,14 @@ class executor(negi3mod, cfg):
         """
         session_list = subprocess.run(
             shlex.split(f"tmux -S {sockpath} list-sessions"),
-            stdout=subprocess.PIPE
+            stdout=subprocess.PIPE,
+            check=False
         ).stdout
         return subprocess.run(
             shlex.split(f"awk -F ':' '/{name}/ {{print $1}}'"),
             stdout=subprocess.PIPE,
-            input=(session_list)
+            input=(session_list),
+            check=False
         ).stdout.decode()
 
     def attach_to_session(self) -> None:
@@ -291,7 +293,8 @@ class executor(negi3mod, cfg):
         """
         return subprocess.run(
             shlex.split(f"xdotool search --classname {self.env.wclass}"),
-            stdout=subprocess.PIPE
+            stdout=subprocess.PIPE,
+            check=False
         ).stdout
 
     def create_new_session(self) -> None:
