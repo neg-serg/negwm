@@ -144,7 +144,6 @@ for_window [class="^(draw|darktable|inkscape|gimp)$"] move workspace $draw
 # ░█▀▀░█░█░░█░░░█░░█░█░█▀▄░▀▀█
 # ░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀
 for_window $vim move workspace $dev, focus
-for_window $not_vim move workspace $dev
 
 # ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
 # ░█░█░█▀█░█░█░█▀▀░▀▀█
