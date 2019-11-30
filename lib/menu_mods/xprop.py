@@ -11,15 +11,20 @@ class xprop():
         """
         xprops = []
         target_win = self.menu.i3ipc.get_tree().find_focused()
-        xprop_ret = subprocess.run(
-            ['xprop', '-id', str(target_win.window)] + self.menu.xprops_list,
-            stdout=subprocess.PIPE
-        ).stdout
-        if xprop_ret is not None:
-            xprop_ret = xprop_ret.decode().split('\n')
-            for line in xprop_ret:
-                if 'not found' not in line:
-                    xprops.append(line)
+        try:
+            xprop_ret = subprocess.run(
+                ['xprop', '-id', str(target_win.window)] +
+                self.menu.xprops_list,
+                stdout=subprocess.PIPE,
+                check=True
+            ).stdout
+            if xprop_ret is not None:
+                xprop_ret = xprop_ret.decode().split('\n')
+                for line in xprop_ret:
+                    if 'not found' not in line:
+                        xprops.append(line)
+        except CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
 
         rofi_params = {
             'cnum': 1,
@@ -28,16 +33,27 @@ class xprop():
             'prompt':
                 f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'
         }
-        xprop_sel = subprocess.run(
-            self.menu.rofi_args(rofi_params),
-            stdout=subprocess.PIPE,
-            input=bytes('\n'.join(xprops), 'UTF-8')
-        ).stdout
 
-        if xprop_sel is not None:
-            ret = xprop_sel.decode('UTF-8').strip()
+        try:
+            xprop_sel = subprocess.run(
+                self.menu.rofi_args(rofi_params),
+                stdout=subprocess.PIPE,
+                input=bytes('\n'.join(xprops), 'UTF-8'),
+                check=True
+            ).stdout
+
+            if xprop_sel is not None:
+                ret = xprop_sel.decode('UTF-8').strip()
+        except CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
 
         # Copy to the clipboard
         if ret is not None and ret != '':
-            subprocess.run(['xsel', '-i'], input=bytes(ret.strip(), 'UTF-8'))
-
+            try:
+                subprocess.run(
+                    ['xsel', '-i'],
+                    input=bytes(ret.strip(), 'UTF-8'),
+                    check=True
+                )
+            except CalledProcessError as proc_err:
+                Misc.print_run_exception_info(proc_err)

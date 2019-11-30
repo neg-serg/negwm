@@ -37,12 +37,14 @@ class pulse_menu():
             'lnum': len(self.pulse_data["app_list"]),
             'auto_selection': '-auto-select',
             'width': int(self.menu.screen_width * 0.55),
-            'prompt': f'{self.menu.wrap_str("pulse app")} {self.menu.conf("prompt")}',
+            'prompt': f'{self.menu.wrap_str("pulse app")} \
+            {self.menu.conf("prompt")}',
         }
         rofi_app_sel = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(self.pulse_data["app_list"]), 'UTF-8')
+            input=bytes('\n'.join(self.pulse_data["app_list"]), 'UTF-8'),
+            check=False
         ).stdout
 
         if rofi_app_sel is not None:
@@ -88,7 +90,8 @@ class pulse_menu():
             input=bytes(
                 '\n'.join(self.pulse_data["sink_output_list"]),
                 'UTF-8'
-            )
+            ),
+            check=False
         ).stdout
 
         if rofi_output_sel is not None:

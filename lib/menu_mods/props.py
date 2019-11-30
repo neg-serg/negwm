@@ -43,7 +43,8 @@ class props():
         rofi_tag = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(lst), 'UTF-8')
+            input=bytes('\n'.join(lst), 'UTF-8'),
+            check=False
         ).stdout
 
         if rofi_tag is not None and rofi_tag:
@@ -70,7 +71,7 @@ class props():
                     f'{mod}', 'add_prop',
                     f'{tag_name}', f'{aprop_str}'
                 ]
-                subprocess.run(cmdl)
+                subprocess.run(cmdl, check=False)
         else:
             print(f'No tag name specified for props [{aprop_str}]')
 
@@ -81,12 +82,14 @@ class props():
             'cnum': len(self.possible_mods),
             'lnum': 1,
             'width': int(self.menu.screen_width * 0.75),
-            'prompt': f'{self.menu.wrap_str("selmod")} {self.menu.conf("prompt")}'
+            'prompt': f'{self.menu.wrap_str("selmod")} \
+            {self.menu.conf("prompt")}'
         }
         mod = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(self.possible_mods), 'UTF-8')
+            input=bytes('\n'.join(self.possible_mods), 'UTF-8'),
+            check=False
         ).stdout
 
         if mod is not None and mod:
@@ -99,7 +102,7 @@ class props():
         """
         aprop_str = self.get_autoprop_as_str(with_title=False)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
-        subprocess.run(notify_msg)
+        subprocess.run(notify_msg, check=False)
 
     def get_autoprop_as_str(self, with_title: bool = False,
                             with_role: bool = False) -> str:
@@ -114,7 +117,8 @@ class props():
         win = self.menu.i3ipc.get_tree().find_focused()
         xprop = subprocess.run(
             ['xprop', '-id', str(win.window)] + self.menu.xprops_list,
-            stdout=subprocess.PIPE
+            stdout=subprocess.PIPE,
+            check=False
         ).stdout
         if xprop is not None:
             xprop = xprop.decode('UTF-8').split('\n')

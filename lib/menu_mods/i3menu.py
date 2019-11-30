@@ -17,7 +17,8 @@ class i3menu():
             out = subprocess.run(
                 [self.menu.i3cmd, 'magic_pie'],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL,
+                check=False
             ).stdout
         except Exception:
             return []
@@ -39,7 +40,9 @@ class i3menu():
         try:
             out = subprocess.run(
                 [self.menu.i3cmd, cmd],
-                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                check=False
             ).stdout
             if out is not None:
                 ret = [
@@ -62,7 +65,8 @@ class i3menu():
             cmd_rofi = subprocess.run(
                 self.menu.rofi_args({}),
                 stdout=subprocess.PIPE,
-                input=bytes('\n'.join(self.i3_cmds()), 'UTF-8')
+                input=bytes('\n'.join(self.i3_cmds()), 'UTF-8'),
+                check=True
             ).stdout
             if cmd_rofi is not None and cmd_rofi:
                 cmd = cmd_rofi.decode('UTF-8').strip()
@@ -86,6 +90,7 @@ class i3menu():
                 (f"{self.menu.i3cmd} " + cmd).split(),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
+                check=False
             ).stdout
             if out is not None and out:
                 ret = json.loads(out.decode('UTF-8').strip())[0]
@@ -101,7 +106,8 @@ class i3menu():
                         cmd_rerun = subprocess.run(
                             self.menu.rofi_args(rofi_params),
                             stdout=subprocess.PIPE,
-                            input=bytes('\n'.join(args), 'UTF-8')
+                            input=bytes('\n'.join(args), 'UTF-8'),
+                            check=False
                         ).stdout
                         cmd += ' ' + cmd_rerun.decode('UTF-8').strip()
                         prev_args = args
@@ -109,5 +115,5 @@ class i3menu():
                         return call_e.returncode
 
         if not ok:
-            subprocess.run(notify_msg)
+            subprocess.run(notify_msg, check=False)
 

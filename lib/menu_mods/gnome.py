@@ -5,6 +5,7 @@ import configparser
 import subprocess
 import glob
 import path
+import Misc
 
 
 class gnome():
@@ -37,9 +38,12 @@ class gnome():
             ret = selection.decode('UTF-8').strip()
 
             if ret is not None and ret != '':
-                subprocess.call([
-                    self.gnome_settings_script, *cmd_opts, ret
-                ])
+                try:
+                    subprocess.call([
+                        self.gnome_settings_script, *cmd_opts, ret
+                    ], check=True)
+                except CalledProcessError as proc_err:
+                    Misc.print_run_exception_info(proc_err)
 
     def change_icon_theme(self):
         """ Changes icon theme with help of gsd-xsettings """
@@ -51,11 +55,15 @@ class gnome():
 
         rofi_params = self.rofi_params(len(icon_dirs), 'icon theme')
 
-        selection = subprocess.run(
-            self.menu.rofi_args(rofi_params),
-            stdout=subprocess.PIPE,
-            input=bytes('\n'.join(icon_dirs), 'UTF-8')
-        ).stdout
+        try:
+            selection = subprocess.run(
+                self.menu.rofi_args(rofi_params),
+                stdout=subprocess.PIPE,
+                input=bytes('\n'.join(icon_dirs), 'UTF-8'),
+                check=True
+            ).stdout
+        except CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
 
         self.apply_settings(selection, '-i')
 
@@ -68,11 +76,15 @@ class gnome():
                 theme_dirs += [path.Path(theme).dirname().dirname().name]
 
         rofi_params = self.rofi_params(len(theme_dirs), 'gtk theme')
-        selection = subprocess.run(
-            self.menu.rofi_args(rofi_params),
-            stdout=subprocess.PIPE,
-            input=bytes('\n'.join(theme_dirs), 'UTF-8')
-        ).stdout
+        try:
+            selection = subprocess.run(
+                self.menu.rofi_args(rofi_params),
+                stdout=subprocess.PIPE,
+                input=bytes('\n'.join(theme_dirs), 'UTF-8'),
+                check=True
+            ).stdout
+        except CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
 
         self.apply_settings(selection, '-a')
 

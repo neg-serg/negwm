@@ -17,7 +17,8 @@ class xrandr():
         resolution_sel = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(xrandr_data), 'UTF-8')
+            input=bytes('\n'.join(xrandr_data), 'UTF-8'),
+            check=False
         ).stdout
 
         if resolution_sel is not None:

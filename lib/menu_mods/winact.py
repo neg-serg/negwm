@@ -26,7 +26,8 @@ class winact():
             win_name = subprocess.run(
                 self.menu.rofi_args(rofi_params),
                 stdout=subprocess.PIPE,
-                input=bytes('\n'.join(winlist), 'UTF-8')
+                input=bytes('\n'.join(winlist), 'UTF-8'),
+                check=False
             ).stdout
         elif winlist_len:
             win_name = winlist[0].encode()
@@ -65,7 +66,8 @@ class winact():
         workspace_name = subprocess.run(
             self.menu.rofi_args(rofi_params),
             stdout=subprocess.PIPE,
-            input=bytes('\n'.join(wslist), 'UTF-8')
+            input=bytes('\n'.join(wslist), 'UTF-8'),
+            check=False
         ).stdout
 
         selected_ws = workspace_name.decode('UTF-8').strip()
@@ -93,6 +95,7 @@ class winact():
         if workspace_name is not None and workspace_name:
             self.apply_to_ws(
                 partial(self.menu.i3ipc.command,
-                        f'[con_id=__focused__] move to workspace {workspace_name}')
+                        f'[con_id=__focused__] \
+                        move to workspace {workspace_name}')
             )
 
