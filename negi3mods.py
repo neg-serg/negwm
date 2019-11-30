@@ -155,7 +155,13 @@ class negi3mods(modconfig):
     def autostart(self):
         """ Autostart auto negi3mods initialization """
         if self.first_run:
-            subprocess.run([self.i3_path + 'send', 'circle', 'next', 'term'])
+            try:
+                subprocess.run(
+                    [self.i3_path + 'send', 'circle', 'next', 'term'],
+                    check=True
+                )
+            except CalledProcessError as proc_err:
+                Misc.print_run_exception_info(proc_err)
 
     def i3_config_watcher(self):
         """ i3 config watcher to run ppi3 on write.
@@ -181,15 +187,23 @@ class negi3mods(modconfig):
             changed_mod = event.name[:-4]
             if changed_mod in self.mods:
                 if reload_one:
-                    subprocess.run(
-                        [self.i3_path + 'send', changed_mod, 'reload']
-                    )
-                    self.notify(f'[Reloaded {changed_mod}]')
+                    try:
+                        subprocess.run(
+                            [self.i3_path + 'send', changed_mod, 'reload'],
+                            check=True
+                        )
+                        self.notify(f'[Reloaded {changed_mod}]')
+                    except CalledProcessError as proc_err:
+                        Misc.print_run_exception_info(proc_err)
                 else:
                     for mod in self.mods:
-                        subprocess.run(
-                            [self.i3_path + 'send', mod, 'reload']
-                        )
+                        try:
+                            subprocess.run(
+                                [self.i3_path + 'send', mod, 'reload'],
+                                check=True
+                            )
+                        except CalledProcessError as proc_err:
+                            Misc.print_run_exception_info(proc_err)
                     self.notify(
                         '[Reloaded {' + ','.join(self.mods.keys()) + '} ]'
                     )
@@ -206,11 +220,15 @@ class negi3mods(modconfig):
             event = await watcher.get_event()
             if event.name == '_config':
                 with open(self.test_cfg_path, "w") as fconf:
-                    subprocess.run(
-                        ['ppi3', self.i3_path + '_config'],
-                        stdout=fconf
-                    )
-                    config_is_valid = self.validate_i3_config()
+                    try:
+                        subprocess.run(
+                            ['ppi3', self.i3_path + '_config'],
+                            stdout=fconf,
+                            check=True
+                        )
+                        config_is_valid = self.validate_i3_config()
+                    except CalledProcessError as proc_err:
+                        Misc.print_run_exception_info(proc_err)
                 if config_is_valid:
                     Misc.echo("i3 config is valid!")
                     shutil.move(self.test_cfg_path, self.i3_path + 'config')
@@ -219,10 +237,14 @@ class negi3mods(modconfig):
     def validate_i3_config(self):
         """ Checks that i3 config is ok.
         """
-        check_config = subprocess.run(
-            ['i3', '-c', self.test_cfg_path, '-C'],
-            stdout=subprocess.PIPE
-        ).stdout.decode('utf-8')
+        try:
+            check_config = subprocess.run(
+                ['i3', '-c', self.test_cfg_path, '-C'],
+                stdout=subprocess.PIPE,
+                check=True
+            ).stdout.decode('utf-8')
+        except CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
         if check_config:
             error_data = check_config.encode('utf-8')
             self.echo(error_data)

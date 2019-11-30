@@ -87,3 +87,9 @@ class Misc():
     def echo_off(*_dummy_args, **_dummy_kwargs):
         """ do not print info """
         return
+
+    @staticmethod
+    def print_run_exception_info(proc_err):
+        print(f'returncode={proc_err.returncode}, \
+                cmd={proc_err.cmd}, \
+                output={proc_err.output}')
