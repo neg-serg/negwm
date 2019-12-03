@@ -133,7 +133,7 @@ for_window {$fb2,$pdf}, move workspace $doc, focus
 # ░█░█░█▀█░█▀▄░░░░░█▀▀░█░░░█▀█░█▀█░▀█▀░▀█▀░█▀█░█▀▀
 # ░▀▄▀░█▀█░█▀▄░░░░░█▀▀░█░░░█░█░█▀█░░█░░░█░░█░█░█░█
 # ░░▀░░▀░▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░▀▀▀
-for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gpick|rdesktop|Arandr)$"] floating enable
+for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
 
 # ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
 # ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
@@ -190,7 +190,6 @@ mode " " {
 bindsym $m4+$c+q kill
 #----------------------------------------------
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym $m4+$S+b exec ~/bin/pl rofi 1st_level ~/vid/new
 bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
 bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw-list"
 bindsym $m4+$S+0 exec --no-startup-id splatmoji type
