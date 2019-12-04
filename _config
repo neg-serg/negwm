@@ -35,7 +35,7 @@ set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 62
 # 3 :: foreground inactive
 # 4 :: background inactive
 # 5 :: indicator
-client.focused                 #222233  #000000  #ddddee  #112211 #073642
+client.focused                 #222233  #000000  #ddddee  #112211 #0C0C0D
 client.focused_inactive        #000000  #000000  #005fff  #000000 #222233
 client.unfocused               #000000  #000000  #315c70  #000000 #222233
 client.urgent                  #000000  #2E2457  #4C407C  #32275E #32275E
@@ -61,7 +61,6 @@ focus_wrapping yes
 # ░█░█░▀█▀░█▀█░█▀▀
 # ░█▄█░░█░░█░█░▀▀█
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀
-default_border pixel 2
 show_marks yes
 smart_borders on
 hide_edge_borders both
@@ -387,6 +386,8 @@ for_window [window_role="Preferences"] floating enable
 for_window [window_role="About"] floating enable 
 for_window [window_type="dialog"] floating enable
 for_window [window_type="menu"] floating enable
+
+for_window [class="^.*"] border pixel 2
 
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
