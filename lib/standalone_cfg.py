@@ -13,7 +13,7 @@ import aionotify
 from misc import Misc
 
 
-class modconfig(object):
+class modconfig():
     def __init__(self, loop):
         # set asyncio loop
         self.loop = loop
@@ -79,8 +79,7 @@ class modconfig(object):
         """ cfg watcher to update modules config in realtime.
         """
         watcher = aionotify.Watcher()
-        watcher.watch(alias='cfg', path=self.i3_cfg_path,
-                      flags=aionotify.Flags.MODIFY)
+        watcher.watch(path=self.i3_cfg_path, flags=aionotify.Flags.MODIFY)
         return watcher
 
     async def cfg_worker(self, watcher):
@@ -94,7 +93,7 @@ class modconfig(object):
             event = await watcher.get_event()
             if event.name == self.mod + '.cfg':
                 self.reload_config()
-                Misc.notify_msg(f'[Reloaded {self.mod} ]')
+                Misc.notify_msg(f'[Reloaded {self.mod}]')
         watcher.close()
 
     def run_inotify_watchers(self):

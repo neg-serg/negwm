@@ -148,8 +148,7 @@ class negi3mods(modconfig):
         """ cfg watcher to update modules config in realtime.
         """
         watcher = aionotify.Watcher()
-        watcher.watch(alias='configs', path=self.i3_cfg_path,
-                      flags=aionotify.Flags.MODIFY)
+        watcher.watch(path=self.i3_cfg_path, flags=aionotify.Flags.MODIFY)
         return watcher
 
     def autostart(self):
@@ -167,11 +166,7 @@ class negi3mods(modconfig):
         """ i3 config watcher to run ppi3 on write.
         """
         watcher = aionotify.Watcher()
-        watcher.watch(
-            alias='i3cfg',
-            path=self.i3_path,
-            flags=aionotify.Flags.CLOSE_WRITE
-        )
+        watcher.watch(path=self.i3_path, flags=aionotify.Flags.CLOSE_WRITE)
         return watcher
 
     async def mods_cfg_worker(self, watcher, reload_one=True):
@@ -205,7 +200,7 @@ class negi3mods(modconfig):
                         except subprocess.CalledProcessError as proc_err:
                             Misc.print_run_exception_info(proc_err)
                     self.notify(
-                        '[Reloaded {' + ','.join(self.mods.keys()) + '} ]'
+                        '[Reloaded {' + ','.join(self.mods.keys()) + '}]'
                     )
         watcher.close()
 
@@ -256,7 +251,7 @@ class negi3mods(modconfig):
             return False
         return True
 
-    def run_inotify_watchers(self):
+    def run_config_watchers(self):
         """ Start all watchers here via ensure_future to run it in background.
         """
         asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
@@ -279,7 +274,7 @@ class negi3mods(modconfig):
                 func(*args)
 
         start(self.load_modules)
-        start(self.run_inotify_watchers)
+        start(self.run_config_watchers)
 
         # Start modules mainloop.
         mainloop = Thread(
