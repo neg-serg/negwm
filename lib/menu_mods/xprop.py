@@ -23,7 +23,7 @@ class xprop():
                 for line in xprop_ret:
                     if 'not found' not in line:
                         xprops.append(line)
-        except CalledProcessError as proc_err:
+        except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
         rofi_params = {
@@ -44,7 +44,7 @@ class xprop():
 
             if xprop_sel is not None:
                 ret = xprop_sel.decode('UTF-8').strip()
-        except CalledProcessError as proc_err:
+        except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
         # Copy to the clipboard
@@ -55,5 +55,5 @@ class xprop():
                     input=bytes(ret.strip(), 'UTF-8'),
                     check=True
                 )
-            except CalledProcessError as proc_err:
+            except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)

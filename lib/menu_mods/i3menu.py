@@ -111,7 +111,7 @@ class i3menu():
                         ).stdout
                         cmd += ' ' + cmd_rerun.decode('UTF-8').strip()
                         prev_args = args
-                    except subprocess.CalledProcessError as call_e:
+                    except subprocess.subprocess.CalledProcessError as call_e:
                         return call_e.returncode
 
         if not ok:

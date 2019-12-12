@@ -43,7 +43,7 @@ class gnome():
                     subprocess.call([
                         self.gnome_settings_script, *cmd_opts, ret
                     ], check=True)
-                except CalledProcessError as proc_err:
+                except subprocess.CalledProcessError as proc_err:
                     Misc.print_run_exception_info(proc_err)
 
     def change_icon_theme(self):
@@ -63,7 +63,7 @@ class gnome():
                 input=bytes('\n'.join(icon_dirs), 'UTF-8'),
                 check=True
             ).stdout
-        except CalledProcessError as proc_err:
+        except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
         self.apply_settings(selection, '-i')
@@ -84,7 +84,7 @@ class gnome():
                 input=bytes('\n'.join(theme_dirs), 'UTF-8'),
                 check=True
             ).stdout
-        except CalledProcessError as proc_err:
+        except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
         self.apply_settings(selection, '-a')

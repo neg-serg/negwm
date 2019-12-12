@@ -48,5 +48,5 @@ class Display():
     def set_screen_size(cls, size_id=0) -> None:
         try:
             subprocess.run(['xrandr', '-s', str(size_id)], check=True)
-        except CalledProcessError as proc_err:
+        except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)

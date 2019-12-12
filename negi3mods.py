@@ -160,7 +160,7 @@ class negi3mods(modconfig):
                     [self.i3_path + 'send', 'circle', 'next', 'term'],
                     check=True
                 )
-            except CalledProcessError as proc_err:
+            except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
 
     def i3_config_watcher(self):
@@ -193,7 +193,7 @@ class negi3mods(modconfig):
                             check=True
                         )
                         self.notify(f'[Reloaded {changed_mod}]')
-                    except CalledProcessError as proc_err:
+                    except subprocess.CalledProcessError as proc_err:
                         Misc.print_run_exception_info(proc_err)
                 else:
                     for mod in self.mods:
@@ -202,7 +202,7 @@ class negi3mods(modconfig):
                                 [self.i3_path + 'send', mod, 'reload'],
                                 check=True
                             )
-                        except CalledProcessError as proc_err:
+                        except subprocess.CalledProcessError as proc_err:
                             Misc.print_run_exception_info(proc_err)
                     self.notify(
                         '[Reloaded {' + ','.join(self.mods.keys()) + '} ]'
@@ -227,7 +227,7 @@ class negi3mods(modconfig):
                             check=True
                         )
                         config_is_valid = self.validate_i3_config()
-                    except CalledProcessError as proc_err:
+                    except subprocess.CalledProcessError as proc_err:
                         Misc.print_run_exception_info(proc_err)
                 if config_is_valid:
                     self.echo("i3 config is valid!")
@@ -243,7 +243,7 @@ class negi3mods(modconfig):
                 stdout=subprocess.PIPE,
                 check=True
             ).stdout.decode('utf-8')
-        except CalledProcessError as proc_err:
+        except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
         if check_config:
             error_data = check_config.encode('utf-8')

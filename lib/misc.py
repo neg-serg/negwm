@@ -45,7 +45,7 @@ class Misc():
             if out is not None and out:
                 ret = out.decode('UTF-8').split()[0]
                 return ret
-        except CalledProcessError as proc_err:
+        except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
         return ""
