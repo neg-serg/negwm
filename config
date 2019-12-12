@@ -1,0 +1,343 @@
+#---------------------------------------
+#---------------------------------------
+workspace_layout tabbed
+floating_modifier $m4
+set $m4 Mod4
+set $alt Mod1
+set $c Control
+set $S Shift
+set $i3 $XDG_CONFIG_HOME/i3
+set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/send circle
+set $bscratch exec --no-startup-id $XDG_CONFIG_HOME/i3/send bscratch
+set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_history
+set $menu exec $XDG_CONFIG_HOME/i3/send menu
+set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_action
+set $volume exec --no-startup-id $XDG_CONFIG_HOME/i3/send vol
+set $executor exec --no-startup-id $XDG_CONFIG_HOME/i3/send executor
+set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
+client.focused #222233 #000000 #ddddee #112211 #0C0C0D
+client.focused_inactive #000000 #000000 #005fff #000000 #222233
+client.unfocused #000000 #000000 #315c70 #000000 #222233
+client.urgent #000000 #2E2457 #4C407C #32275E #32275E
+client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
+client.background #000000
+set $myfont Iosevka Term Heavy 8
+font pango: $myfont
+focus_follows_mouse no
+force_display_urgency_hint 0 ms
+focus_on_window_activation urgent
+mouse_warping none
+focus_wrapping yes
+show_marks yes
+smart_borders on
+hide_edge_borders both
+gaps inner 0
+gaps outer 0
+set $term "1 ::  α:term"
+set $web "2 ::  β:web"
+set $doc "3 ::  γ:doc"
+set $dev "4 ::  δ:dev"
+set $gfx "5 ::  ε:gfx"
+set $draw "6 ::  ζ:draw"
+set $sys "7 ::  η:sys"
+set $ide "8 ::  θ:ide"
+set $steam "9 ::  ι:steam"
+set $torrent "10 ::  κ:torrent"
+set $vm "11 ::  λ:vm"
+set $wine "12 ::  μ:wine"
+set $spotify "13 ::  ν:spotify"
+set $pic "14 ::  ξ:pic"
+set $remote "15 ::  ο:remote"
+set $sound "16 ::  ο:sound"
+set $browsers [class="^(firefox|Nightly|Waterfox|Chromium|Yandex-browser-beta|Tor Browser)$"]
+set $sclient [class="^(Steam|steam)$"]
+set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
+set $wine_apps [class="^(Wine|wine|Crossover)$"]
+set $windows_exe_by_title [title="^.*.exe$"]
+set $windows_exe_by_class [class="^.*.exe$"]
+set $pdf [class="Zathura"]
+set $fb2 [class="Cr3" instance="cr3"]
+set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
+set $webcam [class="^(cheese|obs)$"]
+set $vim [instance="nwim"]
+set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
+set $daw [class="Bitwig Studio" instance="airwave-host-32.exe"]
+title_align left
+for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
+for_window $browsers move workspace $web, focus
+for_window [class="guncharmap"] move workspace $doc
+for_window $vms move workspace $vm, focus
+for_window [class="^term$"] move workspace $term, focus
+for_window [instance="^term$"] move workspace $term, focus
+for_window $mplayer move workspace $gfx, focus
+for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
+for_window [class="^lollypop$"] move workspace $gfx, focus
+for_window [class="spotify"] move workspace $spotify, focus
+for_window [class="Sxiv"] move workspace $pic, focus
+for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
+for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote, focus
+for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
+for_window [class="albert"] move workspace current, focus
+for_window $daw move workspace $sound, focus
+for_window $fb2, move workspace $doc, focus
+for_window $pdf, move workspace $doc, focus
+for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
+for_window [class="^(draw|darktable|inkscape|gimp)$"] move workspace $draw
+for_window $vim move workspace $dev, focus
+for_window $sclient move workspace $steam, focus
+for_window $games move workspace $steam, focus
+#░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄░█▀▀
+#░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█░▀▀█
+#░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░░▀▀▀
+for_window [class="zoom"] move scratchpad, move absolute position 1372 127, resize set 548 1037
+for_window [class="^([Tt]elegram|[Ss]kype).*$"] move scratchpad, move absolute position 1372 127, resize set 548 1037
+for_window [instance="ncmpcpp"] move scratchpad, move absolute position 276 326, resize set 1389 696
+for_window [class="cool-retro-term"] move scratchpad, move absolute position 276 326, resize set 1389 696
+for_window [instance="mutt"] move scratchpad, move absolute position 52 0, resize set 1835 1114
+for_window [instance="ranger"] move scratchpad, move absolute position 3 1, resize set 1916 816
+for_window [instance="teardrop"] move scratchpad, move absolute position 39 4, resize set 1844 704
+for_window [class="Pavucontrol"] move scratchpad, move absolute position 1023 824, resize set 895 314
+for_window [instance="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
+for_window [instance="webcam"] move scratchpad, move absolute position 667 363, resize set 1234 771
+for_window [class="discord"] move scratchpad, move absolute position 974 127, resize set 944 1036
+#░█▀▄░▀█▀░█▀█░█░░░█▀█░█▀▀░█▀▀
+#░█░█░░█░░█▀█░█░░░█░█░█░█░▀▀█
+#░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
+for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
+for_window [class="Places"] $scratchpad_dialog
+#---------------------------------------------
+set $exit mode "default"
+bindsym $alt+e mode ""
+bindsym $m4+r mode ""
+bindsym $m4+minus mode ""
+bindsym $m4+$S+$c+BackSpace mode " "
+bindsym XF86AudioLowerVolume $volume d
+bindsym XF86AudioRaiseVolume $volume u
+bindsym $m4+p exec ~/bin/scripts/tmux_clipboard
+mode " " {
+bindsym $m4+$S+BackSpace mode "default"
+bindsym $m4+$c+$S+BackSpace mode "default"
+}
+bindsym $m4+$c+q kill
+#----------------------------------------------
+bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
+bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
+bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw-list"
+bindsym $m4+$S+0 exec --no-startup-id splatmoji type
+bindsym $m4+$S+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
+bindsym $m4+$C+5 $circle next remote
+bindsym $m4+$C+b $circle next bitwig
+bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
+bindsym $c+Print exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym $m4+$S+3 exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym $m4+$S+4 exec --no-startup-id flameshot gui
+bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
+#----------------------------------------------
+bindsym $m4+f $bscratch toggle ncmpcpp
+bindsym $m4+e $bscratch toggle im
+bindsym $m4+d $bscratch toggle teardrop
+bindsym $m4+a $bscratch toggle youtube
+bindsym $m4+$S+p $bscratch toggle volcontrol
+bindsym $m4+v $bscratch toggle discord
+bindsym $m4+$c+$S+R $bscratch geom_restore
+bindsym $m4+$c+$S+D $bscratch geom_dump
+bindsym $m4+$c+$S+S $bscratch geom_autosave_mode
+bindsym $m4+3 $bscratch next
+bindsym $m4+s $bscratch hide_current
+bindsym $m4+$c+c $circle next sxiv
+bindsym $m4+$S+c $circle subtag sxiv wallpaper
+bindsym $m4+x $circle next term
+bindsym $m4+1 $circle next nwim
+bindsym $m4+$c+v $circle next vm
+bindsym $m4+$c+e $circle next lutris
+bindsym $m4+$S+e $circle next steam
+bindsym $m4+$c+f $circle next looking_glass
+bindsym $m4+w $circle next web
+bindsym $m4+b $circle next vid
+bindsym $m4+o $circle next doc
+bindsym $m4+$S+o $circle next obs
+bindsym $m4+grave $win_history focus_next_visible
+bindsym $m4+$S+grave $win_history focus_prev_visible
+bindsym $m4+h focus left
+bindsym $m4+l focus right
+bindsym $m4+j focus down
+bindsym $m4+k focus up
+mode "" {
+bindsym h $win_action resize left 4
+bindsym $S+h $win_action resize left -4
+bindsym j $win_action resize bottom 4
+bindsym $S+j $win_action resize bottom -4
+bindsym k $win_action resize top 4
+bindsym $S+k $win_action resize top -4
+bindsym l $win_action resize right 4
+bindsym $S+l $win_action resize right -4
+bindsym a $win_action resize left 4
+bindsym $S+a $win_action resize left -4
+bindsym s $win_action resize bottom 4
+bindsym $S+s $win_action resize bottom -4
+bindsym w $win_action resize top 4
+bindsym $S+w $win_action resize top -4
+bindsym d $win_action resize right 4
+bindsym $S+d $win_action resize right -4
+#-------------------------------------------------------
+bindsym semicolon resize shrink right 4
+bindsym $S+colon resize grow right 4
+bindsym Return $exit
+bindsym Escape $exit
+bindsym space $exit
+bindsym $c+C $exit
+bindsym $c+G $exit
+}
+bindsym $m4+q fullscreen toggle
+bindsym $alt+g $menu goto_win
+bindsym $m4+m $menu xprop, $exit
+bindsym $m4+$s+i exec ~/bin/scripts/nmcli_dmenu, $exit
+bindsym $m4+$S+a $menu attach
+bindsym $m4+g $menu ws
+bindsym $m4+$c+g $menu movews
+bindsym $m4+$c+grave $menu cmd_menu
+bindsym $m4+$S+s $menu autoprop
+#-------------------------------------------------------
+bindsym $alt+Tab $win_history switch
+bindsym $m4+slash $win_history switch
+#-------------------------------------------------------
+mode "pass " {
+bindsym c exec ~/bin/scripts/lpwd , $exit
+bindsym p exec ~/bin/scripts/lpwd type, $exit
+bindsym Return, $exit
+bindsym Escape, $exit
+bindsym $c+C, $exit
+bindsym $c+G, $exit
+}
+mode "" {
+bindsym grave layout default; $exit
+bindsym t layout tabbed; $exit
+bindsym minus layout splith; $exit
+bindsym backslash layout splitv; $exit
+bindsym j split vertical; $exit
+bindsym k split vertical; $exit
+bindsym h split horizontal; $exit
+bindsym l split horizontal; $exit
+bindsym w move up
+bindsym a move left
+bindsym s move down
+bindsym d move right
+bindsym m $win_action maximize
+bindsym $S+m $win_action revert_maximize
+bindsym x $win_action maxhor
+bindsym y $win_action maxvert
+bindsym $S+x $win_action revert_maximize
+bindsym $S+y $win_action revert_maximize
+bindsym 1 $win_action quad 1
+bindsym 2 $win_action quad 2
+bindsym 3 $win_action quad 3
+bindsym 4 $win_action quad 4
+bindsym $S+w $win_action x2 hup
+bindsym $S+a $win_action x2 vleft
+bindsym $S+s $win_action x2 hdown
+bindsym $S+d $win_action x2 vright
+bindsym $S+plus $win_action grow
+bindsym $S+minus $win_action shrink
+bindsym c $win_action center none
+bindsym $S+c $win_action center resize
+#-------------------------------------------------------
+bindsym g mode ""
+#-------------------------------------------------------
+bindsym $c+a layout toggle all
+bindsym $c+3 layout toggle all
+bindsym $c+s layout toggle split
+bindsym $c+t layout toggle
+#-------------------------------------------------------
+bindsym Return $exit
+bindsym Escape $exit
+bindsym $c+C $exit
+bindsym $c+G $exit
+}
+mode "" {
+#-------------------------------------------------------
+bindsym c mode "pass "
+bindsym e mode "default", [urgent=latest] focus
+bindsym a mode "default", $bscratch dialog
+bindsym 5 mode "default", $circle subtag web tor
+bindsym y mode "default", $circle subtag web yandex
+bindsym f mode "default", $circle subtag web firefox
+bindsym $S+t mode "default", $menu gtk_theme
+bindsym $S+i mode "default", $menu icon_theme
+bindsym $S+d floating toggle; $exit
+bindsym $S+l exec sh -c 'sudo gllock'; $exit
+bindsym v exec ~/bin/qemu/vm_menu; $exit
+bindsym $S+v exec ~/bin/qemu/vm_menu start_win10; $exit
+bindsym o $menu pulse_output; $exit
+bindsym i $menu pulse_input; $exit
+bindsym $S+s exec ~/bin/pls -switch, $exit
+bindsym i mode "default", exec ~/bin/pls -output
+bindsym o mode "default", exec ~/bin/pls -sink
+bindsym $S+O mode "default", exec ~/bin/pls -vol
+#-------------------------------------------------------
+bindsym $m4+s $bscratch subtag im skype, mode "default"
+bindsym $alt+s $bscratch subtag im skype, mode "default"
+bindsym +s $bscratch subtag im skype, mode "default"
+bindsym $m4+t $bscratch subtag im tel, mode "default"
+bindsym $alt+t $bscratch subtag im tel, mode "default"
+bindsym t $bscratch subtag im tel, mode "default"
+bindsym m $bscratch toggle mutt, mode "default"
+bindsym w $bscratch toggle webcam, mode "default"
+bindsym $S+r $bscratch toggle ranger, mode "default"
+#-------------------------------------------------------
+bindsym Return $exit
+bindsym Escape $exit
+bindsym $c+C $exit
+bindsym $c+G $exit
+}
+mode "" {
+bindsym o mode -outer
+bindsym i mode -inner
+bindsym Return $exit
+bindsym Escape $exit
+bindsym $c+C $exit
+bindsym $c+G $exit
+}
+mode "-outer" {
+bindsym plus gaps outer current plus 5
+bindsym minus gaps outer current minus 5
+bindsym 0 gaps outer current set 0
+bindsym $S+plus gaps outer all plus 5
+bindsym $S+minus gaps outer all minus 5
+bindsym $S+0 gaps outer all set 0
+bindsym Return $exit
+bindsym Escape $exit
+bindsym $c+C $exit
+bindsym $c+G $exit
+}
+mode "-inner" {
+bindsym plus gaps inner current plus 5
+bindsym minus gaps inner current minus 5
+bindsym 0 gaps inner current set 0
+bindsym $S+plus gaps inner all plus 5
+bindsym $S+minus gaps inner all minus 5
+bindsym $S+0 gaps inner all set 0
+bindsym Return $exit
+bindsym Escape $exit
+bindsym $c+C $exit
+bindsym $c+G $exit
+}
+for_window [title="Desktop — Plasma"] floating enable; border none
+for_window [class="plasmashell"] floating enable
+for_window [class="Plasma"] floating enable
+for_window [class="krunner"] floating enable
+for_window [class="Kmix"] floating enable
+for_window [class="Klipper"] floating enable
+for_window [class="Plasmoidviewer"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_role="About"] floating enable
+for_window [window_type="dialog"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [class="^.*"] border pixel 2
+exec_always ~/bin/scripts/i3_prepare.sh &
+exec_always ~/bin/scripts/gnome_settings &
+exec /usr/lib/gsd-xsettings &
+exec_always ~/bin/scripts/panel_run.sh hard
+exec /usr/sbin/gpaste-client daemon
