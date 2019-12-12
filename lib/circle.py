@@ -382,15 +382,18 @@ class circle(negi3mod, cfg, Matcher):
                 event: i3ipc event. We can extract window from it using
                 event.container.
         """
-        win = event.container
+        win_con = event.container
         for tag in self.cfg:
-            if self.match(win, tag):
+            if self.match(win_con, tag):
                 for win in self.tagged[tag]:
                     if win.id in self.restore_fullscreen:
                         self.restore_fullscreen.remove(win.id)
-                self.tagged[tag].remove(win)
+
+        for tag in self.cfg:
+            for win in self.tagged[tag]:
+                if win.id == win_con.id:
+                    self.tagged[tag].remove(win)
         self.subtag_info = {}
-        self.win = win
 
     def set_curr_win(self, _, event) -> None:
         """ Cache the current window.
