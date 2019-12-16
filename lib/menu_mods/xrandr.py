@@ -8,14 +8,14 @@ class xrandr():
     def change_resolution_xrandr(self):
         from display import Display
         xrandr_data = Display.xrandr_resolution_list()
-        rofi_params = {
+        menu_params = {
             'cnum': 8,
             'width': int(Display.get_screen_resolution()["width"] * 0.55),
             'prompt': f'{self.menu.wrap_str("gtk_theme")} \
             {self.menu.conf("prompt")}',
         }
         resolution_sel = subprocess.run(
-            self.menu.rofi_args(rofi_params),
+            self.menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(xrandr_data), 'UTF-8'),
             check=False

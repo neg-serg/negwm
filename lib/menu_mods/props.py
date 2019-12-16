@@ -29,26 +29,26 @@ class props():
         self.i3rules_xprop = set(self.menu.conf("rules_xprop"))
 
     def tag_name(self, mod: str, lst: List[str]) -> str:
-        """ Returns tag name, selected by rofi.
+        """ Returns tag name, selected by menu.
 
         Args:
             mod (str): module name string.
-            lst (List[str]): list of rofi input.
+            lst (List[str]): list of menu input.
         """
-        rofi_params = {
+        menu_params = {
             'cnum': len(lst),
             'width': int(self.menu.screen_width * 0.75),
             'prompt': f'{self.menu.wrap_str(mod)} {self.menu.conf("prompt")}',
         }
-        rofi_tag = subprocess.run(
-            self.menu.rofi_args(rofi_params),
+        menu_tag = subprocess.run(
+            self.menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(lst), 'UTF-8'),
             check=False
         ).stdout
 
-        if rofi_tag is not None and rofi_tag:
-            return rofi_tag.decode('UTF-8').strip()
+        if menu_tag is not None and menu_tag:
+            return menu_tag.decode('UTF-8').strip()
 
         return ""
 
@@ -76,9 +76,9 @@ class props():
             print(f'No tag name specified for props [{aprop_str}]')
 
     def get_mod(self) -> str:
-        """ Select negi3mod for add_prop by rofi.
+        """ Select negi3mod for add_prop by menu.
         """
-        rofi_params = {
+        menu_params = {
             'cnum': len(self.possible_mods),
             'lnum': 1,
             'width': int(self.menu.screen_width * 0.75),
@@ -86,7 +86,7 @@ class props():
             {self.menu.conf("prompt")}'
         }
         mod = subprocess.run(
-            self.menu.rofi_args(rofi_params),
+            self.menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.possible_mods), 'UTF-8'),
             check=False

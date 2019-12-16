@@ -12,19 +12,19 @@ class winact():
         """ Run simple and fast selection dialog for window with given action.
             Args:
                 cmd (str): action for window to run.
-                prompt (str): custom prompt for rofi.
+                prompt (str): custom prompt for menu.
         """
         leaves = self.menu.i3ipc.get_tree().leaves()
         winlist = [win.name for win in leaves]
         winlist_len = len(winlist)
-        rofi_params = {
+        menu_params = {
             'cnum': winlist_len,
             'width': int(self.menu.screen_width * 0.75),
             'prompt': f"{prompt} {self.menu.conf('prompt')}"
         }
         if winlist and winlist_len > 1:
             win_name = subprocess.run(
-                self.menu.rofi_args(rofi_params),
+                self.menu.args(menu_params),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(winlist), 'UTF-8'),
                 check=False
@@ -39,7 +39,7 @@ class winact():
                     win.command(cmd)
 
     def goto_win(self) -> None:
-        """ Run rofi goto selection dialog
+        """ Run menu goto selection dialog
         """
         self.win_act_simple('focus', self.menu.wrap_str('go'))
 
@@ -58,13 +58,13 @@ class winact():
         else:
             wslist = [ws.name for ws in self.menu.i3ipc.get_workspaces()] + \
                 ["[empty]"]
-        rofi_params = {
+        menu_params = {
             'cnum': len(wslist),
             'width': int(self.menu.screen_width * 0.66),
             'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}',
         }
         workspace_name = subprocess.run(
-            self.menu.rofi_args(rofi_params),
+            self.menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(wslist), 'UTF-8'),
             check=False

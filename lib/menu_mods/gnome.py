@@ -11,8 +11,8 @@ from misc import Misc
 
 class gnome():
     """
-    Change gtk / icons themes and another gnome settings using
-    gsd-xsettings.
+        Change gtk / icons themes and another gnome settings using
+        gsd-xsettings.
     """
 
     def __init__(self, menu):
@@ -22,8 +22,8 @@ class gnome():
             '~/bin/scripts/gnome_settings'
         )
 
-    def rofi_params(self, length, prompt):
-        """ Set rofi params """
+    def menu_params(self, length, prompt):
+        """ Set menu params """
         return {
             'cnum': length / 2,
             'lnum': 2,
@@ -54,11 +54,11 @@ class gnome():
             if icon:
                 icon_dirs += [path.Path(icon).name]
 
-        rofi_params = self.rofi_params(len(icon_dirs), 'icon theme')
+        menu_params = self.menu_params(len(icon_dirs), 'icon theme')
 
         try:
             selection = subprocess.run(
-                self.menu.rofi_args(rofi_params),
+                self.menu.args(menu_params),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(icon_dirs), 'UTF-8'),
                 check=True
@@ -76,10 +76,10 @@ class gnome():
             if theme:
                 theme_dirs += [path.Path(theme).dirname().dirname().name]
 
-        rofi_params = self.rofi_params(len(theme_dirs), 'gtk theme')
+        menu_params = self.menu_params(len(theme_dirs), 'gtk theme')
         try:
             selection = subprocess.run(
-                self.menu.rofi_args(rofi_params),
+                self.menu.args(menu_params),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(theme_dirs), 'UTF-8'),
                 check=True

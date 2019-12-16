@@ -62,14 +62,14 @@ class i3menu():
         cmd = ''
 
         try:
-            cmd_rofi = subprocess.run(
-                self.menu.rofi_args({}),
+            menu = subprocess.run(
+                self.menu.args({}),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(self.i3_cmds()), 'UTF-8'),
                 check=True
             ).stdout
-            if cmd_rofi is not None and cmd_rofi:
-                cmd = cmd_rofi.decode('UTF-8').strip()
+            if menu is not None and menu:
+                cmd = menu.decode('UTF-8').strip()
         except subprocess.CalledProcessError as call_e:
             sys.exit(call_e.returncode)
 
@@ -79,7 +79,7 @@ class i3menu():
 
         debug, ok, notify_msg = False, False, ""
         args, prev_args = None, None
-        rofi_params = {
+        menu_params = {
             'prompt': f"{self.menu.wrap_str('i3cmd')} \
                 {self.menu.conf('prompt')} " + cmd,
         }
@@ -104,14 +104,14 @@ class i3menu():
                         if args == prev_args:
                             return 0
                         cmd_rerun = subprocess.run(
-                            self.menu.rofi_args(rofi_params),
+                            self.menu.args(menu_params),
                             stdout=subprocess.PIPE,
                             input=bytes('\n'.join(args), 'UTF-8'),
                             check=False
                         ).stdout
                         cmd += ' ' + cmd_rerun.decode('UTF-8').strip()
                         prev_args = args
-                    except subprocess.subprocess.CalledProcessError as call_e:
+                    except subprocess.CalledProcessError as call_e:
                         return call_e.returncode
 
         if not ok:

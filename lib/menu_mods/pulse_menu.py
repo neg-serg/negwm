@@ -32,7 +32,7 @@ class pulse_menu():
         pass
 
     def pulseaudio_select_app(self):
-        rofi_params = {
+        menu_params = {
             'cnum': 1,
             'lnum': len(self.pulse_data["app_list"]),
             'auto_selection': '-auto-select',
@@ -40,15 +40,15 @@ class pulse_menu():
             'prompt': f'{self.menu.wrap_str("pulse app")} \
             {self.menu.conf("prompt")}',
         }
-        rofi_app_sel = subprocess.run(
-            self.menu.rofi_args(rofi_params),
+        menu_app_sel = subprocess.run(
+            self.menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.pulse_data["app_list"]), 'UTF-8'),
             check=False
         ).stdout
 
-        if rofi_app_sel is not None:
-            app_ret = rofi_app_sel.decode('UTF-8').strip()
+        if menu_app_sel is not None:
+            app_ret = menu_app_sel.decode('UTF-8').strip()
 
         exclude_device_name = ""
         sel_app_props = \
@@ -75,7 +75,7 @@ class pulse_menu():
 
     def pulseaudio_select_output(self, app_ret) -> None:
         """ Create params for pulseaudio selector """
-        rofi_params = {
+        menu_params = {
             'cnum': 1,
             'lnum': len(self.pulse_data["sink_output_list"]),
             'auto_selection': '-auto-select',
@@ -84,8 +84,8 @@ class pulse_menu():
                 f'{self.menu.wrap_str("pulse output")} \
                 {self.menu.conf("prompt")}'
         }
-        rofi_output_sel = subprocess.run(
-            self.menu.rofi_args(rofi_params),
+        menu_output_sel = subprocess.run(
+            self.menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes(
                 '\n'.join(self.pulse_data["sink_output_list"]),
@@ -94,8 +94,8 @@ class pulse_menu():
             check=False
         ).stdout
 
-        if rofi_output_sel is not None:
-            out_ret = rofi_output_sel.decode('UTF-8').strip()
+        if menu_output_sel is not None:
+            out_ret = menu_output_sel.decode('UTF-8').strip()
 
         target_idx = out_ret.split('--')[0].strip()
         if int(self.pulse_data["app_props"][app_ret].index) is not None \

@@ -1,4 +1,5 @@
 import subprocess
+from misc import Misc
 
 
 class xprop():
@@ -26,7 +27,7 @@ class xprop():
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
-        rofi_params = {
+        menu_params = {
             'cnum': 1,
             'lnum': len(xprops),
             'width': int(self.menu.screen_width * 0.75),
@@ -34,9 +35,11 @@ class xprop():
                 f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'
         }
 
+        ret = ""
+
         try:
             xprop_sel = subprocess.run(
-                self.menu.rofi_args(rofi_params),
+                self.menu.args(menu_params),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(xprops), 'UTF-8'),
                 check=True

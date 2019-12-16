@@ -72,7 +72,7 @@ class menu(negi3mod, cfg):
             "reload": self.reload_config,
         }
 
-    def rofi_args(self, params: dict) -> List[str]:
+    def args(self, params: dict) -> List[str]:
         """ Create run parameters to spawn rofi process from dict
 
             Args:
@@ -82,15 +82,13 @@ class menu(negi3mod, cfg):
         """
         prompt = self.conf("prompt")
 
-        params['width'] = params.get('width', 0) or \
-            int(self.screen_width * 0.85)
-        params['prompt'] = params.get('prompt', 0) or prompt
-        params['cnum'] = params.get('cnum', 0) or 16
-        params['lnum'] = params.get('lnum', 0) or 2
-        params['markup_rows'] = params.get('markup_rows', 0) or \
-            '-no-markup-rows'
-        params['auto_selection'] = params.get('auto_selection', 0) or \
-            "-no-auto-selection"
+        params['width'] = params.get('width', int(self.screen_width * 0.85))
+        params['prompt'] = params.get('prompt', prompt)
+        params['cnum'] = params.get('cnum', 16)
+        params['lnum'] = params.get('lnum', 2)
+        params['markup_rows'] = params.get('markup_rows', '-no-markup-rows')
+        params['auto_selection'] = \
+            params.get('auto_selection', "-no-auto-selection")
 
         launcher_font = self.conf("font") + " " + \
             str(self.conf("font_size"))
@@ -99,7 +97,7 @@ class menu(negi3mod, cfg):
         matching = self.conf("matching")
         gap = self.conf("gap")
 
-        rofi_params = [
+        return [
             'rofi', '-show', '-dmenu',
             '-columns', str(params['cnum']),
             '-lines', str(params['lnum']),
@@ -116,8 +114,6 @@ class menu(negi3mod, cfg):
             location: {location}; \
             anchor: {anchor}; }}',
         ]
-
-        return rofi_params
 
     def wrap_str(self, string: str) -> str:
         """ String wrapper to make it beautiful """
