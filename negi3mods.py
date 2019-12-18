@@ -34,7 +34,6 @@ import signal
 import functools
 import importlib
 import shutil
-import tracemalloc
 from threading import Thread
 
 import asyncio
@@ -66,6 +65,7 @@ class negi3mods(modconfig):
 
         if cmd_args["--tracemalloc"]:
             self.tracemalloc_enabled = True
+            import tracemalloc
 
         if self.tracemalloc_enabled:
             tracemalloc.start()
