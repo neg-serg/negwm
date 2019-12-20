@@ -1,8 +1,6 @@
 git+git://github.com/acrisci/i3ipc-python@master
-inotify
 toml
 inotipy
-aiofiles
 Xlib
 ewmh
 yamlloader

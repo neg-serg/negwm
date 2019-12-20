@@ -60,9 +60,7 @@ stability issues.
 
 + i3ipc -- for i3 ipc interaction, installed from master
 + toml -- to save/load human-readable configuration files.
-+ inotify -- to reload configs in realtime without reloading.
 + inotipy -- async inotify bindings
-+ aiofiles -- async file input-output
 + Xlib -- xlib bindings to work with `NET_WM_` parameters, etc.
 + ewmh -- used to create EWMH helper.
 + yamlloader -- module for the more fast yaml file loading.
@@ -80,16 +78,14 @@ or
 
 ```
 sudo pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
-    inotify toml inotipy aiofiles Xlib \
-    ewmh yamlloader pulsectl docopt
+    toml inotipy Xlib ewmh yamlloader pulsectl docopt
 ```
 
 In case of pypy it may be something like
 
 ```
 sudo pypy3 -m pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
-    inotify toml inotipy aiofiles Xlib \
-    ewmh yamlloader pulsectl docopt
+    toml inotipy Xlib ewmh yamlloader pulsectl docopt
 ```
 
 or
