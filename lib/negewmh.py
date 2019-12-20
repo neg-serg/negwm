@@ -36,7 +36,7 @@ class NegEWMH():
             modal state of window.
 
             Args:
-                w : target window to check
+                win : target window to check
         """
         if win.window_instance == "Places" \
                 or win.window_role in {
