@@ -37,7 +37,7 @@ import shutil
 from threading import Thread
 
 import asyncio
-import aionotify
+import inotipy
 
 import i3ipc
 from docopt import docopt
@@ -147,8 +147,8 @@ class negi3mods(modconfig):
     def mods_cfg_watcher(self):
         """ cfg watcher to update modules config in realtime.
         """
-        watcher = aionotify.Watcher()
-        watcher.watch(path=self.i3_cfg_path, flags=aionotify.Flags.MODIFY)
+        watcher = inotipy.Watcher.create()
+        watcher.watch(self.i3_cfg_path, inotipy.IN.MODIFY)
         return watcher
 
     def autostart(self):
@@ -165,8 +165,8 @@ class negi3mods(modconfig):
     def i3_config_watcher(self):
         """ i3 config watcher to run ppi3 on write.
         """
-        watcher = aionotify.Watcher()
-        watcher.watch(path=self.i3_path, flags=aionotify.Flags.CLOSE_WRITE)
+        watcher = inotipy.Watcher.create()
+        watcher.watch(self.i3_path, inotipy.IN.CLOSE_WRITE)
         return watcher
 
     async def mods_cfg_worker(self, watcher, reload_one=True):
@@ -176,10 +176,10 @@ class negi3mods(modconfig):
             Args:
                 watcher: watcher for cfg.
         """
-        await watcher.setup(self.loop)
         while True:
-            event = await watcher.get_event()
-            changed_mod = event.name[:-4]
+            event = await watcher.get()
+            print(event)
+            changed_mod = event.pathname[:-4]
             if changed_mod in self.mods:
                 if reload_one:
                     try:
@@ -210,10 +210,9 @@ class negi3mods(modconfig):
             Args:
                 watcher: watcher for i3 config.
         """
-        await watcher.setup(self.loop)
         while True:
-            event = await watcher.get_event()
-            if event.name == '_config':
+            event = await watcher.get()
+            if event.pathname == '_config':
                 with open(self.test_cfg_path, "w") as fconf:
                     try:
                         subprocess.run(
@@ -227,7 +226,6 @@ class negi3mods(modconfig):
                 if config_is_valid:
                     self.echo("i3 config is valid!")
                     shutil.move(self.test_cfg_path, self.i3_path + 'config')
-        watcher.close()
 
     def validate_i3_config(self):
         """ Checks that i3 config is ok.

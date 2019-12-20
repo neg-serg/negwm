@@ -9,7 +9,7 @@ import sys
 import toml
 import traceback
 import asyncio
-import aionotify
+import inotipy
 from misc import Misc
 
 
@@ -78,8 +78,8 @@ class modconfig():
     def cfg_watcher(self):
         """ cfg watcher to update modules config in realtime.
         """
-        watcher = aionotify.Watcher()
-        watcher.watch(path=self.i3_cfg_path, flags=aionotify.Flags.MODIFY)
+        watcher = inotipy.Watcher.create()
+        watcher.watch(self.i3_cfg_path, inotipy.IN.MODIFY)
         return watcher
 
     async def cfg_worker(self, watcher):
@@ -88,13 +88,11 @@ class modconfig():
             Args:
                 watcher: watcher for cfg.
         """
-        await watcher.setup(self.loop)
         while True:
-            event = await watcher.get_event()
+            event = await watcher.get()
             if event.name == self.mod + '.cfg':
                 self.reload_config()
                 Misc.notify_msg(f'[Reloaded {self.mod}]')
-        watcher.close()
 
     def run_inotify_watchers(self):
         """ Start all watchers here via ensure_future to run it in background.
