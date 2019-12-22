@@ -36,6 +36,11 @@ import importlib
 import shutil
 from threading import Thread
 
+for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
+          "toml", "Xlib", "yaml", "yamlloader", "ewmh"]:
+    if not importlib.util.find_spec(m):
+        print("Cannot import [{m}], please install")
+
 import asyncio
 import inotipy
 
