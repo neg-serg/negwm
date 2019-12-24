@@ -258,7 +258,7 @@ bindsym $m4+q fullscreen toggle
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀
 bindsym $alt+g $menu goto_win
 bindsym $m4+m $menu xprop, $exit
-bindsym $m4+$s+i exec ~/bin/scripts/nmcli_dmenu, $exit
+bindsym $m4+$s+i exec ~/bin/scripts/rofi_nmcli, $exit
 bindsym $m4+$S+a $menu attach
 bindsym $m4+g $menu ws
 bindsym $m4+$c+g $menu movews
