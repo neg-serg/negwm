@@ -392,7 +392,7 @@ for_window [class="^.*"] border pixel 2
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
-exec_always ~/bin/scripts/i3_prepare.sh &
+exec_always ~/.config/i3/i3_prepare &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
 exec_always ~/bin/scripts/panel_run.sh hard
