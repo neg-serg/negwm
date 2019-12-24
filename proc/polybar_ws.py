@@ -36,8 +36,8 @@ year :: 2019
 import sys
 import re
 import asyncio
-from i3ipc.aio import Connection
 import i3ipc
+from i3ipc.aio import Connection
 
 from lib.standalone_cfg import modconfig
 from lib.misc import Misc
