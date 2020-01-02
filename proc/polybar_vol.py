@@ -26,7 +26,7 @@ this application run pretty long time to get advantages of JIT compilation.
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
 github :: https://github.com/neg-serg?tab=repositories
-year :: 2019
+year :: 2020
 
 """
 
