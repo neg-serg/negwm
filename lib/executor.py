@@ -66,6 +66,30 @@ class env():
         if not self.font_size:
             self.font_size = config.get(name, {}).get("font_size", "18")
 
+        use_one_fontstyle = config.get("use_one_fontstyle", False)
+        self.font_style = config.get("default_font_style", "")
+        if not self.font_style:
+            self.font_style = config.get(name, {}).get("font_style", "Regular")
+
+        if use_one_fontstyle:
+            self.font_style_normal = config.get(name, {})\
+                .get("font_style_normal", self.font_style)
+
+            self.font_style_bold = config.get(name, {})\
+                .get("font_style_bold", self.font_style)
+
+            self.font_style_italic = config.get(name, {})\
+                .get("font_style_italic", self.font_style)
+        else:
+            self.font_style_normal = config.get(name, {})\
+                .get("font_style_normal", 'Regular')
+
+            self.font_style_bold = config.get(name, {})\
+                .get("font_style_bold", 'Bold')
+
+            self.font_style_italic = config.get(name, {})\
+                .get("font_style_italic", 'Italic')
+
         self.tmux_session_attach = \
             f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = \
@@ -143,6 +167,9 @@ class env():
                     conf["font"]["normal"]["family"] = self.font
                     conf["font"]["bold"]["family"] = self.font
                     conf["font"]["italic"]["family"] = self.font
+                    conf["font"]["normal"]["style"] = self.font_style_normal
+                    conf["font"]["bold"]["style"] = self.font_style_bold
+                    conf["font"]["italic"]["style"] = self.font_style_italic
                     conf["font"]["size"] = self.font_size
                     conf["window"]["padding"]['x'] = int(self.x_pad)
                     conf["window"]["padding"]['y'] = int(self.y_pad)
