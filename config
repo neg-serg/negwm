@@ -74,7 +74,7 @@ for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
 for_window [class="^lollypop$"] move workspace $gfx, focus
 for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="Sxiv"] move workspace $pic, focus
-for_window [instance="^(gparted|recoll|gnome-disks)$"] move workspace $sys, focus
+for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote, focus
 for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
 for_window [class="albert"] move workspace current, focus
