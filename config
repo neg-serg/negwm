@@ -61,7 +61,7 @@ set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
 set $webcam [class="^(cheese|obs)$"]
 set $vim [instance="nwim"]
 set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
-set $daw [class="Bitwig Studio" instance="airwave-host-32.exe"]
+set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
 title_align left
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
 for_window $browsers move workspace $web, focus
