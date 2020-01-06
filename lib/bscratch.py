@@ -109,7 +109,7 @@ class bscratch(negi3mod, cfg, Matcher):
             Args:
                 tag: tag string
         """
-        return f'mark --add {tag}-{str(str(uuid.uuid4().fields[-1]))}'
+        return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
     def show_scratchpad(self, tag: str, hide: bool = True) -> None:
         """ Show given [tag]
