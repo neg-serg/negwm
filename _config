@@ -66,6 +66,7 @@ smart_borders on
 hide_edge_borders both
 gaps inner 0
 gaps outer 0
+popup_during_fullscreen smart
 
 # ░█░█░█▄█░█▀▀
 # ░█▄█░█░█░▀▀█
