@@ -107,6 +107,7 @@ for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpa
 for_window [class="Places"] $scratchpad_dialog
 #---------------------------------------------
 set $exit mode "default"
+bindsym $S+space mode ""
 bindsym $alt+e mode ""
 bindsym $m4+r mode ""
 bindsym $m4+minus mode ""

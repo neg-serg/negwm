@@ -175,6 +175,7 @@ for_window [class="Places"] $scratchpad_dialog
 # ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
 # ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
 set $exit mode "default"
+bindsym $S+space mode ""             # special mode
 bindsym $alt+e mode ""               # special mode
 bindsym $m4+r mode ""                # resize mode
 bindsym $m4+minus mode ""            # window-manager / split / tiling mode
