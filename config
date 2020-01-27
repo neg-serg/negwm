@@ -113,7 +113,7 @@ bindsym $m4+minus mode ""
 bindsym $m4+$S+$c+BackSpace mode " "
 bindsym XF86AudioLowerVolume $volume d
 bindsym XF86AudioRaiseVolume $volume u
-bindsym $m4+p exec ~/bin/scripts/tmux_clipboard
+bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
 mode " " {
 bindsym $m4+$S+BackSpace mode "default"
 bindsym $m4+$c+$S+BackSpace mode "default"
