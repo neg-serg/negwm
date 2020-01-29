@@ -64,8 +64,10 @@ focus_wrapping yes
 show_marks yes
 smart_borders on
 hide_edge_borders both
-gaps inner 0
-gaps outer 0
+gaps inner  0
+gaps outer  0
+gaps top    0
+gaps bottom 0
 
 # ░█░█░█▄█░█▀▀
 # ░█▄█░█░█░▀▀█
