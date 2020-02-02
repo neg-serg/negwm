@@ -96,7 +96,7 @@ class env():
             f"tmux -S {self.sockpath} new-session -s {name}"
         colorscheme = config.get("colorscheme", "")
         if not colorscheme:
-            colorscheme = config.get(name, {}).get("colorscheme", 'dark3')
+            colorscheme = config.get(name, {}).get("colorscheme", 'neg-dark3')
         self.set_colorscheme = \
             f"{expanduser('~/bin/dynamic-colors')} switch {colorscheme};"
         self.postfix = config.get(name, {}).get("postfix", '')
