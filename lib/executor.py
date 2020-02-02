@@ -102,8 +102,8 @@ class env():
         self.postfix = config.get(name, {}).get("postfix", '')
         if self.postfix and self.postfix[0] != '-':
             self.postfix = '\\; ' + self.postfix
-        self.run_tmux = int(config.get(name, {}).get("run_tmux", 1))
-        if not self.run_tmux:
+        self.with_tmux = int(config.get(name, {}).get("with_tmux", 1))
+        if not self.with_tmux:
             prog_to_dtach = config.get(name, {}).get('prog_detach', '')
             if prog_to_dtach:
                 self.prog = \
@@ -336,13 +336,13 @@ class executor(negi3mod, cfg):
 
     def run(self, name: str) -> None:
         """ Entry point, run application with Tmux on dedicated socket(in most
-            cases), or without tmux, if config value run_tmux=0.
+            cases), or without tmux, if config value with_tmux=0.
             Args:
                 name (str): target application name, with configuration taken
                             from TOML.
         """
         self.env = self.envs[name]
-        if self.env.run_tmux:
+        if self.env.with_tmux:
             if self.env.name in self.detect_session_bind(
                     self.env.sockpath, self.env.name):
                 wid = self.search_classname()
