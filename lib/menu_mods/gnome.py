@@ -18,7 +18,7 @@ class gnome():
     def __init__(self, menu):
         self.menu = menu
         self.gtk_config = configparser.ConfigParser()
-        self.gnome_settings_script = os.path.expanduser(
+        self.gsettings_script = os.path.expanduser(
             '~/bin/scripts/gnome_settings'
         )
 
@@ -40,9 +40,7 @@ class gnome():
 
             if ret is not None and ret != '':
                 try:
-                    subprocess.call([
-                        self.gnome_settings_script, *cmd_opts, ret
-                    ], check=True)
+                    subprocess.call([self.gsettings_script, *cmd_opts, ret])
                 except subprocess.CalledProcessError as proc_err:
                     Misc.print_run_exception_info(proc_err)
 
