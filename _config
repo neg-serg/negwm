@@ -112,7 +112,6 @@ for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %ti
 # ░█▄█░█░█░░░░░█▀▄░█░█░█░░░█▀▀░▀▀█
 # ░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 for_window $browsers move workspace $web, focus
-for_window [class="guncharmap"] move workspace $doc
 for_window $vms move workspace $vm, focus
 for_window [{class,instance}="^term$"] move workspace $term, focus
 for_window $mplayer move workspace $gfx, focus
@@ -123,7 +122,6 @@ for_window [class="Sxiv"] move workspace $pic, focus
 for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
 for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote, focus
 for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
-for_window [class="albert"] move workspace current, focus
 for_window $daw move workspace $sound, focus
 
 # ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
@@ -180,14 +178,8 @@ set $exit mode "default"
 bindsym $alt+e mode ""               # special mode
 bindsym $m4+r mode ""                # resize mode
 bindsym $m4+minus mode ""            # window-manager / split / tiling mode
-bindsym $m4+$S+$c+BackSpace mode " " # blocking mode
 bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
-mode " " {
-    bindsym $m4+$S+BackSpace mode "default"
-    bindsym $m4+$c+$S+BackSpace mode "default"
-}
-
 bindsym $m4+$c+q kill
 #----------------------------------------------
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
@@ -385,7 +377,7 @@ for_window [window_role="pop-up"] floating enable
 for_window [window_role="bubble"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [window_role="Preferences"] floating enable
-for_window [window_role="About"] floating enable 
+for_window [window_role="About"] floating enable
 for_window [window_type="dialog"] floating enable
 for_window [window_type="menu"] floating enable
 
