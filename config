@@ -106,9 +106,9 @@ for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpa
 for_window [class="Places"] $scratchpad_dialog
 #---------------------------------------------
 set $exit mode "default"
-bindsym $alt+e mode ""
-bindsym $m4+r mode ""
-bindsym $m4+minus mode ""
+bindsym $alt+e mode "spec"
+bindsym $m4+r mode "resize"
+bindsym $m4+minus mode "wm"
 bindsym XF86AudioLowerVolume $volume d
 bindsym XF86AudioRaiseVolume $volume u
 bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
@@ -156,7 +156,7 @@ bindsym $m4+h focus left
 bindsym $m4+l focus right
 bindsym $m4+j focus down
 bindsym $m4+k focus up
-mode "" {
+mode "resize" {
 bindsym h $win_action resize left 4
 bindsym $S+h $win_action resize left -4
 bindsym j $win_action resize bottom 4
@@ -195,7 +195,7 @@ bindsym $m4+$S+s $menu autoprop
 bindsym $alt+Tab $win_history switch
 bindsym $m4+slash $win_history switch
 #-------------------------------------------------------
-mode "pass " {
+mode "pass" {
 bindsym c exec ~/bin/scripts/lpwd , $exit
 bindsym p exec ~/bin/scripts/lpwd type, $exit
 bindsym Return, $exit
@@ -203,7 +203,7 @@ bindsym Escape, $exit
 bindsym $c+C, $exit
 bindsym $c+G, $exit
 }
-mode "" {
+mode "wm" {
 bindsym grave layout default; $exit
 bindsym t layout tabbed; $exit
 bindsym minus layout splith; $exit
@@ -235,7 +235,7 @@ bindsym $S+minus $win_action shrink
 bindsym c $win_action center none
 bindsym $S+c $win_action center resize
 #-------------------------------------------------------
-bindsym g mode ""
+bindsym g mode "gaps"
 #-------------------------------------------------------
 bindsym $c+a layout toggle all
 bindsym $c+3 layout toggle all
@@ -247,9 +247,9 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "" {
+mode "spec" {
 #-------------------------------------------------------
-bindsym c mode "pass "
+bindsym c mode "pass"
 bindsym e mode "default", [urgent=latest] focus
 bindsym a mode "default", $bscratch dialog
 bindsym 5 mode "default", $circle subtag web tor
@@ -283,15 +283,15 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "" {
-bindsym o mode -outer
-bindsym i mode -inner
+mode "gaps" {
+bindsym o mode gaps-outer
+bindsym i mode gaps-inner
 bindsym Return $exit
 bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "-outer" {
+mode "gaps-outer" {
 bindsym plus gaps outer current plus 5
 bindsym minus gaps outer current minus 5
 bindsym 0 gaps outer current set 0
@@ -303,7 +303,7 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "-inner" {
+mode "gaps-inner" {
 bindsym plus gaps inner current plus 5
 bindsym minus gaps inner current minus 5
 bindsym 0 gaps inner current set 0

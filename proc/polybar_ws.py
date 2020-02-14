@@ -74,8 +74,9 @@ class polybar_ws(modconfig):
         await self.update_status()
 
     @staticmethod
-    def colorize(s, color):
-        return f"%{{T4}}%{{F{color}}}{s}%{{F-}}%{{T-}}"
+    def colorize(s, color, fontnum=4):
+        polybar_font = 'T' + str(fontnum)
+        return f"%{{{polybar_font}}}%{{F{color}}}{s}%{{F-}}%{{T-}}"
 
     async def on_event(self, _, event):
         bind_cmd = event.binding.command
@@ -89,7 +90,7 @@ class polybar_ws(modconfig):
                     else:
                         self.binding_mode = \
                             polybar_ws.colorize(
-                                ret, color=self.binding_color
+                                ret, color=self.binding_color, fontnum=7
                             ) + ' '
                     await self.update_status()
 

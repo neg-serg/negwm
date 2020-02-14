@@ -174,9 +174,9 @@ for_window [class="Places"] $scratchpad_dialog
 # ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
 # ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
 set $exit mode "default"
-bindsym $alt+e mode ""               # special mode
-bindsym $m4+r mode ""                # resize mode
-bindsym $m4+minus mode ""            # window-manager / split / tiling mode
+bindsym $alt+e mode "spec"             # special mode
+bindsym $m4+r mode "resize"            # resize mode
+bindsym $m4+minus mode "wm"            # window-manager / split / tiling mode
 bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
 bindsym $m4+$c+q kill
@@ -229,7 +229,7 @@ bindsym $m4+{h,l,j,k} focus {left,right,down,up}
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▄░█▀▀░█▀▀░▀█▀░▀▀█░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▄░█▀▀░▀▀█░░█░░▄▀░░█▀▀
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
-mode "" {
+mode "resize" {
     bindsym {h,$S+h} $win_action resize left {4,-4}
     bindsym {j,$S+j} $win_action resize bottom {4,-4}
     bindsym {k,$S+k} $win_action resize top {4,-4}
@@ -264,14 +264,14 @@ bindsym $m4+slash $win_history switch
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀█░█▀█░█▀▀░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▀░█▀█░▀▀█░▀▀█
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░░░▀░▀░▀▀▀░▀▀▀
-mode "pass " {
+mode "pass" {
     bindsym {c,p} exec ~/bin/scripts/lpwd {,type}, $exit
     bindsym {Return,Escape,$c+C,$c+G}, $exit
 }
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█░█░▀█▀░█▀█░░░░░█▄█░█▀█░█▀█░█▀█░█▀▀░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▄█░░█░░█░█░░░░░█░█░█▀█░█░█░█▀█░█░█░█▀▀
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀▀
-mode "" {
+mode "wm" {
 	bindsym {grave,t,minus,backslash} layout {default,tabbed,splith,splitv}; $exit
 	bindsym {j,k,h,l} split {vertical,vertical,horizontal,horizontal}; $exit
 	bindsym {w,a,s,d} move {up,left,down,right}
@@ -290,7 +290,7 @@ mode "" {
     bindsym c $win_action center none
     bindsym $S+c $win_action center resize
     #-------------------------------------------------------
-    bindsym g mode ""
+    bindsym g mode "gaps"
     #-------------------------------------------------------
 	bindsym $c+{a,3} layout toggle all
 	bindsym $c+s     layout toggle split
@@ -301,9 +301,9 @@ mode "" {
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀▀░█▀▀░▀█▀░█▀█░█░░
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░▀▀█░█▀▀░█▀▀░█░░░░█░░█▀█░█░░
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░░░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
-mode "" {
+mode "spec" {
     #-------------------------------------------------------
-    bindsym c mode "pass "
+    bindsym c mode "pass"
     bindsym e mode "default", [urgent=latest] focus
     bindsym a mode "default", $bscratch dialog
 
@@ -335,14 +335,14 @@ mode "" {
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀
-mode "" {
-	bindsym {o,i} mode -{outer,inner}
+mode "gaps" {
+	bindsym {o,i} mode gaps-{outer,inner}
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░█▀█░█░█░▀█▀░█▀▀░█▀▄
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░█░█░█░█░░█░░█▀▀░█▀▄
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀
-mode "-outer" {
+mode "gaps-outer" {
 	bindsym {plus,minus}     gaps outer current {plus,minus} 5
 	bindsym 0                gaps outer current set 0
 
@@ -354,7 +354,7 @@ mode "-outer" {
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░▀█▀░█▀█░█▀█░█▀▀░█▀▄
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░░█░░█░█░█░█░█▀▀░█▀▄
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀░▀░▀░▀░▀▀▀░▀░▀
-mode "-inner" {
+mode "gaps-inner" {
 	bindsym {plus,minus}     gaps inner current {plus,minus} 5
 	bindsym 0                gaps inner current set 0
 
