@@ -92,7 +92,6 @@ for_window $games move workspace $steam, focus
 for_window [class="zoom"] move scratchpad, move absolute position 1372 127, resize set 548 1037
 for_window [class="^([Tt]elegram|[Ss]kype).*$"] move scratchpad, move absolute position 1372 127, resize set 548 1037
 for_window [instance="ncmpcpp"] move scratchpad, move absolute position 276 326, resize set 1389 696
-for_window [class="cool-retro-term"] move scratchpad, move absolute position 276 326, resize set 1389 696
 for_window [instance="mutt"] move scratchpad, move absolute position 52 0, resize set 1835 1114
 for_window [instance="ranger"] move scratchpad, move absolute position 3 1, resize set 1916 816
 for_window [instance="teardrop"] move scratchpad, move absolute position 39 4, resize set 1844 704

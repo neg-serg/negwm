@@ -231,10 +231,6 @@ class env():
                 '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
                 "-e", "dash", "-c",
             ]
-        elif self.term == "cool-retro-term":
-            self.term_opts = ["cool-retro-term"] + [
-                "-e", "dash", "-c",
-            ]
 
 
 class executor(negi3mod, cfg):
