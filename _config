@@ -20,7 +20,7 @@ set $i3 ${XDG_CONFIG_HOME}/i3
 set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send circle
 set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send bscratch
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send win_history
-set $menu exec ${XDG_CONFIG_HOME}/i3/send menu
+set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send menu
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send win_action
 set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send vol
 set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send executor
