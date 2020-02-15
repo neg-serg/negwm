@@ -194,15 +194,6 @@ bindsym $m4+$S+s $menu autoprop
 #-------------------------------------------------------
 bindsym $alt+Tab $win_history switch
 bindsym $m4+slash $win_history switch
-#-------------------------------------------------------
-mode "pass" {
-bindsym c exec ~/bin/scripts/lpwd , $exit
-bindsym p exec ~/bin/scripts/lpwd type, $exit
-bindsym Return, $exit
-bindsym Escape, $exit
-bindsym $c+C, $exit
-bindsym $c+G, $exit
-}
 mode "wm" {
 bindsym grave layout default; $exit
 bindsym t layout tabbed; $exit
@@ -249,7 +240,7 @@ bindsym $c+G $exit
 }
 mode "spec" {
 #-------------------------------------------------------
-bindsym c mode "pass"
+bindsym c exec rofi-pass
 bindsym e mode "default", [urgent=latest] focus
 bindsym a mode "default", $bscratch dialog
 bindsym 5 mode "default", $circle subtag web tor
