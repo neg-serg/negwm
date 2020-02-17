@@ -295,7 +295,7 @@ mode "wm" {
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░░░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
 mode "spec" {
     #-------------------------------------------------------
-    bindsym c exec rofi-pass
+    bindsym c exec rofi-pass; $exit
     bindsym e mode "default", [urgent=latest] focus
     bindsym a mode "default", $bscratch dialog
 
