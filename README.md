@@ -10,7 +10,7 @@
 
 For now this collection of modules for i3 includes:
 
-## main
+# main
 
 *negi3mods* : application that run all modules and handle configuration of
 ppi3+i3 and modules on python. Also handles TOML-configs updating. 
@@ -53,9 +53,9 @@ make -C ${XDG_CONFIG_HOME}/i3/ &
 
 To recompile `send` client.
 
-## modules
+# modules
 
-### bscratch
+## bscratch
 
 Named ion3-like scratchpads with a whistles and fakes.
 
@@ -143,7 +143,7 @@ another im windows like skype opened or not.
 Use `dialog` to show dialog window. I have placed it in the separated
 scratchpad for convenience.
 
-### circle
+## circle
 
 Better run-or-raise, with jump in a circle, subtags, priorities
 and more. Run-or-raise is the following:
@@ -212,7 +212,7 @@ next: go to the next window
 subtag: go to the next subtag window
 ```
 
-### win_history
+## win_history
 
 Goto to the previous window, not the workspace. Default i3 alt-tab cannot to
 remember from what window alt-tab have been done, this mod fix at by storing
@@ -237,7 +237,7 @@ focus_next_visible: focus next visible window
 focus_prev_visible: focus previous visible window
 ```
 
-### menu
+## menu
 
 Menu module including i3-menu with hackish autocompletion, menu to
 attach window to window group(circled) or target named scratchpad(nsd) and
@@ -291,7 +291,7 @@ bindsym $m4+$c+g $menu movews
 bindsym $m4+$c+grave $menu cmd_menu
 ```
 
-### vol
+## vol
 
 Contextual volume manager. Handles mpd by default. If mpd is stopped then
 handles mpv with mpvc if the current window is mpv, or with sending 0, 9 keys
@@ -310,13 +310,13 @@ d: volume down
 reload: reload module.
 ```
 
-### win_action
+## win_action
 
 Various stuff to emulate some 2bwm UX. I do not use it actively for now, so too
 lazy to write good documentation for it but if you are interested you are free
 to look at `lib/win_action.py` source code.
 
-### executor
+## executor
 
 Module to create various terminal windows with custom config and/or tmux
 session handling. Supports a lot of terminal emulators, but for now only
@@ -378,7 +378,7 @@ font.
 
 Look at the `lib/executor.py` to learn more.
 
-### fs
+## fs
 
 Fullscreen panel hacking.
 
@@ -477,6 +477,28 @@ etc. Of course you are also need pip or conda, or smth to install dependencies.
 Also you need [ppi3] as i3 config preprocessor.
 
 # Run
+
+negi3mods help:
+
+```
+i3 negi3mods daemon script.
+
+This module loads all negi3mods an start it via main's manager
+mailoop. Inotify-based watchers for all negi3mods TOML-based configuration
+spawned here, to use it just start it from any place without parameters. Also
+there is i3 config watcher to convert it from ppi3 format to plain i3
+automatically. Moreover it contains pid-lock which prevents running several
+times.
+
+Usage:
+    ./negi3mods.py [--debug|--tracemalloc|--start]
+
+Options:
+    --debug         disables signal handlers for debug.
+    --tracemalloc   calculates and shows memory tracing with help of
+                    tracemalloc.
+    --start         make actions for the start, not reloading
+```
 
 To start daemon you need:
 
