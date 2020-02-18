@@ -356,22 +356,6 @@ mode "gaps-inner" {
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
-for_window [title="Desktop — Plasma"] floating enable; border none
-for_window [class="plasmashell"] floating enable
-for_window [class="Plasma"] floating enable
-for_window [class="krunner"] floating enable
-for_window [class="Kmix"] floating enable
-for_window [class="Klipper"] floating enable
-for_window [class="Plasmoidviewer"] floating enable
-
-for_window [window_role="pop-up"] floating enable
-for_window [window_role="bubble"] floating enable
-for_window [window_role="task_dialog"] floating enable
-for_window [window_role="Preferences"] floating enable
-for_window [window_role="About"] floating enable
-for_window [window_type="dialog"] floating enable
-for_window [window_type="menu"] floating enable
-
 for_window [class="^.*"] border pixel 2
 
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
