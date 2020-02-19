@@ -6,3 +6,4 @@ named scratchpad optional autohide
 add labels support
 bindings docs
 option to auto shut up mpd when other players opened
+add https://www.python.org/dev/peps/pep-0519/
