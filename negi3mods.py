@@ -235,6 +235,7 @@ class negi3mods(modconfig):
     def validate_i3_config(self):
         """ Checks that i3 config is ok.
         """
+        check_config = ""
         try:
             check_config = subprocess.run(
                 ['i3', '-c', self.test_cfg_path, '-C'],
