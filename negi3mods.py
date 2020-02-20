@@ -111,7 +111,7 @@ class negi3mods(modconfig):
 
         self.port = int(self.conf('port'))
 
-        self.echo = Misc.echo_off
+        self.echo = Misc.echo_on
         self.notify = Misc.notify_off
 
         # main i3ipc connection created here and can be bypassed to the most of
