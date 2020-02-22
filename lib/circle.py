@@ -188,6 +188,15 @@ class circle(negi3mod, cfg, Matcher):
 
         self.need_handle_fullscreen = True
 
+        self.focus_driven_actions(tag)
+
+    def focus_driven_actions(self, tag):
+        """ Make some actions after focus """
+        if self.conf(tag, "mpd_shut") == 1:
+            self.i3ipc.command(
+                'exec --no-startup-id ~/.config/i3/send vol mute'
+            )
+
     def twin(self, tag: str, idx: int, with_subtag: bool = False):
         """ Detect target window.
             Args:
