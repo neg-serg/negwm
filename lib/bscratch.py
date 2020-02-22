@@ -200,7 +200,7 @@ class bscratch(negi3mod, cfg, Matcher):
                 )
                 if spawn_str:
                     self.i3ipc.command(
-                        f'exec ~/.config/i3/send executor run {spawn_str}'
+                        f'exec ~/.config/i3/bin/send executor run {spawn_str}'
                     )
 
         if self.visible_window_with_tag(tag):

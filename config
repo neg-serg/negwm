@@ -7,13 +7,13 @@ set $alt Mod1
 set $c Control
 set $S Shift
 set $i3 $XDG_CONFIG_HOME/i3
-set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/send circle
-set $bscratch exec --no-startup-id $XDG_CONFIG_HOME/i3/send bscratch
-set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_history
-set $menu exec --no-startup-id $XDG_CONFIG_HOME/i3/send menu
-set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_action
-set $volume exec --no-startup-id $XDG_CONFIG_HOME/i3/send vol
-set $executor exec --no-startup-id $XDG_CONFIG_HOME/i3/send executor
+set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send circle
+set $bscratch exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send bscratch
+set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_history
+set $menu exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send menu
+set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_action
+set $volume exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send vol
+set $executor exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send executor
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
 client.focused #222233 #000000 #ddddee #112211 #0C0C0D
 client.focused_inactive #000000 #000000 #005fff #000000 #222233
@@ -307,7 +307,7 @@ bindsym $c+C $exit
 bindsym $c+G $exit
 }
 for_window [class="^.*"] border pixel 2
-exec_always ~/.config/i3/i3_prepare &
+exec_always ~/.config/i3/bin/i3_prepare &
 exec caffeine &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &

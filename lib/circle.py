@@ -125,7 +125,7 @@ class circle(negi3mod, cfg, Matcher):
                 )
                 if spawn_str:
                     self.i3ipc.command(
-                        f'exec ~/.config/i3/send executor run {spawn_str}'
+                        f'exec ~/.config/i3/bin/send executor run {spawn_str}'
                     )
 
     def find_next_not_the_same_win(self, tag: str) -> None:
@@ -194,7 +194,7 @@ class circle(negi3mod, cfg, Matcher):
         """ Make some actions after focus """
         if self.conf(tag, "mpd_shut") == 1:
             self.i3ipc.command(
-                'exec --no-startup-id ~/.config/i3/send vol mute'
+                'exec --no-startup-id ~/.config/i3/bin/send vol mute'
             )
 
     def twin(self, tag: str, idx: int, with_subtag: bool = False):

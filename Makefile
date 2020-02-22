@@ -1,18 +1,22 @@
 CFLAGS += -std=gnu11 -march=native -Os -pedantic
 GLFW3 := $(shell pkg-config --libs glfw3)
 LIBS := $(GLFW3) -lGL -lm -lGLU -lGLEW
+SRC_DIR := src
+BIN_DIR := bin
 
 .PHONY: all
 
 all: wm_class send
 generate: clean
 clean: 
-	@rm -rfv wm_class send
+	@rm -rfv \
+		$(BIN_DIR)/wm_class \
+		$(BIN_DIR)/send
 
-wm_class: wm_class.c
-	$(CC) $(CFLAGS) -lX11 $@.c -o $@ -Os -s
-	strip $@
+wm_class: $(SRC_DIR)/wm_class.c
+	$(CC) $(CFLAGS) -lX11 $(SRC_DIR)/$@.c -o $(BIN_DIR)/$@ -Os -s
+	strip $(BIN_DIR)/$@
 
-send: send.c
-	$(CC) $(CFLAGS) $@.c -lbsd -o $@ -Os -s
-	strip $@
+send: $(SRC_DIR)/send.c
+	$(CC) $(CFLAGS) $(SRC_DIR)/$@.c -lbsd -o $(BIN_DIR)/$@ -Os -s
+	strip $(BIN_DIR)/$@

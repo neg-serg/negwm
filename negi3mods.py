@@ -161,7 +161,7 @@ class negi3mods(modconfig):
         if self.first_run:
             try:
                 subprocess.run(
-                    [self.i3_path + 'send', 'circle', 'next', 'term'],
+                    [self.i3_path + '/bin/' + 'send', 'circle', 'next', 'term'],
                     check=True
                 )
             except subprocess.CalledProcessError as proc_err:
@@ -189,7 +189,7 @@ class negi3mods(modconfig):
                 if reload_one:
                     try:
                         subprocess.run(
-                            [self.i3_path + 'send', changed_mod, 'reload'],
+                            [self.i3_path + '/bin/' + 'send', changed_mod, 'reload'],
                             check=True
                         )
                         self.notify(f'[Reloaded {changed_mod}]')
@@ -199,7 +199,7 @@ class negi3mods(modconfig):
                     for mod in self.mods:
                         try:
                             subprocess.run(
-                                [self.i3_path + 'send', mod, 'reload'],
+                                [self.i3_path + '/bin/' + 'send', mod, 'reload'],
                                 check=True
                             )
                         except subprocess.CalledProcessError as proc_err:

@@ -67,7 +67,7 @@ class props():
         if tag_name is not None and tag_name:
             for mod in self.possible_mods:
                 cmdl = [
-                    f'{self.menu.i3_path}send',
+                    f'{self.menu.i3_path}/bin/send',
                     f'{mod}', 'add_prop',
                     f'{tag_name}', f'{aprop_str}'
                 ]
