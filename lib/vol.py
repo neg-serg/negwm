@@ -49,6 +49,9 @@ class vol(negi3mod, cfg):
         # Send 0, 9 keys to the mpv window or not.
         self.use_mpv09 = self.conf("use_mpv09")
 
+        # Define mpd socket
+        self.mpd_socket = None
+
         # Cache current window on focus.
         self.i3ipc.on("window::focus", self.set_curr_win)
 
@@ -64,6 +67,8 @@ class vol(negi3mod, cfg):
         self.bindings = {
             "u": self.volume_up,
             "d": self.volume_down,
+            "mute": self.volume_mute,
+            "max": self.volume_max,
             "reload": self.reload_config,
         }
 
@@ -74,7 +79,7 @@ class vol(negi3mod, cfg):
         asyncio.set_event_loop(self.loop)
         asyncio.ensure_future(self.update_mpd_status(self.loop))
 
-    def set_curr_win(self, i3, event) -> None:
+    def set_curr_win(self, _, event) -> None:
         """ Cache the current window.
 
             Args:
@@ -135,13 +140,11 @@ class vol(negi3mod, cfg):
             mpv_key = '0'
             mpv_cmd = '--increase'
         if self.mpd_playing:
-            self.mpd_socket = socket.socket(
-                socket.AF_INET6, socket.SOCK_STREAM
-            )
+            self.mpd_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
             try:
                 self.mpd_socket.connect((self.mpd_addr, int(self.mpd_port)))
                 self.mpd_socket.send(bytes(
-                        f'volume {val_str}\nclose\n', 'UTF-8'
+                    f'volume {val_str}\nclose\n', 'UTF-8'
                 ))
                 self.mpd_socket.recv(self.mpd_buf_size)
             finally:
@@ -156,9 +159,7 @@ class vol(negi3mod, cfg):
                 check=False
             )
         elif self.use_mpv09:
-            subprocess.run([
-                    'mpvc', 'set', 'volume', mpv_cmd, str(abs(val))
-                ],
+            subprocess.run(['mpvc', 'set', 'volume', mpv_cmd, str(abs(val))],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 check=False
@@ -190,3 +191,20 @@ class vol(negi3mod, cfg):
             count = 1
         self.change_volume(-count)
 
+    def volume_mute(self) -> None:
+        """ Mute target volume level.
+
+            Args:
+                args (*args): used as multiplexer for volume changing because
+                of pipe-based nature of negi3mods IPC.
+        """
+        self.change_volume(-100)
+
+    def volume_max(self) -> None:
+        """ Maximize target volume level.
+
+            Args:
+            args (*args): used as multiplexer for volume changing because
+            of pipe-based nature of negi3mods IPC.
+        """
+        self.change_volume(+100)
