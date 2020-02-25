@@ -2,8 +2,8 @@ subtle like semi-dynamic tiling
 dwm-like tiling
 dynamic workspaces(for example print scratchpad name)
 better attach ws / ns menu
-named scratchpad optional autohide
 add labels support
 bindings docs
 add https://www.python.org/dev/peps/pep-0519/
 fix unused loop argument loop
+share some functions like window::focus between various mods
