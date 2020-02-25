@@ -86,7 +86,8 @@ class win_action(negi3mod, cfg):
             "tab-move": self.move_tab,
         }
 
-        self.i3ipc.on('window::focus', self.alternative_layout)
+        if self.conf('alternative_layout') == 1:
+            self.i3ipc.on('window::focus', self.alternative_layout)
 
     def load_useless_gaps(self) -> None:
         """ Load useless gaps settings.
