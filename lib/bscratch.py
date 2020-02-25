@@ -479,6 +479,7 @@ class bscratch(negi3mod, cfg, Matcher):
                         f"{bscratch.mark_uuid_tag(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}")
                     self.marked[tag].append(win)
+                    self.show_scratchpad(tag, hide=True)
             elif is_dialog_win and tag == "transients":
                 win.command(
                     f"{bscratch.mark_uuid_tag('transients')}, \
