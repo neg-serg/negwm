@@ -103,9 +103,9 @@ for_window [class="discord"] move scratchpad, move absolute position 974 127, re
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
 set $exit mode "default"
-bindsym $alt+e mode "spec"
-bindsym $m4+r mode "resize"
-bindsym $m4+minus mode "wm"
+bindsym $alt+e mode "SPEC"
+bindsym $m4+r mode "RESIZE"
+bindsym $m4+minus mode "WM"
 bindsym XF86AudioLowerVolume $volume d
 bindsym XF86AudioRaiseVolume $volume u
 bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
@@ -151,7 +151,7 @@ bindsym $m4+h focus left
 bindsym $m4+l focus right
 bindsym $m4+j focus down
 bindsym $m4+k focus up
-mode "resize" {
+mode "RESIZE" {
 bindsym h $win_action resize left 4
 bindsym $S+h $win_action resize left -4
 bindsym j $win_action resize bottom 4
@@ -189,7 +189,7 @@ bindsym $m4+$S+s $menu autoprop
 #-------------------------------------------------------
 bindsym $alt+Tab $win_history switch
 bindsym $m4+slash $win_history switch
-mode "wm" {
+mode "WM" {
 bindsym grave layout default; $exit
 bindsym t layout tabbed; $exit
 bindsym minus layout splith; $exit
@@ -221,7 +221,7 @@ bindsym $S+minus $win_action shrink
 bindsym c $win_action center none
 bindsym $S+c $win_action center resize
 #-------------------------------------------------------
-bindsym g mode "gaps"
+bindsym g mode "GAPS"
 #-------------------------------------------------------
 bindsym $c+a layout toggle all
 bindsym $c+3 layout toggle all
@@ -233,7 +233,7 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "spec" {
+mode "SPEC" {
 #-------------------------------------------------------
 bindsym c exec rofi-pass; $exit
 bindsym e mode "default", [urgent=latest] focus
@@ -268,7 +268,7 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "gaps" {
+mode "GAPS" {
 bindsym o mode gaps-outer
 bindsym i mode gaps-inner
 bindsym Return $exit
@@ -276,7 +276,7 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "gaps-outer" {
+mode "GAPS-OUTER" {
 bindsym plus gaps outer current plus 5
 bindsym minus gaps outer current minus 5
 bindsym 0 gaps outer current set 0
@@ -288,7 +288,7 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-mode "gaps-inner" {
+mode "GAPS-INNER" {
 bindsym plus gaps inner current plus 5
 bindsym minus gaps inner current minus 5
 bindsym 0 gaps inner current set 0

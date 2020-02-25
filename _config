@@ -167,9 +167,9 @@ for_window [class="Places"] $scratchpad_dialog
 # ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
 # ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
 set $exit mode "default"
-bindsym $alt+e mode "spec"             # special mode
-bindsym $m4+r mode "resize"            # resize mode
-bindsym $m4+minus mode "wm"            # window-manager / split / tiling mode
+bindsym $alt+e mode "SPEC"             # special mode
+bindsym $m4+r mode "RESIZE"            # resize mode
+bindsym $m4+minus mode "WM"            # window-manager / split / tiling mode
 bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
 bindsym $m4+$c+q kill
@@ -230,7 +230,7 @@ bindsym $m4+{h,l,j,k} focus {left,right,down,up}
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▄░█▀▀░█▀▀░▀█▀░▀▀█░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▄░█▀▀░▀▀█░░█░░▄▀░░█▀▀
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
-mode "resize" {
+mode "RESIZE" {
     bindsym {h,$S+h} $win_action resize left {4,-4}
     bindsym {j,$S+j} $win_action resize bottom {4,-4}
     bindsym {k,$S+k} $win_action resize top {4,-4}
@@ -264,7 +264,7 @@ bindsym $m4+slash $win_history switch
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█░█░▀█▀░█▀█░░░░░█▄█░█▀█░█▀█░█▀█░█▀▀░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▄█░░█░░█░█░░░░░█░█░█▀█░█░█░█▀█░█░█░█▀▀
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀▀
-mode "wm" {
+mode "WM" {
     bindsym grave layout default; $exit
     bindsym t layout tabbed; $exit
     bindsym minus layout splith; $exit
@@ -289,7 +289,7 @@ mode "wm" {
     bindsym c $win_action center none
     bindsym $S+c $win_action center resize
     #-------------------------------------------------------
-    bindsym g mode "gaps"
+    bindsym g mode "GAPS"
     #-------------------------------------------------------
 	bindsym $c+a layout toggle all
 	bindsym $c+3 layout toggle all
@@ -301,7 +301,7 @@ mode "wm" {
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀▀░█▀▀░▀█▀░█▀█░█░░
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░▀▀█░█▀▀░█▀▀░█░░░░█░░█▀█░█░░
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░░░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
-mode "spec" {
+mode "SPEC" {
     #-------------------------------------------------------
     bindsym c exec rofi-pass; $exit
     bindsym e mode "default", [urgent=latest] focus
@@ -342,14 +342,14 @@ mode "spec" {
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀
-mode "gaps" {
+mode "GAPS" {
 	bindsym {o,i} mode gaps-{outer,inner}
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░█▀█░█░█░▀█▀░█▀▀░█▀▄
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░█░█░█░█░░█░░█▀▀░█▀▄
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀
-mode "gaps-outer" {
+mode "GAPS-OUTER" {
 	bindsym {plus,minus}     gaps outer current {plus,minus} 5
 	bindsym 0                gaps outer current set 0
 
@@ -361,7 +361,7 @@ mode "gaps-outer" {
 # ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀░░░░░▀█▀░█▀█░█▀█░█▀▀░█▀▄
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█░▄▄▄░░█░░█░█░█░█░█▀▀░█▀▄
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀░░░░░▀▀▀░▀░▀░▀░▀░▀▀▀░▀░▀
-mode "gaps-inner" {
+mode "GAPS-INNER" {
 	bindsym {plus,minus}     gaps inner current {plus,minus} 5
 	bindsym 0                gaps inner current set 0
 
