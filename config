@@ -1,5 +1,3 @@
-#---------------------------------------
-#---------------------------------------
 workspace_layout tabbed
 floating_modifier $m4
 set $m4 Mod4
@@ -51,7 +49,7 @@ set $spotify "13 ::  ν:spotify"
 set $pic "14 ::  ξ:pic"
 set $remote "15 ::  ο:remote"
 set $sound "16 ::  ο:sound"
-set $browsers [class="^(firefox|Nightly|Waterfox|Chromium|Yandex-browser-beta|Tor Browser)$"]
+set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
 set $wine_apps [class="^(Wine|wine|Crossover)$"]
@@ -104,7 +102,6 @@ for_window [class="discord"] move scratchpad, move absolute position 974 127, re
 #░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
-#---------------------------------------------
 set $exit mode "default"
 bindsym $alt+e mode "spec"
 bindsym $m4+r mode "resize"
@@ -113,7 +110,6 @@ bindsym XF86AudioLowerVolume $volume d
 bindsym XF86AudioRaiseVolume $volume u
 bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
 bindsym $m4+$c+q kill
-#----------------------------------------------
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
 bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
 bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw-list"
@@ -126,7 +122,6 @@ bindsym $c+Print exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+3 exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+4 exec --no-startup-id flameshot gui
 bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
-#----------------------------------------------
 bindsym $m4+f $bscratch toggle ncmpcpp
 bindsym $m4+e $bscratch toggle im
 bindsym $m4+d $bscratch toggle teardrop
@@ -255,10 +250,10 @@ bindsym $S+v exec ~/bin/qemu/vm_menu start_win10; $exit
 bindsym o $menu pulse_output; $exit
 bindsym i $menu pulse_input; $exit
 bindsym $S+s exec ~/bin/pls -switch, $exit
+bindsym $S+s exec ~/bin/pls -switch, $exit
 bindsym i mode "default", exec ~/bin/pls -output
 bindsym o mode "default", exec ~/bin/pls -sink
 bindsym $S+O mode "default", exec ~/bin/pls -vol
-#-------------------------------------------------------
 bindsym $m4+s $bscratch subtag im skype, mode "default"
 bindsym $alt+s $bscratch subtag im skype, mode "default"
 bindsym +s $bscratch subtag im skype, mode "default"
@@ -268,7 +263,6 @@ bindsym t $bscratch subtag im tel, mode "default"
 bindsym m $bscratch toggle mutt, mode "default"
 bindsym w $bscratch toggle webcam, mode "default"
 bindsym $S+r $bscratch toggle ranger, mode "default"
-#-------------------------------------------------------
 bindsym Return $exit
 bindsym Escape $exit
 bindsym $c+C $exit
@@ -307,7 +301,7 @@ bindsym $c+C $exit
 bindsym $c+G $exit
 }
 for_window [class="^.*"] border pixel 2
-exec_always ~/.config/i3/bin/i3_prepare &
+exec_always $XDG_CONFIG_HOME/i3/bin/i3_prepare &
 exec caffeine &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &

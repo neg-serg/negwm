@@ -1,9 +1,3 @@
-#---------------------------------------
-# ░▀█▀░▀▀█░░░█░█▀▀░█▀█░█▀█░█▀▀░▀█▀░█▀▀ #
-# ░░█░░░▀▄░▄▀░░█░░░█░█░█░█░█▀▀░░█░░█░█ #
-# ░▀▀▀░▀▀░░▀░░░▀▀▀░▀▀▀░▀░▀░▀░░░▀▀▀░▀▀▀ #
-#---------------------------------------
-
 # ░█▄█░▀█▀░█▀▀░█▀▀
 # ░█░█░░█░░▀▀█░█░░
 # ░▀░▀░▀▀▀░▀▀▀░▀▀▀
@@ -27,9 +21,9 @@ set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
 
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
 
-# ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀ #
-# ░█░░░█░█░█░░░█░█░█▀▄░▀▀█ #
-# ░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀ #
+# ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀
+# ░█░░░█░█░█░░░█░█░█▀▄░▀▀█
+# ░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
 # 1 :: border
 # 2 :: background active
 # 3 :: foreground inactive
@@ -92,7 +86,7 @@ set $sound "16 ::  ο:sound"
 # ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
 # ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
 # ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
-set $browsers [class="^(firefox|Nightly|Waterfox|Chromium|Yandex-browser-beta|Tor Browser)$"]
+set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
 set $wine_apps [class="^(Wine|wine|Crossover)$"]
@@ -169,7 +163,6 @@ for_window [class="discord"] move scratchpad, move absolute position 974 127, re
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
 
-#---------------------------------------------
 # ░█░█░█▀▀░█░█░█▀▄░▀█▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀░█▀▀
 # ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
 # ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
@@ -180,7 +173,6 @@ bindsym $m4+minus mode "wm"            # window-manager / split / tiling mode
 bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
 bindsym $m4+$c+q kill
-#----------------------------------------------
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
 bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
 bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw-list"
@@ -189,18 +181,24 @@ bindsym $m4+$S+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
 bindsym $m4+$C+5 $circle next remote
 bindsym $m4+$C+b $circle next bitwig
 bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
-bindsym {$c+Print,$m4+$S+3} exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym $c+Print exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym $m4+$S+3 exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+4 exec --no-startup-id flameshot gui
 bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
-#----------------------------------------------
+
 # ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
 # ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
 # ░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀░░░░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░
-bindsym $m4+{f,e,d,a} $bscratch toggle {ncmpcpp,im,teardrop,youtube}
+bindsym $m4+f $bscratch toggle ncmpcpp
+bindsym $m4+e $bscratch toggle im
+bindsym $m4+d $bscratch toggle teardrop
+bindsym $m4+a $bscratch toggle youtube
 bindsym $m4+$S+p $bscratch toggle volcontrol
 bindsym $m4+v $bscratch toggle discord
 
-bindsym $m4+$c+$S+{R,D,S} $bscratch {geom_restore,geom_dump,geom_autosave_mode}
+bindsym $m4+$c+$S+R $bscratch geom_restore
+bindsym $m4+$c+$S+D $bscratch geom_dump
+bindsym $m4+$c+$S+S $bscratch geom_autosave_mode
 bindsym $m4+3 $bscratch next
 bindsym $m4+s $bscratch hide_current
 
@@ -209,12 +207,15 @@ bindsym $m4+s $bscratch hide_current
 # ░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀
 bindsym $m4+$c+c $circle next sxiv
 bindsym $m4+$S+c $circle subtag sxiv wallpaper
-bindsym $m4+{x,1} $circle next {term,nwim}
+bindsym $m4+x $circle next term
+bindsym $m4+1 $circle next nwim
 bindsym $m4+$c+v $circle next vm
 bindsym $m4+$c+e $circle next lutris
 bindsym $m4+$S+e $circle next steam
 bindsym $m4+$c+f $circle next looking_glass
-bindsym $m4+{w,b,o} $circle next {web,vid,doc}
+bindsym $m4+w $circle next web
+bindsym $m4+b $circle next vid
+bindsym $m4+o $circle next doc
 bindsym $m4+$S+o $circle next obs
 
 # ░█░█░▀█▀░█▀█░░░░░█▀█░█▀▀░▀█▀░▀█▀░█▀█░█▀█
@@ -264,8 +265,14 @@ bindsym $m4+slash $win_history switch
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█▄█░░█░░█░█░░░░░█░█░█▀█░█░█░█▀█░█░█░█▀▀
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀▀
 mode "wm" {
-	bindsym {grave,t,minus,backslash} layout {default,tabbed,splith,splitv}; $exit
-	bindsym {j,k,h,l} split {vertical,vertical,horizontal,horizontal}; $exit
+    bindsym grave layout default; $exit
+    bindsym t layout tabbed; $exit
+    bindsym minus layout splith; $exit
+    bindsym backslash layout splitv; $exit
+    bindsym j split vertical; $exit
+    bindsym k split vertical; $exit
+    bindsym h split horizontal; $exit
+    bindsym l split horizontal; $exit
 	bindsym {w,a,s,d} move {up,left,down,right}
 
     # ░█░█░█▄█░▀▀█
@@ -284,9 +291,10 @@ mode "wm" {
     #-------------------------------------------------------
     bindsym g mode "gaps"
     #-------------------------------------------------------
-	bindsym $c+{a,3} layout toggle all
-	bindsym $c+s     layout toggle split
-	bindsym $c+t     layout toggle
+	bindsym $c+a layout toggle all
+	bindsym $c+3 layout toggle all
+	bindsym $c+s layout toggle split
+	bindsym $c+t layout toggle
     #-------------------------------------------------------
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
@@ -313,14 +321,21 @@ mode "spec" {
 	bindsym o $menu pulse_output; $exit
 	bindsym i $menu pulse_input; $exit
     bindsym $S+s exec ~/bin/pls -switch, $exit
-    bindsym {i,o,$S+O} mode "default", exec ~/bin/pls -{output,sink,vol}
-    #-------------------------------------------------------
-    bindsym {$m4,$alt,}+s $bscratch subtag im skype, mode "default"
-    bindsym {$m4+t,$alt+t,t} $bscratch subtag im tel, mode "default"
+    bindsym $S+s exec ~/bin/pls -switch, $exit
+    bindsym i mode "default", exec ~/bin/pls -output
+    bindsym o mode "default", exec ~/bin/pls -sink
+    bindsym $S+O mode "default", exec ~/bin/pls -vol
+
+    bindsym $m4+s $bscratch subtag im skype, mode "default"
+    bindsym $alt+s $bscratch subtag im skype, mode "default"
+    bindsym +s $bscratch subtag im skype, mode "default"
+    bindsym $m4+t $bscratch subtag im tel, mode "default"
+    bindsym $alt+t $bscratch subtag im tel, mode "default"
+    bindsym t $bscratch subtag im tel, mode "default"
     bindsym m $bscratch toggle mutt, mode "default"
     bindsym w $bscratch toggle webcam, mode "default"
     bindsym $S+r $bscratch toggle ranger, mode "default"
-    #-------------------------------------------------------
+
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 
@@ -361,7 +376,7 @@ for_window [class="^.*"] border pixel 2
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
-exec_always ~/.config/i3/bin/i3_prepare &
+exec_always ${XDG_CONFIG_HOME}/i3/bin/i3_prepare &
 exec caffeine &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
