@@ -13,6 +13,7 @@ set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_action
 set $volume exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send vol
 set $executor exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send executor
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
+set $default mode "default"
 client.focused #222233 #000000 #ddddee #112211 #0C0C0D
 client.focused_inactive #000000 #000000 #005fff #000000 #222233
 client.unfocused #000000 #000000 #315c70 #000000 #222233
@@ -80,7 +81,7 @@ for_window $daw move workspace $sound, focus
 for_window $fb2, move workspace $doc, focus
 for_window $pdf, move workspace $doc, focus
 for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
-for_window [class="^(draw|darktable|inkscape|gimp)$"] move workspace $draw
+for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
 for_window $vim move workspace $dev, focus
 for_window $sclient move workspace $steam, focus
 for_window $games move workspace $steam, focus
@@ -102,7 +103,8 @@ for_window [class="discord"] move scratchpad, move absolute position 974 127, re
 #░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
-set $exit mode "default"
+for_window [class="^.*"] border pixel 2
+set $exit $default
 bindsym $alt+e mode "SPEC"
 bindsym $m4+r mode "RESIZE"
 bindsym $m4+minus mode "WM"
@@ -236,13 +238,13 @@ bindsym $c+G $exit
 mode "SPEC" {
 #-------------------------------------------------------
 bindsym c exec rofi-pass; $exit
-bindsym e mode "default", [urgent=latest] focus
-bindsym a mode "default", $bscratch dialog
-bindsym 5 mode "default", $circle subtag web tor
-bindsym y mode "default", $circle subtag web yandex
-bindsym f mode "default", $circle subtag web firefox
-bindsym $S+t mode "default", $menu gtk_theme
-bindsym $S+i mode "default", $menu icon_theme
+bindsym e $default, [urgent=latest] focus
+bindsym a $default, $bscratch dialog
+bindsym 5 $default, $circle subtag web tor
+bindsym y $default, $circle subtag web yandex
+bindsym f $default, $circle subtag web firefox
+bindsym $S+t $default, $menu gtk_theme
+bindsym $S+i $default, $menu icon_theme
 bindsym $S+d floating toggle; $exit
 bindsym $S+l exec sh -c 'sudo gllock'; $exit
 bindsym v exec ~/bin/qemu/vm_menu; $exit
@@ -251,18 +253,18 @@ bindsym o $menu pulse_output; $exit
 bindsym i $menu pulse_input; $exit
 bindsym $S+s exec ~/bin/pls -switch, $exit
 bindsym $S+s exec ~/bin/pls -switch, $exit
-bindsym i mode "default", exec ~/bin/pls -output
-bindsym o mode "default", exec ~/bin/pls -sink
-bindsym $S+O mode "default", exec ~/bin/pls -vol
-bindsym $m4+s $bscratch subtag im skype, mode "default"
-bindsym $alt+s $bscratch subtag im skype, mode "default"
-bindsym +s $bscratch subtag im skype, mode "default"
-bindsym $m4+t $bscratch subtag im tel, mode "default"
-bindsym $alt+t $bscratch subtag im tel, mode "default"
-bindsym t $bscratch subtag im tel, mode "default"
-bindsym m $bscratch toggle mutt, mode "default"
-bindsym w $bscratch toggle webcam, mode "default"
-bindsym $S+r $bscratch toggle ranger, mode "default"
+bindsym i $default, exec ~/bin/pls -output
+bindsym o $default, exec ~/bin/pls -sink
+bindsym $S+O $default, exec ~/bin/pls -vol
+bindsym $m4+s $bscratch subtag im skype, $default
+bindsym $alt+s $bscratch subtag im skype, $default
+bindsym +s $bscratch subtag im skype, $default
+bindsym $m4+t $bscratch subtag im tel, $default
+bindsym $alt+t $bscratch subtag im tel, $default
+bindsym t $bscratch subtag im tel, $default
+bindsym m $bscratch toggle mutt, $default
+bindsym w $bscratch toggle webcam, $default
+bindsym $S+r $bscratch toggle ranger, $default
 bindsym Return $exit
 bindsym Escape $exit
 bindsym $c+C $exit
@@ -300,7 +302,6 @@ bindsym Escape $exit
 bindsym $c+C $exit
 bindsym $c+G $exit
 }
-for_window [class="^.*"] border pixel 2
 exec_always $XDG_CONFIG_HOME/i3/bin/i3_prepare &
 exec caffeine &
 exec_always ~/bin/scripts/gnome_settings &
