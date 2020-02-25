@@ -13,7 +13,6 @@ set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_action
 set $volume exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send vol
 set $executor exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send executor
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
-set $default mode "default"
 client.focused #222233 #000000 #ddddee #112211 #0C0C0D
 client.focused_inactive #000000 #000000 #005fff #000000 #222233
 client.unfocused #000000 #000000 #315c70 #000000 #222233
@@ -104,7 +103,7 @@ for_window [class="discord"] move scratchpad, move absolute position 974 127, re
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
 for_window [class="^.*"] border pixel 2
-set $exit $default
+set $exit mode "default"
 bindsym $alt+e mode "SPEC"
 bindsym $m4+r mode "RESIZE"
 bindsym $m4+minus mode "WM"
@@ -238,13 +237,13 @@ bindsym $c+G $exit
 mode "SPEC" {
 #-------------------------------------------------------
 bindsym c exec rofi-pass; $exit
-bindsym e $default, [urgent=latest] focus
-bindsym a $default, $bscratch dialog
-bindsym 5 $default, $circle subtag web tor
-bindsym y $default, $circle subtag web yandex
-bindsym f $default, $circle subtag web firefox
-bindsym $S+t $default, $menu gtk_theme
-bindsym $S+i $default, $menu icon_theme
+bindsym e $exit, [urgent=latest] focus
+bindsym a $exit, $bscratch dialog
+bindsym 5 $exit, $circle subtag web tor
+bindsym y $exit, $circle subtag web yandex
+bindsym f $exit, $circle subtag web firefox
+bindsym $S+t $exit, $menu gtk_theme
+bindsym $S+i $exit, $menu icon_theme
 bindsym $S+d floating toggle; $exit
 bindsym $S+l exec sh -c 'sudo gllock'; $exit
 bindsym v exec ~/bin/qemu/vm_menu; $exit
@@ -253,18 +252,18 @@ bindsym o $menu pulse_output; $exit
 bindsym i $menu pulse_input; $exit
 bindsym $S+s exec ~/bin/pls -switch, $exit
 bindsym $S+s exec ~/bin/pls -switch, $exit
-bindsym i $default, exec ~/bin/pls -output
-bindsym o $default, exec ~/bin/pls -sink
-bindsym $S+O $default, exec ~/bin/pls -vol
-bindsym $m4+s $bscratch subtag im skype, $default
-bindsym $alt+s $bscratch subtag im skype, $default
-bindsym +s $bscratch subtag im skype, $default
-bindsym $m4+t $bscratch subtag im tel, $default
-bindsym $alt+t $bscratch subtag im tel, $default
-bindsym t $bscratch subtag im tel, $default
-bindsym m $bscratch toggle mutt, $default
-bindsym w $bscratch toggle webcam, $default
-bindsym $S+r $bscratch toggle ranger, $default
+bindsym i $exit, exec ~/bin/pls -output
+bindsym o $exit, exec ~/bin/pls -sink
+bindsym $S+O $exit, exec ~/bin/pls -vol
+bindsym $m4+s $bscratch subtag im skype, $exit
+bindsym $alt+s $bscratch subtag im skype, $exit
+bindsym +s $bscratch subtag im skype, $exit
+bindsym $m4+t $bscratch subtag im tel, $exit
+bindsym $alt+t $bscratch subtag im tel, $exit
+bindsym t $bscratch subtag im tel, $exit
+bindsym m $bscratch toggle mutt, $exit
+bindsym w $bscratch toggle webcam, $exit
+bindsym $S+r $bscratch toggle ranger, $exit
 bindsym Return $exit
 bindsym Escape $exit
 bindsym $c+C $exit

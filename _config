@@ -21,8 +21,6 @@ set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
 
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
 
-set $default mode "default"
-
 # ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀
 # ░█░░░█░█░█░░░█░█░█▀▄░▀▀█
 # ░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
@@ -171,7 +169,7 @@ for_window [class="^.*"] border pixel 2
 # ░█░█░█▀▀░█░█░█▀▄░▀█▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀░█▀▀
 # ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
 # ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
-set $exit $default
+set $exit mode "default"
 bindsym $alt+e mode "SPEC"   # special mode
 bindsym $m4+r mode "RESIZE"  # resize mode
 bindsym $m4+minus mode "WM"  # window-manager / split / tiling mode
@@ -309,15 +307,15 @@ mode "WM" {
 mode "SPEC" {
     #-------------------------------------------------------
     bindsym c exec rofi-pass; $exit
-    bindsym e $default, [urgent=latest] focus
-    bindsym a $default, $bscratch dialog
+    bindsym e $exit, [urgent=latest] focus
+    bindsym a $exit, $bscratch dialog
 
-    bindsym 5 $default, $circle subtag web tor
-    bindsym y $default, $circle subtag web yandex
-    bindsym f $default, $circle subtag web firefox
+    bindsym 5 $exit, $circle subtag web tor
+    bindsym y $exit, $circle subtag web yandex
+    bindsym f $exit, $circle subtag web firefox
 
-    bindsym $S+t $default, $menu gtk_theme
-    bindsym $S+i $default, $menu icon_theme
+    bindsym $S+t $exit, $menu gtk_theme
+    bindsym $S+i $exit, $menu icon_theme
 
 	bindsym $S+d floating toggle; $exit
 	bindsym $S+l exec sh -c 'sudo gllock'; $exit
@@ -327,19 +325,19 @@ mode "SPEC" {
 	bindsym i $menu pulse_input; $exit
     bindsym $S+s exec ~/bin/pls -switch, $exit
     bindsym $S+s exec ~/bin/pls -switch, $exit
-    bindsym i $default, exec ~/bin/pls -output
-    bindsym o $default, exec ~/bin/pls -sink
-    bindsym $S+O $default, exec ~/bin/pls -vol
+    bindsym i $exit, exec ~/bin/pls -output
+    bindsym o $exit, exec ~/bin/pls -sink
+    bindsym $S+O $exit, exec ~/bin/pls -vol
 
-    bindsym $m4+s $bscratch subtag im skype, $default
-    bindsym $alt+s $bscratch subtag im skype, $default
-    bindsym +s $bscratch subtag im skype, $default
-    bindsym $m4+t $bscratch subtag im tel, $default
-    bindsym $alt+t $bscratch subtag im tel, $default
-    bindsym t $bscratch subtag im tel, $default
-    bindsym m $bscratch toggle mutt, $default
-    bindsym w $bscratch toggle webcam, $default
-    bindsym $S+r $bscratch toggle ranger, $default
+    bindsym $m4+s $bscratch subtag im skype, $exit
+    bindsym $alt+s $bscratch subtag im skype, $exit
+    bindsym +s $bscratch subtag im skype, $exit
+    bindsym $m4+t $bscratch subtag im tel, $exit
+    bindsym $alt+t $bscratch subtag im tel, $exit
+    bindsym t $bscratch subtag im tel, $exit
+    bindsym m $bscratch toggle mutt, $exit
+    bindsym w $bscratch toggle webcam, $exit
+    bindsym $S+r $bscratch toggle ranger, $exit
 
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
