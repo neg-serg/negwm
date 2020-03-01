@@ -14,6 +14,7 @@ window with the correct fullscreen state, where normal i3 behaviour has a lot
 of issues here in detection of existing/visible windows, etc.
 """
 
+from misc import Misc
 from negi3mod import negi3mod
 from matcher import Matcher
 from cfg import cfg
@@ -124,9 +125,7 @@ class circle(negi3mod, cfg, Matcher):
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
-                    self.i3ipc.command(
-                        f'exec ~/.config/i3/bin/send executor run {spawn_str}'
-                    )
+                    Misc.send(f'executor run {spawn_str}', i3=self.i3ipc)
 
     def find_next_not_the_same_win(self, tag: str) -> None:
         """ It was used as the guard to infinite loop in the past.
@@ -193,9 +192,7 @@ class circle(negi3mod, cfg, Matcher):
     def focus_driven_actions(self, tag):
         """ Make some actions after focus """
         if self.conf(tag, "mpd_shut") == 1:
-            self.i3ipc.command(
-                'exec --no-startup-id ~/.config/i3/bin/send vol mute'
-            )
+            Misc.send('vol mute', i3=self.i3ipc)
 
     def twin(self, tag: str, idx: int, with_subtag: bool = False):
         """ Detect target window.

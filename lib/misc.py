@@ -98,3 +98,14 @@ class Misc():
         print(f'returncode={proc_err.returncode}, \
                 cmd={proc_err.cmd}, \
                 output={proc_err.output}')
+
+    @staticmethod
+    def send(*args, i3=None):
+        send_path = Misc.i3path() + '/bin/send'
+        if i3 is None:
+            try:
+                subprocess.run([send_path] + [args], check=True)
+            except subprocess.CalledProcessError as proc_err:
+                Misc.print_run_exception_info(proc_err)
+        else:
+            i3.command(' '.join(['exec ' + send_path] + list(args)))

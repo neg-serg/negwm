@@ -199,9 +199,7 @@ class bscratch(negi3mod, cfg, Matcher):
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
-                    self.i3ipc.command(
-                        f'exec ~/.config/i3/bin/send executor run {spawn_str}'
-                    )
+                    Misc.send(f'executor run {spawn_str}', i3=self.i3ipc)
 
         if self.visible_window_with_tag(tag):
             self.hide_scratchpad(tag)
