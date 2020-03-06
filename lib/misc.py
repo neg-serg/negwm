@@ -27,14 +27,12 @@ class Misc():
 
     @staticmethod
     def i3path() -> str:
-        """ Easy way to return i3 config path.
-        """
+        """ Easy way to return i3 config path. """
         return os.environ.get("XDG_CONFIG_HOME") + "/i3/"
 
     @staticmethod
     def extract_xrdb_value(field: str) -> str:
-        """ Extracts field from xrdb executable.
-        """
+        """ Extracts field from xrdb executable. """
         try:
             out = subprocess.run(
                 f"xrescat '{field}'",
@@ -85,12 +83,12 @@ class Misc():
 
     @staticmethod
     def echo_on(*args, **kwargs):
-        """ print info """
+        """ Print info """
         print(*args, **kwargs)
 
     @staticmethod
     def echo_off(*_dummy_args, **_dummy_kwargs):
-        """ do not print info """
+        """ Do not print info """
         return
 
     @staticmethod
@@ -101,6 +99,7 @@ class Misc():
 
     @staticmethod
     def send(*args, i3=None):
+        """ Send wrapper """
         send_path = Misc.i3path() + '/bin/send'
         if i3 is None:
             try:
