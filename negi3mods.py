@@ -101,9 +101,6 @@ class negi3mods(modconfig):
 
         self.prepare_notification_text()
 
-        # i3 path used to get "send" binary path
-        self.i3_cfg_path = self.i3_path + '/cfg/'
-
         # test config to check ppi3 conversion result
         self.test_cfg_path = os.path.realpath(
             os.path.expandvars('$HOME/tmp/config_test')
@@ -153,19 +150,13 @@ class negi3mods(modconfig):
         """ cfg watcher to update modules config in realtime.
         """
         watcher = inotipy.Watcher.create()
-        watcher.watch(self.i3_cfg_path, inotipy.IN.MODIFY)
+        watcher.watch(Misc.i3path() + '/cfg/', inotipy.IN.MODIFY)
         return watcher
 
     def autostart(self):
         """ Autostart auto negi3mods initialization """
         if self.first_run:
-            try:
-                subprocess.run(
-                    [self.i3_path + '/bin/' + 'send', 'circle', 'next', 'term'],
-                    check=True
-                )
-            except subprocess.CalledProcessError as proc_err:
-                Misc.print_run_exception_info(proc_err)
+            Misc.send('circle next term')
 
     def i3_config_watcher(self):
         """ i3 config watcher to run ppi3 on write.
@@ -187,23 +178,11 @@ class negi3mods(modconfig):
             changed_mod = event.pathname[:-4]
             if changed_mod in self.mods:
                 if reload_one:
-                    try:
-                        subprocess.run(
-                            [self.i3_path + '/bin/' + 'send', changed_mod, 'reload'],
-                            check=True
-                        )
-                        self.notify(f'[Reloaded {changed_mod}]')
-                    except subprocess.CalledProcessError as proc_err:
-                        Misc.print_run_exception_info(proc_err)
+                    Misc.send(f'{changed_mod} reload')
+                    self.notify(f'[Reloaded {changed_mod}]')
                 else:
                     for mod in self.mods:
-                        try:
-                            subprocess.run(
-                                [self.i3_path + '/bin/' + 'send', mod, 'reload'],
-                                check=True
-                            )
-                        except subprocess.CalledProcessError as proc_err:
-                            Misc.print_run_exception_info(proc_err)
+                        Misc.send(f'{mod} reload')
                     self.notify(
                         '[Reloaded {' + ','.join(self.mods.keys()) + '}]'
                     )
