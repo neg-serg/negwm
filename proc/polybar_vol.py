@@ -96,8 +96,7 @@ class polybar_vol(modconfig):
         self.main()
 
     def main(self):
-        """ Mainloop starting here.
-        """
+        """ Mainloop starting here. """
         asyncio.set_event_loop(self.loop)
         try:
             self.loop.run_until_complete(
@@ -109,21 +108,18 @@ class polybar_vol(modconfig):
             self.loop.close()
 
     def print_volume(self):
-        """ Create nice and shiny output for polybar.
-        """
+        """ Create nice and shiny output for polybar. """
         return f'%{{F{self.bracket_color}}}{self.delimiter}%{{F-}}' + \
             f'%{{F{self.foreground_color}}}' + \
             f'{self.vol_prefix}{self.volume}{self.vol_suffix}%{{F-}}' + \
             f'%{{F{self.bracket_color}}}{self.right_bracket}%{{F-}}'
 
     def empty_output(self):
-        """ This output will be used if no information about volume.
-        """
+        """ This output will be used if no information about volume. """
         sys.stdout.write(f'{self.empty_str}\n')
 
     async def initial_mpd_volume(self, reader, writer):
-        """ Load MPD volume state when script started.
-        """
+        """ Load MPD volume state when script started. """
         mpd_stopped = None
 
         data = await reader.read(self.buf_size)
@@ -149,8 +145,7 @@ class polybar_vol(modconfig):
         return data.startswith(b'OK')
 
     async def update_mpd_volume(self, loop):
-        """ Update MPD volume here and print it.
-        """
+        """ Update MPD volume here and print it. """
         prev_volume = ''
         reader, writer = await asyncio.open_connection(
             host=self.addr, port=self.port, loop=loop

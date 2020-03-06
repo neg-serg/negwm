@@ -60,14 +60,8 @@ class negi3mods(modconfig):
             Using of self.intern for better performance, create i3ipc
             connection, connects to the asyncio eventloop.
         """
-
-        # i3 path used to get i3 config path for "send" binary, _config needed
-        # by ppi3 path and another configs.
-        self.i3_path = Misc.i3path()
         loop = asyncio.new_event_loop()
-
         self.tracemalloc_enabled = False
-
         if cmd_args["--tracemalloc"]:
             self.tracemalloc_enabled = True
             import tracemalloc
@@ -149,9 +143,8 @@ class negi3mods(modconfig):
         self.notification_text += loading_time_msg
         self.echo(loading_time_msg)
 
-    def mods_cfg_watcher(self):
-        """ cfg watcher to update modules config in realtime.
-        """
+    def cfg_mods_watcher(self):
+        """ cfg watcher to update modules config in realtime. """
         watcher = inotipy.Watcher.create()
         watcher.watch(Misc.i3path() + '/cfg/', inotipy.IN.MODIFY)
         return watcher
@@ -161,14 +154,13 @@ class negi3mods(modconfig):
         if self.first_run:
             Misc.send('circle next term')
 
-    def i3_config_watcher(self):
-        """ i3 config watcher to run ppi3 on write.
-        """
+    def cfg_i3_watcher(self):
+        """ i3 config watcher to run ppi3 on write. """
         watcher = inotipy.Watcher.create()
-        watcher.watch(self.i3_path, inotipy.IN.CLOSE_WRITE)
+        watcher.watch(Misc.i3path(), inotipy.IN.CLOSE_WRITE)
         return watcher
 
-    async def mods_cfg_worker(self, watcher, reload_one=True):
+    async def cfg_mods_worker(self, watcher, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by
             default.
 
@@ -191,7 +183,7 @@ class negi3mods(modconfig):
                     )
         watcher.close()
 
-    async def i3_config_worker(self, watcher):
+    async def cfg_i3_worker(self, watcher):
         """ Run ppi3 when config is changed
 
             Args:
@@ -203,7 +195,7 @@ class negi3mods(modconfig):
                 with open(self.test_cfg_path, "w") as fconf:
                     try:
                         subprocess.run(
-                            ['ppi3', self.i3_path + '_config'],
+                            ['ppi3', Misc.i3path() + '_config'],
                             stdout=fconf,
                             check=True
                         )
@@ -212,11 +204,10 @@ class negi3mods(modconfig):
                         Misc.print_run_exception_info(proc_err)
                 if config_is_valid:
                     self.echo("i3 config is valid!")
-                    shutil.move(self.test_cfg_path, self.i3_path + 'config')
+                    shutil.move(self.test_cfg_path, Misc.i3path() + 'config')
 
     def validate_i3_config(self):
-        """ Checks that i3 config is ok.
-        """
+        """ Checks that i3 config is ok. """
         check_config = ""
         try:
             check_config = subprocess.run(
@@ -240,12 +231,11 @@ class negi3mods(modconfig):
     def run_config_watchers(self):
         """ Start all watchers here via ensure_future to run it in background.
         """
-        asyncio.ensure_future(self.mods_cfg_worker(self.mods_cfg_watcher()))
-        asyncio.ensure_future(self.i3_config_worker(self.i3_config_watcher()))
+        asyncio.ensure_future(self.cfg_mods_worker(self.cfg_mods_watcher()))
+        asyncio.ensure_future(self.cfg_i3_worker(self.cfg_i3_watcher()))
 
     def run(self):
-        """ Run negi3mods here.
-        """
+        """ Run negi3mods here. """
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
 
