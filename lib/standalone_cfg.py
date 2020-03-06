@@ -14,10 +14,7 @@ from misc import Misc
 
 
 class modconfig():
-    def __init__(self, loop):
-        # set asyncio loop
-        self.loop = loop
-
+    def __init__(self):
         # detect current negi3mod
         self.mod = self.__class__.__name__
 

@@ -15,8 +15,8 @@ import toml
 from misc import Misc
 
 
-class cfg(object):
-    def __init__(self, i3, convert_me: bool = False, loop=None) -> None:
+class cfg():
+    def __init__(self, i3, convert_me: bool = False) -> None:
         # detect current negi3mod
         self.mod = self.__class__.__name__
 
@@ -41,9 +41,6 @@ class cfg(object):
         }
 
         self.i3ipc = i3
-        self.loop = None
-        if loop is not None:
-            self.loop = loop
 
     def conf(self, *conf_path):
         """ Helper to extract config for current tag.
@@ -115,10 +112,7 @@ class cfg(object):
         prev_conf = self.cfg
         try:
             self.load_config()
-            if self.loop is None:
-                self.__init__(self.i3ipc)
-            else:
-                self.__init__(self.i3ipc, loop=self.loop)
+            self.__init__(self.i3ipc)
             print(f"[{self.mod}] config reloaded")
         except Exception:
             print(f"[{self.mod}] config reload failed")

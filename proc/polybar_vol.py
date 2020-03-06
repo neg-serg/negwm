@@ -42,7 +42,7 @@ class polybar_vol(modconfig):
         self.loop = asyncio.get_event_loop()
 
         # Initialize modcfg.
-        modconfig.__init__(self, self.loop)
+        modconfig.__init__(self)
 
         # default MPD address
         self.addr = self.conf("mpdaddr")

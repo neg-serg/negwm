@@ -31,15 +31,13 @@ class circle(negi3mod, cfg, Matcher):
 
     """
 
-    def __init__(self, i3, loop=None) -> None:
+    def __init__(self, i3) -> None:
         """ Init function
 
         Main part is in self.initialize, which performs initialization itself.
 
         Args:
             i3: i3ipc connection
-            loop: asyncio loop. It's need to be given as parameter because of
-                  you need to bypass asyncio-loop to the thread
         """
         # Initialize superclasses.
         cfg.__init__(self, i3, convert_me=True)

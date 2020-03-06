@@ -34,13 +34,11 @@ class bscratch(negi3mod, cfg, Matcher):
                  WM_CLASS, WM_INSTANCE, regexes, etc
     """
 
-    def __init__(self, i3, loop=None) -> None:
+    def __init__(self, i3) -> None:
         """ Init function
 
         Args:
             i3: i3ipc connection
-            loop: asyncio loop. It's need to be given as parameter because of
-                  you need to bypass asyncio-loop to the thread
         """
         # Initialize superclasses.
         cfg.__init__(self, i3, convert_me=True)

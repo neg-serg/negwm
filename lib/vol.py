@@ -14,22 +14,17 @@ from negi3mod import negi3mod
 
 
 class vol(negi3mod, cfg):
-    def __init__(self, i3, loop) -> None:
+    def __init__(self, i3) -> None:
         """ Init function
 
         Args:
             i3: i3ipc connection
-            loop: asyncio loop. It's need to be given as parameter because of
-                  you need to bypass asyncio-loop to the thread
         """
         # Initialize cfg.
-        cfg.__init__(self, i3, loop=loop)
+        cfg.__init__(self, i3)
 
         # i3ipc connection, bypassed by negi3mods runner.
         self.i3ipc = i3
-
-        # Bypass loop from negi3mods script here.
-        self.loop = loop
 
         # Default increment step for mpd.
         self.inc = self.conf("mpd_inc")
@@ -75,10 +70,6 @@ class vol(negi3mod, cfg):
         # Initial state for the current_win
         self.current_win = self.i3ipc.get_tree().find_focused()
 
-        # Setup asyncio, because of it is used in another thread.
-        asyncio.set_event_loop(self.loop)
-        asyncio.ensure_future(self.update_mpd_status(self.loop))
-
     def set_curr_win(self, _, event) -> None:
         """ Cache the current window.
 
@@ -88,6 +79,11 @@ class vol(negi3mod, cfg):
                 event.container.
         """
         self.current_win = event.container
+
+    def asyncio_init(self, loop) -> None:
+        # Setup asyncio, because of it is used in another thread.
+        asyncio.set_event_loop(loop)
+        asyncio.ensure_future(self.update_mpd_status(loop))
 
     async def update_mpd_status(self, loop) -> None:
         """ Asynchronous function to get current MPD status.

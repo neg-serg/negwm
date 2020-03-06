@@ -21,7 +21,7 @@ from negi3mod import negi3mod
 class menu(negi3mod, cfg):
     """ Base class for menu module """
 
-    def __init__(self, i3ipc, loop=None) -> None:
+    def __init__(self, i3ipc) -> None:
         # Initialize cfg.
         cfg.__init__(self, i3ipc)
 

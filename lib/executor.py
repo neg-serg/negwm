@@ -243,15 +243,13 @@ class executor(negi3mod, cfg):
         cfg: configuration manager to autosave/autoload
                   TOML-configutation with inotify
     """
-    def __init__(self, i3, loop=None) -> None:
+    def __init__(self, i3) -> None:
         """ Init function.
 
         Arguments for this constructor used only for compatibility.
 
         Args:
             i3: i3ipc connection(not used).
-            loop: asyncio loop. It's need to be given as parameter because of
-                  you need to bypass asyncio-loop to the thread(not used).
         """
         cfg.__init__(self, i3, convert_me=False)
         self.envs = {}

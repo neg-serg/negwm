@@ -91,10 +91,9 @@ class negi3mods(modconfig):
                     functools.partial(loop_exit, signame))
             loop.set_exception_handler(None)
 
-        modconfig.__init__(self, loop)
+        modconfig.__init__(self)
 
         self.loop = loop
-
         self.mods = {}
         for mod in self.conf("module_list"):
             self.mods[sys.intern(mod)] = None
@@ -136,7 +135,11 @@ class negi3mods(modconfig):
         for mod in self.mods:
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
-            self.mods[mod] = getattr(i3mod, mod)(self.i3, loop=self.loop)
+            self.mods[mod] = getattr(i3mod, mod)(self.i3)
+            try:
+                self.mods[mod].asyncio_init(self.loop)
+            except Exception:
+                pass
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}s'
             mod_loaded_info = f'{mod:<10s} ~ {time_elapsed:>10s}'

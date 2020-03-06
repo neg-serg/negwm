@@ -49,7 +49,7 @@ class polybar_ws(modconfig):
         self.loop = asyncio.get_event_loop()
 
         # Initialize modcfg.
-        modconfig.__init__(self, self.loop)
+        modconfig.__init__(self)
 
         self.conn = None
 
