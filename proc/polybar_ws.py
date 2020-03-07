@@ -17,7 +17,7 @@ Config example:
 
 [module/ws]
 type = custom/script
-exec = ~/.config/i3/proc/polybar_ws.py
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_ws 2> /dev/null
 exec-if = sleep 1
 format = <label>
 tail = true

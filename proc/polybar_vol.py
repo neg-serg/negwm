@@ -1,4 +1,4 @@
-#!/usr/bin/pypy3 -u
+#!/usr/bin/python3
 
 """ Volume printing daemon.
 
@@ -15,7 +15,7 @@ Config example:
 [module/volume]
 type = custom/script
 interval = 0
-exec = ~/.config/i3/proc/polybar_vol.py
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_vol 2> /dev/null
 exec-if = sleep 1
 tail = true
 
