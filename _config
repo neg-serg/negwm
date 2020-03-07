@@ -276,12 +276,12 @@ mode "WM" {
     bindsym k split vertical; $exit
     bindsym h split horizontal; $exit
     bindsym l split horizontal; $exit
-	bindsym {w,a,s,d} move {up,left,down,right}
+    bindsym {w,a,s,d} move {up,left,down,right}
 
     # ░█░█░█▄█░▀▀█
     # ░█▄█░█░█░░▀▄
     # ░▀░▀░▀░▀░▀▀░
-	bindsym m $win_action maximize
+    bindsym m $win_action maximize
     bindsym $S+m $win_action revert_maximize
     bindsym {x,y} $win_action {maxhor,maxvert}
     bindsym $S+x $win_action revert_maximize
@@ -294,10 +294,10 @@ mode "WM" {
     #-------------------------------------------------------
     bindsym g mode "GAPS"
     #-------------------------------------------------------
-	bindsym $c+a layout toggle all
-	bindsym $c+3 layout toggle all
-	bindsym $c+s layout toggle split
-	bindsym $c+t layout toggle
+    bindsym $c+a layout toggle all
+    bindsym $c+3 layout toggle all
+    bindsym $c+s layout toggle split
+    bindsym $c+t layout toggle
     #-------------------------------------------------------
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
@@ -317,12 +317,12 @@ mode "SPEC" {
     bindsym $S+t $exit, $menu gtk_theme
     bindsym $S+i $exit, $menu icon_theme
 
-	bindsym $S+d floating toggle; $exit
-	bindsym $S+l exec sh -c 'sudo gllock'; $exit
-	bindsym v exec ~/bin/qemu/vm_menu; $exit
-	bindsym $S+v exec ~/bin/qemu/vm_menu start_win10; $exit
-	bindsym o $menu pulse_output; $exit
-	bindsym i $menu pulse_input; $exit
+    bindsym $S+d floating toggle; $exit
+    bindsym $S+l exec sh -c 'sudo gllock'; $exit
+    bindsym v exec ~/bin/qemu/vm_menu; $exit
+    bindsym $S+v exec ~/bin/qemu/vm_menu start_win10; $exit
+    bindsym o $menu pulse_output; $exit
+    bindsym i $menu pulse_input; $exit
     bindsym $S+s exec ~/bin/pls -switch, $exit
     bindsym $S+s exec ~/bin/pls -switch, $exit
     bindsym i $exit, exec ~/bin/pls -output
@@ -346,24 +346,24 @@ mode "SPEC" {
 # ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█
 # ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀
 mode "GAPS" {
-	bindsym {o,i} mode gaps-{outer,inner}
+    bindsym {o,i} mode gaps-{outer,inner}
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 mode "GAPS-OUTER" {
-	bindsym {plus,minus}     gaps outer current {plus,minus} 5
-	bindsym 0                gaps outer current set 0
+    bindsym {plus,minus}     gaps outer current {plus,minus} 5
+    bindsym 0                gaps outer current set 0
 
-	bindsym $S+{plus,minus}  gaps outer all {plus,minus} 5
-	bindsym $S+0             gaps outer all set 0
+    bindsym $S+{plus,minus}  gaps outer all {plus,minus} 5
+    bindsym $S+0             gaps outer all set 0
 
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
 mode "GAPS-INNER" {
-	bindsym {plus,minus}     gaps inner current {plus,minus} 5
-	bindsym 0                gaps inner current set 0
+    bindsym {plus,minus}     gaps inner current {plus,minus} 5
+    bindsym 0                gaps inner current set 0
 
-	bindsym $S+{plus,minus}  gaps inner all {plus,minus} 5
-	bindsym $S+0             gaps inner all set 0
+    bindsym $S+{plus,minus}  gaps inner all {plus,minus} 5
+    bindsym $S+0             gaps inner all set 0
 
     bindsym {Return,Escape,$c+C,$c+G} $exit
 }
