@@ -95,15 +95,13 @@ class polybar_ws(modconfig):
                     await self.update_status()
 
     async def special_reload(self):
-        """ Reload mainloop here.
-        """
+        """ Reload mainloop here. """
         asyncio.get_event_loop().close()
         self.loop = asyncio.get_event_loop()
         await self.main()
 
     async def main(self):
-        """ Mainloop starting here.
-        """
+        """ Mainloop starting here. """
         asyncio.set_event_loop(self.loop)
 
         self.conn = await Connection(auto_reconnect=True).connect()
@@ -121,8 +119,7 @@ class polybar_ws(modconfig):
         await self.conn.main()
 
     async def update_status(self):
-        """ Print workspace information here. Event-based.
-        """
+        """ Print workspace information here. Event-based. """
         workspace = self.ws_name
         if not workspace[0].isalpha():
             workspace = polybar_ws.colorize(
