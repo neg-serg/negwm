@@ -123,7 +123,7 @@ class circle(negi3mod, cfg, Matcher):
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
-                    Misc.send(f'executor run {spawn_str}', i3=self.i3ipc)
+                    Misc.send(['executor', 'run', spawn_str], i3=self.i3ipc)
 
     def find_next_not_the_same_win(self, tag: str) -> None:
         """ It was used as the guard to infinite loop in the past.
