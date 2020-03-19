@@ -6,3 +6,4 @@ add labels support
 bindings docs
 add https://www.python.org/dev/peps/pep-0519/
 share some functions like window::focus between various mods
+port pls to negi3mods
