@@ -82,6 +82,8 @@ class polybar_vol(modconfig):
 
         self.right_bracket = ""
 
+        self.disable_on_full = self.conf("disable_on_full")
+
         # set string for the empty output
         if self.conf('show_volume').startswith('y'):
             self.empty_str = f"%{{F{self.bracket_color}}}{self.delimiter}" + \
@@ -118,6 +120,9 @@ class polybar_vol(modconfig):
         """ This output will be used if no information about volume. """
         sys.stdout.write(f'{self.empty_str}\n')
 
+    def check_for_full(self):
+        return not (self.disable_on_full and self.volume == "100")
+
     async def initial_mpd_volume(self, reader, writer):
         """ Load MPD volume state when script started. """
         mpd_stopped = None
@@ -128,7 +133,7 @@ class polybar_vol(modconfig):
         parsed = stat_data.decode('utf-8').split('\n')
         if 'volume' in parsed[0]:
             self.volume = parsed[0][8:]
-            if int(self.volume) >= 0:
+            if int(self.volume) >= 0 and self.check_for_full():
                 self.volume = self.print_volume()
                 sys.stdout.write(f"{self.volume}\n")
             else:
@@ -161,7 +166,9 @@ class polybar_vol(modconfig):
                     if 'state: play' in parsed and 'volume' in parsed[0]:
                         self.volume = parsed[0][8:]
                         if int(self.volume) >= 0:
-                            if prev_volume != self.volume:
+                            if not self.check_for_full():
+                                sys.stdout.write(f" \n")
+                            elif prev_volume != self.volume:
                                 self.volume = self.print_volume()
                                 sys.stdout.write(f"{self.volume}\n")
                             prev_volume = parsed[0][8:]
