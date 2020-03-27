@@ -478,6 +478,10 @@ Also you need [ppi3] as i3 config preprocessor.
 
 # Run
 
+Install it to i3 config directory:
+
+`git clone https://github.com/neg-serg/negi3mods ~/.config/i3`
+
 negi3mods help:
 
 ```
