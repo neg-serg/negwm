@@ -10,7 +10,7 @@ import toml
 import traceback
 import asyncio
 import inotipy
-from misc import Misc
+from lib.misc import Misc
 
 
 class modconfig():
