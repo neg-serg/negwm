@@ -380,7 +380,7 @@ Look at the `lib/executor.py` to learn more.
 
 Also it contains nice colorscheme support via
 [dynamic-colors](bin/dynamic-colors), please look
-for config examples at [neg dotfiles](https://github.com/neg-serg/dotfiles/blob/master/term-colorschemes/.config/colorschemes/neg-dark3.sh).
+for config examples at [my dotfiles](https://github.com/neg-serg/dotfiles/blob/master/term-colorschemes/.config/colorschemes/neg-dark3.sh).
 
 ## fs
 
