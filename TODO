@@ -11,3 +11,4 @@ mouse helper, for example get windows size and then click on x,y = 20px, 20px
 add ion support
 dash fallback on something
 move i3 prepare to negi3mods itself
+install via curl
