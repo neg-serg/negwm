@@ -375,7 +375,7 @@ mode "GAPS-INNER" {
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
 set $i3_log_path $HOME/tmp/negi3mods.log
-exec_always ${XDG_CONFIG_HOME}/i3/bin/i3_prepare &
+exec_always ${XDG_CONFIG_HOME}/i3/bin/negi3mods_run &
 exec_always pkill sxhkd; sxhkd &
 exec_always pkill -f 'mpc idle'
 exec caffeine &

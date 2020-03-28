@@ -23,13 +23,13 @@ module. Most of them supports dynamic reloading of TOML-based configs as you
 save the file, so there is no need to manually reload them. Anyway you can
 reload negi3mods manually:
 
-At first you need to add something in i3_prepare and add it to config:
+At first you need to add something in negi3mods_run and add it to config:
 
 ```
-exec_always ~/.config/i3/i3_prepare &
+exec_always ~/.config/i3/negi3mods_run &
 ```
 
-Current i3_prepare is:
+Current negi3mods_run is:
 
 ```
 ${XDG_CONFIG_HOME}/i3/negi3mods.py --start >> ${HOME}/tmp/negi3mods.log 2>&1 &
