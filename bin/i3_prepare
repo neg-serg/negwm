@@ -1,3 +1,8 @@
 #!/bin/dash
-${XDG_CONFIG_HOME}/i3/negi3mods.py --start >> ${HOME}/tmp/negi3mods.log 2>&1 &
-make -C ${XDG_CONFIG_HOME}/i3/ &
+log_dir="${HOME}/tmp"
+
+if [ ! -d "$log_dir" ] && [ ! -L "$log_dir" ]; then
+    mkdir -v "$log_dir"
+fi
+
+$XDG_CONFIG_HOME/i3/negi3mods.py --start >> $log_dir/negi3mods.log 2>&1 &
