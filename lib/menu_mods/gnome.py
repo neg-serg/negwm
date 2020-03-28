@@ -4,7 +4,7 @@ import os
 import configparser
 import subprocess
 import glob
-import path
+import pathlib
 
 from misc import Misc
 
@@ -21,6 +21,7 @@ class gnome():
         self.gsettings_script = os.path.expanduser(
             '~/bin/scripts/gnome_settings'
         )
+        print(pathlib.Path('~/.icons').expanduser())
 
     def menu_params(self, length, prompt):
         """ Set menu params """
@@ -47,10 +48,10 @@ class gnome():
     def change_icon_theme(self):
         """ Changes icon theme with help of gsd-xsettings """
         icon_dirs = []
-        icons_path = path.Path('~/.icons').expanduser()
-        for icon in glob.glob(icons_path + '/*'):
+        icons_path = pathlib.Path('~/.icons').expanduser()
+        for icon in icons_path.glob('*'):
             if icon:
-                icon_dirs += [path.Path(icon).name]
+                icon_dirs += [pathlib.Path(icon).name]
 
         menu_params = self.menu_params(len(icon_dirs), 'icon theme')
 
@@ -69,10 +70,10 @@ class gnome():
     def change_gtk_theme(self):
         """ Changes gtk theme with help of gsd-xsettings """
         theme_dirs = []
-        gtk_theme_path = path.Path('~/.themes').expanduser()
-        for theme in glob.glob(gtk_theme_path + '/*/*/gtk.css'):
+        gtk_theme_path = pathlib.Path('~/.themes').expanduser()
+        for theme in gtk_theme_path.glob('./*/*/gtk.css'):
             if theme:
-                theme_dirs += [path.Path(theme).dirname().dirname().name]
+                theme_dirs += [pathlib.PurePath(theme).parent.parent.name]
 
         menu_params = self.menu_params(len(theme_dirs), 'gtk theme')
         try:
