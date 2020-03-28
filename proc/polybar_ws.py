@@ -60,10 +60,11 @@ class polybar_ws(modconfig):
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
 
-        self.ws_color_field = self.conf("ws_color_field")
-        self.binding_color_field = self.conf("binding_color_field")
+        self.ws_color_field = self.conf("ws_color_field") or '#8FA8C7'
+        self.binding_color_field = self.conf("binding_color_field") or '#005fd7'
         self.ws_color = Misc.extract_xrdb_value(self.ws_color_field)
         self.binding_color = Misc.extract_xrdb_value(self.binding_color_field)
+
         self.ws_name = ""
 
     async def on_ws_focus(self, _, event):

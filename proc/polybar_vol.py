@@ -69,20 +69,17 @@ class polybar_vol(modconfig):
         self.vol_prefix = self.conf("vol_prefix")
         self.vol_suffix = self.conf("vol_suffix")
 
-        # xrdb-colors: use blue by default for brackets
-        self.bracket_color_field = self.conf("bracket_color_field")
-        self.bright_color_field = self.conf("bright_color_field")
-        self.foreground_color_field = self.conf("foreground_color_field")
-
-        self.bracket_color = Misc.extract_xrdb_value(self.bracket_color_field)
-        self.bright_color = Misc.extract_xrdb_value(self.bright_color_field)
+        self.bracket_color = Misc.extract_xrdb_value(
+            self.conf("bracket_color_field")
+        ) or '#395573'
+        self.bright_color = Misc.extract_xrdb_value(
+            self.conf("bright_color_field")
+        ) or '#cccccc'
         self.foreground_color = Misc.extract_xrdb_value(
-            self.foreground_color_field
-        )
+            self.conf("foreground_color_field")
+        ) or '#cccccc'
 
         self.right_bracket = ""
-
-        self.disable_on_full = self.conf("disable_on_full")
 
         # set string for the empty output
         if self.conf('show_volume').startswith('y'):
@@ -121,7 +118,7 @@ class polybar_vol(modconfig):
         sys.stdout.write(f'{self.empty_str}\n')
 
     def check_for_full(self):
-        return not (self.disable_on_full and self.volume == "100")
+        return not (self.conf("disable_on_full") and self.volume == "100")
 
     async def initial_mpd_volume(self, reader, writer):
         """ Load MPD volume state when script started. """

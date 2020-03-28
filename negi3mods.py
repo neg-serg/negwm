@@ -112,7 +112,8 @@ class negi3mods(modconfig):
         """ stuff for startup notifications """
         self.notification_text = "Starting negi3mods\n\n"
         notification_color_field = self.conf("notification_color_field")
-        notification_color = Misc.extract_xrdb_value(notification_color_field)
+        notification_color = Misc.extract_xrdb_value(notification_color_field) \
+            or '#395573'
         prefix = self.conf("prefix")
         self.msg_prefix = f"<span weight='normal' \
             color='{notification_color}'> {prefix} </span>"

@@ -69,7 +69,8 @@ class Misc():
             return pidlist
 
         if get_pids('dunst'):
-            foreground_color = cls.extract_xrdb_value('\\*.foreground')
+            foreground_color = cls.extract_xrdb_value('\\*.foreground') \
+                or '#617287'
             notify_msg = [
                 'dunstify', '',
                 f"<span weight='normal' color='{foreground_color}'>" +
