@@ -189,8 +189,8 @@ bindsym $m4+$S+3 exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym $m4+$S+4 exec --no-startup-id flameshot gui
 bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
 
-bindsym $m4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-bindsym $m4+$S+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_restart
+bindsym $m4+apostrophe exec ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+bindsym $m4+$S+apostrophe exec ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
 # ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
 # ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
