@@ -95,10 +95,11 @@ class env():
         self.tmux_new_session = \
             f"tmux -S {self.sockpath} new-session -s {name}"
         colorscheme = config.get("colorscheme", "")
-        if not colorscheme:
-            colorscheme = config.get(name, {}).get("colorscheme", 'neg-dark3')
-        self.set_colorscheme = \
-            f"{expanduser('~/bin/dynamic-colors')} switch {colorscheme};"
+        if colorscheme:
+            self.set_colorscheme = \
+                f"{Misc.i3path() + 'bin/dynamic-colors'} switch {colorscheme};"
+        else:
+            self.set_colorscheme = ''
         self.postfix = config.get(name, {}).get("postfix", '')
         if self.postfix and self.postfix[0] != '-':
             self.postfix = '\\; ' + self.postfix
@@ -110,6 +111,7 @@ class env():
                     f'dtach -A ~/1st_level/{name}.session {prog_to_dtach}'
             else:
                 self.prog = config.get(name, {}).get('prog', 'true')
+
         self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
         self.set_instance = config.get(name, {}).get('set_instance', '')
 
