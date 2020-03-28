@@ -1,11 +1,16 @@
 import subprocess
 import pulsectl
+import shutil
 
 
 class pulse_menu():
     def __init__(self, menu):
         self.menu = menu
         self.pulse_data = {}
+
+        if shutil.which('pulseaudio') is None:
+            self.pulse = None
+            return
 
         check_pulseaudio = subprocess.run(['pulseaudio', '--check'],
             check=False,
