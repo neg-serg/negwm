@@ -109,7 +109,7 @@ class env():
             f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = \
             f"tmux -S {self.sockpath} new-session -s {name}"
-        colorscheme = config.get("colorscheme", "")
+        colorscheme = config.get("colorscheme", 'neg-dark3')
         if colorscheme:
             self.set_colorscheme = \
                 f"{Misc.i3path() + 'bin/dynamic-colors'} switch {colorscheme};"
