@@ -2,7 +2,12 @@
 log_dir="${HOME}/tmp"
 
 if [ ! -d "$log_dir" ] && [ ! -L "$log_dir" ]; then
-    mkdir -v "$log_dir"
+    if mkdir -v "$log_dir"; then
+        echo "$log_dir if created"
+    else
+        echo "cannot create target $log_dir directory, fail :("
+        exit 1
+    fi
 fi
 
 $XDG_CONFIG_HOME/i3/negi3mods.py --start >> $log_dir/negi3mods.log 2>&1 &
