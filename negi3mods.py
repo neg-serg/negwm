@@ -200,34 +200,14 @@ class negi3mods(modconfig):
                             stdout=fconf,
                             check=True
                         )
-                        config_is_valid = self.validate_i3_config()
+                        config_is_valid = validate_i3_config(
+                            self.test_cfg_path, remove=True
+                        )
                     except subprocess.CalledProcessError as proc_err:
                         Misc.print_run_exception_info(proc_err)
                 if config_is_valid:
                     self.echo("i3 config is valid!")
                     shutil.move(self.test_cfg_path, Misc.i3path() + 'config')
-
-    def validate_i3_config(self):
-        """ Checks that i3 config is ok. """
-        check_config = ""
-        try:
-            check_config = subprocess.run(
-                ['i3', '-c', self.test_cfg_path, '-C'],
-                stdout=subprocess.PIPE,
-                check=True
-            ).stdout.decode('utf-8')
-        except subprocess.CalledProcessError as proc_err:
-            Misc.print_run_exception_info(proc_err)
-        if check_config:
-            error_data = check_config.encode('utf-8')
-            self.echo(error_data)
-            self.notify(error_data, "Error >")
-
-            # remove invalid config
-            os.remove(self.test_cfg_path)
-
-            return False
-        return True
 
     def run_config_watchers(self):
         """ Start all watchers here via ensure_future to run it in background.
@@ -291,6 +271,117 @@ def main():
         for stat in top_stats[:10]:
             print(stat)
 
+def which(exe, description, kind):
+    path = shutil.which(exe)
+    if path:
+        print(f'{exe}: {shutil.which(exe)} [{kind}] [OK]')
+    else:
+        print(f'{exe}: {exe} not found [{kind}] [FAIL]\n'
+                f'You need it for {description}')
+
+        if kind == 'mandatory':
+            print('You cannot run without mandatory dependencies')
+            os._exit(1)
+
+def check_for_executable_deps():
+    dependencies = {
+        'mandatory' : {
+            'i3': 'you need i3 for negi3mods',
+            'ppi3': 'i3 config preprocessor',
+            'dash': 'one of the fastest non-interactive shells',
+        },
+        'recommended' : {
+            'tmux': 'tmux support',
+            'rofi': 'you need rofi for the all menus',
+            'dunst': 'you need dunst for notifications',
+            'dunstify': 'dunstify is better notify-send alternative',
+            'xrescat': 'extract xresources for theming',
+            'xdo': 'optional polybar hide support instead of built-in',
+        }
+    }
+
+    print('Check for executables')
+    for kind, value in dependencies.items():
+        for exe, description in value.items():
+            which(exe, description, kind)
+    print()
+
+def check_for_send():
+    print('Check for send executable and build it if needed')
+    send_path = shutil.which('bin/send')
+    if send_path is not None:
+        print(f'send binary {send_path} [OK]')
+    else:
+        i3_path = os.getenv('XDG_CONFIG_HOME') + '/i3/'
+        make_result = subprocess.run(['make', '-C', i3_path],
+            check=False,
+            capture_output=True
+        )
+        if make_result.returncode == 0:
+            print('send build is successful')
+        else:
+            print('Please check for libbsd-dev build dependency')
+
+    print()
+
+
+def validate_i3_config(i3cfg_path, remove=False):
+    """ Checks that i3 config is ok. """
+    check_config = ""
+    try:
+        check_config = subprocess.run(
+            ['i3', '-c', i3cfg_path, '-C'],
+            stdout=subprocess.PIPE,
+            check=True
+        ).stdout.decode('utf-8')
+    except subprocess.CalledProcessError as proc_err:
+        Misc.print_run_exception_info(proc_err)
+    if check_config:
+        error_data = check_config.encode('utf-8')
+        print(error_data)
+
+        if remove:
+            # remove invalid config
+            os.remove(i3cfg_path)
+
+        return False
+    return True
+
+def check_i3_config():
+    print('Check for i3 config consistency')
+    xdg_config_home = os.getenv('XDG_CONFIG_HOME')
+    i3_check = validate_i3_config(xdg_config_home + '/i3/config')
+    if i3_check:
+        print('i3 config is valid [OK]')
+    else:
+        print('i3 config is invalid [FAIL]'
+              f'please run i3 -C {xdg_config_home}/i3/config to check it'
+        )
+    print()
+
+def check_env():
+    print('Check for environment')
+    xdg_config_home = os.getenv('XDG_CONFIG_HOME')
+    if xdg_config_home:
+        print(f'XDG_CONFIG_HOME = {xdg_config_home}')
+    else:
+        user = os.getenv('USER')
+        if user:
+            print('XDG_CONFIG_HOME is unset, '
+                  'you should set it via some kind of .zshenv or /etc/profile')
+        else:
+            print('You should have some $USER env to run')
+            os._exit(1)
+    print()
+
+def check():
+    """ Check for various dependencies """
+    check_env()
+    check_for_executable_deps()
+    check_i3_config()
+    check_for_send()
+
 
 if __name__ == '__main__':
+    check()
     main()
