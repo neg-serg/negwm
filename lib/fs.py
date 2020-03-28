@@ -6,6 +6,7 @@ for example wayland-friendly.
 """
 
 import subprocess
+import shutil
 from negi3mod import negi3mod
 from cfg import cfg
 
@@ -56,10 +57,17 @@ class fs(negi3mod, cfg):
                 action (str): action to do.
                 restore(bool): shows should the panel state be restored or not.
         """
-        # should be empty
-        ret = subprocess.Popen(
-            ['xdo', action, '-N', 'Polybar'], stdout=subprocess.PIPE
-        ).communicate()[0]
+        ret = None
+        try:
+            ret = subprocess.Popen(
+                ['xdo', action, '-N', 'Polybar'], stdout=subprocess.PIPE
+            ).communicate()[0]
+        except Exception:
+            xdo_path = shutil.which('xdo')
+            if xdo_path:
+                print('xdo exists in {xdo_path}, but not working')
+            else:
+                print('There is no xdo, please install')
 
         if not ret and restore is not None:
             self.panel_should_be_restored = restore
