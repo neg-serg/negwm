@@ -18,6 +18,7 @@ import yamlloader
 
 from negi3mod import negi3mod
 from typing import List
+import os
 from os.path import expanduser
 from cfg import cfg
 from misc import Misc
@@ -38,7 +39,7 @@ class env():
         self.tmux_socket_dir = expanduser('/dev/shm/tmux_sockets')
         self.alacritty_cfg_dir = expanduser('/dev/shm/alacritty_cfg')
         self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
-        self.default_alacritty_cfg_path = "~/.config/alacritty/alacritty.yml"
+
         Misc.create_dir(self.tmux_socket_dir)
         Misc.create_dir(self.alacritty_cfg_dir)
         try:
@@ -60,6 +61,15 @@ class env():
 
         # get terminal from config, use Alacritty by default
         self.term = config.get(name, {}).get("term", "alacritty").lower()
+
+        alacritty_cfg_path = expanduser("~/.config/alacritty/alacritty.yml")
+        if os.path.exists(alacritty_cfg_path):
+            if os.stat(alacritty_cfg_path).st_size == 0:
+                print('Alacritty cfg {alacritty_cfg_path} is empty')
+                self.term = env.terminal_fallback_detect()
+        else:
+            print('Alacritty cfg {alacritty_cfg_path} not exists, put it here')
+            self.term = env.terminal_fallback_detect()
 
         self.wclass = config.get(name, {}).get("class", self.term)
         self.title = config.get(name, {}).get("title", self.wclass)
@@ -130,6 +140,15 @@ class env():
                 prc.join()
 
         threading.Thread(target=join_processes, args=(), daemon=True).start()
+
+    @staticmethod
+    def terminal_fallback_detect() -> str:
+        """ Detect non alacritty terminal """
+        for t in ['st', 'urxvt']:
+            if shutil.which(t):
+                return t
+        print('No supported terminal installed, fail :(')
+        return ''
 
     @staticmethod
     def generate_alacritty_config(
@@ -230,12 +249,6 @@ class env():
             self.term_opts = ["urxvt"] + [
                 "-name", self.wclass,
                 "-fn", "xft:" + self.font + ":size=" + str(self.font_size),
-                "-e", self.default_shell, "-c",
-            ]
-        elif self.term == "xterm":
-            self.term_opts = ["xterm"] + [
-                '-class', self.wclass,
-                '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
                 "-e", self.default_shell, "-c",
             ]
 
