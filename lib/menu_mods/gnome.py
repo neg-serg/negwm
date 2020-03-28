@@ -21,7 +21,6 @@ class gnome():
         self.gsettings_script = os.path.expanduser(
             '~/bin/scripts/gnome_settings'
         )
-        print(pathlib.Path('~/.icons').expanduser())
 
     def menu_params(self, length, prompt):
         """ Set menu params """
