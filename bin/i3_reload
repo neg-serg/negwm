@@ -1,4 +1,4 @@
 make -C ~/.config/i3/
-pkill negi3mods
-$XDG_CONFIG_HOME/i3/negi3mods.py >> $HOME/tmp/negi3mods.log 2>&1 &
+pkill negi3wm
+$XDG_CONFIG_HOME/i3/negi3wm.py >> $HOME/tmp/negi3wm.log 2>&1 &
 i3-msg reload

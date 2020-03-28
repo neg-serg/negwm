@@ -12,27 +12,27 @@ For now this collection of modules for i3 includes:
 
 # main
 
-*negi3mods* : application that run all modules and handle configuration of
+*negi3wm* : application that run all modules and handle configuration of
 ppi3+i3 and modules on python. Also handles TOML-configs updating. 
 
 Some general notes:
 
-`negi3mods.py` works as a server and `send` is a client. To look at the last
+`negi3wm.py` works as a server and `send` is a client. To look at the last
 actual list of command for modules you can look at `self.bindings` of some
 module. Most of them supports dynamic reloading of TOML-based configs as you
 save the file, so there is no need to manually reload them. Anyway you can
-reload negi3mods manually:
+reload negi3wm manually:
 
-At first you need to add something in negi3mods_run and add it to config:
-
-```
-exec_always ~/.config/i3/negi3mods_run &
-```
-
-Current negi3mods_run is:
+At first you need to add something in negi3wm_run and add it to config:
 
 ```
-${XDG_CONFIG_HOME}/i3/negi3mods.py --start >> ${HOME}/tmp/negi3mods.log 2>&1 &
+exec_always ~/.config/i3/negi3wm_run &
+```
+
+Current negi3wm_run is:
+
+```
+${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
 make -C ${XDG_CONFIG_HOME}/i3/ &
 pkill -f 'mpc idle'
 pkill sxhkd; sxhkd &
@@ -41,9 +41,9 @@ pkill sxhkd; sxhkd &
 Interesting parts here are:
 
 ```
-${XDG_CONFIG_HOME}/i3/negi3mods.py --start >> ${HOME}/tmp/negi3mods.log 2>&1 &
+${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
 ```
-To restart negi3mods after i3 reload, `negi3mods.py` should close file
+To restart negi3wm after i3 reload, `negi3wm.py` should close file
 descriptor automatically, after i3 reload/restart so you can simply run it
 after restart.
 
@@ -386,12 +386,12 @@ for config examples at [my dotfiles](https://github.com/neg-serg/dotfiles/blob/m
 
 Fullscreen panel hacking.
 
-## procs to run by negi3mods as another process
+## procs to run by negi3wm as another process
 
-~~There are processes, not threads, separated from the main negi3mods event
+~~There are processes, not threads, separated from the main negi3wm event
 loop to reach better performance or another goals.~~
 
-For now there are no any processes started by negi3mods. I've considered that
+For now there are no any processes started by negi3wm. I've considered that
 this scheme of loading can cause various race condictions and another
 stability issues.
 
@@ -447,7 +447,7 @@ I still want to see `Vol: 0` / `Vol: 100` anyway :)
 + ewmh -- used to create EWMH helper.
 + yamlloader -- module for the more fast yaml file loading.
 + pulsectl -- used for menu to change pulseaudio input / output sinks
-+ docopt -- for cli options in negi3mods script
++ docopt -- for cli options in negi3wm script
 
 
 To install it you may use pip:
@@ -484,22 +484,22 @@ Also you need [ppi3] as i3 config preprocessor.
 
 Install it to i3 config directory:
 
-`git clone https://github.com/neg-serg/negi3mods ~/.config/i3`
+`git clone https://github.com/neg-serg/negi3wm ~/.config/i3`
 
-negi3mods help:
+negi3wm help:
 
 ```
-i3 negi3mods daemon script.
+i3 negi3wm daemon script.
 
-This module loads all negi3mods an start it via main's manager
-mailoop. Inotify-based watchers for all negi3mods TOML-based configuration
+This module loads all negi3wm an start it via main's manager
+mailoop. Inotify-based watchers for all negi3wm TOML-based configuration
 spawned here, to use it just start it from any place without parameters. Also
 there is i3 config watcher to convert it from ppi3 format to plain i3
 automatically. Moreover it contains pid-lock which prevents running several
 times.
 
 Usage:
-    ./negi3mods.py [--debug|--tracemalloc|--start]
+    ./negi3wm.py [--debug|--tracemalloc|--start]
 
 Options:
     --debug         disables signal handlers for debug.
@@ -512,7 +512,7 @@ To start daemon you need:
 
 ```
 cd ${XDG_CONFIG_HOME}/i3
-./negi3mods.py
+./negi3wm.py
 ```
 
 but I recommend you to look at my config(_config). It can start / restart automatically,
@@ -528,13 +528,13 @@ You can check measure startup performance with tools like pycallgraph.
 Also you can try
 
 ```
-kernprof -l -v ./negi3mods.py
+kernprof -l -v ./negi3wm.py
 ```
 
 for the more detail function/line-based profiling. As far as I know PyPy3 is
 not supported yet.
 
-For now negi3mods using cpython interpreter because of more fast startup.
+For now negi3wm using cpython interpreter because of more fast startup.
 
 
 # Why

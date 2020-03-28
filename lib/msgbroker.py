@@ -11,7 +11,7 @@ import asyncio
 
 
 class MsgBroker():
-    """ This is asyncio message broker for negi3mods.
+    """ This is asyncio message broker for negi3wm.
         Every module has indivisual main loop with indivisual neg-ipc-file.
     """
     lock = asyncio.Lock()

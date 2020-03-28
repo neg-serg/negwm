@@ -43,7 +43,7 @@ class circle(negi3mod, cfg, Matcher):
         cfg.__init__(self, i3, convert_me=True)
         Matcher.__init__(self)
 
-        # i3ipc connection, bypassed by negi3mods runner.
+        # i3ipc connection, bypassed by negi3wm runner.
         self.i3ipc = i3
 
         # map of tag to the tagged windows.

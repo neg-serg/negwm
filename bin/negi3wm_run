@@ -9,4 +9,4 @@ if [ ! -d "$log_dir" ] && [ ! -L "$log_dir" ]; then
     fi
 fi
 
-$XDG_CONFIG_HOME/i3/negi3mods.py --start >> $log_dir/negi3mods.log 2>&1 &
+$XDG_CONFIG_HOME/i3/negi3wm.py --start >> $log_dir/negi3wm.log 2>&1 &

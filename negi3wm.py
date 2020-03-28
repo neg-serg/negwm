@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 
-""" i3 negi3mods daemon script.
+""" i3 negi3wm daemon script.
 
-This module loads all negi3mods an start it via main's manager
-mailoop. Inotify-based watchers for all negi3mods TOML-based configuration
+This module loads all negi3wm an start it via main's manager
+mailoop. Inotify-based watchers for all negi3wm TOML-based configuration
 spawned here, to use it just start it from any place without parameters. Also
 there is i3 config watcher to convert it from ppi3 format to plain i3
 automatically. Moreover it contains pid-lock which prevents running several
 times.
 
 Usage:
-    ./negi3mods.py [--debug|--tracemalloc|--start]
+    ./negi3wm.py [--debug|--tracemalloc|--start]
 
 Options:
     --debug         disables signal handlers for debug.
@@ -53,7 +53,7 @@ from lib.misc import Misc
 from lib.standalone_cfg import modconfig
 
 
-class negi3mods(modconfig):
+class negi3wm(modconfig):
     def __init__(self, cmd_args):
         """ Init function
 
@@ -110,7 +110,7 @@ class negi3mods(modconfig):
 
     def prepare_notification_text(self):
         """ stuff for startup notifications """
-        self.notification_text = "Starting negi3mods\n\n"
+        self.notification_text = "Starting negi3wm\n\n"
         notification_color_field = self.conf("notification_color_field")
         notification_color = Misc.extract_xrdb_value(notification_color_field) \
             or '#395573'
@@ -151,7 +151,7 @@ class negi3mods(modconfig):
         return watcher
 
     def autostart(self):
-        """ Autostart auto negi3mods initialization """
+        """ Autostart auto negi3wm initialization """
         if self.first_run:
             Misc.send('circle next term')
 
@@ -216,7 +216,7 @@ class negi3mods(modconfig):
         asyncio.ensure_future(self.cfg_i3_worker(self.cfg_i3_watcher()))
 
     def run(self):
-        """ Run negi3mods here. """
+        """ Run negi3wm here. """
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
 
@@ -252,7 +252,7 @@ class negi3mods(modconfig):
 
 
 def main():
-    """ Run negi3mods from here """
+    """ Run negi3wm from here """
     get_lock(os.path.basename(__file__))
 
     # We need it because of thread_wait on Ctrl-C.
@@ -260,10 +260,10 @@ def main():
 
     cmd_args = docopt(__doc__, version='0.8')
 
-    negi3mods_instance = negi3mods(cmd_args)
-    negi3mods_instance.run()
+    negi3wm_instance = negi3wm(cmd_args)
+    negi3wm_instance.run()
 
-    if negi3mods_instance.tracemalloc_enabled:
+    if negi3wm_instance.tracemalloc_enabled:
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('lineno')
 
@@ -286,7 +286,7 @@ def which(exe, description, kind):
 def check_for_executable_deps():
     dependencies = {
         'mandatory' : {
-            'i3': 'you need i3 for negi3mods',
+            'i3': 'you need i3 for negi3wm',
             'ppi3': 'i3 config preprocessor',
             'dash': 'one of the fastest non-interactive shells',
         },

@@ -70,7 +70,7 @@ class bscratch(negi3mod, cfg, Matcher):
         # named scratchpad with add_prop/del_prop routines
         self.focus_win_flag = [False, ""]
 
-        # i3ipc connection, bypassed by negi3mods runner
+        # i3ipc connection, bypassed by negi3wm runner
         self.i3ipc = i3
 
         self.bindings = {

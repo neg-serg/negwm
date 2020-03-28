@@ -1,6 +1,6 @@
-""" Dynamic TOML-based config for negi3mods.
+""" Dynamic TOML-based config for negi3wm.
 
-This is a superclass for negi3mods which want to store configuration via TOML
+This is a superclass for negi3wm which want to store configuration via TOML
 files. It supports inotify-based updating of self.cfg dynamically and has
 pretty simple API. I've considered that inheritance here is good idea.
 """

@@ -23,7 +23,7 @@ class vol(negi3mod, cfg):
         # Initialize cfg.
         cfg.__init__(self, i3)
 
-        # i3ipc connection, bypassed by negi3mods runner.
+        # i3ipc connection, bypassed by negi3wm runner.
         self.i3ipc = i3
 
         # Default increment step for mpd.
@@ -168,7 +168,7 @@ class vol(negi3mod, cfg):
 
             Args:
                 args (*args): used as multiplexer for volume changing because
-                              of pipe-based nature of negi3mods IPC.
+                              of pipe-based nature of negi3wm IPC.
         """
         count = len(args)
         if count <= 0:
@@ -180,7 +180,7 @@ class vol(negi3mod, cfg):
 
             Args:
                 args (*args): used as multiplexer for volume changing because
-                              of pipe-based nature of negi3mods IPC.
+                              of pipe-based nature of negi3wm IPC.
         """
         count = len(args)
         if count <= 0:
@@ -192,7 +192,7 @@ class vol(negi3mod, cfg):
 
             Args:
                 args (*args): used as multiplexer for volume changing because
-                of pipe-based nature of negi3mods IPC.
+                of pipe-based nature of negi3wm IPC.
         """
         self.change_volume(-100)
 
@@ -201,6 +201,6 @@ class vol(negi3mod, cfg):
 
             Args:
             args (*args): used as multiplexer for volume changing because
-            of pipe-based nature of negi3mods IPC.
+            of pipe-based nature of negi3wm IPC.
         """
         self.change_volume(+100)

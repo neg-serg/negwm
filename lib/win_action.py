@@ -37,7 +37,7 @@ class win_action(negi3mod, cfg):
         """
         # Initialize cfg.
         cfg.__init__(self, i3)
-        # i3ipc connection, bypassed by negi3mods runner.
+        # i3ipc connection, bypassed by negi3wm runner.
         self.i3ipc = i3
 
         # cache list length

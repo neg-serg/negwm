@@ -20,7 +20,7 @@ class props():
         # create echo server socket
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 
-        # negi3mods which allows add / delete property.
+        # negi3wm which allows add / delete property.
         # For example this feature can be used to move / delete window
         # to / from named scratchpad.
         self.possible_mods = ['ns', 'circle']

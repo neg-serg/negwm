@@ -22,7 +22,7 @@ class Matcher():
 
     Of course this list can by expanded. It uses sys.intern hack for better
     performance and simple caching. One of the most resource intensive part of
-    negi3mods.
+    negi3wm.
 
     """
 

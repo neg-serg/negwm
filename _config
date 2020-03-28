@@ -374,7 +374,7 @@ mode "GAPS-INNER" {
 # ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
 # ░▀▀█░░█░░█▀█░█▀▄░░█░
 # ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
-exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3mods_run &
+exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &
 exec_always pkill sxhkd; sxhkd &
 exec_always pkill -f 'mpc idle'
 exec caffeine &

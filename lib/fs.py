@@ -13,7 +13,7 @@ from cfg import cfg
 
 class fs(negi3mod, cfg):
     def __init__(self, i3conn):
-        # i3ipc connection, bypassed by negi3mods runner
+        # i3ipc connection, bypassed by negi3wm runner
         self.i3ipc = i3conn
         self.panel_should_be_restored = False
 
