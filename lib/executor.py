@@ -53,6 +53,11 @@ class env():
             if dir_not_created.errno != errno.EEXIST:
                 raise
 
+        for sh in ['dash', 'zsh', 'bash', 'sh']:
+            if shutil.which(sh):
+                self.default_shell = sh
+                break
+
         # get terminal from config, use Alacritty by default
         self.term = config.get(name, {}).get("term", "alacritty").lower()
 
@@ -213,25 +218,25 @@ class env():
             ] + [
                 "--class", self.wclass,
                 "-t", self.title,
-                "-e", "dash", "-c"
+                "-e", self.default_shell, "-c"
             ]
         elif self.term == "st":
             self.term_opts = ["st"] + [
                 "-c", self.wclass,
                 "-f", self.font + ":size=" + str(self.font_size),
-                "-e", "dash", "-c",
+                "-e", self.default_shell, "-c",
             ]
         elif self.term == "urxvt":
             self.term_opts = ["urxvt"] + [
                 "-name", self.wclass,
                 "-fn", "xft:" + self.font + ":size=" + str(self.font_size),
-                "-e", "dash", "-c",
+                "-e", self.default_shell, "-c",
             ]
         elif self.term == "xterm":
             self.term_opts = ["xterm"] + [
                 '-class', self.wclass,
                 '-fa', "xft:" + self.font + ":size=" + str(self.font_size),
-                "-e", "dash", "-c",
+                "-e", self.default_shell, "-c",
             ]
 
 
