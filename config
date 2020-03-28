@@ -305,6 +305,8 @@ bindsym $c+G $exit
 }
 set $i3_log_path $HOME/tmp/negi3mods.log
 exec_always $XDG_CONFIG_HOME/i3/bin/i3_prepare &
+exec_always pkill sxhkd; sxhkd &
+exec_always pkill -f 'mpc idle'
 exec caffeine &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
