@@ -22,7 +22,7 @@ git_clone() {
         echo "Install git"
         sudo pacman -S git --noconfirm
     fi
-    git clone git@github.com:neg-serg/negi3wm "$XDG_CONFIG_HOME/i3"
+    git clone https://github.com/neg-serg/negi3wm "$XDG_CONFIG_HOME/i3"
 }
 
 install_yay() {
