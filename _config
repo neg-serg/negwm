@@ -1,6 +1,3 @@
-# ░█▄█░▀█▀░█▀▀░█▀▀
-# ░█░█░░█░░▀▀█░█░░
-# ░▀░▀░▀▀▀░▀▀▀░▀▀▀
 workspace_layout tabbed
 floating_modifier Mod4
 
@@ -16,9 +13,6 @@ set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
 
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
 
-# ░█▀▀░█▀█░█░░░█▀█░█▀▄░█▀▀
-# ░█░░░█░█░█░░░█░█░█▀▄░▀▀█
-# ░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
 # 1 :: border
 # 2 :: background active
 # 3 :: foreground inactive
@@ -31,25 +25,21 @@ client.urgent                  #000000  #2E2457  #4C407C  #32275E #32275E
 client.placeholder             #000000  #0c0c0c  #ffffff  #000000 #0c0c0c
 client.background              #000000
 
-# ░█▀▀░█▀█░█▀█░▀█▀
-# ░█▀▀░█░█░█░█░░█░
-# ░▀░░░▀▀▀░▀░▀░░▀░
 set $myfont Iosevka Term Heavy 9
 font pango: $myfont
 
-# ░█▄█░█▀█░█░█░█▀▀░█▀▀░░░█░█▀▀░█▀█░█▀▀░█░█░█▀▀
-# ░█░█░█░█░█░█░▀▀█░█▀▀░▄▀░░█▀▀░█░█░█░░░█░█░▀▀█
-# ░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░░░▀░░░▀▀▀░▀▀▀░▀▀▀░▀▀▀
 focus_follows_mouse no
 force_display_urgency_hint 0 ms
 focus_on_window_activation urgent
-# warp the mouse to the middle of the window when changing to a different screen
+
+#-- warp the mouse to the middle of the window when changing to a different screen
 mouse_warping none
 focus_wrapping yes
 
-# ░█░█░▀█▀░█▀█░█▀▀
-# ░█▄█░░█░░█░█░▀▀█
-# ░▀░▀░▀▀▀░▀░▀░▀▀▀
+title_align left
+for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
+for_window [class="^.*"] border pixel 2
+
 show_marks yes
 smart_borders on
 hide_edge_borders both
@@ -58,9 +48,6 @@ gaps outer  0
 gaps top    0
 gaps bottom 0
 
-# ░█░█░█▄█░█▀▀
-# ░█▄█░█░█░▀▀█
-# ░▀░▀░▀░▀░▀▀▀
 set $term "1 ::  α:term"
 set $web "2 ::  β:web"
 set $doc "3 ::  γ:doc"
@@ -78,9 +65,7 @@ set $pic "14 ::  ξ:pic"
 set $remote "15 ::  ο:remote"
 set $sound "16 ::  ο:sound"
 
-# ░█░█░█▄█░░░░░█▀▀░█░░░█▀█░█▀▀░█▀▀░░░░░█▀▀░█▀▄░█▀█░█░█░█▀█░█▀▀ #
-# ░█▄█░█░█░░░░░█░░░█░░░█▀█░▀▀█░▀▀█░░░░░█░█░█▀▄░█░█░█░█░█▀▀░▀▀█ #
-# ░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀ #
+#-- wm class groups
 set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
@@ -95,11 +80,7 @@ set $vim [instance="nwim"]
 set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
 set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
 
-title_align left
-for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
-# ░█░█░█▄█░░░░░█▀▄░█░█░█░░░█▀▀░█▀▀
-# ░█▄█░█░█░░░░░█▀▄░█░█░█░░░█▀▀░▀▀█
-# ░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
+#-- wm rules
 for_window $browsers move workspace $web, focus
 for_window $vms move workspace $vm, focus
 for_window [{class,instance}="^term$"] move workspace $term, focus
@@ -113,44 +94,24 @@ for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace 
 for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
 for_window $daw move workspace $sound, focus
 
-# ░█▀▄░█▀▀░█▀█░█▀▄░█▀▀░█▀▄░█▀▀
-# ░█▀▄░█▀▀░█▀█░█░█░█▀▀░█▀▄░▀▀█
-# ░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀
+#-- readers
 for_window {$fb2,$pdf}, move workspace $doc, focus
-
-# ░█░█░█▀█░█▀▄░░░░░█▀▀░█░░░█▀█░█▀█░▀█▀░▀█▀░█▀█░█▀▀
-# ░▀▄▀░█▀█░█▀▄░░░░░█▀▀░█░░░█░█░█▀█░░█░░░█░░█░█░█░█
-# ░░▀░░▀░▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░▀▀▀
+#-- various floating
 for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
-
-# ░█▀▀░█▀▄░█▀█░█▀█░█░█░▀█▀░█▀▀░█▀▀
-# ░█░█░█▀▄░█▀█░█▀▀░█▀█░░█░░█░░░▀▀█
-# ░▀▀▀░▀░▀░▀░▀░▀░░░▀░▀░▀▀▀░▀▀▀░▀▀▀
+#-- graphics 
 for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
-
-# ░█▀▀░█▀▄░▀█▀░▀█▀░█▀█░█▀▄░█▀▀
-# ░█▀▀░█░█░░█░░░█░░█░█░█▀▄░▀▀█
-# ░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀
+#-- editors
 for_window $vim move workspace $dev, focus
-
-# ░█▀▀░█▀█░█▄█░█▀▀░█▀▀
-# ░█░█░█▀█░█░█░█▀▀░▀▀█
-# ░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀
+#-- games
 for_window $sclient move workspace $steam, focus
 for_window $games move workspace $steam, focus
-
-#░█▀▄░▀█▀░█▀█░█░░░█▀█░█▀▀░█▀▀
-#░█░█░░█░░█▀█░█░░░█░█░█░█░▀▀█
-#░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
+#-- dialogs
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
 
-for_window [class="^.*"] border pixel 2
-
-# ░█░█░█▀▀░█░█░█▀▄░▀█▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀░█▀▀
-# ░█▀▄░█▀▀░░█░░█▀▄░░█░░█░█░█░█░░█░░█░█░█░█░▀▀█
-# ░▀░▀░▀▀▀░░▀░░▀▀░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀
+#-- keybindings
 set $exit mode "default"
+bindsym Mod4+q fullscreen toggle
 bindsym Mod1+e mode "SPEC"   # special mode
 bindsym Mod4+r mode "RESIZE"  # resize mode
 bindsym Mod4+minus mode "WM"  # window-manager / split / tiling mode
@@ -173,9 +134,7 @@ bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
 bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
 bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
-# ░█▀█░█▀█░█▄█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░▀█▀░█▀▀░█░█░█▀█░█▀█░█▀▄
-# ░█░█░█▀█░█░█░█▀▀░█░█░░░▀▀█░█░░░█▀▄░█▀█░░█░░█░░░█▀█░█▀▀░█▀█░█░█
-# ░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀░░░░▀▀▀░▀▀▀░▀░▀░▀░▀░░▀░░▀▀▀░▀░▀░▀░░░▀░▀░▀▀░
+#-- named scratchpad
 bindsym Mod4+f $bscratch toggle ncmpcpp
 bindsym Mod4+e $bscratch toggle im
 bindsym Mod4+d $bscratch toggle teardrop
@@ -189,9 +148,7 @@ bindsym Mod4+Control+Shift+S $bscratch geom_autosave_mode
 bindsym Mod4+3 $bscratch next
 bindsym Mod4+s $bscratch hide_current
 
-# ░█▀▀░▀█▀░█▀▄░█▀▀░█░░░█▀▀
-# ░█░░░░█░░█▀▄░█░░░█░░░█▀▀
-# ░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀
+#-- circle
 bindsym Mod4+Control+c $circle next sxiv
 bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
 bindsym Mod4+x $circle next term
@@ -205,18 +162,13 @@ bindsym Mod4+b $circle next vid
 bindsym Mod4+o $circle next doc
 bindsym Mod4+Shift+o $circle next obs
 
-# ░█░█░▀█▀░█▀█░░░░░█▀█░█▀▀░▀█▀░▀█▀░█▀█░█▀█
-# ░█▄█░░█░░█░█░░░░░█▀█░█░░░░█░░░█░░█░█░█░█
-# ░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀▀░░▀░░▀▀▀░▀▀▀░▀░▀
+#-- window actions
 bindsym Mod4+grave $win_history focus_next_visible
 bindsym Mod4+Shift+grave $win_history focus_prev_visible
 
 bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
 
-# resize window (you can also use the mouse for that)
-# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▄░█▀▀░█▀▀░▀█▀░▀▀█░█▀▀
-# ░█░█░█░█░█░█░█▀▀░░▀░░░░█▀▄░█▀▀░▀▀█░░█░░▄▀░░█▀▀
-# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀
+#-- mode resize
 mode "RESIZE" {
     bindsym {h,Shift+h} $win_action resize left {4,-4}
     bindsym {j,Shift+j} $win_action resize bottom {4,-4}
@@ -233,10 +185,7 @@ mode "RESIZE" {
     bindsym {Return,Escape,space,Control+C,Control+G} $exit
 }
 
-bindsym Mod4+q fullscreen toggle
-# ░█▄█░█▀▀░█▀█░█░█
-# ░█░█░█▀▀░█░█░█░█
-# ░▀░▀░▀▀▀░▀░▀░▀▀▀
+#-- menu
 bindsym Mod1+g $menu goto_win
 bindsym Mod4+m $menu xprop, $exit
 bindsym Mod4+$s+i exec ~/bin/scripts/rofi_nmcli, $exit
@@ -245,12 +194,11 @@ bindsym Mod4+g $menu ws
 bindsym Mod4+Control+g $menu movews
 bindsym Mod4+Control+grave $menu cmd_menu
 bindsym Mod4+Shift+s $menu autoprop
-#-------------------------------------------------------
+
 bindsym Mod1+Tab $win_history switch
 bindsym Mod4+slash $win_history switch
-# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█░█░▀█▀░█▀█░░░░░█▄█░█▀█░█▀█░█▀█░█▀▀░█▀▀
-# ░█░█░█░█░█░█░█▀▀░░▀░░░░█▄█░░█░░█░█░░░░░█░█░█▀█░█░█░█▀█░█░█░█▀▀
-# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀░▀▀▀░▀▀▀
+
+#-- mode: window manager
 mode "WM" {
     bindsym grave layout default; $exit
     bindsym t layout tabbed; $exit
@@ -262,9 +210,7 @@ mode "WM" {
     bindsym l split horizontal; $exit
     bindsym {w,a,s,d} move {up,left,down,right}
 
-    # ░█░█░█▄█░▀▀█
-    # ░█▄█░█░█░░▀▄
-    # ░▀░▀░▀░▀░▀▀░
+    #-- wm3
     bindsym m $win_action maximize
     bindsym Shift+m $win_action revert_maximize
     bindsym {x,y} $win_action {maxhor,maxvert}
@@ -275,21 +221,19 @@ mode "WM" {
     bindsym Shift+{plus,minus} $win_action {grow,shrink}
     bindsym c $win_action center none
     bindsym Shift+c $win_action center resize
-    #-------------------------------------------------------
+
     bindsym g mode "GAPS"
-    #-------------------------------------------------------
+
     bindsym Control+a layout toggle all
     bindsym Control+3 layout toggle all
     bindsym Control+s layout toggle split
     bindsym Control+t layout toggle
-    #-------------------------------------------------------
+
     bindsym {Return,Escape,Control+C,Control+G} $exit
 }
-# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀▀░█▀▀░▀█▀░█▀█░█░░
-# ░█░█░█░█░█░█░█▀▀░░▀░░░░▀▀█░█▀▀░█▀▀░█░░░░█░░█▀█░█░░
-# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░░░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀
+
+#-- mode: special
 mode "SPEC" {
-    #-------------------------------------------------------
     bindsym c exec rofi-pass; $exit
     bindsym e $exit, [urgent=latest] focus
     bindsym a $exit, $bscratch dialog
@@ -326,13 +270,11 @@ mode "SPEC" {
     bindsym {Return,Escape,Control+C,Control+G} $exit
 }
 
-# ░█▄█░█▀█░█▀▄░█▀▀░░░░░░░█▀▀░█▀█░█▀█░█▀▀
-# ░█░█░█░█░█░█░█▀▀░░▀░░░░█░█░█▀█░█▀▀░▀▀█
-# ░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀▀▀░▀░▀░▀░░░▀▀▀
 mode "GAPS" {
     bindsym {o,i} mode gaps-{outer,inner}
     bindsym {Return,Escape,Control+C,Control+G} $exit
 }
+
 mode "GAPS-OUTER" {
     bindsym {plus,minus}     gaps outer current {plus,minus} 5
     bindsym 0                gaps outer current set 0
@@ -342,6 +284,7 @@ mode "GAPS-OUTER" {
 
     bindsym {Return,Escape,Control+C,Control+G} $exit
 }
+
 mode "GAPS-INNER" {
     bindsym {plus,minus}     gaps inner current {plus,minus} 5
     bindsym 0                gaps inner current set 0
@@ -352,9 +295,7 @@ mode "GAPS-INNER" {
     bindsym {Return,Escape,Control+C,Control+G} $exit
 }
 
-# ░█▀▀░▀█▀░█▀█░█▀▄░▀█▀
-# ░▀▀█░░█░░█▀█░█▀▄░░█░
-# ░▀▀▀░░▀░░▀░▀░▀░▀░░▀░
+#-- start
 exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &
 exec_always pkill sxhkd; sxhkd &
 exec_always pkill -f 'mpc idle'
@@ -363,4 +304,5 @@ exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
 exec_always ~/bin/scripts/panel_run.sh hard
 exec /usr/sbin/gpaste-client daemon
+
 # vim:filetype=i3
