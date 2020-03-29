@@ -105,7 +105,7 @@ bindsym $m4+$S+p $bscratch toggle volcontrol
 bindsym $m4+v $bscratch toggle discord
 bindsym $m4+$c+$S+R $bscratch geom_restore
 bindsym $m4+$c+$S+D $bscratch geom_dump
-bindsym $m4+$c+$S+S $bscratch geom_autosave_mode
+bindsym $m4+$c+$S+S $bscratch geom_autosave
 bindsym $m4+3 $bscratch next
 bindsym $m4+s $bscratch hide_current
 
