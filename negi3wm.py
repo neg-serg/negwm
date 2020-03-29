@@ -353,13 +353,20 @@ def validate_i3_config(i3cfg_path, remove=False):
 def check_i3_config():
     print('Check for i3 config consistency')
     xdg_config_home = os.getenv('XDG_CONFIG_HOME')
-    i3_check = validate_i3_config(xdg_config_home + '/i3/config')
+    i3_cfg = xdg_config_home + '/i3/config'
+    if not (os.path.isfile(i3_cfg) and \
+            os.path.getsize(i3_cfg) > 0):
+        print(f'There is no target i3 config file in {i3_cfg}, fail')
+        os._exit(1)
+
+    i3_check = validate_i3_config(i3_cfg)
     if i3_check:
         print('i3 config is valid [OK]')
     else:
         print('i3 config is invalid [FAIL]'
               f'please run i3 -C {xdg_config_home}/i3/config to check it'
         )
+        os._exit(1)
     print()
 
 def check_env():
