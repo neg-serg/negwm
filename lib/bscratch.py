@@ -332,8 +332,7 @@ class bscratch(negi3mod, cfg, Matcher):
         self.apply_to_current_tag(next_win)
 
     def hide_current(self) -> None:
-        """ Hide the currently selected tag.
-        """
+        """ Hide the currently selected tag. """
         self.apply_to_current_tag(self.hide_scratchpad)
 
     def geom_restore(self, tag: str) -> None:
@@ -353,8 +352,7 @@ class bscratch(negi3mod, cfg, Matcher):
             self.marked[tag].append(win)
 
     def geom_restore_current(self) -> None:
-        """ Restore geometry for the current selected tag.
-        """
+        """ Restore geometry for the current selected tag. """
         self.apply_to_current_tag(self.geom_restore)
 
     def geom_dump(self, tag: str) -> None:
@@ -408,21 +406,18 @@ class bscratch(negi3mod, cfg, Matcher):
             Misc.notify_msg(f"geometry autosave={save}")
 
     def autosave_toggle(self) -> None:
-        """ Toggle autosave mode.
-        """
+        """ Toggle autosave mode. """
         if self.geom_auto_save:
             self.auto_save_geom(False, with_notification=True)
         else:
             self.auto_save_geom(True, with_notification=True)
 
     def geom_dump_current(self) -> None:
-        """ Dump geometry for the current selected tag.
-        """
+        """ Dump geometry for the current selected tag. """
         self.apply_to_current_tag(self.geom_dump)
 
     def geom_save_current(self) -> None:
-        """ Save geometry for the current selected tag.
-        """
+        """ Save geometry for the current selected tag. """
         self.apply_to_current_tag(self.geom_save)
 
     def add_prop(self, tag_to_add: str, prop_str: str) -> None:
