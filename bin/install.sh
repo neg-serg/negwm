@@ -13,9 +13,8 @@ xdg_config_home_check() {
 }
 
 pip_deps_install() {
-    echo -n "[ok]"
     echo "install python dependencies..."
-    sudo pip install -r ./requirements.txt --upgrade
+    sudo pip install -r "$XDG_CONFIG_HOME/i3/requirements.txt" --upgrade
 }
 
 git_clone() {
@@ -24,11 +23,6 @@ git_clone() {
         sudo pacman -S git --noconfirm
     fi
     git clone git@github.com:neg-serg/negi3wm "$XDG_CONFIG_HOME/i3"
-}
-
-change_dir() {
-    cd $XDG_CONFIG_HOME/i3
-    echo "current dir is: $(pwd)"
 }
 
 install_yay() {
@@ -84,7 +78,6 @@ install_deps() {
 main(){
     xdg_config_home_check
     git_clone
-    change_dir
     install_yay
     install_python_deps
     install_mandatory_deps
