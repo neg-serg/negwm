@@ -3,6 +3,7 @@
 xdg_config_home_check() {
     if [ -z "$XDG_CONFIG_HOME" ]; then
         echo "\$XDG_CONFIG_HOME should be set to install"
+        exit 1
     fi
 
     if [ -d "$XDG_CONFIG_HOME/i3" ]; then
