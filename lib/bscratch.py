@@ -364,8 +364,9 @@ class bscratch(negi3mod, cfg, Matcher):
         focused = self.i3ipc.get_tree().find_focused()
         for win in self.marked[tag]:
             if win.id == focused.id:
-                self.conf[tag]["geom"] = f"{focused.rect.width}x" + \
-                    f"{focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                focused_geom = f"{focused.rect.width}x{focused.rect.height}" \
+                    f"+{focused.rect.x}+{focused.rect.y}"
+                self.cfg[tag]["geom"] = focused_geom
                 self.dump_config()
                 break
 
@@ -378,8 +379,9 @@ class bscratch(negi3mod, cfg, Matcher):
         focused = self.i3ipc.get_tree().find_focused()
         for win in self.marked[tag]:
             if win.id == focused.id:
-                self.conf[tag]["geom"] = f"{focused.rect.width}x\
-                    {focused.rect.height}+{focused.rect.x}+{focused.rect.y}"
+                focused_geom = f"{focused.rect.width}x{focused.rect.height}" \
+                    f"+{focused.rect.x}+{focused.rect.y}"
+                self.cfg[tag]["geom"] = focused_geom
                 if win.rect.x != focused.rect.x \
                     or win.rect.y != focused.rect.y \
                     or win.rect.width != focused.rect.width \
