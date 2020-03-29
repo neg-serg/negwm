@@ -31,7 +31,7 @@ change_dir() {
     echo "current dir is: $(pwd)"
 }
 
-install::yay() {
+install_yay() {
     if ! which yay > /dev/null; then
         echo "Installing yay"
         git clone https://aur.archlinux.org/yay.git "/tmp/yay"
@@ -40,7 +40,7 @@ install::yay() {
     fi
 }
 
-install::python_deps() {
+install_python_deps() {
     echo "checking for pip3 installed..."
     if which pip3 > /dev/null; then
         pip_deps_install
@@ -60,15 +60,15 @@ install::python_deps() {
     fi
 }
 
-install::mandatory_deps() {
-    install::deps i3 ppi3 dash
+install_mandatory_deps() {
+    install_deps i3 ppi3 dash
 }
 
-install::recommended_deps() {
-    install::deps zsh tmux rofi dunst xdo alacritty pulseaudio
+install_recommended_deps() {
+    install_deps zsh tmux rofi dunst xdo alacritty pulseaudio
 }
 
-install::deps() {
+install_deps() {
     for dep in "$@"; do
         echo -n "Check for $dep..."
         if ! which "$dep" > /dev/null; then
@@ -85,10 +85,10 @@ main(){
     xdg_config_home_check
     git_clone
     change_dir
-    install::yay
-    install::python_deps
-    install::mandatory_deps
-    install::recommended_deps
+    install_yay
+    install_python_deps
+    install_mandatory_deps
+    install_recommended_deps
 }
 
 main "$@"
