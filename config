@@ -1,9 +1,5 @@
 workspace_layout tabbed
-floating_modifier $m4
-set $m4 Mod4
-set $alt Mod1
-set $c Control
-set $S Shift
+floating_modifier Mod4
 set $i3 $XDG_CONFIG_HOME/i3
 set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send circle
 set $bscratch exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send bscratch
@@ -91,94 +87,94 @@ for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpa
 for_window [class="Places"] $scratchpad_dialog
 for_window [class="^.*"] border pixel 2
 set $exit mode "default"
-bindsym $alt+e mode "SPEC"
-bindsym $m4+r mode "RESIZE"
-bindsym $m4+minus mode "WM"
+bindsym Mod1+e mode "SPEC"
+bindsym Mod4+r mode "RESIZE"
+bindsym Mod4+minus mode "WM"
 bindsym XF86AudioLowerVolume $volume d
 bindsym XF86AudioRaiseVolume $volume u
-bindsym $m4+p exec ~/bin/scripts/rofi_tmux_urls
-bindsym $m4+$c+q kill
+bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
+bindsym Mod4+Control+q kill
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym $m4+$S+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
-bindsym $m4+$S+y exec --no-startup-id "~/bin/clip youtube-dw-list"
-bindsym $m4+$S+0 exec --no-startup-id splatmoji type
-bindsym $m4+$S+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
-bindsym $m4+$C+5 $circle next remote
-bindsym $m4+$C+b $circle next bitwig
-bindsym $S+Print exec --no-startup-id ~/bin/scripts/screenshot -c
-bindsym $c+Print exec --no-startup-id ~/bin/scripts/screenshot -r
-bindsym $m4+$S+3 exec --no-startup-id ~/bin/scripts/screenshot -r
-bindsym $m4+$S+4 exec --no-startup-id flameshot gui
-bindsym $m4+$S+t exec --no-startup-id ~/bin/clip translate
-bindsym $m4+apostrophe exec zsh -c $XDG_CONFIG_HOME/i3/bin/i3_reload
-bindsym $m4+$S+apostrophe exec zsh -c $XDG_CONFIG_HOME/i3/bin/i3_restart
-bindsym $m4+f $bscratch toggle ncmpcpp
-bindsym $m4+e $bscratch toggle im
-bindsym $m4+d $bscratch toggle teardrop
-bindsym $m4+a $bscratch toggle youtube
-bindsym $m4+$S+p $bscratch toggle volcontrol
-bindsym $m4+v $bscratch toggle discord
-bindsym $m4+$c+$S+R $bscratch geom_restore
-bindsym $m4+$c+$S+D $bscratch geom_dump
-bindsym $m4+$c+$S+S $bscratch geom_autosave_mode
-bindsym $m4+3 $bscratch next
-bindsym $m4+s $bscratch hide_current
-bindsym $m4+$c+c $circle next sxiv
-bindsym $m4+$S+c $circle subtag sxiv wallpaper
-bindsym $m4+x $circle next term
-bindsym $m4+1 $circle next nwim
-bindsym $m4+$c+v $circle next vm
-bindsym $m4+$c+e $circle next lutris
-bindsym $m4+$S+e $circle next steam
-bindsym $m4+$c+f $circle next looking_glass
-bindsym $m4+w $circle next web
-bindsym $m4+b $circle next vid
-bindsym $m4+o $circle next doc
-bindsym $m4+$S+o $circle next obs
-bindsym $m4+grave $win_history focus_next_visible
-bindsym $m4+$S+grave $win_history focus_prev_visible
-bindsym $m4+h focus left
-bindsym $m4+l focus right
-bindsym $m4+j focus down
-bindsym $m4+k focus up
+bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
+bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
+bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
+bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
+bindsym Mod4+Control+5 $circle next remote
+bindsym Mod4+Control+b $circle next bitwig
+bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
+bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
+bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
+bindsym Mod4+apostrophe exec zsh -c $XDG_CONFIG_HOME/i3/bin/i3_reload
+bindsym Mod4+Shift+apostrophe exec zsh -c $XDG_CONFIG_HOME/i3/bin/i3_restart
+bindsym Mod4+f $bscratch toggle ncmpcpp
+bindsym Mod4+e $bscratch toggle im
+bindsym Mod4+d $bscratch toggle teardrop
+bindsym Mod4+a $bscratch toggle youtube
+bindsym Mod4+Shift+p $bscratch toggle volcontrol
+bindsym Mod4+v $bscratch toggle discord
+bindsym Mod4+Control+Shift+R $bscratch geom_restore
+bindsym Mod4+Control+Shift+D $bscratch geom_dump
+bindsym Mod4+Control+Shift+S $bscratch geom_autosave_mode
+bindsym Mod4+3 $bscratch next
+bindsym Mod4+s $bscratch hide_current
+bindsym Mod4+Control+c $circle next sxiv
+bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
+bindsym Mod4+x $circle next term
+bindsym Mod4+1 $circle next nwim
+bindsym Mod4+Control+v $circle next vm
+bindsym Mod4+Control+e $circle next lutris
+bindsym Mod4+Shift+e $circle next steam
+bindsym Mod4+Control+f $circle next looking_glass
+bindsym Mod4+w $circle next web
+bindsym Mod4+b $circle next vid
+bindsym Mod4+o $circle next doc
+bindsym Mod4+Shift+o $circle next obs
+bindsym Mod4+grave $win_history focus_next_visible
+bindsym Mod4+Shift+grave $win_history focus_prev_visible
+bindsym Mod4+h focus left
+bindsym Mod4+l focus right
+bindsym Mod4+j focus down
+bindsym Mod4+k focus up
 mode "RESIZE" {
 bindsym h $win_action resize left 4
-bindsym $S+h $win_action resize left -4
+bindsym Shift+h $win_action resize left -4
 bindsym j $win_action resize bottom 4
-bindsym $S+j $win_action resize bottom -4
+bindsym Shift+j $win_action resize bottom -4
 bindsym k $win_action resize top 4
-bindsym $S+k $win_action resize top -4
+bindsym Shift+k $win_action resize top -4
 bindsym l $win_action resize right 4
-bindsym $S+l $win_action resize right -4
+bindsym Shift+l $win_action resize right -4
 bindsym a $win_action resize left 4
-bindsym $S+a $win_action resize left -4
+bindsym Shift+a $win_action resize left -4
 bindsym s $win_action resize bottom 4
-bindsym $S+s $win_action resize bottom -4
+bindsym Shift+s $win_action resize bottom -4
 bindsym w $win_action resize top 4
-bindsym $S+w $win_action resize top -4
+bindsym Shift+w $win_action resize top -4
 bindsym d $win_action resize right 4
-bindsym $S+d $win_action resize right -4
+bindsym Shift+d $win_action resize right -4
 #-------------------------------------------------------
 bindsym semicolon resize shrink right 4
-bindsym $S+colon resize grow right 4
+bindsym Shift+colon resize grow right 4
 bindsym Return $exit
 bindsym Escape $exit
 bindsym space $exit
-bindsym $c+C $exit
-bindsym $c+G $exit
+bindsym Control+C $exit
+bindsym Control+G $exit
 }
-bindsym $m4+q fullscreen toggle
-bindsym $alt+g $menu goto_win
-bindsym $m4+m $menu xprop, $exit
-bindsym $m4+$s+i exec ~/bin/scripts/rofi_nmcli, $exit
-bindsym $m4+$S+a $menu attach
-bindsym $m4+g $menu ws
-bindsym $m4+$c+g $menu movews
-bindsym $m4+$c+grave $menu cmd_menu
-bindsym $m4+$S+s $menu autoprop
+bindsym Mod4+q fullscreen toggle
+bindsym Mod1+g $menu goto_win
+bindsym Mod4+m $menu xprop, $exit
+bindsym Mod4+$s+i exec ~/bin/scripts/rofi_nmcli, $exit
+bindsym Mod4+Shift+a $menu attach
+bindsym Mod4+g $menu ws
+bindsym Mod4+Control+g $menu movews
+bindsym Mod4+Control+grave $menu cmd_menu
+bindsym Mod4+Shift+s $menu autoprop
 #-------------------------------------------------------
-bindsym $alt+Tab $win_history switch
-bindsym $m4+slash $win_history switch
+bindsym Mod1+Tab $win_history switch
+bindsym Mod4+slash $win_history switch
 mode "WM" {
 bindsym grave layout default; $exit
 bindsym t layout tabbed; $exit
@@ -193,35 +189,35 @@ bindsym a move left
 bindsym s move down
 bindsym d move right
 bindsym m $win_action maximize
-bindsym $S+m $win_action revert_maximize
+bindsym Shift+m $win_action revert_maximize
 bindsym x $win_action maxhor
 bindsym y $win_action maxvert
-bindsym $S+x $win_action revert_maximize
-bindsym $S+y $win_action revert_maximize
+bindsym Shift+x $win_action revert_maximize
+bindsym Shift+y $win_action revert_maximize
 bindsym 1 $win_action quad 1
 bindsym 2 $win_action quad 2
 bindsym 3 $win_action quad 3
 bindsym 4 $win_action quad 4
-bindsym $S+w $win_action x2 hup
-bindsym $S+a $win_action x2 vleft
-bindsym $S+s $win_action x2 hdown
-bindsym $S+d $win_action x2 vright
-bindsym $S+plus $win_action grow
-bindsym $S+minus $win_action shrink
+bindsym Shift+w $win_action x2 hup
+bindsym Shift+a $win_action x2 vleft
+bindsym Shift+s $win_action x2 hdown
+bindsym Shift+d $win_action x2 vright
+bindsym Shift+plus $win_action grow
+bindsym Shift+minus $win_action shrink
 bindsym c $win_action center none
-bindsym $S+c $win_action center resize
+bindsym Shift+c $win_action center resize
 #-------------------------------------------------------
 bindsym g mode "GAPS"
 #-------------------------------------------------------
-bindsym $c+a layout toggle all
-bindsym $c+3 layout toggle all
-bindsym $c+s layout toggle split
-bindsym $c+t layout toggle
+bindsym Control+a layout toggle all
+bindsym Control+3 layout toggle all
+bindsym Control+s layout toggle split
+bindsym Control+t layout toggle
 #-------------------------------------------------------
 bindsym Return $exit
 bindsym Escape $exit
-bindsym $c+C $exit
-bindsym $c+G $exit
+bindsym Control+C $exit
+bindsym Control+G $exit
 }
 mode "SPEC" {
 #-------------------------------------------------------
@@ -231,64 +227,64 @@ bindsym a $exit, $bscratch dialog
 bindsym 5 $exit, $circle subtag web tor
 bindsym y $exit, $circle subtag web yandex
 bindsym f $exit, $circle subtag web firefox
-bindsym $S+t $exit, $menu gtk_theme
-bindsym $S+i $exit, $menu icon_theme
-bindsym $S+d floating toggle; $exit
-bindsym $S+l exec sh -c 'sudo gllock'; $exit
+bindsym Shift+t $exit, $menu gtk_theme
+bindsym Shift+i $exit, $menu icon_theme
+bindsym Shift+d floating toggle; $exit
+bindsym Shift+l exec sh -c 'sudo gllock'; $exit
 bindsym v exec ~/bin/qemu/vm_menu; $exit
-bindsym $S+v exec ~/bin/qemu/vm_menu start_win10; $exit
+bindsym Shift+v exec ~/bin/qemu/vm_menu start_win10; $exit
 bindsym o $menu pulse_output; $exit
 bindsym i $menu pulse_input; $exit
-bindsym $S+s exec ~/bin/pls -switch, $exit
-bindsym $S+s exec ~/bin/pls -switch, $exit
+bindsym Shift+s exec ~/bin/pls -switch, $exit
+bindsym Shift+s exec ~/bin/pls -switch, $exit
 bindsym i $exit, exec ~/bin/pls -output
 bindsym o $exit, exec ~/bin/pls -sink
-bindsym $S+O $exit, exec ~/bin/pls -vol
-bindsym $m4+s $bscratch subtag im skype, $exit
-bindsym $alt+s $bscratch subtag im skype, $exit
+bindsym Shift+O $exit, exec ~/bin/pls -vol
+bindsym Mod4+s $bscratch subtag im skype, $exit
+bindsym Mod1+s $bscratch subtag im skype, $exit
 bindsym +s $bscratch subtag im skype, $exit
-bindsym $m4+t $bscratch subtag im tel, $exit
-bindsym $alt+t $bscratch subtag im tel, $exit
+bindsym Mod4+t $bscratch subtag im tel, $exit
+bindsym Mod1+t $bscratch subtag im tel, $exit
 bindsym t $bscratch subtag im tel, $exit
 bindsym m $bscratch toggle mutt, $exit
 bindsym w $bscratch toggle webcam, $exit
-bindsym $S+r $bscratch toggle ranger, $exit
+bindsym Shift+r $bscratch toggle ranger, $exit
 bindsym Return $exit
 bindsym Escape $exit
-bindsym $c+C $exit
-bindsym $c+G $exit
+bindsym Control+C $exit
+bindsym Control+G $exit
 }
 mode "GAPS" {
 bindsym o mode gaps-outer
 bindsym i mode gaps-inner
 bindsym Return $exit
 bindsym Escape $exit
-bindsym $c+C $exit
-bindsym $c+G $exit
+bindsym Control+C $exit
+bindsym Control+G $exit
 }
 mode "GAPS-OUTER" {
 bindsym plus gaps outer current plus 5
 bindsym minus gaps outer current minus 5
 bindsym 0 gaps outer current set 0
-bindsym $S+plus gaps outer all plus 5
-bindsym $S+minus gaps outer all minus 5
-bindsym $S+0 gaps outer all set 0
+bindsym Shift+plus gaps outer all plus 5
+bindsym Shift+minus gaps outer all minus 5
+bindsym Shift+0 gaps outer all set 0
 bindsym Return $exit
 bindsym Escape $exit
-bindsym $c+C $exit
-bindsym $c+G $exit
+bindsym Control+C $exit
+bindsym Control+G $exit
 }
 mode "GAPS-INNER" {
 bindsym plus gaps inner current plus 5
 bindsym minus gaps inner current minus 5
 bindsym 0 gaps inner current set 0
-bindsym $S+plus gaps inner all plus 5
-bindsym $S+minus gaps inner all minus 5
-bindsym $S+0 gaps inner all set 0
+bindsym Shift+plus gaps inner all plus 5
+bindsym Shift+minus gaps inner all minus 5
+bindsym Shift+0 gaps inner all set 0
 bindsym Return $exit
 bindsym Escape $exit
-bindsym $c+C $exit
-bindsym $c+G $exit
+bindsym Control+C $exit
+bindsym Control+G $exit
 }
 exec_always zsh -c $XDG_CONFIG_HOME/i3/bin/negi3wm_run &
 exec_always pkill sxhkd; sxhkd &
