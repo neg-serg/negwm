@@ -200,7 +200,7 @@ class negi3wm(modconfig):
                             stdout=fconf,
                             check=True
                         )
-                        config_is_valid = validate_i3_config(
+                        config_is_valid = Misc.validate_i3_config(
                             self.test_cfg_path, remove=True
                         )
                     except subprocess.CalledProcessError as proc_err:
@@ -327,29 +327,6 @@ def check_for_send():
 
     print()
 
-
-def validate_i3_config(i3cfg_path, remove=False):
-    """ Checks that i3 config is ok. """
-    check_config = ""
-    try:
-        check_config = subprocess.run(
-            ['i3', '-c', i3cfg_path, '-C'],
-            stdout=subprocess.PIPE,
-            check=True
-        ).stdout.decode('utf-8')
-    except subprocess.CalledProcessError as proc_err:
-        Misc.print_run_exception_info(proc_err)
-    if check_config:
-        error_data = check_config.encode('utf-8')
-        print(error_data)
-
-        if remove:
-            # remove invalid config
-            os.remove(i3cfg_path)
-
-        return False
-    return True
-
 def check_i3_config():
     print('Check for i3 config consistency')
     xdg_config_home = os.getenv('XDG_CONFIG_HOME')
@@ -359,7 +336,7 @@ def check_i3_config():
         print(f'There is no target i3 config file in {i3_cfg}, fail')
         os._exit(1)
 
-    i3_check = validate_i3_config(i3_cfg)
+    i3_check = Misc.validate_i3_config(i3_cfg)
     if i3_check:
         print('i3 config is valid [OK]')
     else:

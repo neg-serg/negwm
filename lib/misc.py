@@ -113,3 +113,26 @@ class Misc():
             exec_cmd = 'exec ' + send_path + ' '
             largs = functools.reduce(operator.iconcat, list(args), [])
             i3.command(exec_cmd + ' '.join(largs))
+
+    @staticmethod
+    def validate_i3_config(i3cfg_path, remove=False):
+        """ Checks that i3 config is ok. """
+        check_config = ""
+        try:
+            check_config = subprocess.run(
+                ['i3', '-c', i3cfg_path, '-C'],
+                stdout=subprocess.PIPE,
+                check=True
+            ).stdout.decode('utf-8')
+        except subprocess.CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
+        if check_config:
+            error_data = check_config.encode('utf-8')
+            print(error_data)
+
+            if remove:
+                # remove invalid config
+                os.remove(i3cfg_path)
+
+            return False
+        return True
