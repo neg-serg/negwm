@@ -54,7 +54,7 @@ class env():
             if dir_not_created.errno != errno.EEXIST:
                 raise
 
-        for sh in ['ion', 'dash', 'zsh', 'bash', 'sh']:
+        for sh in ['dash', 'zsh', 'bash', 'sh']:
             if shutil.which(sh):
                 self.default_shell = sh
                 break
