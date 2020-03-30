@@ -178,7 +178,7 @@ bindsym Control+G $exit
 #-- menu
 bindsym Mod1+g $menu goto_win
 bindsym Mod4+m $menu xprop, $exit
-bindsym Mod4+$s+i exec ~/bin/scripts/rofi_nmcli, $exit
+bindsym Mod4+Shift+i exec ~/bin/scripts/rofi_nmcli, $exit
 bindsym Mod4+Shift+a $menu attach
 bindsym Mod4+g $menu ws
 bindsym Mod4+Control+g $menu movews
