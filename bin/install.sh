@@ -8,7 +8,7 @@ xdg_config_home_check() {
 
     if [ -d "$XDG_CONFIG_HOME/i3" ]; then
         echo "create backup of current i3 config directory..."
-        mv -v "$XDG_CONFIG_HOME/i3"{,_bck}
+        mv -v "$XDG_CONFIG_HOME/i3" "$XDG_CONFIG_HOME/i3_backup_$(date --rfc-3339=seconds|tr ' ' '-')"
     fi
 }
 
