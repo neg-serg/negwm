@@ -6,9 +6,32 @@
 ![nvim_shot](https://i.imgur.com/Tqfu65R.png)
 ![unixporn_like_shot](https://i.imgur.com/z1arTLh.png)
 
+- [Screenshots](#screenshots)
+- [What is it?](#what-is-it-)
+- [main](#main)
+- [modules](#modules)
+  * [bscratch](#bscratch)
+  * [circle](#circle)
+  * [win_history](#win-history)
+  * [menu](#menu)
+  * [vol](#vol)
+  * [win_action](#win-action)
+  * [executor](#executor)
+  * [fs](#fs)
+  * [procs to run by negi3wm as another process](#procs-to-run-by-negi3wm-as-another-process)
+- [Installation](#installation)
+- [Dependencies:](#dependencies-)
+  * [Modern python3 with modules:](#modern-python3-with-modules-)
+- [Run](#run)
+- [Performance](#performance)
+  * [Performance profiling](#performance-profiling)
+- [Why](#why)
+- [Bugs](#bugs)
+- [Video Demonstration](#video-demonstration)
+
 # What is it?
 
-For now this collection of modules for i3 includes:
+For now this collection of modules for i3 includes
 
 # main
 
@@ -97,27 +120,27 @@ i3 config example:
 ```
 set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send bscratch
 
-bindsym $m4+f $bscratch toggle ncmpcpp
-bindsym $m4+e $bscratch toggle im
-bindsym $m4+d $bscratch toggle teardrop
-bindsym $m4+a $bscratch toggle youtube
-bindsym $m4+$S+p $bscratch toggle volcontrol
-bindsym $m4+v $bscratch toggle discord
-bindsym $m4+$c+$S+R $bscratch geom_restore
-bindsym $m4+$c+$S+D $bscratch geom_dump
-bindsym $m4+$c+$S+S $bscratch geom_autosave
-bindsym $m4+3 $bscratch next
-bindsym $m4+s $bscratch hide_current
+bindsym Mod4+f $bscratch toggle ncmpcpp
+bindsym Mod4+e $bscratch toggle im
+bindsym Mod4+d $bscratch toggle teardrop
+bindsym Mod4+a $bscratch toggle youtube
+bindsym Mod4+Shift+p $bscratch toggle volcontrol
+bindsym Mod4+v $bscratch toggle discord
+bindsym Mod4+Control+Shift+R $bscratch geom_restore
+bindsym Mod4+Control+Shift+D $bscratch geom_dump
+bindsym Mod4+Control+Shift+S $bscratch geom_autosave
+bindsym Mod4+3 $bscratch next
+bindsym Mod4+s $bscratch hide_current
 
-bindsym $m4+s $bscratch subtag im skype, mode "default"
-bindsym $alt+s $bscratch subtag im skype, mode "default"
+bindsym Mod4+s $bscratch subtag im skype, mode "default"
+bindsym Mod1+s $bscratch subtag im skype, mode "default"
 bindsym +s $bscratch subtag im skype, mode "default"
-bindsym $m4+t $bscratch subtag im tel, mode "default"
-bindsym $alt+t $bscratch subtag im tel, mode "default"
+bindsym Mod4+t $bscratch subtag im tel, mode "default"
+bindsym Mod1+t $bscratch subtag im tel, mode "default"
 bindsym t $bscratch subtag im tel, mode "default"
 bindsym m $bscratch toggle mutt, mode "default"
 bindsym w $bscratch toggle webcam, mode "default"
-bindsym $S+r $bscratch toggle ranger, mode "default"
+bindsym Shift+r $bscratch toggle ranger, mode "default"
 
 mode "spec" {
 bindsym a mode "default", $bscratch dialog
@@ -177,26 +200,26 @@ Possible matching rules are:
 i3 config example:
 
 ```
-set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/send circle
-bindsym $m4+$C+5 $circle next remote
-bindsym $m4+$C+b $circle next bitwig
-bindsym $m4+$c+c $circle next sxiv
-bindsym $m4+$S+c $circle subtag sxiv wallpaper
-bindsym $m4+x $circle next term
-bindsym $m4+1 $circle next nwim
-bindsym $m4+$c+v $circle next vm
-bindsym $m4+$c+e $circle next lutris
-bindsym $m4+$S+e $circle next steam
-bindsym $m4+$c+f $circle next looking_glass
-bindsym $m4+w $circle next web
-bindsym $m4+b $circle next vid
-bindsym $m4+o $circle next doc
-bindsym $m4+$S+o $circle next obs
+set Controlircle exec --no-startup-id $XDG_CONFIG_HOME/i3/send circle
+bindsym Mod4+Control+5 Controlircle next remote
+bindsym Mod4+Control+b Controlircle next bitwig
+bindsym Mod4+Control+c Controlircle next sxiv
+bindsym Mod4+Shift+c Controlircle subtag sxiv wallpaper
+bindsym Mod4+x Controlircle next term
+bindsym Mod4+1 Controlircle next nwim
+bindsym Mod4+Control+v Controlircle next vm
+bindsym Mod4+Control+e Controlircle next lutris
+bindsym Mod4+Shift+e Controlircle next steam
+bindsym Mod4+Control+f Controlircle next looking_glass
+bindsym Mod4+w Controlircle next web
+bindsym Mod4+b Controlircle next vid
+bindsym Mod4+o Controlircle next doc
+bindsym Mod4+Shift+o Controlircle next obs
 
 mode "spec" {
-bindsym 5 mode "default", $circle subtag web tor
-bindsym y mode "default", $circle subtag web yandex
-bindsym f mode "default", $circle subtag web firefox
+bindsym 5 mode "default", Controlircle subtag web tor
+bindsym y mode "default", Controlircle subtag web yandex
+bindsym f mode "default", Controlircle subtag web firefox
 }
 ```
 
@@ -221,10 +244,10 @@ history of last selected windows.
 i3 config example:
 ```
 set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_history
-bindsym $m4+grave $win_history focus_next_visible
-bindsym $m4+$S+grave $win_history focus_prev_visible
-bindsym $alt+Tab $win_history switch
-bindsym $m4+slash $win_history switch
+bindsym Mod4+grave $win_history focus_next_visible
+bindsym Mod4+Shift+grave $win_history focus_prev_visible
+bindsym Mod1+Tab $win_history switch
+bindsym Mod4+slash $win_history switch
 ```
 
 win_history commands:
@@ -285,10 +308,10 @@ i3 config example:
 
 ```
 set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send menu
-bindsym $alt+g $menu goto_win
-bindsym $m4+g $menu ws
-bindsym $m4+$c+g $menu movews
-bindsym $m4+$c+grave $menu cmd_menu
+bindsym Mod1+g $menu goto_win
+bindsym Mod4+g $menu ws
+bindsym Mod4+Control+g $menu movews
+bindsym Mod4+Control+grave $menu cmd_menu
 ```
 
 ## vol
@@ -435,6 +458,34 @@ I still want to see `Vol: 0` / `Vol: 100` anyway :)
 *polybar_ws*: async current i3 workspace printer for polybar.
 
 *polybar_vol* : async MPD printer for polybar.
+
+# Installation
+
+Negi3wm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`,
+so you need to set up your `$XDG_CONFIG_HOME` variable before install, via
+`/etc/profile`, some kind of `.zshenv` or smth else depending or your
+environment, it is mandatory to install.
+
+Before install make sure to backup your i3 configuration, install script
+should do it automatically, but it's better to do it by hand for the
+reliability reasons.
+
+The most simple way to install it for now is to use install.sh from repo:
+
+```
+curl https://raw.githubusercontent.com/neg-serg/negi3wm/master/bin/install.sh | sh
+```
+
+After install check it via smth like:
+
+```
+cd $XDG_CONFIG_HOME/i3
+./negi3wm.py
+```
+
+If everything is ok then you can use new i3 config example, where `Mod4
++ Shift + '` is i3wm reloading, after reload you should get i3 with `negi3wm`
+plugins on the board.
 
 # Dependencies:
 
