@@ -11,10 +11,10 @@ from itertools import cycle
 
 from cfg import cfg
 from negewmh import NegEWMH
-from negi3mod import negi3mod
+from extension import extension
 
 
-class win_history(negi3mod, cfg):
+class win_history(extension, cfg):
     """ Advanced alt-tab class.
     """
 

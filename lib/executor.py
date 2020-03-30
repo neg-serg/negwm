@@ -16,7 +16,7 @@ import multiprocessing
 import yaml
 import yamlloader
 
-from negi3mod import negi3mod
+from extension import extension
 from typing import List
 import os
 from os.path import expanduser
@@ -253,7 +253,7 @@ class env():
             ]
 
 
-class executor(negi3mod, cfg):
+class executor(extension, cfg):
     """ Tmux Manager class. Easy and consistent way to create tmux sessions on
         dedicated sockets. Also it can run simply run applications without
         Tmux. The main advantage is dynamic config reloading and simplicity of

@@ -10,10 +10,10 @@ import subprocess
 import socket
 import asyncio
 from cfg import cfg
-from negi3mod import negi3mod
+from extension import extension
 
 
-class vol(negi3mod, cfg):
+class vol(extension, cfg):
     def __init__(self, i3) -> None:
         """ Init function
 

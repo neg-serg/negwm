@@ -15,13 +15,13 @@ from lib.misc import Misc
 
 class modconfig():
     def __init__(self):
-        # detect current negi3mod
+        # detect current extension
         self.mod = self.__class__.__name__
 
         # config dir path
         self.i3_cfg_path = Misc.i3path() + '/cfg/'
 
-        # negi3mod config path
+        # extension config path
         self.mod_cfg_path = self.i3_cfg_path + self.mod + '.cfg'
 
         # load current config

@@ -15,10 +15,10 @@ from typing import List
 
 from cfg import cfg
 from misc import Misc
-from negi3mod import negi3mod
+from extension import extension
 
 
-class menu(negi3mod, cfg):
+class menu(extension, cfg):
     """ Base class for menu module """
 
     def __init__(self, i3ipc) -> None:

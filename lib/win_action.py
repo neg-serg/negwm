@@ -15,10 +15,10 @@ import collections
 from typing import Mapping
 from display import Display
 from cfg import cfg
-from negi3mod import negi3mod
+from extension import extension
 
 
-class win_action(negi3mod, cfg):
+class win_action(extension, cfg):
     """ Named scratchpad class
 
     Parents:

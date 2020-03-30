@@ -17,10 +17,10 @@ from misc import Misc
 
 class cfg():
     def __init__(self, i3, convert_me: bool = False) -> None:
-        # detect current negi3mod
+        # detect current extension
         self.mod = self.__class__.__name__
 
-        # negi3mod config path
+        # extension config path
         self.i3_cfg_mod_path = Misc.i3path() + '/cfg/' + self.mod + '.cfg'
 
         # convert config values or not
@@ -183,19 +183,19 @@ class cfg():
         """ Reload config itself and convert lists in it to sets for the better
             performance.
         """
-        with open(self.i3_cfg_mod_path, "r") as negi3modcfg:
-            self.cfg = toml.load(negi3modcfg)
+        with open(self.i3_cfg_mod_path, "r") as extensioncfg:
+            self.cfg = toml.load(extensioncfg)
         if self.convert_me:
             self.dict_converse()
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging.
         """
-        with open(self.i3_cfg_mod_path, "r+") as negi3modcfg:
+        with open(self.i3_cfg_mod_path, "r+") as extensioncfg:
             if self.convert_me:
                 self.dict_deconverse()
-            toml.dump(self.cfg, negi3modcfg)
-            self.cfg = toml.load(negi3modcfg)
+            toml.dump(self.cfg, extensioncfg)
+            self.cfg = toml.load(extensioncfg)
         if self.convert_me:
             self.dict_converse()
 

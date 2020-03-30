@@ -1,7 +1,7 @@
 from typing import List
 
 
-class negi3mod():
+class extension():
     def __init__(self):
         self.bindings = {}
 

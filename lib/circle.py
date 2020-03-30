@@ -15,12 +15,12 @@ of issues here in detection of existing/visible windows, etc.
 """
 
 from misc import Misc
-from negi3mod import negi3mod
+from extension import extension
 from matcher import Matcher
 from cfg import cfg
 
 
-class circle(negi3mod, cfg, Matcher):
+class circle(extension, cfg, Matcher):
     """ Circle over windows class
 
     Parents:

@@ -76,7 +76,7 @@ class props():
             print(f'No tag name specified for props [{aprop_str}]')
 
     def get_mod(self) -> str:
-        """ Select negi3mod for add_prop by menu.
+        """ Select extension for add_prop by menu.
         """
         menu_params = {
             'cnum': len(self.possible_mods),
@@ -144,7 +144,7 @@ class props():
         """ Extract list of module tags. Used by add_prop menus.
 
         Args:
-            mod (str): negi3mod name.
+            mod (str): extension name.
         """
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         self.sock.connect((self.host, self.port))

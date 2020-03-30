@@ -21,10 +21,10 @@ from cfg import cfg
 from matcher import Matcher
 from misc import Misc
 from negewmh import NegEWMH
-from negi3mod import negi3mod
+from extension import extension
 
 
-class bscratch(negi3mod, cfg, Matcher):
+class bscratch(extension, cfg, Matcher):
     """ Named scratchpad class
 
     Parents:

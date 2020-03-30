@@ -7,11 +7,11 @@ for example wayland-friendly.
 
 import subprocess
 import shutil
-from negi3mod import negi3mod
+from extension import extension
 from cfg import cfg
 
 
-class fs(negi3mod, cfg):
+class fs(extension, cfg):
     def __init__(self, i3conn):
         # i3ipc connection, bypassed by negi3wm runner
         self.i3ipc = i3conn
