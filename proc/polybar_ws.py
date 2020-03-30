@@ -68,8 +68,7 @@ class polybar_ws(modconfig):
         self.ws_name = ""
 
     async def on_ws_focus(self, _, event):
-        """ Get workspace name and throw event.
-        """
+        """ Get workspace name and throw event. """
         ws_name = event.current.name
         self.ws_name = ws_name.split(' :: ')[1:][0]
         await self.update_status()
