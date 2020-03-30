@@ -6,4 +6,3 @@ add https://www.python.org/dev/peps/pep-0519/
 share some functions like window::focus between various mods
 port pls to negi3wm
 new module idea: mouse helper, for example get windows size and then click on x,y = 20px, 20px
-install via curl
