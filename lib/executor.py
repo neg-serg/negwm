@@ -296,7 +296,7 @@ class executor(extension, cfg):
                 self.env.set_instance = self.env.set_wm_class
             subprocess.Popen(
                 [
-                    './wm_class',
+                    './bin/wm_class',
                     '--run',
                     self.env.set_wm_class,
                     self.env.set_instance,
