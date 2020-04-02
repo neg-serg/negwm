@@ -1,5 +1,4 @@
-""" Change gtk / icons themes and another gnome settings
-"""
+""" Change gtk / icons themes and another gnome settings """
 import os
 import configparser
 import subprocess
@@ -54,6 +53,7 @@ class gnome():
 
         menu_params = self.menu_params(len(icon_dirs), 'icon theme')
 
+        selection = ''
         try:
             selection = subprocess.run(
                 self.menu.args(menu_params),
@@ -64,7 +64,8 @@ class gnome():
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
-        self.apply_settings(selection, '-i')
+        if selection:
+            self.apply_settings(selection, '-i')
 
     def change_gtk_theme(self):
         """ Changes gtk theme with help of gsd-xsettings """
@@ -75,6 +76,8 @@ class gnome():
                 theme_dirs += [pathlib.PurePath(theme).parent.parent.name]
 
         menu_params = self.menu_params(len(theme_dirs), 'gtk theme')
+
+        selection = ''
         try:
             selection = subprocess.run(
                 self.menu.args(menu_params),
@@ -85,5 +88,6 @@ class gnome():
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
-        self.apply_settings(selection, '-a')
+        if selection:
+            self.apply_settings(selection, '-a')
 
