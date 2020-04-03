@@ -38,7 +38,7 @@ focus_wrapping yes
 
 title_align left
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
-for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] border pixel 3
 
 show_marks yes
 smart_borders on
