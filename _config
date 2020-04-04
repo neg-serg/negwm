@@ -251,11 +251,6 @@ mode "SPEC" {
     bindsym Shift+v exec ~/bin/qemu/vm_menu start_win10; $exit
     bindsym o $menu pulse_output; $exit
     bindsym i $menu pulse_input; $exit
-    bindsym Shift+s exec ~/bin/pls -switch, $exit
-    bindsym Shift+s exec ~/bin/pls -switch, $exit
-    bindsym i $exit, exec ~/bin/pls -output
-    bindsym o $exit, exec ~/bin/pls -sink
-    bindsym Shift+O $exit, exec ~/bin/pls -vol
 
     bindsym Mod4+s $bscratch subtag im skype, $exit
     bindsym Mod1+s $bscratch subtag im skype, $exit

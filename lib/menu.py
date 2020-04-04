@@ -58,6 +58,7 @@ class menu(extension, cfg):
 
             "pulse_output": self.pulse_menu.pulseaudio_output,
             "pulse_input": self.pulse_menu.pulseaudio_input,
+            "pulse_mute": self.pulse_menu.pulseaudio_mute,
 
             "ws": self.winact.goto_ws,
             "goto_win": self.winact.goto_win,
