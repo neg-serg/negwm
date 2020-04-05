@@ -425,7 +425,7 @@ To use ws please add to polybar config something like this:
 ```
 [module/ws]
 type = custom/script
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_ws 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_ws 2> /dev/null
 exec-if = sleep 1
 format-background = ${color.mgf}
 format = <label>
