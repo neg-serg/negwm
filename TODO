@@ -9,3 +9,4 @@ add executor run check via something like dash -c
 percent resize
 executor add background_opacity support
 better reflection and no internal send commands
+fix lightdm issue
