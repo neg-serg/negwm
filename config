@@ -251,7 +251,7 @@ bindsym +s $bscratch subtag im skype, $exit
 bindsym Mod4+t $bscratch subtag im tel, $exit
 bindsym Mod1+t $bscratch subtag im tel, $exit
 bindsym t $bscratch subtag im tel, $exit
-bindsym m $bscratch toggle mutt, $exit
+bindsym m $bscratch toggle neomutt, $exit
 bindsym w $bscratch toggle webcam, $exit
 bindsym Shift+r $bscratch toggle ranger, $exit
 bindsym Return $exit
