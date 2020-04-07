@@ -190,7 +190,7 @@ class circle(extension, cfg, Matcher):
     def focus_driven_actions(self, tag):
         """ Make some actions after focus """
         if self.conf(tag, "mpd_shut") == 1:
-            Misc.send('vol mute', i3=self.i3ipc)
+            Misc.send(['vol', 'mute'], i3=self.i3ipc)
 
     def twin(self, tag: str, idx: int, with_subtag: bool = False):
         """ Detect target window.
