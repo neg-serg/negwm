@@ -48,13 +48,13 @@ reload negi3wm manually:
 
 At first you need to add something in negi3wm_run and add it to config:
 
-```
+```cfg
 exec_always ~/.config/i3/negi3wm_run &
 ```
 
 Current negi3wm_run is:
 
-```
+```bash
 ${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
 make -C ${XDG_CONFIG_HOME}/i3/ &
 pkill -f 'mpc idle'
@@ -63,14 +63,14 @@ pkill sxhkd; sxhkd &
 
 Interesting parts here are:
 
-```
+```bash
 ${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
 ```
 To restart negi3wm after i3 reload, `negi3wm.py` should close file
 descriptor automatically, after i3 reload/restart so you can simply run it
 after restart.
 
-```
+```bash
 make -C ${XDG_CONFIG_HOME}/i3/ &
 ```
 
@@ -88,7 +88,7 @@ make some magic to support some kind of "next tab" for this group, etc.
 
 Config example(`cfg/bscratch.cfg`):
 
-```
+```toml
 [im]
 class = [ "ViberPC", "VK", "zoom", "IGdm"]
 class_r = [ "[Tt]elegram.*", "[Ss]kype.*",]
@@ -105,7 +105,7 @@ placeholder for this windows, where all matched windows are attached to.
 
 Some interesting commands:
 
-```
+```cfg
 show: show scratchpad
 hide: hide scratchpad
 next: go to the next window in scratchpad
@@ -117,33 +117,33 @@ dialog: toggle dialogs
 
 i3 config example:
 
-```
+```cfg
 set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send bscratch
+
+bindsym Mod1+e mode "SPEC"
 
 bindsym Mod4+f $bscratch toggle ncmpcpp
 bindsym Mod4+e $bscratch toggle im
 bindsym Mod4+d $bscratch toggle teardrop
-bindsym Mod4+a $bscratch toggle youtube
-bindsym Mod4+Shift+p $bscratch toggle volcontrol
 bindsym Mod4+v $bscratch toggle discord
-bindsym Mod4+Control+Shift+R $bscratch geom_restore
-bindsym Mod4+Control+Shift+D $bscratch geom_dump
-bindsym Mod4+Control+Shift+S $bscratch geom_autosave
 bindsym Mod4+3 $bscratch next
 bindsym Mod4+s $bscratch hide_current
 
-bindsym Mod4+s $bscratch subtag im skype, mode "default"
-bindsym Mod1+s $bscratch subtag im skype, mode "default"
-bindsym +s $bscratch subtag im skype, mode "default"
-bindsym Mod4+t $bscratch subtag im tel, mode "default"
-bindsym Mod1+t $bscratch subtag im tel, mode "default"
-bindsym t $bscratch subtag im tel, mode "default"
-bindsym m $bscratch toggle mutt, mode "default"
-bindsym w $bscratch toggle webcam, mode "default"
-bindsym Shift+r $bscratch toggle ranger, mode "default"
+bindsym Mod4+Control+Shift+R $bscratch geom_restore
+bindsym Mod4+Control+Shift+D $bscratch geom_dump
+bindsym Mod4+Control+Shift+S $bscratch geom_autosave
 
-mode "spec" {
-bindsym a mode "default", $bscratch dialog
+mode "SPEC" {
+    bindsym Mod4+s $bscratch subtag im skype, mode "default"
+    bindsym Mod1+s $bscratch subtag im skype, mode "default"
+    bindsym s $bscratch subtag im skype, mode "default"
+    bindsym Mod4+t $bscratch subtag im tel, mode "default"
+    bindsym Mod1+t $bscratch subtag im tel, mode "default"
+    bindsym t $bscratch subtag im tel, mode "default"
+    bindsym m $bscratch toggle mutt, mode "default"
+    bindsym w $bscratch toggle webcam, mode "default"
+    bindsym Shift+r $bscratch toggle ranger, mode "default"
+    bindsym a mode "default", $bscratch dialog
 }
 ```
 
@@ -181,7 +181,7 @@ ease.
 
 Config example (`cfg/circle.cfg`):
 
-```
+```toml
 [web]
 class = [ "firefox", "Waterfox", "Tor Browser", "Chromium"]
 priority = "firefox"
@@ -199,24 +199,17 @@ Possible matching rules are:
 
 i3 config example:
 
-```
-set Controlircle exec --no-startup-id $XDG_CONFIG_HOME/i3/send circle
-bindsym Mod4+Control+5 Controlircle next remote
-bindsym Mod4+Control+b Controlircle next bitwig
-bindsym Mod4+Control+c Controlircle next sxiv
-bindsym Mod4+Shift+c Controlircle subtag sxiv wallpaper
-bindsym Mod4+x Controlircle next term
-bindsym Mod4+1 Controlircle next nwim
-bindsym Mod4+Control+v Controlircle next vm
-bindsym Mod4+Control+e Controlircle next lutris
-bindsym Mod4+Shift+e Controlircle next steam
-bindsym Mod4+Control+f Controlircle next looking_glass
-bindsym Mod4+w Controlircle next web
-bindsym Mod4+b Controlircle next vid
-bindsym Mod4+o Controlircle next doc
-bindsym Mod4+Shift+o Controlircle next obs
+```cfg
+set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/send circle
 
-mode "spec" {
+bindsym Mod4+Control+c $circle next sxiv
+bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
+bindsym Mod4+x $circle next term
+bindsym Mod4+1 $circle next nwim
+
+bindsym Mod1+e mode "SPEC"
+
+mode "SPEC" {
 bindsym 5 mode "default", Controlircle subtag web tor
 bindsym y mode "default", Controlircle subtag web yandex
 bindsym f mode "default", Controlircle subtag web firefox
@@ -230,7 +223,7 @@ that `tor-browser` is opened, then you can iterate over two of them with
 window of tor-browser.
 
 Some useful commands:
-```
+```cfg
 next: go to the next window
 subtag: go to the next subtag window
 ```
@@ -242,7 +235,7 @@ remember from what window alt-tab have been done, this mod fix at by storing
 history of last selected windows.
 
 i3 config example:
-```
+```cfg
 set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_history
 bindsym Mod4+grave $win_history focus_next_visible
 bindsym Mod4+Shift+grave $win_history focus_prev_visible
@@ -252,7 +245,7 @@ bindsym Mod4+slash $win_history switch
 
 win_history commands:
 
-```
+```cfg
 switch: go to previous window
 focus_next: focus next window
 focus_prev: focus previous window
@@ -268,7 +261,7 @@ more.
 
 It consists of main `menu.py` with the bindings to the menu modules, for example:
 
-```
+```python
 self.bindings = {
     "cmd_menu": self.i3menu.cmd_menu,
 
@@ -298,7 +291,7 @@ It loads appropriate modules dynamically, to handle it please edit `cfg/menu.cfg
 Too many of options to document it properly.
 
 menu cfg example:
-```
+```toml
 modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr',]
 ```
 
@@ -306,7 +299,7 @@ Also it contains some settings for menus.
 
 i3 config example:
 
-```
+```cfg
 set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send menu
 bindsym Mod1+g $menu goto_win
 bindsym Mod4+g $menu ws
@@ -320,14 +313,14 @@ Contextual volume manager. Handles mpd by default. If mpd is stopped then
 handles mpv with mpvc if the current window is mpv, or with sending 0, 9 keys
 to the mpv window if not. To use it add to i3 config something like this:
 
-```
+```cfg
 set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send vol
 bindsym XF86AudioLowerVolume $volume d
 bindsym XF86AudioRaiseVolume $volume u
 ```
 
 Command list:
-```
+```cfg
 u: volume up
 d: volume down
 reload: reload module.
@@ -353,7 +346,7 @@ For now I have no any executor bindings in the i3 config, instead I use it as
 helper for another modules. For example you can use spawn argument for `circle`
 or `bscratch`. Let's look at `cfg/circle.cfg`. It contains:
 
-```
+```toml
 [term]
 class = [ "term",]
 instance = [ "term",]
@@ -363,7 +356,7 @@ spawn = "term"
 Where spawn is special way to create terminal window with help of executor.
 Then look at `cfg/executor.cfg`. It contains:
 
-```
+```toml
 [term]
 class="term"
 font="Iosevka"
@@ -373,7 +366,7 @@ font_size=18
 So it create tmuxed(default behaviour) window with alacritty(default) config
 with Iosevka:18 font. Another examples:
 
-```
+```toml
 [teardrop]
 class="teardrop"
 font="Iosevka Term"
@@ -383,7 +376,7 @@ postfix='-n mixer ncpamixer \; neww -n atop atop \; neww -n stig stig \; neww -n
 
 Creates tmuxed window with several panes with ncpamixer, atop, stig and tasksh.
 
-```
+```toml
 [nwim]
 class="nwim"
 font="Iosevka"
@@ -422,7 +415,7 @@ Current procs binaries intended to be run from polybar.
 
 To use ws please add to polybar config something like this:
 
-```
+```toml
 [module/ws]
 type = custom/script
 exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_ws 2> /dev/null
@@ -440,7 +433,7 @@ font and also create custom markup for any of workspace as you like.
 
 To use fast mpd volume notification module use this:
 
-```
+```toml
 [module/volume]
 type = custom/script
 interval = 0
@@ -503,27 +496,27 @@ plugins on the board.
 
 To install it you may use pip:
 
-```
+```bash
 sudo pip install -r requirements.txt --upgrade
 ```
 
 or
 
-```
+```bash
 sudo pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
     toml inotipy Xlib ewmh yamlloader pulsectl docopt
 ```
 
 In case of pypy it may be something like
 
-```
+```bash
 sudo pypy3 -m pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
     toml inotipy Xlib ewmh yamlloader pulsectl docopt
 ```
 
 or
 
-```
+```bash
 sudo pypy3 -m pip install -r requirements.txt --upgrade
 ```
 
@@ -535,11 +528,13 @@ Also you need [ppi3] as i3 config preprocessor.
 
 Install it to i3 config directory:
 
-`git clone https://github.com/neg-serg/negi3wm ~/.config/i3`
+```bash
+git clone https://github.com/neg-serg/negi3wm ~/.config/i3
+```
 
 negi3wm help:
 
-```
+```man
 i3 negi3wm daemon script.
 
 This module loads all negi3wm an start it via main's manager
@@ -561,7 +556,7 @@ Options:
 
 To start daemon you need:
 
-```
+```bash
 cd ${XDG_CONFIG_HOME}/i3
 ./negi3wm.py
 ```
@@ -578,7 +573,7 @@ You can check measure startup performance with tools like pycallgraph.
 
 Also you can try
 
-```
+```bash
 kernprof -l -v ./negi3wm.py
 ```
 
