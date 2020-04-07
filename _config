@@ -187,8 +187,8 @@ mode "RESIZE" {
 
 #-- menu
 bindsym Mod1+g $menu goto_win
-bindsym Mod4+m $menu xprop, $exit
-bindsym Mod4+Shift+i exec ~/bin/scripts/rofi_nmcli, $exit
+bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
+bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_nmcli, $exit
 bindsym Mod4+Shift+a $menu attach
 bindsym Mod4+g $menu ws
 bindsym Mod4+Control+g $menu movews
@@ -208,6 +208,7 @@ mode "WM" {
     bindsym k split vertical; $exit
     bindsym h split horizontal; $exit
     bindsym l split horizontal; $exit
+    bindsym m $menu xprop, $exit
     bindsym {w,a,s,d} move {up,left,down,right}
 
     #-- wm3
