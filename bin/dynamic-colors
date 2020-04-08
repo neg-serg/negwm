@@ -68,7 +68,7 @@ colors=(
 )
 
 if [ -z "${DYNAMIC_COLORS_ROOT}" ]; then
-    DYNAMIC_COLORS_ROOT="${HOME}/.config"
+    DYNAMIC_COLORS_ROOT="${XDG_CONFIG_HOME}"
 else
     DYNAMIC_COLORS_ROOT="${DYNAMIC_COLORS_ROOT%/}"
 fi

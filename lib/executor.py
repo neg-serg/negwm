@@ -69,7 +69,8 @@ class env():
         # get terminal from config, use Alacritty by default
         self.term = config.get(name, {}).get("term", "alacritty").lower()
 
-        alacritty_cfg_path = expanduser("~/.config/alacritty/alacritty.yml")
+        alacritty_cfg_path = expanduser(
+            os.environ.get("XDG_CONFIG_HOME") + "/alacritty/alacritty.yml")
         if os.path.exists(alacritty_cfg_path):
             if os.stat(alacritty_cfg_path).st_size == 0:
                 print('Alacritty cfg {alacritty_cfg_path} is empty')
@@ -181,7 +182,7 @@ class env():
 
         if not os.path.exists(cfgname):
             shutil.copyfile(
-                expanduser("~/.config/alacritty/alacritty.yml"),
+                expanduser(os.environ.get("XDG_CONFIG_HOME") + "/alacritty/alacritty.yml"),
                 cfgname
             )
 
