@@ -115,17 +115,17 @@ class env():
                 f"{Misc.i3path() + 'bin/dynamic-colors'} switch {colorscheme};"
         else:
             self.set_colorscheme = ''
-        self.postfix = config.get(name, {}).get("postfix", '')
-        if self.postfix and self.postfix[0] != '-':
-            self.postfix = '\\; ' + self.postfix
-        self.with_tmux = int(config.get(name, {}).get("with_tmux", 1))
+        self.exec = config.get(name, {}).get("exec", '')
+        self.exec_tmux = config.get(name, {}).get("exec_tmux", '')
+        if self.exec_tmux and self.exec_tmux[0] != '-':
+            self.exec_tmux = '\\; ' + self.exec_tmux
+        self.with_tmux = bool(self.exec_tmux)
         if not self.with_tmux:
-            prog_to_dtach = config.get(name, {}).get('prog_detach', '')
-            if prog_to_dtach:
-                self.prog = \
-                    f'dtach -A ~/1st_level/{name}.session {prog_to_dtach}'
+            exec_dtach = config.get(name, {}).get('exec_detach', '')
+            if not exec_dtach:
+                self.prog = config.get(name, {}).get('exec', 'true')
             else:
-                self.prog = config.get(name, {}).get('prog', 'true')
+                self.prog = f'dtach -A /dev/shm/{name}.session {exec_dtach}'
 
         self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
         self.set_instance = config.get(name, {}).get('set_instance', '')
@@ -343,7 +343,7 @@ class executor(extension, cfg):
         self.run_app(
             self.env.term_opts +
             [f"{self.env.set_colorscheme} \
-            {self.env.tmux_new_session} {self.env.postfix} && \
+            {self.env.tmux_new_session} {self.env.exec_tmux} && \
                 {self.env.tmux_session_attach}"]
         )
 
