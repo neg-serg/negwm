@@ -10,3 +10,5 @@ percent resize
 executor add background_opacity support
 better reflection and no internal send commands
 fix lightdm issue
+fix sorting after dump
+cache alacritty configs permamently
