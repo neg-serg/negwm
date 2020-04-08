@@ -49,18 +49,6 @@ class env():
 
         self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
 
-        try:
-            os.makedirs(self.tmux_socket_dir)
-        except OSError as dir_not_created:
-            if dir_not_created.errno != errno.EEXIST:
-                raise
-
-        try:
-            os.makedirs(self.alacritty_cfg_dir)
-        except OSError as dir_not_created:
-            if dir_not_created.errno != errno.EEXIST:
-                raise
-
         for sh in ['dash', 'zsh', 'bash', 'sh']:
             if shutil.which(sh):
                 self.default_shell = sh
@@ -318,8 +306,7 @@ class executor(extension, cfg):
 
     @staticmethod
     def detect_session_bind(sockpath, name) -> str:
-        """ Find target session for given socket.
-        """
+        """ Find target session for given socket. """
         session_list = subprocess.run(
             shlex.split(f"tmux -S {sockpath} list-sessions"),
             stdout=subprocess.PIPE,
