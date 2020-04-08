@@ -130,8 +130,7 @@ class env():
         self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
         self.set_instance = config.get(name, {}).get('set_instance', '')
 
-        self.x_pad = config.get(name, {}).get('x_padding', '2')
-        self.y_pad = config.get(name, {}).get('y_padding', '2')
+        self.padding = config.get(name, {}).get('padding', [0, 0])
 
         self.create_term_params(config, name)
 
@@ -197,8 +196,8 @@ class env():
                     conf["font"]["bold"]["style"] = self.font_style_bold
                     conf["font"]["italic"]["style"] = self.font_style_italic
                     conf["font"]["size"] = self.font_size
-                    conf["window"]["padding"]['x'] = int(self.x_pad)
-                    conf["window"]["padding"]['y'] = int(self.y_pad)
+                    conf["window"]["padding"]['x'] = int(self.padding[0])
+                    conf["window"]["padding"]['y'] = int(self.padding[1])
             except yaml.YAMLError as yamlerror:
                 print(yamlerror)
 
