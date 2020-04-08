@@ -6,7 +6,7 @@ There are no external dependecies like i3 or asyncio.
 """
 
 import sys
-import toml
+import qtoml
 import traceback
 import asyncio
 import inotipy
@@ -63,14 +63,14 @@ class modconfig():
             performance.
         """
         with open(self.mod_cfg_path, "r") as fp:
-            self.cfg = toml.load(fp)
+            self.cfg = qtoml.load(fp)
 
     def dump_config(self):
         """ Dump current config, can be used for debugging.
         """
         with open(self.mod_cfg_path, "r+") as fp:
-            toml.dump(self.cfg, fp)
-            self.cfg = toml.load(fp)
+            qtoml.dump(self.cfg, fp)
+            self.cfg = qtoml.load(fp)
 
     def cfg_watcher(self):
         """ cfg watcher to update modules config in realtime.

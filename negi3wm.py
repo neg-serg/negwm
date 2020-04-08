@@ -37,7 +37,7 @@ import shutil
 from threading import Thread
 
 for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
-          "toml", "Xlib", "yaml", "yamlloader", "ewmh"]:
+          "qtoml", "Xlib", "yaml", "yamlloader", "ewmh"]:
     if not importlib.util.find_spec(m):
         print(f"Cannot import [{m}], please install")
 

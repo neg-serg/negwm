@@ -11,7 +11,7 @@ import sys
 from typing import Set, Callable
 import traceback
 
-import toml
+import qtoml
 from misc import Misc
 
 
@@ -177,15 +177,15 @@ class cfg():
             performance.
         """
         with open(self.i3_cfg_mod_path, "r") as mod_cfg:
-            self.cfg = toml.load(mod_cfg)
+            self.cfg = qtoml.load(mod_cfg)
         if self.convert_me:
             self.dict_converse()
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
         with open(self.i3_cfg_mod_path, "r+") as mod_cfg:
-            toml.dump(self.cfg, mod_cfg)
-            self.cfg = toml.load(mod_cfg)
+            qtoml.dump(self.cfg, mod_cfg)
+            self.cfg = qtoml.load(mod_cfg)
         if self.convert_me:
             self.dict_converse()
 
