@@ -140,6 +140,7 @@ class env():
         self.set_instance = config.get(name, {}).get('set_instance', '')
 
         self.padding = config.get(name, {}).get('padding', [0, 0])
+        self.opacity = config.get(name, {}).get('opacity', 0.88)
 
         self.create_term_params(config, name)
 
@@ -206,6 +207,7 @@ class env():
                     conf["font"]["bold"]["style"] = self.font_style_bold
                     conf["font"]["italic"]["style"] = self.font_style_italic
                     conf["font"]["size"] = self.font_size
+                    conf["background_opacity"] = self.opacity
                     conf["window"]["padding"]['x'] = int(self.padding[0])
                     conf["window"]["padding"]['y'] = int(self.padding[1])
             except yaml.YAMLError as yamlerror:
