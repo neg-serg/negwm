@@ -280,7 +280,7 @@ class executor(extension, cfg):
         Args:
             i3: i3ipc connection(not used).
         """
-        cfg.__init__(self, i3, convert_me=False)
+        cfg.__init__(self, i3)
         self.envs = {}
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)

@@ -16,15 +16,12 @@ from misc import Misc
 
 
 class cfg():
-    def __init__(self, i3, convert_me: bool = False) -> None:
+    def __init__(self, i3) -> None:
         # detect current extension
         self.mod = self.__class__.__name__
 
         # extension config path
         self.i3_cfg_mod_path = Misc.i3path() + '/cfg/' + self.mod + '.cfg'
-
-        # convert config values or not
-        self.convert_me = convert_me
 
         # load current config
         self.load_config()
@@ -120,29 +117,6 @@ class cfg():
             self.cfg = prev_conf
             self.__init__()
 
-    def dict_converse(self) -> None:
-        """ Convert list attributes to set for the better performance. """
-        self.dict_apply(lambda key: set(key), cfg.convert_subtag)
-
-    @staticmethod
-    def convert_subtag(subtag: str) -> None:
-        """ Convert subtag attributes to set for the better performance.
-
-            Args:
-                subtag (str): target subtag.
-        """
-        cfg.subtag_apply(subtag, lambda key: set(key))
-
-    @staticmethod
-    def deconvert_subtag(subtag: str) -> None:
-        """ Convert set attributes to list, because of set cannot be saved
-        / restored to / from TOML-files corretly.
-
-            Args:
-                subtag (str): target subtag.
-        """
-        cfg.subtag_apply(subtag, lambda key: list(key))
-
     def dict_apply(self, field_conv: Callable, subtag_conv: Callable) -> None:
         """ Convert list attributes to set for the better performance.
 
@@ -178,16 +152,13 @@ class cfg():
         """
         with open(self.i3_cfg_mod_path, "r") as mod_cfg:
             self.cfg = qtoml.load(mod_cfg)
-        if self.convert_me:
-            self.dict_converse()
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
         with open(self.i3_cfg_mod_path, "r+") as mod_cfg:
+            print(self.cfg)
             qtoml.dump(self.cfg, mod_cfg)
             self.cfg = qtoml.load(mod_cfg)
-        if self.convert_me:
-            self.dict_converse()
 
     def property_to_winattrib(self, prop_str: str) -> None:
         """ Parse property string to create win_attrs dict.

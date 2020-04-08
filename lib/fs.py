@@ -18,7 +18,7 @@ class fs(extension, cfg):
         self.panel_should_be_restored = False
 
         # Initialize modcfg.
-        cfg.__init__(self, i3conn, convert_me=False)
+        cfg.__init__(self, i3conn)
 
         # default panel classes
         self.panel_classes = self.cfg.get("panel_classes", [])

@@ -40,7 +40,7 @@ class circle(extension, cfg, Matcher):
             i3: i3ipc connection
         """
         # Initialize superclasses.
-        cfg.__init__(self, i3, convert_me=True)
+        cfg.__init__(self, i3)
         Matcher.__init__(self)
 
         # i3ipc connection, bypassed by negi3wm runner.
