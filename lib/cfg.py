@@ -105,7 +105,7 @@ class cfg():
         """ Helper to create subtag attr list. """
         return cfg.possible_props()
 
-    def reload_config(self, *arg) -> None:
+    def reload_config(self, *_) -> None:
         """ Reload config for current selected module.
             Call load_config, print debug messages and reinit all stuff.
         """
@@ -121,15 +121,8 @@ class cfg():
             self.__init__()
 
     def dict_converse(self) -> None:
-        """ Convert list attributes to set for the better performance.
-        """
+        """ Convert list attributes to set for the better performance. """
         self.dict_apply(lambda key: set(key), cfg.convert_subtag)
-
-    def dict_deconverse(self) -> None:
-        """ Convert set attributes to list, because of set cannot be saved
-            / restored to / from TOML-files corretly.
-        """
-        self.dict_apply(lambda key: list(key), cfg.deconvert_subtag)
 
     @staticmethod
     def convert_subtag(subtag: str) -> None:
@@ -167,7 +160,7 @@ class cfg():
                     subtag_conv(string[sys.intern(key)])
 
     @staticmethod
-    def subtag_apply(subtag: str, field_conv: Callable) -> None:
+    def subtag_apply(subtag, field_conv: Callable) -> None:
         """ Convert subtag attributes to set for the better performance.
 
             Args:
@@ -183,19 +176,16 @@ class cfg():
         """ Reload config itself and convert lists in it to sets for the better
             performance.
         """
-        with open(self.i3_cfg_mod_path, "r") as extensioncfg:
-            self.cfg = toml.load(extensioncfg)
+        with open(self.i3_cfg_mod_path, "r") as mod_cfg:
+            self.cfg = toml.load(mod_cfg)
         if self.convert_me:
             self.dict_converse()
 
     def dump_config(self) -> None:
-        """ Dump current config, can be used for debugging.
-        """
-        with open(self.i3_cfg_mod_path, "r+") as extensioncfg:
-            if self.convert_me:
-                self.dict_deconverse()
-            toml.dump(self.cfg, extensioncfg)
-            self.cfg = toml.load(extensioncfg)
+        """ Dump current config, can be used for debugging. """
+        with open(self.i3_cfg_mod_path, "r+") as mod_cfg:
+            toml.dump(self.cfg, mod_cfg)
+            self.cfg = toml.load(mod_cfg)
         if self.convert_me:
             self.dict_converse()
 
