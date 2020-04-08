@@ -188,7 +188,7 @@ mode "RESIZE" {
 #-- menu
 bindsym Mod1+g $menu goto_win
 bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_nmcli, $exit
+bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager, $exit
 bindsym Mod4+Shift+a $menu attach
 bindsym Mod4+g $menu ws
 bindsym Mod4+Control+g $menu movews
