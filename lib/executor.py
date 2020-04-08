@@ -36,12 +36,19 @@ class env():
 
     def __init__(self, name: str, config: dict) -> None:
         self.name = name
-        self.tmux_socket_dir = expanduser('/dev/shm/tmux_sockets')
-        self.alacritty_cfg_dir = expanduser('/dev/shm/alacritty_cfg')
-        self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
+        self.cache_dir = Misc.i3path() + '/cache'
+        Misc.create_dir(self.cache_dir)
+
+        self.tmux_socket_dir = expanduser(f'{self.cache_dir}/tmux_sockets')
+        self.dtach_session_dir = expanduser(f'{self.cache_dir}/dtach_sessions')
+        self.alacritty_cfg_dir = expanduser(f'{self.cache_dir}/alacritty_cfg')
 
         Misc.create_dir(self.tmux_socket_dir)
         Misc.create_dir(self.alacritty_cfg_dir)
+        Misc.create_dir(self.dtach_session_dir)
+
+        self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
+
         try:
             os.makedirs(self.tmux_socket_dir)
         except OSError as dir_not_created:
@@ -125,7 +132,8 @@ class env():
             if not exec_dtach:
                 self.prog = config.get(name, {}).get('exec', 'true')
             else:
-                self.prog = f'dtach -A /dev/shm/{name}.session {exec_dtach}'
+                self.prog = f'dtach -A {self.dtach_session_dir}' \
+                            f'/{name}.session {exec_dtach}'
 
         self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
         self.set_instance = config.get(name, {}).get('set_instance', '')
@@ -150,7 +158,7 @@ class env():
         return ''
 
     @staticmethod
-    def generate_alacritty_config(
+    def create_alacritty_cfg(
             alacritty_cfg_dir, config: dict, name: str) -> str:
         """ Config generator for alacritty.
             We need it because of alacritty cannot bypass most of user
@@ -176,6 +184,7 @@ class env():
                 expanduser("~/.config/alacritty/alacritty.yml"),
                 cfgname
             )
+
         return cfgname
 
     def yaml_config_create(self, custom_config: str) -> None:
@@ -223,7 +232,7 @@ class env():
                 commandline options or settings.
         """
         if self.term == "alacritty":
-            custom_config = self.generate_alacritty_config(
+            custom_config = self.create_alacritty_cfg(
                 self.alacritty_cfg_dir, config, name
             )
             multiprocessing.Process(
