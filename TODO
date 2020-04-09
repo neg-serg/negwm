@@ -9,4 +9,3 @@ add executor run check via something like dash -c
 percent resize
 better reflection and no internal send commands
 fix lightdm issue
-exec_tmux as set

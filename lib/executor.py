@@ -112,9 +112,7 @@ class env():
         else:
             self.set_colorscheme = ''
         self.exec = config.get(name, {}).get("exec", '')
-        self.exec_tmux = config.get(name, {}).get("exec_tmux", '')
-        if self.exec_tmux and self.exec_tmux[0] != '-':
-            self.exec_tmux = '\\; ' + self.exec_tmux
+        self.exec_tmux = config.get(name, {}).get("exec_tmux", [])
         self.with_tmux = bool(self.exec_tmux)
         if not self.with_tmux:
             exec_dtach = config.get(name, {}).get('exec_dtach', '')
@@ -320,16 +318,14 @@ class executor(extension, cfg):
         ).stdout.decode()
 
     def attach_to_session(self) -> None:
-        """ Run tmux to attach to given socket.
-        """
+        """ Run tmux to attach to given socket. """
         self.run_app(
             self.env.term_opts +
             [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
         )
 
     def search_classname(self) -> bytes:
-        """ Search for selected window class.
-        """
+        """ Search for selected window class. """
         return subprocess.run(
             shlex.split(f"xdotool search --classname {self.env.wclass}"),
             stdout=subprocess.PIPE,
@@ -337,12 +333,17 @@ class executor(extension, cfg):
         ).stdout
 
     def create_new_session(self) -> None:
-        """ Run tmux to create the new session on given socket.
-        """
+        """ Run tmux to create the new session on given socket. """
+        exec_cmd = ''
+        for pos, token in enumerate(self.env.exec_tmux):
+            if pos == 0:
+                exec_cmd += f'-n {token[0]} {token[1]}\\; '
+            else:
+                exec_cmd += f'neww -n {token[0]} {token[1]}\\; '
         self.run_app(
             self.env.term_opts +
             [f"{self.env.set_colorscheme} \
-            {self.env.tmux_new_session} {self.env.exec_tmux} && \
+            {self.env.tmux_new_session} {exec_cmd} && \
                 {self.env.tmux_session_attach}"]
         )
 
