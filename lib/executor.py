@@ -117,7 +117,7 @@ class env():
             self.exec_tmux = '\\; ' + self.exec_tmux
         self.with_tmux = bool(self.exec_tmux)
         if not self.with_tmux:
-            exec_dtach = config.get(name, {}).get('exec_detach', '')
+            exec_dtach = config.get(name, {}).get('exec_dtach', '')
             if not exec_dtach:
                 self.prog = config.get(name, {}).get('exec', 'true')
             else:
