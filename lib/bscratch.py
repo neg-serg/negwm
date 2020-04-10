@@ -94,8 +94,7 @@ class bscratch(extension, cfg, Matcher):
         i3.on('window::close', self.unmark_tag)
 
     def taglist(self) -> List:
-        """ Returns list of tags without transients windows.
-        """
+        """ Returns list of tags without transients windows. """
         tag_list = list(self.cfg.keys())
         tag_list.remove('transients')
         return tag_list
@@ -152,8 +151,7 @@ class bscratch(extension, cfg, Matcher):
                 else:
                     win.command('move window to workspace current')
 
-    def find_visible_windows(
-            self, focused: Optional[bool] = None) -> List:
+    def find_visible_windows(self) -> List:
         """ Find windows on the current workspace, which is enough for
         scratchpads.
 
@@ -161,15 +159,13 @@ class bscratch(extension, cfg, Matcher):
                 focused: denotes that [focused] window should be extracted from
                          i3.get_tree() or not
         """
-        if focused is None:
-            focused = self.i3ipc.get_tree().find_focused()
+        focused = self.i3ipc.get_tree().find_focused()
         return NegEWMH.find_visible_windows(
             focused.workspace().leaves()
         )
 
     def dialog_toggle(self) -> None:
-        """ Show dialog windows
-        """
+        """ Show dialog windows """
         self.show_scratchpad('transients', hide=False)
 
     def toggle_fs(self, win) -> None:
@@ -256,8 +252,7 @@ class bscratch(extension, cfg, Matcher):
             self.toggle(tag)
 
     def restore_fullscreens(self) -> None:
-        """ Restore all fullscreen windows
-        """
+        """ Restore all fullscreen windows """
         for win in self.fullscreen_list:
             win.command('fullscreen toggle')
         self.fullscreen_list = []
