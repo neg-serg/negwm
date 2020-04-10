@@ -325,7 +325,7 @@ class circle(extension, cfg, Matcher):
         """
         for win in self.winlist:
             if self.match(win, tag):
-                self.tagged.get(tag, {}).append(win)
+                self.tagged.get(tag, []).append(win)
 
     def tag_windows(self, invalidate_winlist=True) -> None:
         """ Find acceptable windows for the all tags and add it to the
