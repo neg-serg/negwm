@@ -466,13 +466,13 @@ class win_action(extension, cfg):
             parent = node.parent
             if node.type == "workspace" or not parent:
                 break
-            elif parent.type == "floating_con":
+            if parent.type == "floating_con":
                 single = False
                 break
-            elif len(parent.nodes) > 1 and parent.layout == "splith":
+            if len(parent.nodes) > 1 and parent.layout == "splith":
                 single = False
                 break
-            elif len(parent.nodes) > 1 and parent.layout == "splitv":
+            if len(parent.nodes) > 1 and parent.layout == "splitv":
                 single = False
                 vertical = True
                 break
@@ -563,14 +563,14 @@ class win_action(extension, cfg):
             orct = output.rect
             nrct = new.rect
             if (direction == "left" and nrct.x + nrct.width == orct.x) \
-                    or (direction == "right" and nrct.x == orct.x + orct.width) \
-                    or (direction == "up" and nrct.y + nrct.height == orct.y) \
-                    or (direction == "down" and nrct.y == orct.y + orct.height):
+                or (direction == "right" and nrct.x == orct.x + orct.width) \
+                or (direction == "up" and nrct.y + nrct.height == orct.y) \
+                or (direction == "down" and nrct.y == orct.y + orct.height):
                 return new
 
         return None
 
-    def focus_tab(self, direction):
+    def focus_tab(self, direction) -> None:
         """
             Cycle through the innermost stacked or tabbed ancestor container,
             or through floating containers.
@@ -618,7 +618,8 @@ class win_action(extension, cfg):
             Inspired by: deadc0de6
         """
         window = i3.get_tree().find_focused()
-        if (not window) or (not window.rect) or (window.layout in ['stacked', 'tabbed']):
+        if (not window) or (not window.rect) \
+                or (window.layout in ['stacked', 'tabbed']):
             return
 
         height, width = window.rect.height, window.rect.width
@@ -629,9 +630,7 @@ class win_action(extension, cfg):
         i3.command(f'split {layout}')
 
     def move_tab(self, direction):
-        """
-            Move the innermost stacked or tabbed ancestor container.
-        """
+        """ Move the innermost stacked or tabbed ancestor container. """
         if direction == "next":
             delta = 1
         elif direction == "prev":
