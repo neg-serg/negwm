@@ -92,7 +92,8 @@ class checker():
             print('Check for environment')
         xdg_config_home = os.getenv('XDG_CONFIG_HOME')
         if xdg_config_home:
-            print(f'XDG_CONFIG_HOME = {xdg_config_home}')
+            if verbose:
+                print(f'XDG_CONFIG_HOME = {xdg_config_home}')
         else:
             user = os.getenv('USER')
             if user:
