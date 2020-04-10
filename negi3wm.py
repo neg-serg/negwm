@@ -276,5 +276,5 @@ def main():
             print(stat)
 
 if __name__ == '__main__':
-    checker().check()
+    checker().check(verbose=False)
     main()

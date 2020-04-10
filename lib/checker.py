@@ -6,10 +6,11 @@ from lib.misc import Misc
 
 class checker():
     @staticmethod
-    def which(exe, description, kind):
+    def which(exe, description, kind, verbose):
         path = shutil.which(exe)
         if path:
-            print(f'{exe}: {shutil.which(exe)} [{kind}] [OK]')
+            if verbose:
+                print(f'{exe}: {shutil.which(exe)} [{kind}] [OK]')
         else:
             print(f'{exe}: {exe} not found [{kind}] [FAIL]\n'
                     f'You need it for {description}')
@@ -19,7 +20,7 @@ class checker():
                 os._exit(1)
 
     @staticmethod
-    def check_for_executable_deps():
+    def check_for_executable_deps(verbose):
         dependencies = {
             'mandatory' : {
                 'i3': 'you need i3 for negi3wm',
@@ -39,18 +40,20 @@ class checker():
             }
         }
 
-        print('Check for executables')
+        if verbose:
+            print('Check for executables')
         for kind, value in dependencies.items():
             for exe, description in value.items():
-                checker.which(exe, description, kind)
-        print()
+                checker.which(exe, description, kind, verbose)
 
     @staticmethod
-    def check_for_send():
-        print('Check for send executable and build it if needed')
+    def check_for_send(verbose):
+        if verbose:
+            print('Check for send executable and build it if needed')
         send_path = shutil.which('bin/send')
         if send_path is not None:
-            print(f'send binary {send_path} [OK]')
+            if verbose:
+                print(f'send binary {send_path} [OK]')
         else:
             i3_path = os.getenv('XDG_CONFIG_HOME') + '/i3/'
             make_result = subprocess.run(['make', '-C', i3_path],
@@ -62,11 +65,10 @@ class checker():
             else:
                 print('Please check for libbsd-dev build dependency')
 
-        print()
-
     @staticmethod
-    def check_i3_config():
-        print('Check for i3 config consistency')
+    def check_i3_config(verbose):
+        if verbose:
+            print('Check for i3 config consistency')
         xdg_config_home = os.getenv('XDG_CONFIG_HOME')
         i3_cfg = xdg_config_home + '/i3/config'
         if not (os.path.isfile(i3_cfg) and \
@@ -76,17 +78,18 @@ class checker():
 
         i3_check = Misc.validate_i3_config(i3_cfg)
         if i3_check:
-            print('i3 config is valid [OK]')
+            if verbose:
+                print('i3 config is valid [OK]')
         else:
             print('i3 config is invalid [FAIL]'
                 f'please run i3 -C {xdg_config_home}/i3/config to check it'
             )
             os._exit(1)
-        print()
 
     @staticmethod
-    def check_env():
-        print('Check for environment')
+    def check_env(verbose):
+        if verbose:
+            print('Check for environment')
         xdg_config_home = os.getenv('XDG_CONFIG_HOME')
         if xdg_config_home:
             print(f'XDG_CONFIG_HOME = {xdg_config_home}')
@@ -99,12 +102,11 @@ class checker():
             else:
                 print('You should have some $USER env to run')
                 os._exit(1)
-        print()
 
     @staticmethod
-    def check():
+    def check(verbose):
         """ Check for various dependencies """
-        checker.check_env()
-        checker.check_for_executable_deps()
-        checker.check_i3_config()
-        checker.check_for_send()
+        checker.check_env(verbose)
+        checker.check_for_executable_deps(verbose)
+        checker.check_i3_config(verbose)
+        checker.check_for_send(verbose)
