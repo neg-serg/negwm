@@ -38,8 +38,12 @@ from threading import Thread
 
 for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
           "qtoml", "Xlib", "yaml", "yamlloader", "ewmh"]:
-    if not importlib.util.find_spec(m):
+    if sys.version_info >= (3, 5):
+        if not importlib.util.find_spec(m):
+            print(f"Cannot import [{m}], please install")
+    elif not importlib.find_loader(m):
         print(f"Cannot import [{m}], please install")
+
 
 import asyncio
 import inotipy
