@@ -35,9 +35,10 @@ import functools
 import importlib
 import shutil
 from threading import Thread
+from colored import fg
 
 for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
-          "qtoml", "Xlib", "yaml", "yamlloader", "ewmh"]:
+          "qtoml", "Xlib", "yaml", "yamlloader", "ewmh", "colored"]:
     if sys.version_info >= (3, 5):
         if not importlib.util.find_spec(m):
             print(f"Cannot import [{m}], please install")
@@ -131,7 +132,6 @@ class negi3wm(modconfig):
             benchmarks.
         """
         mod_startup_times = []
-        self.echo('Loading modules')
         for mod in self.mods:
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
@@ -140,12 +140,16 @@ class negi3wm(modconfig):
                 self.mods[mod].asyncio_init(self.loop)
             except Exception:
                 pass
+            pref = f'{fg(4)}⦓ {fg(7)}'
+            post = f'{fg(4)} ⦔{fg(7)}'
             mod_startup_times.append(timeit.default_timer() - start_time)
-            time_elapsed = f'{mod_startup_times[-1]:4f}s'
-            mod_loaded_info = f'{mod:<10s} ~ {time_elapsed:>10s}'
+            time_elapsed = f'{mod_startup_times[-1]:4f}'
+            mod_loaded_info = f'{pref}{mod:<14s} {time_elapsed:>10s}{post}'
             self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
             self.echo(mod_loaded_info, flush=True)
-        loading_time_msg = f'Loading time = {sum(mod_startup_times):6f}s'
+        total_startup_time = str(round(sum(mod_startup_times), 6))
+        loading_time_msg = f'{pref}{"total":<14s}' \
+            f'{total_startup_time:>11s}{post}{fg(241)}'
         self.notification_text += loading_time_msg
         self.echo(loading_time_msg)
 
@@ -219,7 +223,7 @@ class negi3wm(modconfig):
         asyncio.ensure_future(self.cfg_mods_worker(self.cfg_mods_watcher()))
         asyncio.ensure_future(self.cfg_i3_worker(self.cfg_i3_watcher()))
 
-    def run(self):
+    def run(self, verbose=False):
         """ Run negi3wm here. """
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
@@ -245,14 +249,14 @@ class negi3wm(modconfig):
         )
         start((mainloop).start)
 
-        self.echo('... everything loaded ...')
-        self.notify(self.notification_text)
+        if verbose:
+            self.echo('... everything loaded ...')
+            self.notify(self.notification_text)
         try:
             self.autostart()
             self.i3.main()
         except KeyboardInterrupt:
             self.i3.main_quit()
-        self.echo('... exit ...')
 
 
 def main():

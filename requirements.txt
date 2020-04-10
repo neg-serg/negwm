@@ -6,3 +6,4 @@ ewmh
 yamlloader
 pulsectl
 docopt
+colored 
