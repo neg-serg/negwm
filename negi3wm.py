@@ -175,7 +175,6 @@ class negi3wm(modconfig):
         """
         while True:
             event = await watcher.get()
-            print(event)
             changed_mod = event.pathname[:-4]
             if changed_mod in self.mods:
                 if reload_one:
@@ -187,7 +186,6 @@ class negi3wm(modconfig):
                     self.notify(
                         '[Reloaded {' + ','.join(self.mods.keys()) + '}]'
                     )
-        watcher.close()
 
     async def cfg_i3_worker(self, watcher):
         """ Run ppi3 when config is changed
@@ -197,6 +195,7 @@ class negi3wm(modconfig):
         """
         while True:
             event = await watcher.get()
+            config_is_valid = False
             if event.pathname == '_config':
                 with open(self.test_cfg_path, "w") as fconf:
                     try:
