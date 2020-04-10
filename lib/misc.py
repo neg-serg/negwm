@@ -15,7 +15,7 @@ class Misc():
     """
 
     @staticmethod
-    def create_dir(dirname):
+    def create_dir(dirname) -> None:
         """ Helper function to create directory
 
             Args:
@@ -51,7 +51,7 @@ class Misc():
         return ""
 
     @classmethod
-    def notify_msg(cls, msg: str, prefix: str = " "):
+    def notify_msg(cls, msg: str, prefix: str = " ") -> None:
         """ Send messages via notify-osd based notifications.
 
             Args:
@@ -59,14 +59,14 @@ class Misc():
                 prefix: optional prefix for message string.
         """
 
-        def get_pids(process):
+        def get_pids(process) -> bool:
             try:
                 pidlist = map(
                     int, subprocess.check_output(["pidof", process]).split()
                 )
             except subprocess.CalledProcessError:
                 pidlist = []
-            return pidlist
+            return bool(pidlist)
 
         if get_pids('dunst'):
             foreground_color = cls.extract_xrdb_value('\\*.foreground') \
@@ -80,28 +80,28 @@ class Misc():
             subprocess.Popen(notify_msg)
 
     @classmethod
-    def notify_off(cls, _dummy_msg: str, _dummy_prefix: str = " "):
+    def notify_off(cls, _dummy_msg: str, _dummy_prefix: str = " ") -> None:
         """ Do nothing """
         return
 
     @staticmethod
-    def echo_on(*args, **kwargs):
+    def echo_on(*args, **kwargs) -> None:
         """ Print info """
         print(*args, **kwargs)
 
     @staticmethod
-    def echo_off(*_dummy_args, **_dummy_kwargs):
+    def echo_off(*_dummy_args, **_dummy_kwargs) -> None:
         """ Do not print info """
         return
 
     @staticmethod
-    def print_run_exception_info(proc_err):
+    def print_run_exception_info(proc_err) -> None:
         print(f'returncode={proc_err.returncode}, \
                 cmd={proc_err.cmd}, \
                 output={proc_err.output}')
 
     @staticmethod
-    def send(*args, i3=None):
+    def send(*args, i3=None) -> None:
         """ Send wrapper """
         send_path = Misc.i3path() + '/bin/send'
         if i3 is None:
@@ -115,7 +115,7 @@ class Misc():
             i3.command(exec_cmd + ' '.join(largs))
 
     @staticmethod
-    def validate_i3_config(i3cfg_path, remove=False):
+    def validate_i3_config(i3cfg_path, remove=False) -> bool:
         """ Checks that i3 config is ok. """
         check_config = ""
         try:
