@@ -8,7 +8,6 @@ there is no parsing / translation phase here in runtime.
 """
 import subprocess
 import os
-import errno
 import shlex
 import shutil
 import threading
