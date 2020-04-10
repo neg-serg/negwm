@@ -125,7 +125,7 @@ class env():
         self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
         self.set_instance = config.get(name, {}).get('set_instance', '')
 
-        self.padding = config.get(name, {}).get('padding', [0, 0])
+        self.padding = config.get(name, {}).get('padding', [2, 2])
         self.opacity = config.get(name, {}).get('opacity', 0.88)
 
         self.create_term_params(config, name)
