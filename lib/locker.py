@@ -7,7 +7,7 @@ import sys
 import socket
 
 
-def get_lock(process_name: str) -> None:
+def get_lock(process_name: str, verbose=False) -> None:
     """
     Without holding a reference to our socket somewhere it gets garbage
     collected when the function exits
@@ -19,7 +19,8 @@ def get_lock(process_name: str) -> None:
 
     try:
         get_lock._lock_socket.bind('\0' + process_name)
-        print('locking successful')
+        if verbose:
+            print('locking successful')
     except socket.error:
         print('lock exists')
         sys.exit()
