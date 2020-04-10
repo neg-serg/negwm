@@ -34,7 +34,7 @@ class env():
                 TOML-configutation with inotify
     """
 
-    def __init__(self, name: str, config: dict) -> None:
+    def __init__(self, name: str, config) -> None:
         self.name = name
         self.cache_dir = Misc.i3path() + '/cache'
         Misc.create_dir(self.cache_dir)
@@ -128,6 +128,8 @@ class env():
         self.padding = config.get(name, {}).get('padding', [2, 2])
         self.opacity = config.get(name, {}).get('opacity', 0.88)
 
+        self.statusline = config.get(name, {}).get('statusline', 1)
+
         self.create_term_params(config, name)
 
         def join_processes():
@@ -169,7 +171,9 @@ class env():
 
         if not os.path.exists(cfgname):
             shutil.copyfile(
-                expanduser(os.environ.get("XDG_CONFIG_HOME") + "/alacritty/alacritty.yml"),
+                expanduser(os.environ.get(
+                    "XDG_CONFIG_HOME") + "/alacritty/alacritty.yml"
+                ),
                 cfgname
             )
 
@@ -181,6 +185,7 @@ class env():
             Args:
                 custom_config(str): config name to create
         """
+        conf = None
         with open(custom_config, "r") as cfg_file:
             try:
                 conf = yaml.load(
@@ -199,19 +204,20 @@ class env():
             except yaml.YAMLError as yamlerror:
                 print(yamlerror)
 
-        with open(custom_config, 'w', encoding='utf8') as outfile:
-            try:
-                yaml.dump(
-                    conf,
-                    outfile,
-                    default_flow_style=False,
-                    allow_unicode=True,
-                    canonical=False,
-                    explicit_start=True,
-                    Dumper=yamlloader.ordereddict.CDumper
-                )
-            except yaml.YAMLError as yamlerror:
-                print(yamlerror)
+        if conf is not None and conf:
+            with open(custom_config, 'w', encoding='utf8') as outfile:
+                try:
+                    yaml.dump(
+                        conf,
+                        outfile,
+                        default_flow_style=False,
+                        allow_unicode=True,
+                        canonical=False,
+                        explicit_start=True,
+                        Dumper=yamlloader.ordereddict.CDumper
+                    )
+                except yaml.YAMLError as yamlerror:
+                    print(yamlerror)
 
     def create_term_params(self, config: dict, name: str) -> None:
         """ This function fill self.term_opts for settings.abs
@@ -340,6 +346,8 @@ class executor(extension, cfg):
                 exec_cmd += f'-n {token[0]} {token[1]}\\; '
             else:
                 exec_cmd += f'neww -n {token[0]} {token[1]}\\; '
+        if not self.env.statusline:
+            exec_cmd += f'set status off\\; '
         self.run_app(
             self.env.term_opts +
             [f"{self.env.set_colorscheme} \
