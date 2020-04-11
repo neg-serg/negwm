@@ -193,7 +193,9 @@ class bscratch(extension, cfg, Matcher):
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
-                    Misc.send(['executor', 'run', spawn_str], i3=self.i3ipc)
+                    executor = extension.get_mods().get('executor')
+                    if executor is not None:
+                        executor.bindings['run'](spawn_str)
 
         if self.visible_window_with_tag(tag):
             self.hide_scratchpad(tag)
