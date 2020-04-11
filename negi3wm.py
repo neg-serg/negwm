@@ -33,6 +33,7 @@ import subprocess
 import signal
 import functools
 import importlib
+import tracemalloc
 import shutil
 from threading import Thread
 from colored import fg
@@ -70,7 +71,6 @@ class negi3wm(modconfig):
         self.tracemalloc_enabled = False
         if cmd_args["--tracemalloc"]:
             self.tracemalloc_enabled = True
-            import tracemalloc
 
         if self.tracemalloc_enabled:
             tracemalloc.start()
