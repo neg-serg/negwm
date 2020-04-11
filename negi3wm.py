@@ -162,7 +162,9 @@ class negi3wm(modconfig):
     def autostart(self):
         """ Autostart auto negi3wm initialization """
         if self.first_run:
-            Misc.send(['circle next term'], i3=self.i3)
+            circle = self.mods.get('circle')
+            if circle is not None:
+                circle.bindings['next']('term')
 
     def cfg_i3_watcher(self):
         """ i3 config watcher to run ppi3 on write. """
@@ -182,11 +184,11 @@ class negi3wm(modconfig):
             changed_mod = event.pathname[:-4]
             if changed_mod in self.mods:
                 if reload_one:
-                    Misc.send([changed_mod, 'reload'], i3=self.i3)
+                    self.mods[changed_mod].bindings['reload']()
                     self.notify(f'[Reloaded {changed_mod}]')
                 else:
                     for mod in self.mods:
-                        Misc.send([mod, 'reload'], i3=self.i3)
+                        self.mods[mod].bindings['reload']()
                     self.notify(
                         '[Reloaded {' + ','.join(self.mods.keys()) + '}]'
                     )
