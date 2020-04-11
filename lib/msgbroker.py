@@ -15,6 +15,11 @@ class MsgBroker():
         Every module has indivisual main loop with indivisual neg-ipc-file.
     """
     lock = asyncio.Lock()
+
+    @classmethod
+    def get_mods(cls) -> None:
+        return cls.mods
+
     @classmethod
     def mainloop(cls, loop, mods, port) -> None:
         """ Mainloop by loop create task """

@@ -1,9 +1,14 @@
 from typing import List
+from lib.reflection import Reflection
 
 
 class extension():
     def __init__(self):
         self.bindings = {}
+
+    @staticmethod
+    def get_mods():
+        return Reflection.get_mods()
 
     def send_msg(self, args: List) -> None:
         """ Creates bindings from socket IPC to current module public function
