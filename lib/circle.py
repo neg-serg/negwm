@@ -123,7 +123,9 @@ class circle(extension, cfg, Matcher):
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:
-                    Misc.send(['executor', 'run', spawn_str], i3=self.i3ipc)
+                    executor = extension.get_mods().get('executor')
+                    if executor is not None:
+                        executor.bindings['run'](spawn_str)
 
     def find_next_not_the_same_win(self, tag: str) -> None:
         """ It was used as the guard to infinite loop in the past.
@@ -190,7 +192,9 @@ class circle(extension, cfg, Matcher):
     def focus_driven_actions(self, tag):
         """ Make some actions after focus """
         if self.conf(tag, "mpd_shut") == 1:
-            Misc.send(['vol', 'mute'], i3=self.i3ipc)
+            vol = extension.get_mods().get('vol')
+            if vol is not None:
+                vol.bindings['mute']()
 
     def twin(self, tag: str, idx: int, with_subtag: bool = False):
         """ Detect target window.
