@@ -150,8 +150,11 @@ class cfg():
         """ Reload config itself and convert lists in it to sets for the better
             performance.
         """
-        with open(self.i3_cfg_mod_path, "r") as mod_cfg:
-            self.cfg = qtoml.load(mod_cfg)
+        try:
+            with open(self.i3_cfg_mod_path, "r") as mod_cfg:
+                self.cfg = qtoml.load(mod_cfg)
+        except FileNotFoundError:
+            print(f'file {self.i3_cfg_mod_path} not exists')
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
