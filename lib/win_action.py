@@ -82,14 +82,14 @@ class win_action(extension, cfg):
             "resize": self.resize,
             "tab-focus": self.focus_tab,
             "tab-move": self.move_tab,
+            "next_ws": self.next_ws,
         }
 
         if self.conf('alternative_layout') == 1:
             self.i3ipc.on('window::focus', self.alternative_layout)
 
     def load_useless_gaps(self) -> None:
-        """ Load useless gaps settings.
-        """
+        """ Load useless gaps settings. """
         try:
             self.useless_gaps = self.cfg.get("useless_gaps", {
                 "w": 12, "a": 12, "s": 12, "d": 12
@@ -154,8 +154,7 @@ class win_action(extension, cfg):
             return
 
     def get_prev_geom(self):
-        """ Get previous window geometry.
-        """
+        """ Get previous window geometry. """
         self.geom_list.append(
             {
                 "id": self.current_win.id,
@@ -181,15 +180,13 @@ class win_action(extension, cfg):
         }
 
     def grow(self) -> None:
-        """ Grow floating window geometry by [self.grow_coeff].
-        """
+        """ Grow floating window geometry by [self.grow_coeff]. """
         focused = self.i3ipc.get_tree().find_focused()
         geom = win_action.multiple_geom(focused, self.grow_coeff)
         win_action.set_geom(focused, geom)
 
     def shrink(self) -> None:
-        """ Shrink floating window geometry by [self.shrink_coeff].
-        """
+        """ Shrink floating window geometry by [self.shrink_coeff]. """
         focused = self.i3ipc.get_tree().find_focused()
         geom = win_action.multiple_geom(focused, self.shrink_coeff)
         win_action.set_geom(focused, geom)
@@ -357,8 +354,7 @@ class win_action(extension, cfg):
             win_action.set_geom(self.current_win, max_geom)
 
     def revert_maximize(self) -> None:
-        """ Revert changed window state.
-        """
+        """ Revert changed window state. """
         try:
             focused = self.i3ipc.get_tree().find_focused()
             if self.geom_list[-1].get("geom", {}):
@@ -441,8 +437,7 @@ class win_action(extension, cfg):
         return direction, mode, int(amount)
 
     def resize(self, direction, amount):
-        """
-            Resize the current container along to the given direction. If there
+        """ Resize the current container along to the given direction. If there
             is only a single container, resize by adjusting gaps. If the
             direction is "natural", resize vertically in a splitv container,
             else horizontally. If it is "orhtogonal", do the opposite.
@@ -617,7 +612,7 @@ class win_action(extension, cfg):
             Split depending on window size
             Inspired by: deadc0de6
         """
-        window = i3.get_tree().find_focused()
+        window = self.i3ipc.get_tree().find_focused()
         if (not window) or (not window.rect) \
                 or (window.layout in ['stacked', 'tabbed']):
             return
@@ -627,7 +622,44 @@ class win_action(extension, cfg):
             layout = 'vertical'
         else:
             layout = 'horizontal'
-        i3.command(f'split {layout}')
+        self.i3ipc.command(f'split {layout}')
+
+    def visible_ws(self):
+        result = []
+        for ws in self.i3ipc.get_workspaces():
+            if ws.visible:
+                result.append(ws)
+        return result
+
+    def next_ws(self):
+        focused = None
+        ws_list = self.visible_ws()
+        ws_numbers = []
+
+        for ws in ws_list:
+            if ws.focused == True:
+                focused = ws
+                break
+
+        ws_index = None
+        if focused is not None:
+            for index, ws in enumerate(ws_list):
+                if ws.name == focused.name:
+                    ws_index = index
+                    break
+            next_ws_name = ""
+            if ws_index + 1 >= len(ws_list):
+                for ws in self.i3ipc.get_workspaces():
+                    ws_numbers.append(ws.num)
+                ws_numbers.sort()
+                for i in range(focused.num + 1, ws_numbers[-1]):
+                    if i not in ws_numbers:
+                        next_ws_name = str(i) + ' :: ws'
+                        break
+                next_ws_name =  str(ws_numbers[-1] + 1) + ' :: ws'
+            else:
+                next_ws_name = ws_list[ws_index + 1]
+            self.i3ipc.command("workspace " + next_ws_name)
 
     def move_tab(self, direction):
         """ Move the innermost stacked or tabbed ancestor container. """
