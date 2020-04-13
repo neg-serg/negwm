@@ -160,14 +160,135 @@ class i3cfg(extension, cfg):
         for_window [class="Places"] $scratchpad_dialog
         """
 
+    def keybindings_mode_resize(self):
+        return """
+        bindsym Mod4+r mode "RESIZE"  # resize mode
+        mode "RESIZE" {
+            bindsym {h,Shift+h} $win_action resize left {4,-4}
+            bindsym {j,Shift+j} $win_action resize bottom {4,-4}
+            bindsym {k,Shift+k} $win_action resize top {4,-4}
+            bindsym {l,Shift+l} $win_action resize right {4,-4}
+
+            bindsym {a,Shift+a} $win_action resize left {4,-4}
+            bindsym {s,Shift+s} $win_action resize bottom {4,-4}
+            bindsym {w,Shift+w} $win_action resize top {4,-4}
+            bindsym {d,Shift+d} $win_action resize right {4,-4}
+
+            #-------------------------------------------------------
+            bindsym {semicolon,Shift+colon} resize {shrink,grow} right 4
+            bindsym {Return,Escape,space,Control+C,Control+G} $exit
+        }
+        """
+
+    def keybindings_mode_spec(self):
+        return """
+        #-- mode: special
+        bindsym Mod1+e mode "SPEC"   # special mode
+        mode "SPEC" {
+            bindsym c exec rofi-pass; $exit
+            bindsym e $exit, [urgent=latest] focus
+            bindsym a $exit, $bscratch dialog
+
+            bindsym 5 $exit, $circle subtag web tor
+            bindsym y $exit, $circle subtag web yandex
+            bindsym f $exit, $circle subtag web firefox
+
+            bindsym Shift+t $exit, $menu gtk_theme
+            bindsym Shift+i $exit, $menu icon_theme
+
+            bindsym Shift+d floating toggle; $exit
+            bindsym Shift+l exec sh -c 'sudo gllock'; $exit
+            bindsym v exec ~/bin/qemu/vm_menu; $exit
+            bindsym Shift+v exec ~/bin/qemu/vm_menu start_win10; $exit
+            bindsym o $menu pulse_output; $exit
+            bindsym i $menu pulse_input; $exit
+
+            bindsym Mod4+s $bscratch subtag im skype, $exit
+            bindsym Mod1+s $bscratch subtag im skype, $exit
+            bindsym s $bscratch subtag im skype, $exit
+            bindsym Mod4+t $bscratch subtag im tel, $exit
+            bindsym Mod1+t $bscratch subtag im tel, $exit
+            bindsym t $bscratch subtag im tel, $exit
+            bindsym m $bscratch toggle neomutt, $exit
+            bindsym w $bscratch toggle webcam, $exit
+            bindsym Shift+r $bscratch toggle ranger, $exit
+
+            bindsym {Return,Escape,Control+C,Control+G} $exit
+        }
+        """
+
+    def keybindings_mode_wm(self):
+        return """
+        bindsym Mod4+minus mode "WM"  # window-manager / split / tiling mode
+        #-- mode: window manager
+        mode "WM" {
+            bindsym grave layout default; $exit
+            bindsym t layout tabbed; $exit
+            bindsym minus layout splith; $exit
+            bindsym backslash layout splitv; $exit
+            bindsym j split vertical; $exit
+            bindsym k split vertical; $exit
+            bindsym h split horizontal; $exit
+            bindsym l split horizontal; $exit
+            bindsym m $menu xprop, $exit
+            bindsym {w,a,s,d} move {up,left,down,right}
+
+            #-- win_action
+            bindsym m $win_action maximize
+            bindsym Shift+m $win_action revert_maximize
+            bindsym {x,y} $win_action {maxhor,maxvert}
+            bindsym Shift+x $win_action revert_maximize
+            bindsym Shift+y $win_action revert_maximize
+            bindsym {1,2,3,4} $win_action quad {1,2,3,4}
+            bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
+            bindsym Shift+{plus,minus} $win_action {grow,shrink}
+            bindsym c $win_action center none
+            bindsym Shift+c $win_action center resize
+
+            bindsym g mode "GAPS"
+
+            bindsym Control+a layout toggle all
+            bindsym Control+3 layout toggle all
+            bindsym Control+s layout toggle split
+            bindsym Control+t layout toggle
+
+            bindsym {Return,Escape,Control+C,Control+G} $exit
+        }
+        """
+
+    def keybindings_mode_gaps(self):
+        return """
+        mode "GAPS" {
+            bindsym {o,i} mode gaps-{outer,inner}
+            bindsym {Return,Escape,Control+C,Control+G} $exit
+        }
+
+        mode "GAPS-OUTER" {
+            bindsym {plus,minus}     gaps outer current {plus,minus} 5
+            bindsym 0                gaps outer current set 0
+
+            bindsym Shift+{plus,minus}  gaps outer all {plus,minus} 5
+            bindsym Shift+0             gaps outer all set 0
+
+            bindsym {Return,Escape,Control+C,Control+G} $exit
+        }
+
+        mode "GAPS-INNER" {
+            bindsym {plus,minus}     gaps inner current {plus,minus} 5
+            bindsym 0                gaps inner current set 0
+
+            bindsym Shift+{plus,minus}  gaps inner all {plus,minus} 5
+            bindsym Shift+0             gaps inner all set 0
+
+            bindsym {Return,Escape,Control+C,Control+G} $exit
+        }
+        """
+
     def keybindings(self):
         return """
         #-- keybindings
         set $exit mode "default"
         bindsym Mod4+q fullscreen toggle
-        bindsym Mod1+e mode "SPEC"   # special mode
-        bindsym Mod4+r mode "RESIZE"  # resize mode
-        bindsym Mod4+minus mode "WM"  # window-manager / split / tiling mode
         bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
         bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
         bindsym Mod4+Control+q kill
@@ -176,8 +297,6 @@ class i3cfg(extension, cfg):
         bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
         bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
         bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
-        bindsym Mod4+Control+5 $circle next remote
-        bindsym Mod4+Control+b $circle next bitwig
         bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
         bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
         bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
@@ -214,6 +333,8 @@ class i3cfg(extension, cfg):
         bindsym Mod4+b $circle next vid
         bindsym Mod4+o $circle next doc
         bindsym Mod4+Shift+o $circle next obs
+        bindsym Mod4+Control+5 $circle next remote
+        bindsym Mod4+Control+b $circle next bitwig
 
         #-- window actions
         bindsym Mod4+grave $win_history focus_next_visible
@@ -221,27 +342,10 @@ class i3cfg(extension, cfg):
 
         bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
 
-        #-- mode resize
-        mode "RESIZE" {
-            bindsym {h,Shift+h} $win_action resize left {4,-4}
-            bindsym {j,Shift+j} $win_action resize bottom {4,-4}
-            bindsym {k,Shift+k} $win_action resize top {4,-4}
-            bindsym {l,Shift+l} $win_action resize right {4,-4}
-
-            bindsym {a,Shift+a} $win_action resize left {4,-4}
-            bindsym {s,Shift+s} $win_action resize bottom {4,-4}
-            bindsym {w,Shift+w} $win_action resize top {4,-4}
-            bindsym {d,Shift+d} $win_action resize right {4,-4}
-
-            #-------------------------------------------------------
-            bindsym {semicolon,Shift+colon} resize {shrink,grow} right 4
-            bindsym {Return,Escape,space,Control+C,Control+G} $exit
-        }
-
         #-- menu
         bindsym Mod1+g $menu goto_win
         bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-        bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager, $exit
+        bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
         bindsym Mod4+Shift+a $menu attach
         bindsym Mod4+g $menu ws
         bindsym Mod4+Control+g $menu movews
@@ -250,100 +354,4 @@ class i3cfg(extension, cfg):
 
         bindsym Mod1+Tab $win_history switch
         bindsym Mod4+slash $win_history switch
-
-        #-- mode: window manager
-        mode "WM" {
-            bindsym grave layout default; $exit
-            bindsym t layout tabbed; $exit
-            bindsym minus layout splith; $exit
-            bindsym backslash layout splitv; $exit
-            bindsym j split vertical; $exit
-            bindsym k split vertical; $exit
-            bindsym h split horizontal; $exit
-            bindsym l split horizontal; $exit
-            bindsym m $menu xprop, $exit
-            bindsym {w,a,s,d} move {up,left,down,right}
-
-            #-- win_action
-            bindsym m $win_action maximize
-            bindsym Shift+m $win_action revert_maximize
-            bindsym {x,y} $win_action {maxhor,maxvert}
-            bindsym Shift+x $win_action revert_maximize
-            bindsym Shift+y $win_action revert_maximize
-            bindsym {1,2,3,4} $win_action quad {1,2,3,4}
-            bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
-            bindsym Shift+{plus,minus} $win_action {grow,shrink}
-            bindsym c $win_action center none
-            bindsym Shift+c $win_action center resize
-
-            bindsym g mode "GAPS"
-
-            bindsym Control+a layout toggle all
-            bindsym Control+3 layout toggle all
-            bindsym Control+s layout toggle split
-            bindsym Control+t layout toggle
-
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-
-        #-- mode: special
-        mode "SPEC" {
-            bindsym c exec rofi-pass; $exit
-            bindsym e $exit, [urgent=latest] focus
-            bindsym a $exit, $bscratch dialog
-
-            bindsym 5 $exit, $circle subtag web tor
-            bindsym y $exit, $circle subtag web yandex
-            bindsym f $exit, $circle subtag web firefox
-
-            bindsym Shift+t $exit, $menu gtk_theme
-            bindsym Shift+i $exit, $menu icon_theme
-
-            bindsym Shift+d floating toggle; $exit
-            bindsym Shift+l exec sh -c 'sudo gllock'; $exit
-            bindsym v exec ~/bin/qemu/vm_menu; $exit
-            bindsym Shift+v exec ~/bin/qemu/vm_menu start_win10; $exit
-            bindsym o $menu pulse_output; $exit
-            bindsym i $menu pulse_input; $exit
-
-            bindsym Mod4+s $bscratch subtag im skype, $exit
-            bindsym Mod1+s $bscratch subtag im skype, $exit
-            bindsym s $bscratch subtag im skype, $exit
-            bindsym Mod4+t $bscratch subtag im tel, $exit
-            bindsym Mod1+t $bscratch subtag im tel, $exit
-            bindsym t $bscratch subtag im tel, $exit
-            bindsym m $bscratch toggle neomutt, $exit
-            bindsym w $bscratch toggle webcam, $exit
-            bindsym Shift+r $bscratch toggle ranger, $exit
-
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-        """
-
-    def gaps_bindings(self):
-        """
-        mode "GAPS" {
-            bindsym {o,i} mode gaps-{outer,inner}
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-
-        mode "GAPS-OUTER" {
-            bindsym {plus,minus}     gaps outer current {plus,minus} 5
-            bindsym 0                gaps outer current set 0
-
-            bindsym Shift+{plus,minus}  gaps outer all {plus,minus} 5
-            bindsym Shift+0             gaps outer all set 0
-
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-
-        mode "GAPS-INNER" {
-            bindsym {plus,minus}     gaps inner current {plus,minus} 5
-            bindsym 0                gaps inner current set 0
-
-            bindsym Shift+{plus,minus}  gaps inner all {plus,minus} 5
-            bindsym Shift+0             gaps inner all set 0
-
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
         """
