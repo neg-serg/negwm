@@ -1,38 +1,9 @@
 workspace_layout tabbed
 floating_modifier Mod4
 set $i3 $XDG_CONFIG_HOME/i3
-set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send circle
-set $bscratch exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send bscratch
-set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_history
-set $menu exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send menu
-set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_action
-set $volume exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send vol
-set $executor exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send executor
-set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
-client.focused #222233 #000000 #ddddee #112211 #0C0C0D
-client.focused_inactive #000000 #000000 #005fff #000000 #222233
-client.unfocused #000000 #000000 #315c70 #000000 #222233
-client.urgent #000000 #2E2457 #4C407C #32275E #32275E
-client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
-client.background #000000
-set $myfont Iosevka Term Heavy 9
-font pango: $myfont
 focus_follows_mouse no
 force_display_urgency_hint 0 ms
 focus_on_window_activation urgent
-#-- warp the mouse to the middle of the window when changing to a different screen
-mouse_warping none
-focus_wrapping yes
-title_align left
-for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
-for_window [class="^.*"] border pixel 3
-show_marks yes
-smart_borders on
-hide_edge_borders both
-gaps inner 0
-gaps outer 0
-gaps top 0
-gaps bottom 0
 set $term "1 ::  α:term"
 set $web "2 ::  β:web"
 set $doc "3 ::  γ:doc"
@@ -49,6 +20,33 @@ set $spotify "13 ::  ν:spotify"
 set $pic "14 ::  ξ:pic"
 set $remote "15 ::  ο:remote"
 set $sound "16 ::  ο:sound"
+client.focused #222233 #000000 #ddddee #112211 #0C0C0D
+client.focused_inactive #000000 #000000 #005fff #000000 #222233
+client.unfocused #000000 #000000 #315c70 #000000 #222233
+client.urgent #000000 #2E2457 #4C407C #32275E #32275E
+client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
+client.background #000000
+set $myfont Iosevka Term Heavy 9
+font pango: $myfont
+#-- warp the mouse to the middle of the window when changing to a different screen
+mouse_warping none
+focus_wrapping yes
+title_align left
+for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
+for_window [class="^.*"] border pixel 3
+show_marks yes
+smart_borders on
+hide_edge_borders both
+set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
+set $bscratch exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send bscratch
+set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send circle
+set $executor exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send executor
+set $fs exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send fs
+set $i3cfg exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send i3cfg
+set $menu exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send menu
+set $vol exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send vol
+set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_action
+set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_history
 #-- wm class groups
 set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
@@ -69,8 +67,6 @@ for_window $vms move workspace $vm, focus
 for_window [class="^term$"] move workspace $term, focus
 for_window [instance="^term$"] move workspace $term, focus
 for_window $mplayer move workspace $gfx, focus
-for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
-for_window [class="^lollypop$"] move workspace $gfx, focus
 for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="Sxiv"] move workspace $pic, focus
 for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
@@ -201,7 +197,7 @@ bindsym w move up
 bindsym a move left
 bindsym s move down
 bindsym d move right
-#-- wm3
+#-- win_action
 bindsym m $win_action maximize
 bindsym Shift+m $win_action revert_maximize
 bindsym x $win_action maxhor
@@ -248,7 +244,7 @@ bindsym o $menu pulse_output; $exit
 bindsym i $menu pulse_input; $exit
 bindsym Mod4+s $bscratch subtag im skype, $exit
 bindsym Mod1+s $bscratch subtag im skype, $exit
-bindsym +s $bscratch subtag im skype, $exit
+bindsym s $bscratch subtag im skype, $exit
 bindsym Mod4+t $bscratch subtag im tel, $exit
 bindsym Mod1+t $bscratch subtag im tel, $exit
 bindsym t $bscratch subtag im tel, $exit
@@ -260,6 +256,10 @@ bindsym Escape $exit
 bindsym Control+C $exit
 bindsym Control+G $exit
 }
+gaps inner 0
+gaps outer 0
+gaps top 0
+gaps bottom 0
 mode "GAPS" {
 bindsym o mode gaps-outer
 bindsym i mode gaps-inner
@@ -292,7 +292,6 @@ bindsym Escape $exit
 bindsym Control+C $exit
 bindsym Control+G $exit
 }
-#-- start
 exec_always zsh -c $XDG_CONFIG_HOME/i3/bin/negi3wm_run &
 exec_always pkill sxhkd; sxhkd &
 exec_always pkill -f 'mpc idle'

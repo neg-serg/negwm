@@ -1,52 +1,13 @@
+
 workspace_layout tabbed
 floating_modifier Mod4
 
 set $i3 ${XDG_CONFIG_HOME}/i3
 
-set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send circle
-set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send bscratch
-set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
-set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
-set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
-set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
-set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
-
-set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
-
-# 1 :: border
-# 2 :: background active
-# 3 :: foreground inactive
-# 4 :: background inactive
-# 5 :: indicator
-client.focused                 #222233  #000000  #ddddee  #112211 #0C0C0D
-client.focused_inactive        #000000  #000000  #005fff  #000000 #222233
-client.unfocused               #000000  #000000  #315c70  #000000 #222233
-client.urgent                  #000000  #2E2457  #4C407C  #32275E #32275E
-client.placeholder             #000000  #0c0c0c  #ffffff  #000000 #0c0c0c
-client.background              #000000
-
-set $myfont Iosevka Term Heavy 9
-font pango: $myfont
-
 focus_follows_mouse no
 force_display_urgency_hint 0 ms
 focus_on_window_activation urgent
 
-#-- warp the mouse to the middle of the window when changing to a different screen
-mouse_warping none
-focus_wrapping yes
-
-title_align left
-for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
-for_window [class="^.*"] border pixel 3
-
-show_marks yes
-smart_borders on
-hide_edge_borders both
-gaps inner  0
-gaps outer  0
-gaps top    0
-gaps bottom 0
 
 set $term "1 ::  α:term"
 set $web "2 ::  β:web"
@@ -64,6 +25,48 @@ set $spotify "13 ::  ν:spotify"
 set $pic "14 ::  ξ:pic"
 set $remote "15 ::  ο:remote"
 set $sound "16 ::  ο:sound"
+
+
+# 1 :: border
+# 2 :: background active
+# 3 :: foreground inactive
+# 4 :: background inactive
+# 5 :: indicator
+client.focused                 #222233  #000000  #ddddee  #112211 #0C0C0D
+client.focused_inactive        #000000  #000000  #005fff  #000000 #222233
+client.unfocused               #000000  #000000  #315c70  #000000 #222233
+client.urgent                  #000000  #2E2457  #4C407C  #32275E #32275E
+client.placeholder             #000000  #0c0c0c  #ffffff  #000000 #0c0c0c
+client.background              #000000
+
+
+set $myfont Iosevka Term Heavy 9
+font pango: $myfont
+
+
+#-- warp the mouse to the middle of the window when changing to a different screen
+mouse_warping none
+focus_wrapping yes
+
+title_align left
+for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
+for_window [class="^.*"] border pixel 3
+
+show_marks yes
+smart_borders on
+hide_edge_borders both
+
+set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
+set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send bscratch
+set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send circle
+set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
+set $fs exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send fs
+set $i3cfg exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send i3cfg
+set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
+set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
+set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
+set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
+
 
 #-- wm class groups
 set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
@@ -85,8 +88,6 @@ for_window $browsers move workspace $web, focus
 for_window $vms move workspace $vm, focus
 for_window [{class,instance}="^term$"] move workspace $term, focus
 for_window $mplayer move workspace $gfx, focus
-for_window [class="Nicotine.*" instance="nicotine"] move workspace $gfx, focus
-for_window [class="^lollypop$"] move workspace $gfx, focus
 for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="Sxiv"] move workspace $pic, focus
 for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
@@ -98,7 +99,7 @@ for_window $daw move workspace $sound, focus
 for_window {$fb2,$pdf}, move workspace $doc, focus
 #-- various floating
 for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
-#-- graphics 
+#-- graphics
 for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
 #-- editors
 for_window $vim move workspace $dev, focus
@@ -108,6 +109,7 @@ for_window $games move workspace $steam, focus
 #-- dialogs
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
+
 
 #-- keybindings
 set $exit mode "default"
@@ -211,7 +213,7 @@ mode "WM" {
     bindsym m $menu xprop, $exit
     bindsym {w,a,s,d} move {up,left,down,right}
 
-    #-- wm3
+    #-- win_action
     bindsym m $win_action maximize
     bindsym Shift+m $win_action revert_maximize
     bindsym {x,y} $win_action {maxhor,maxvert}
@@ -255,7 +257,7 @@ mode "SPEC" {
 
     bindsym Mod4+s $bscratch subtag im skype, $exit
     bindsym Mod1+s $bscratch subtag im skype, $exit
-    bindsym +s $bscratch subtag im skype, $exit
+    bindsym s $bscratch subtag im skype, $exit
     bindsym Mod4+t $bscratch subtag im tel, $exit
     bindsym Mod1+t $bscratch subtag im tel, $exit
     bindsym t $bscratch subtag im tel, $exit
@@ -265,6 +267,12 @@ mode "SPEC" {
 
     bindsym {Return,Escape,Control+C,Control+G} $exit
 }
+
+
+gaps inner  0
+gaps outer  0
+gaps top    0
+gaps bottom 0
 
 mode "GAPS" {
     bindsym {o,i} mode gaps-{outer,inner}
@@ -291,7 +299,6 @@ mode "GAPS-INNER" {
     bindsym {Return,Escape,Control+C,Control+G} $exit
 }
 
-#-- start
 exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &
 exec_always pkill sxhkd; sxhkd &
 exec_always pkill -f 'mpc idle'
@@ -300,5 +307,3 @@ exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
 exec_always ~/bin/scripts/panel_run.sh hard
 exec /usr/sbin/gpaste-client daemon
-
-# vim:filetype=i3
