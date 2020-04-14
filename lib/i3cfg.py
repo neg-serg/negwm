@@ -284,7 +284,7 @@ class i3cfg(extension, cfg):
         }
         """
 
-    def keybindings(self):
+    def keybindings_mode_default(self):
         return """
         #-- keybindings
         set $exit mode "default"
@@ -307,34 +307,11 @@ class i3cfg(extension, cfg):
         bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
         #-- named scratchpad
-        bindsym Mod4+f $bscratch toggle ncmpcpp
-        bindsym Mod4+e $bscratch toggle im
-        bindsym Mod4+d $bscratch toggle teardrop
-        bindsym Mod4+a $bscratch toggle youtube
-        bindsym Mod4+Shift+p $bscratch toggle volcontrol
-        bindsym Mod4+v $bscratch toggle discord
-
         bindsym Mod4+Control+Shift+R $bscratch geom_restore
         bindsym Mod4+Control+Shift+D $bscratch geom_dump
         bindsym Mod4+Control+Shift+S $bscratch geom_autosave
         bindsym Mod4+3 $bscratch next
         bindsym Mod4+s $bscratch hide_current
-
-        #-- circle
-        bindsym Mod4+Control+c $circle next sxiv
-        bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
-        bindsym Mod4+x $circle next term
-        bindsym Mod4+1 $circle next nwim
-        bindsym Mod4+Control+v $circle next vm
-        bindsym Mod4+Control+e $circle next lutris
-        bindsym Mod4+Shift+e $circle next steam
-        bindsym Mod4+Control+f $circle next looking_glass
-        bindsym Mod4+w $circle next web
-        bindsym Mod4+b $circle next vid
-        bindsym Mod4+o $circle next doc
-        bindsym Mod4+Shift+o $circle next obs
-        bindsym Mod4+Control+5 $circle next remote
-        bindsym Mod4+Control+b $circle next bitwig
 
         #-- window actions
         bindsym Mod4+grave $win_history focus_next_visible
