@@ -47,9 +47,6 @@ class i3cfg(extension, cfg):
         ]
         return '\n'.join(autostart_list) + '\n'
 
-    def scratchpad_dialog(self):
-        return 'set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620'
-
     def gaps(self):
         return """
         gaps inner  0
@@ -89,6 +86,7 @@ class i3cfg(extension, cfg):
         # 3 :: foreground inactive
         # 4 :: background inactive
         # 5 :: indicator
+
         client.focused                 #222233  #000000  #ddddee  #112211 #0C0C0D
         client.focused_inactive        #000000  #000000  #005fff  #000000 #222233
         client.unfocused               #000000  #000000  #315c70  #000000 #222233
@@ -99,8 +97,7 @@ class i3cfg(extension, cfg):
 
     def font(self):
         return """
-        set $myfont Iosevka Term Heavy 9
-        font pango: $myfont
+        font pango: Iosevka Term Heavy 9
         """
 
     def mods_commands(self) -> str:
@@ -116,54 +113,79 @@ class i3cfg(extension, cfg):
         return ret
 
     def rules(self):
-        return """
-        #-- wm class groups
-        set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
-        set $sclient [class="^(Steam|steam)$"]
-        set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
-        set $wine_apps [class="^(Wine|wine|Crossover)$"]
-        set $windows_exe_by_title [title="^.*.exe$"]
-        set $windows_exe_by_class [class="^.*.exe$"]
-        set $pdf [class="Zathura"]
-        set $fb2 [class="Cr3" instance="cr3"]
-        set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
-        set $webcam [class="^(cheese|obs)$"]
-        set $vim [instance="nwim"]
-        set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
-        set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
+        def rules_groups_define_circle():
+            return """
+            set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
+            set $sclient [class="^(Steam|steam)$"]
+            set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
+            set $pdf [class="Zathura"]
+            set $fb2 [class="Cr3" instance="cr3"]
+            set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
+            set $vim [instance="nwim"]
+            set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
+            set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
+            """
 
-        #-- wm rules
-        for_window $browsers move workspace $web, focus
-        for_window $vms move workspace $vm, focus
-        for_window [{class,instance}="^term$"] move workspace $term, focus
-        for_window $mplayer move workspace $gfx, focus
-        for_window [class="spotify"] move workspace $spotify, focus
-        for_window [class="Sxiv"] move workspace $pic, focus
-        for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
-        for_window [instance="^(xfreerdp|remmina|org.remmina.Remmina)$"] move workspace $remote, focus
-        for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
-        for_window $daw move workspace $sound, focus
+        def rules_groups_define_standalone():
+            return  """
+            set $webcam [class="cheese"]
+            set $webcam [class="^obs"]
 
-        #-- readers
-        for_window {$fb2,$pdf}, move workspace $doc, focus
-        #-- various floating
-        for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
-        #-- graphics
-        for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
-        #-- editors
-        for_window $vim move workspace $dev, focus
-        #-- games
-        for_window $sclient move workspace $steam, focus
-        for_window $games move workspace $steam, focus
-        #-- dialogs
-        for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
-        for_window [class="Places"] $scratchpad_dialog
-        """
+            set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
+            """
+
+        def plain_rules():
+            return """
+            for_window $browsers move workspace $web, focus
+            for_window $vms move workspace $vm, focus
+            for_window [class="^term$"] move workspace $term, focus
+            for_window [instance="^term$"] move workspace $term, focus
+            for_window $mplayer move workspace $gfx, focus
+            for_window [class="Sxiv"] move workspace $pic, focus
+            for_window $daw move workspace $sound, focus
+
+            for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
+            for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
+            for_window [class="spotify"] move workspace $spotify, focus
+
+            for_window $fb2 move workspace $doc, focus
+            for_window $pdf move workspace $doc, focus
+            for_window $vim move workspace $dev, focus
+            for_window $sclient move workspace $steam, focus
+            for_window $games move workspace $steam, focus
+            for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
+            for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
+            """
+
+        def scratchpad_dialog():
+            return """
+            for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
+            for_window [class="Places"] $scratchpad_dialog
+            """
+
+        ret = ''
+        ret += rules_groups_define_standalone() + \
+            rules_groups_define_circle() + \
+            plain_rules() + \
+            scratchpad_dialog()
+        return ret
+
+
+    def keybindings_mode_start(self, name):
+        return 'mode ' + name + '{\n'
+
+    def keybindings_mode_end(self):
+        return 'bindsym {Return,Escape,space,Control+C,Control+G} $exit\n' + '}\n'
+
+    def keybindings_mode_binding(self, keymap, name):
+        return f'bindsym {keymap} mode "{name}"\n'
 
     def keybindings_mode_resize(self):
-        return """
-        bindsym Mod4+r mode "RESIZE"  # resize mode
-        mode "RESIZE" {
+        mode_bind = 'Mod4+r'
+        mode_name = 'RESIZE'
+
+        def bind_data():
+            return """
             bindsym {h,Shift+h} $win_action resize left {4,-4}
             bindsym {j,Shift+j} $win_action resize bottom {4,-4}
             bindsym {k,Shift+k} $win_action resize top {4,-4}
@@ -174,124 +196,92 @@ class i3cfg(extension, cfg):
             bindsym {w,Shift+w} $win_action resize top {4,-4}
             bindsym {d,Shift+d} $win_action resize right {4,-4}
 
-            #-------------------------------------------------------
             bindsym {semicolon,Shift+colon} resize {shrink,grow} right 4
-            bindsym {Return,Escape,space,Control+C,Control+G} $exit
-        }
-        """
+            """
+
+        ret = ''
+        ret += self.keybindings_mode_binding(mode_bind, mode_name)
+        ret += self.keybindings_mode_start(mode_bind)
+        ret += bind_data()
+        ret += self.keybindings_mode_end()
+
+        return ret
 
     def keybindings_mode_spec(self):
-        return """
-        #-- mode: special
-        bindsym Mod1+e mode "SPEC"   # special mode
-        mode "SPEC" {
+        mode_bind = 'Mod1+e'
+        mode_name = 'SPEC'
+
+        def bind_data():
+            return """
             bindsym c exec rofi-pass; $exit
             bindsym e $exit, [urgent=latest] focus
-            bindsym a $exit, $bscratch dialog
-
-            bindsym 5 $exit, $circle subtag web tor
-            bindsym y $exit, $circle subtag web yandex
-            bindsym f $exit, $circle subtag web firefox
-
-            bindsym Shift+t $exit, $menu gtk_theme
-            bindsym Shift+i $exit, $menu icon_theme
 
             bindsym Shift+d floating toggle; $exit
             bindsym Shift+l exec sh -c 'sudo gllock'; $exit
             bindsym v exec ~/bin/qemu/vm_menu; $exit
             bindsym Shift+v exec ~/bin/qemu/vm_menu start_win10; $exit
+
             bindsym o $menu pulse_output; $exit
             bindsym i $menu pulse_input; $exit
+            bindsym Shift+t $exit, $menu gtk_theme
+            bindsym Shift+i $exit, $menu icon_theme
+            """
 
-            bindsym Mod4+s $bscratch subtag im skype, $exit
-            bindsym Mod1+s $bscratch subtag im skype, $exit
-            bindsym s $bscratch subtag im skype, $exit
-            bindsym Mod4+t $bscratch subtag im tel, $exit
-            bindsym Mod1+t $bscratch subtag im tel, $exit
-            bindsym t $bscratch subtag im tel, $exit
-            bindsym m $bscratch toggle neomutt, $exit
-            bindsym w $bscratch toggle webcam, $exit
-            bindsym Shift+r $bscratch toggle ranger, $exit
+        ret = ''
+        ret += self.keybindings_mode_binding(mode_bind, mode_name)
+        ret += self.keybindings_mode_start(mode_bind)
+        ret += bind_data()
+        ret += self.keybindings_mode_end()
 
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-        """
+        return ret
 
     def keybindings_mode_wm(self):
-        return """
-        bindsym Mod4+minus mode "WM"  # window-manager / split / tiling mode
-        #-- mode: window manager
-        mode "WM" {
+        mode_bind = 'Mod4+minus'
+        mode_name = 'WM'
+
+        def bind_data():
+            return """
             bindsym grave layout default; $exit
             bindsym t layout tabbed; $exit
             bindsym minus layout splith; $exit
             bindsym backslash layout splitv; $exit
-            bindsym j split vertical; $exit
-            bindsym k split vertical; $exit
-            bindsym h split horizontal; $exit
-            bindsym l split horizontal; $exit
+            bindsym {j,k} split vertical; $exit
+            bindsym {h,l} split horizontal; $exit
             bindsym m $menu xprop, $exit
             bindsym {w,a,s,d} move {up,left,down,right}
 
-            #-- win_action
             bindsym m $win_action maximize
             bindsym Shift+m $win_action revert_maximize
             bindsym {x,y} $win_action {maxhor,maxvert}
-            bindsym Shift+x $win_action revert_maximize
-            bindsym Shift+y $win_action revert_maximize
+            bindsym Shift+{x,y} $win_action revert_maximize
             bindsym {1,2,3,4} $win_action quad {1,2,3,4}
             bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
             bindsym Shift+{plus,minus} $win_action {grow,shrink}
             bindsym c $win_action center none
             bindsym Shift+c $win_action center resize
 
-            bindsym g mode "GAPS"
-
-            bindsym Control+a layout toggle all
-            bindsym Control+3 layout toggle all
+            bindsym Control+{a,3} layout toggle all
             bindsym Control+s layout toggle split
             bindsym Control+t layout toggle
+            """
 
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-        """
+        ret = ''
+        ret += self.keybindings_mode_binding(mode_bind, mode_name)
+        ret += self.keybindings_mode_start(mode_bind)
+        ret += bind_data
+        ret += self.keybindings_mode_end()
 
-    def keybindings_mode_gaps(self):
-        return """
-        mode "GAPS" {
-            bindsym {o,i} mode gaps-{outer,inner}
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
+        return ret
 
-        mode "GAPS-OUTER" {
-            bindsym {plus,minus}     gaps outer current {plus,minus} 5
-            bindsym 0                gaps outer current set 0
-
-            bindsym Shift+{plus,minus}  gaps outer all {plus,minus} 5
-            bindsym Shift+0             gaps outer all set 0
-
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-
-        mode "GAPS-INNER" {
-            bindsym {plus,minus}     gaps inner current {plus,minus} 5
-            bindsym 0                gaps inner current set 0
-
-            bindsym Shift+{plus,minus}  gaps inner all {plus,minus} 5
-            bindsym Shift+0             gaps inner all set 0
-
-            bindsym {Return,Escape,Control+C,Control+G} $exit
-        }
-        """
 
     def keybindings_mode_default(self):
         return """
-        #-- keybindings
         set $exit mode "default"
+
         bindsym Mod4+q fullscreen toggle
-        bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
         bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
         bindsym Mod4+Control+q kill
+
         bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
         bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
         bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
@@ -302,27 +292,23 @@ class i3cfg(extension, cfg):
         bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
         bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
         bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
+        bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
+        bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
 
         bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
         bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
-        #-- named scratchpad
+        bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
+
+        bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
+
         bindsym Mod4+Control+Shift+R $bscratch geom_restore
         bindsym Mod4+Control+Shift+D $bscratch geom_dump
         bindsym Mod4+Control+Shift+S $bscratch geom_autosave
         bindsym Mod4+3 $bscratch next
         bindsym Mod4+s $bscratch hide_current
 
-        #-- window actions
-        bindsym Mod4+grave $win_history focus_next_visible
-        bindsym Mod4+Shift+grave $win_history focus_prev_visible
-
-        bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
-
-        #-- menu
         bindsym Mod1+g $menu goto_win
-        bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-        bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
         bindsym Mod4+Shift+a $menu attach
         bindsym Mod4+g $menu ws
         bindsym Mod4+Control+g $menu movews
@@ -331,4 +317,6 @@ class i3cfg(extension, cfg):
 
         bindsym Mod1+Tab $win_history switch
         bindsym Mod4+slash $win_history switch
+        bindsym Mod4+grave $win_history focus_next_visible
+        bindsym Mod4+Shift+grave $win_history focus_prev_visible
         """
