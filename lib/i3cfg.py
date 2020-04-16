@@ -26,15 +26,15 @@ class i3cfg(extension, cfg):
                 ret.append(textwrap.dedent(section_data))
         return ret
 
-    def show_cfg(self):
+    def show_cfg(self) -> None:
         print(''.join(self.generate()))
 
-    def write_cfg(self):
+    def write_cfg(self) -> None:
         i3_config = '/home/neg/.config/i3/_config'
         with open(i3_config, 'w', encoding='utf8') as outfile:
             outfile.write('\n'.join(self.generate()))
 
-    def autostart(self):
+    def autostart(self) -> str:
         autostart_list = [
             'exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &',
             'exec_always pkill sxhkd; sxhkd &',
@@ -47,15 +47,17 @@ class i3cfg(extension, cfg):
         ]
         return '\n'.join(autostart_list) + '\n'
 
-    def gaps(self):
-        return """
-        gaps inner  0
-        gaps outer  0
-        gaps top    0
-        gaps bottom 0
-        """
+    def gaps(self) -> str:
+        gaps = [0, 0, 0, 0]
+        gaps_params = [
+            f'gaps inner {gaps[0]}',
+            f'gaps outer {gaps[1]}',
+            f'gaps top {gaps[2]}',
+            f'gaps bottom {gaps[3]}'
+        ]
+        return '\n'.join(gaps_params) + '\n'
 
-    def general(self):
+    def general(self) -> str:
         return """
         workspace_layout tabbed
         floating_modifier Mod4
@@ -79,7 +81,7 @@ class i3cfg(extension, cfg):
         hide_edge_borders both
         """
 
-    def colorscheme(self):
+    def colorscheme(self) -> str:
         return """
         # 1 :: border
         # 2 :: background active
@@ -95,10 +97,63 @@ class i3cfg(extension, cfg):
         client.background              #000000
         """
 
-    def font(self):
-        return """
-        font pango: Iosevka Term Heavy 9
-        """
+    def bscratch_bindings(self, mode) -> str:
+        ret = ''
+        def get_binds(mode, tag, settings, p) -> str:
+            ret = ''
+            pref = ''
+            if mode != 'default':
+                pref = '\t'
+            get_binds = p.split('_')
+            mode_ = get_binds[1]
+            cmd = get_binds[2]
+            if len(get_binds) == 3:
+                if mode_ == mode:
+                    for keybind in settings[p]:
+                        ret += f'{pref}bindsym {keybind} $bscratch {cmd} {tag}\n'
+            return ret
+
+        bscratch = extension.get_mods()['bscratch']
+        for tag,settings in bscratch.cfg.items():
+            if tag != "transients":
+                for param in settings:
+                    if isinstance(settings[param], dict):
+                        for p in settings[param]:
+                            if p.startswith('keybind_'):
+                                ret += get_binds(mode, tag, settings[param], p)
+                    elif param.startswith('keybind_'):
+                        ret += get_binds(mode, tag, settings, param)
+        return ret
+
+    def circle_bindings(self, mode) -> str:
+        ret = ''
+        def get_binds(mode, tag, settings, p) -> str:
+            ret = ''
+            pref = ''
+            if mode != 'default':
+                pref = '\t'
+            get_binds = p.split('_')
+            mode_ = get_binds[1]
+            cmd = get_binds[2]
+            if len(get_binds) == 3:
+                if mode_ == mode:
+                    for keybind in settings[p]:
+                        ret += f'{pref}bindsym {keybind} $circle {cmd} {tag}\n'
+            return ret
+
+        circle = extension.get_mods()['circle']
+        for tag,settings in circle.cfg.items():
+            for param in settings:
+                if isinstance(settings[param], dict):
+                    for p in settings[param]:
+                        if p.startswith('keybind_'):
+                            ret += get_binds(mode, tag, settings[param], p)
+                elif param.startswith('keybind_'):
+                    ret += get_binds(mode, tag, settings, param)
+        return ret
+
+    def font(self) -> str:
+        return "font pango: Iosevka Term Heavy 9"
 
     def mods_commands(self) -> str:
         ret = ''
@@ -106,14 +161,14 @@ class i3cfg(extension, cfg):
             ret += (f'set ${mod} exec --no-startup-id {self.send_path} {mod}\n')
         return ret
 
-    def workspaces(self):
+    def workspaces(self) -> str:
         ret = ''
         for index, ws in enumerate(self.cfg['ws_list']):
             ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
         return ret
 
-    def rules(self):
-        def rules_groups_define_circle():
+    def rules(self) -> str:
+        def rules_groups_define_circle() -> str:
             return """
             set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
             set $sclient [class="^(Steam|steam)$"]
@@ -126,7 +181,7 @@ class i3cfg(extension, cfg):
             set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
             """
 
-        def rules_groups_define_standalone():
+        def rules_groups_define_standalone() -> str:
             return  """
             set $webcam [class="cheese"]
             set $webcam [class="^obs"]
@@ -134,7 +189,7 @@ class i3cfg(extension, cfg):
             set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
             """
 
-        def plain_rules():
+        def plain_rules() -> str:
             return """
             for_window $browsers move workspace $web, focus
             for_window $vms move workspace $vm, focus
@@ -157,7 +212,7 @@ class i3cfg(extension, cfg):
             for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
             """
 
-        def scratchpad_dialog():
+        def scratchpad_dialog() -> str:
             return """
             for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
             for_window [class="Places"] $scratchpad_dialog
@@ -171,16 +226,16 @@ class i3cfg(extension, cfg):
         return ret
 
 
-    def keybindings_mode_start(self, name):
-        return 'mode ' + name + '{\n'
+    def keybindings_mode_start(self, name) -> str:
+        return 'mode ' + name + ' {\n'
 
-    def keybindings_mode_end(self):
+    def keybindings_mode_end(self) -> str:
         return 'bindsym {Return,Escape,space,Control+C,Control+G} $exit\n' + '}\n'
 
-    def keybindings_mode_binding(self, keymap, name):
+    def keybindings_mode_binding(self, keymap, name) -> str:
         return f'bindsym {keymap} mode "{name}"\n'
 
-    def keybindings_mode_resize(self):
+    def keybindings_mode_resize(self) -> str:
         mode_bind = 'Mod4+r'
         mode_name = 'RESIZE'
 
@@ -201,13 +256,13 @@ class i3cfg(extension, cfg):
 
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
-        ret += self.keybindings_mode_start(mode_bind)
-        ret += bind_data()
+        ret += self.keybindings_mode_start(mode_name)
+        ret += str(bind_data())
         ret += self.keybindings_mode_end()
 
         return ret
 
-    def keybindings_mode_spec(self):
+    def keybindings_mode_spec(self) -> str:
         mode_bind = 'Mod1+e'
         mode_name = 'SPEC'
 
@@ -229,17 +284,19 @@ class i3cfg(extension, cfg):
 
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
-        ret += self.keybindings_mode_start(mode_bind)
-        ret += bind_data()
+        ret += self.keybindings_mode_start(mode_name)
+        ret += str(bind_data())
+        ret += str(self.bscratch_bindings(mode_name))
+        ret += str(self.circle_bindings(mode_name))
         ret += self.keybindings_mode_end()
 
         return ret
 
-    def keybindings_mode_wm(self):
+    def keybindings_mode_wm(self) -> str:
         mode_bind = 'Mod4+minus'
         mode_name = 'WM'
 
-        def bind_data():
+        def bind_data() -> str:
             return """
             bindsym grave layout default; $exit
             bindsym t layout tabbed; $exit
@@ -267,15 +324,16 @@ class i3cfg(extension, cfg):
 
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
-        ret += self.keybindings_mode_start(mode_bind)
-        ret += bind_data
+        ret += self.keybindings_mode_start(mode_name)
+        ret += str(bind_data())
+        ret += str(self.bscratch_bindings(mode_name))
+        ret += str(self.circle_bindings(mode_name))
         ret += self.keybindings_mode_end()
 
         return ret
 
-
-    def keybindings_mode_default(self):
-        return """
+    def keybindings_mode_default(self) -> str:
+        return str("""
         set $exit mode "default"
 
         bindsym Mod4+q fullscreen toggle
@@ -319,4 +377,4 @@ class i3cfg(extension, cfg):
         bindsym Mod4+slash $win_history switch
         bindsym Mod4+grave $win_history focus_next_visible
         bindsym Mod4+Shift+grave $win_history focus_prev_visible
-        """
+        """) + self.bscratch_bindings('default') + str(self.circle_bindings('default'))
