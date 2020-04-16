@@ -143,6 +143,7 @@ bindsym Mod4+d $bscratch toggle teardrop
 bindsym Mod4+a $bscratch toggle youtube
 bindsym Mod4+Shift+p $bscratch toggle volcontrol
 bindsym Mod4+v $bscratch toggle discord
+bindsym Mod4+Control+a $bscratch dialog
 
 bindsym Mod4+Control+Shift+R $bscratch geom_restore
 bindsym Mod4+Control+Shift+D $bscratch geom_dump
@@ -239,7 +240,6 @@ mode "WM" {
 mode "SPEC" {
     bindsym c exec rofi-pass; $exit
     bindsym e $exit, [urgent=latest] focus
-    bindsym a $exit, $bscratch dialog
 
     bindsym 5 $exit, $circle subtag web tor
     bindsym y $exit, $circle subtag web yandex
