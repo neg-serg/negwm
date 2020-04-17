@@ -437,7 +437,8 @@ class bscratch(extension, cfg, Matcher):
                     for win in self.marked[tag]:
                         win.command('unmark')
 
-        self.initialize(self.i3ipc)
+        self.__init__(self.i3ipc)
+
 
     def del_prop(self, tag: str, prop_str: str) -> None:
         """ Delete property via [prop_str] to the target [tag].

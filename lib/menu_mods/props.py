@@ -2,6 +2,7 @@ import subprocess
 import re
 import socket
 from typing import List
+from extension import extension
 
 
 class props():
@@ -23,7 +24,7 @@ class props():
         # negi3wm which allows add / delete property.
         # For example this feature can be used to move / delete window
         # to / from named scratchpad.
-        self.possible_mods = ['ns', 'circle']
+        self.possible_mods = ['bscratch', 'circle']
 
         # Window properties used by i3 to match windows.
         self.i3rules_xprop = set(self.menu.conf("rules_xprop"))
@@ -53,8 +54,7 @@ class props():
         return ""
 
     def autoprop(self) -> None:
-        """ Start autoprop menu to move current module to smth.
-        """
+        """ Start autoprop menu to move current module to smth. """
         mod = self.get_mod()
         if mod is None or not mod:
             return
@@ -65,25 +65,18 @@ class props():
         tag_name = self.tag_name(mod, lst)
 
         if tag_name is not None and tag_name:
-            for mod in self.possible_mods:
-                cmdl = [
-                    f'{self.menu.i3_path}/bin/send',
-                    f'{mod}', 'add_prop',
-                    f'{tag_name}', f'{aprop_str}'
-                ]
-                subprocess.run(cmdl, check=False)
+            extension.get_mods()[mod].add_prop(tag_name, aprop_str)
         else:
             print(f'No tag name specified for props [{aprop_str}]')
 
     def get_mod(self) -> str:
-        """ Select extension for add_prop by menu.
-        """
+        """ Select extension for add_prop by menu. """
         menu_params = {
             'cnum': len(self.possible_mods),
             'lnum': 1,
             'width': int(self.menu.screen_width * 0.75),
-            'prompt': f'{self.menu.wrap_str("selmod")} \
-            {self.menu.conf("prompt")}'
+            'prompt': f'{self.menu.wrap_str("selmod")}' \
+            f'{self.menu.conf("prompt")}'
         }
         mod = subprocess.run(
             self.menu.args(menu_params),
@@ -98,8 +91,7 @@ class props():
         return ""
 
     def show_props(self) -> None:
-        """ Send notify-osd message about current properties.
-        """
+        """ Send notify-osd message about current properties. """
         aprop_str = self.get_autoprop_as_str(with_title=False)
         notify_msg = ['notify-send', 'X11 prop', aprop_str]
         subprocess.run(notify_msg, check=False)
@@ -142,23 +134,8 @@ class props():
 
     def mod_data_list(self, mod: str) -> List[str]:
         """ Extract list of module tags. Used by add_prop menus.
-
-        Args:
-            mod (str): extension name.
+            Args:
+                mod (str): extension name.
         """
-        self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-        self.sock.connect((self.host, self.port))
-        self.sock.send(bytes(f'{mod}_list\n', 'UTF-8'))
-
-        out = self.sock.recv(1024)
-
-        self.sock.shutdown(1)
-        self.sock.close()
-
-        lst = []
-        if out is not None:
-            lst = out.decode('UTF-8').strip()[1:-1].split(', ')
-            lst = [t.replace("'", '') for t in lst]
-
-        return lst
+        return extension.get_mods()[mod].cfg.keys()
 
