@@ -415,7 +415,7 @@ Current procs binaries intended to be run from polybar.
 
 To use ws please add to polybar config something like this:
 
-```toml
+```config
 [module/ws]
 type = custom/script
 exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_ws 2> /dev/null
@@ -433,7 +433,7 @@ font and also create custom markup for any of workspace as you like.
 
 To use fast mpd volume notification module use this:
 
-```toml
+```config
 [module/volume]
 type = custom/script
 interval = 0
