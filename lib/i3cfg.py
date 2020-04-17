@@ -38,10 +38,10 @@ class i3cfg(extension, cfg):
     def autostart(self) -> str:
         autostart_list = [
             "exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &",
-            "exec_always ~/bin/scripts/gnome_settings &",
+            "exec_always ${XDG_CONFIG_HOME}/i3/bin/gnome_settings &",
+            "exec_always ${XDG_CONFIG_HOME}/i3/bin/panel_run.sh &",
             "exec /usr/lib/gsd-xsettings &",
-            "exec_always ~/bin/scripts/panel_run.sh",
-            "exec /usr/sbin/gpaste-client daemon",
+            "exec /usr/sbin/gpaste-client daemon &",
         ]
         return '\n'.join(autostart_list) + '\n'
 
@@ -271,8 +271,7 @@ class i3cfg(extension, cfg):
 
         def scratchpad_dialog() -> str:
             return """
-            for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
-            for_window [class="Places"] $scratchpad_dialog
+            for_window [class="Places" window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
             """
 
         ret = ''

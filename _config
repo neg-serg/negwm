@@ -111,8 +111,7 @@ for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdeskt
 for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
 
-for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
-for_window [class="Places"] $scratchpad_dialog
+for_window [class="Places" window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 
 bindsym Mod4+r mode "RESIZE"
 mode RESIZE {
@@ -262,7 +261,7 @@ gaps top 0
 gaps bottom 0
 
 exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &
-exec_always ~/bin/scripts/gnome_settings &
+exec_always ${XDG_CONFIG_HOME}/i3/bin/gnome_settings &
+exec_always ${XDG_CONFIG_HOME}/i3/bin/panel_run.sh &
 exec /usr/lib/gsd-xsettings &
-exec_always ~/bin/scripts/panel_run.sh
-exec /usr/sbin/gpaste-client daemon
+exec /usr/sbin/gpaste-client daemon &

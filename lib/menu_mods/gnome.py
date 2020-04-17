@@ -10,15 +10,15 @@ from misc import Misc
 
 class gnome():
     """
-        Change gtk / icons themes and another gnome settings using
-        gsd-xsettings.
+    Change gtk / icons themes and another gnome settings using
+    gsd-xsettings.
     """
 
     def __init__(self, menu):
         self.menu = menu
         self.gtk_config = configparser.ConfigParser()
         self.gsettings_script = os.path.expanduser(
-            '~/bin/scripts/gnome_settings'
+            Misc.i3path() + 'bin/gnome_settings'
         )
 
     def menu_params(self, length, prompt):
