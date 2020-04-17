@@ -112,7 +112,7 @@ class i3cfg(extension, cfg):
                 if mode_ == mode:
                     for keybind in settings[p]:
                         ret += f'{pref}bindsym {keybind}' \
-                            f' $bscratch {cmd} {tag}{subtag}{postfix}\n'
+                            f' $bscratch {cmd} {tag} {subtag}{postfix}\n'
             return ret
 
         bscratch = extension.get_mods()['bscratch']
