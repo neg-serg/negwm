@@ -55,7 +55,7 @@ class geom():
         return ret
 
     def ret_info(self, tag: str, attr: str, target_attr: str,
-                 dprefix: str, hide: str) -> str:
+                 dprefix: str, hide: bool) -> str:
         """ Create rule in i3 commands format
 
         Args:
@@ -63,7 +63,7 @@ class geom():
             attr (str): tag attrubutes.
             target_attr (str): attribute to fill.
             dprefix (str): rule prefix.
-            hide (str): to hide target or not.
+            hide (bool): to hide target or not.
         """
         if target_attr in attr:
             lst = [item for item in self.cfg[tag][target_attr] if item != '']
@@ -72,7 +72,7 @@ class geom():
                     self.ch(self.cfg[tag][attr], '^')
                 for_win_cmd = pref + self.parse_attr(self.cfg[tag][attr]) + \
                     "move scratchpad, " + self.get_geom(tag) \
-                                        + self.scratchpad_hide_cmd(hide)
+                        + self.scratchpad_hide_cmd(hide)
                 return for_win_cmd
         return ''
 
@@ -86,9 +86,9 @@ class geom():
         ret = ''
         if len(attrib_list) > 1:
             ret += '('
-        for iter, item in enumerate(attrib_list):
+        for i, item in enumerate(attrib_list):
             ret += item
-            if iter+1 < len(attrib_list):
+            if i + 1 < len(attrib_list):
                 ret += '|'
         if len(attrib_list) > 1:
             ret += ')$'
@@ -96,8 +96,10 @@ class geom():
 
         return ret
 
-    def create_i3_match_rules(self, hide: bool = True,
-                              dprefix: str = "for_window ") -> None:
+    def i3match_gen(self,
+                    hide: bool = True,
+                    dprefix: str = "for_window "
+                    ) -> None:
         """ Create i3 match rules for all tags.
 
         Args:
@@ -114,18 +116,17 @@ class geom():
                     tag, attr, 'instance', dprefix, hide)
                 )
         self.cmd_list = filter(lambda str: str != '', cmd_list)
+        print(self.cmd_list)
 
     # nsd need this function
     def get_geom(self, tag: str) -> str:
-        """ External function used by nsd
-        """
+        """ External function used by nsd """
         return self.parsed_geom[tag]
 
     def parse_geom(self, tag: str) -> str:
         """ Convert geometry from self.cfg format to i3 commands.
-
-        Args:
-            tag (str): target self.cfg tag
+            Args:
+                tag (str): target self.cfg tag
         """
         rd = {'width': 1920, 'height': 1200}  # resolution_default
         cr = self.current_resolution          # current resolution
