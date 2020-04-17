@@ -36,8 +36,8 @@ class i3cfg(extension, cfg):
 
     def autostart(self) -> str:
         autostart_list = [
-            'exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &',
-            'exec_always pkill sxhkd; sxhkd &',
+            "exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &",
+            "exec_always pkill sxhkd; sxhkd &",
             "exec_always pkill -f 'mpc idle'",
             "exec caffeine &",
             "exec_always ~/bin/scripts/gnome_settings &",
@@ -110,7 +110,8 @@ class i3cfg(extension, cfg):
             if len(get_binds) == 3:
                 if mode_ == mode:
                     for keybind in settings[p]:
-                        ret += f'{pref}bindsym {keybind} $bscratch {cmd} {tag}\n'
+                        ret += f'{pref}bindsym {keybind}' \
+                            f' $bscratch {cmd} {tag}\n'
             return ret
 
         bscratch = extension.get_mods()['bscratch']
@@ -302,22 +303,29 @@ class i3cfg(extension, cfg):
             bindsym t layout tabbed; $exit
             bindsym minus layout splith; $exit
             bindsym backslash layout splitv; $exit
-            bindsym {j,k} split vertical; $exit
-            bindsym {h,l} split horizontal; $exit
+            bindsym j split vertical; $exit
+            bindsym k split vertical; $exit
+            bindsym h split horizontal; $exit
+            bindsym l split horizontal; $exit
             bindsym m $menu xprop, $exit
+
             bindsym {w,a,s,d} move {up,left,down,right}
+            bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
+            bindsym {1,2,3,4} $win_action quad {1,2,3,4}
 
             bindsym m $win_action maximize
             bindsym Shift+m $win_action revert_maximize
-            bindsym {x,y} $win_action {maxhor,maxvert}
-            bindsym Shift+{x,y} $win_action revert_maximize
-            bindsym {1,2,3,4} $win_action quad {1,2,3,4}
-            bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
-            bindsym Shift+{plus,minus} $win_action {grow,shrink}
+            bindsym x $win_action maxhor
+            bindsym y $win_action maxvert
+            bindsym Shift+x $win_action revert_maximize
+            bindsym Shift+y $win_action revert_maximize
+            bindsym Shift+plus $win_action grow
+            bindsym Shift+minus $win_action shrink
             bindsym c $win_action center none
             bindsym Shift+c $win_action center resize
 
-            bindsym Control+{a,3} layout toggle all
+            bindsym Control+a layout toggle all
+            bindsym Control+3 layout toggle all
             bindsym Control+s layout toggle split
             bindsym Control+t layout toggle
             """
@@ -333,48 +341,60 @@ class i3cfg(extension, cfg):
         return ret
 
     def keybindings_mode_default(self) -> str:
-        return str("""
-        set $exit mode "default"
+        mode_name = 'WM'
 
-        bindsym Mod4+q fullscreen toggle
-        bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
-        bindsym Mod4+Control+q kill
+        def bind_data() -> str:
+            return """
+            set $exit mode "default"
 
-        bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-        bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
-        bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
-        bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
-        bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
-        bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
-        bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
-        bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
-        bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
-        bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
-        bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-        bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
+            bindsym Mod4+q fullscreen toggle
+            bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
+            bindsym Mod4+Control+q kill
 
-        bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-        bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
+            bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
+            bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
+            bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
+            bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
+            bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
+            bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
+            bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
+            bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
+            bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
+            bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
+            bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
+            bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
 
-        bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
+            bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+            bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
-        bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
+            bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
 
-        bindsym Mod4+Control+Shift+R $bscratch geom_restore
-        bindsym Mod4+Control+Shift+D $bscratch geom_dump
-        bindsym Mod4+Control+Shift+S $bscratch geom_autosave
-        bindsym Mod4+3 $bscratch next
-        bindsym Mod4+s $bscratch hide_current
+            bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 
-        bindsym Mod1+g $menu goto_win
-        bindsym Mod4+Shift+a $menu attach
-        bindsym Mod4+g $menu ws
-        bindsym Mod4+Control+g $menu movews
-        bindsym Mod4+Control+grave $menu cmd_menu
-        bindsym Mod4+Shift+s $menu autoprop
+            bindsym Mod4+Control+Shift+R $bscratch geom_restore
+            bindsym Mod4+Control+Shift+D $bscratch geom_dump
+            bindsym Mod4+Control+Shift+S $bscratch geom_autosave
+            bindsym Mod4+3 $bscratch next
+            bindsym Mod4+s $bscratch hide_current
 
-        bindsym Mod1+Tab $win_history switch
-        bindsym Mod4+slash $win_history switch
-        bindsym Mod4+grave $win_history focus_next_visible
-        bindsym Mod4+Shift+grave $win_history focus_prev_visible
-        """) + self.bscratch_bindings('default') + str(self.circle_bindings('default'))
+            bindsym Mod1+g $menu goto_win
+            bindsym Mod4+Shift+a $menu attach
+            bindsym Mod4+g $menu ws
+            bindsym Mod4+Control+g $menu movews
+            bindsym Mod4+Control+grave $menu cmd_menu
+            bindsym Mod4+Shift+s $menu autoprop
+
+            bindsym Mod1+Tab $win_history switch
+            bindsym Mod4+slash $win_history switch
+            bindsym Mod4+grave $win_history focus_next_visible
+            bindsym Mod4+Shift+grave $win_history focus_prev_visible
+            """
+
+        ret = ''
+        ret += self.keybindings_mode_start(mode_name)
+        ret += str(bind_data())
+        ret += str(self.bscratch_bindings(mode_name))
+        ret += str(self.circle_bindings(mode_name))
+        ret += self.keybindings_mode_end()
+
+        return ret
