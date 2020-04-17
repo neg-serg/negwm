@@ -229,7 +229,8 @@ class i3cfg(extension, cfg):
                 if focus:
                     focus_cmd = ', focus'
                 if ws:
-                    ret += f'for_window $circle-{tag} move workspace ${ws}{focus_cmd}\n'
+                    ret += f'for_window $circle-{tag}' \
+                        f' move workspace ${ws}{focus_cmd}\n'
 
             return ret
 

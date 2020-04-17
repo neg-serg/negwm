@@ -61,7 +61,7 @@ set $circle-vid [class="^(mpv|mplayer|mplayer2|Vlc)$"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
 set $circle-steam [class="Steam"]
 set $circle-doc [class="^(Zathura|cr3)$"]
-set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$|^[Qq]emu-.*$)$"]
+set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$)$"]
 set $circle-term [instance="term"]
 set $circle-nwim [instance="nwim"]
 set $circle-obs [class="obs"]
@@ -221,7 +221,7 @@ bindsym Mod4+grave $win_history focus_next_visible
 bindsym Mod4+Shift+grave $win_history focus_prev_visible
 bindsym Mod4+e $bscratch toggle im
 bindsym Mod4+f $bscratch toggle ncmpcpp
-bindsym Mod4+Control+o $bscratch toggle neomutt
+bindsym Mod4+Control+n $bscratch toggle neomutt
 bindsym Mod4+d $bscratch toggle teardrop
 bindsym Mod4+Shift+p $bscratch toggle volcontrol
 bindsym Mod4+a $bscratch toggle youtube
