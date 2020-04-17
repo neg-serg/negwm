@@ -127,13 +127,13 @@ bindsym o $menu pulse_output, $exit
 bindsym i $menu pulse_input, $exit
 bindsym Shift+t $exit, $menu gtk_theme
 bindsym Shift+i $exit, $menu icon_theme
-bindsym t $bscratch subtag im , $exit
-bindsym s $bscratch subtag im , $exit
+bindsym t $bscratch subtag im tel , $exit
+bindsym s $bscratch subtag im skype , $exit
 bindsym m $bscratch toggle neomutt , $exit
 bindsym Shift+r $bscratch toggle ranger , $exit
 bindsym w $bscratch toggle webcam , $exit
-bindsym f $circle subtag webfirefox, $exit
-bindsym 5 $circle subtag webtor, $exit
+bindsym f $circle subtag web firefox , $exit
+bindsym 5 $circle subtag web tor , $exit
 bindsym Return $exit
 bindsym Escape $exit
 bindsym space $exit
@@ -188,7 +188,6 @@ bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
 bindsym Mod4+Control+q kill
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
 bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
-bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
 bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
 bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
 bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
@@ -196,6 +195,7 @@ bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
 bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
 bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
+bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
 bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
 bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
 bindsym Mod4+apostrophe exec zsh -c $XDG_CONFIG_HOME/i3/bin/i3_reload
@@ -238,7 +238,7 @@ bindsym Mod4+1 $circle next nwim
 bindsym Mod4+Shift+o $circle toggle obs
 bindsym Mod4+Control+5 $circle toggle remote
 bindsym Mod4+Control+c $circle next sxiv
-bindsym Mod4+Shift+c $circle subtag sxivwallpaper
+bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
 bindsym Mod4+Control+f $circle next looking_glass
 bindsym Mod4+Control+b $circle next bitwig
 gaps inner 0
@@ -248,4 +248,4 @@ gaps bottom 0
 exec_always zsh -c $XDG_CONFIG_HOME/i3/bin/negi3wm_run &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
-exec_always ~/bin/scripts/panel_run.sh hard
+exec_always ~/bin/scripts/panel_run.sh

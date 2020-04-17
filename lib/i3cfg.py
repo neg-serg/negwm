@@ -40,7 +40,7 @@ class i3cfg(extension, cfg):
             "exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &",
             "exec_always ~/bin/scripts/gnome_settings &",
             "exec /usr/lib/gsd-xsettings &",
-            "exec_always ~/bin/scripts/panel_run.sh hard",
+            "exec_always ~/bin/scripts/panel_run.sh",
         ]
         return '\n'.join(autostart_list) + '\n'
 
@@ -105,7 +105,7 @@ class i3cfg(extension, cfg):
         ret = ''
         def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
-            pref, postfix, subtag = '', '', ''
+            pref, postfix = '', ''
             if mode != 'default':
                 pref, postfix = '\t', ', $exit'
             get_binds = p.split('_')
@@ -114,8 +114,9 @@ class i3cfg(extension, cfg):
             if len(get_binds) == 3:
                 if mode_ == mode:
                     for keybind in settings[p]:
-                        ret += f'{pref}bindsym {keybind}' \
-                            f' $bscratch {cmd} {tag} {subtag}{postfix}\n'
+                        ret += f'{pref.strip()} bindsym {keybind.strip()}' \
+                            f' $bscratch {cmd.strip()} {tag.strip()} ' \
+                            f'{subtag.strip()} {postfix.strip()}\n'
             return ret
 
         bscratch = extension.get_mods()['bscratch']
@@ -125,8 +126,9 @@ class i3cfg(extension, cfg):
                     if isinstance(settings[param], dict):
                         for p in settings[param]:
                             if p.startswith('keybind_'):
+                                subtag = param
                                 ret += get_binds(
-                                    mode, tag, settings[param], p, param
+                                    mode, tag, settings[param], p, subtag=subtag
                                 )
                     elif param.startswith('keybind_'):
                         ret += get_binds(mode, tag, settings, param)
@@ -146,17 +148,18 @@ class i3cfg(extension, cfg):
                 if mode_ == mode:
                     for keybind in settings[p]:
                         ret += f'{pref}bindsym {keybind} $circle' \
-                            f' {cmd} {tag}{subtag}{postfix}\n'
+                            f' {cmd} {tag} {subtag} {postfix}\n'
             return textwrap.dedent(ret)
 
         circle = extension.get_mods()['circle']
-        for tag,settings in circle.cfg.items():
+        for tag, settings in circle.cfg.items():
             for param in settings:
                 if isinstance(settings[param], dict):
                     for p in settings[param]:
                         if p.startswith('keybind_'):
+                            subtag = param
                             ret += get_binds(
-                                mode, tag, settings[param], p, param
+                                mode, tag, settings[subtag], p, subtag
                             )
                 elif param.startswith('keybind_'):
                     ret += get_binds(mode, tag, settings, param)
