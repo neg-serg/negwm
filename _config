@@ -265,3 +265,4 @@ exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
 exec_always ~/bin/scripts/panel_run.sh
+exec /usr/sbin/gpaste-client daemon

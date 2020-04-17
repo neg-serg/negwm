@@ -41,6 +41,7 @@ class i3cfg(extension, cfg):
             "exec_always ~/bin/scripts/gnome_settings &",
             "exec /usr/lib/gsd-xsettings &",
             "exec_always ~/bin/scripts/panel_run.sh",
+            "exec /usr/sbin/gpaste-client daemon",
         ]
         return '\n'.join(autostart_list) + '\n'
 
