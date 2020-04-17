@@ -59,6 +59,7 @@ class i3cfg(extension, cfg):
 
     def general(self) -> str:
         return """
+        set $exit mode "default"
         workspace_layout tabbed
         floating_modifier Mod4
 
@@ -99,11 +100,11 @@ class i3cfg(extension, cfg):
 
     def bscratch_bindings(self, mode) -> str:
         ret = ''
-        def get_binds(mode, tag, settings, p) -> str:
+        def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
-            pref = ''
+            pref, postfix, subtag = '', '', ''
             if mode != 'default':
-                pref = '\t'
+                pref, postfix = '\t', ', $exit'
             get_binds = p.split('_')
             mode_ = get_binds[1]
             cmd = get_binds[2]
@@ -111,7 +112,7 @@ class i3cfg(extension, cfg):
                 if mode_ == mode:
                     for keybind in settings[p]:
                         ret += f'{pref}bindsym {keybind}' \
-                            f' $bscratch {cmd} {tag}\n'
+                            f' $bscratch {cmd} {tag}{subtag}{postfix}\n'
             return ret
 
         bscratch = extension.get_mods()['bscratch']
@@ -121,25 +122,28 @@ class i3cfg(extension, cfg):
                     if isinstance(settings[param], dict):
                         for p in settings[param]:
                             if p.startswith('keybind_'):
-                                ret += get_binds(mode, tag, settings[param], p)
+                                ret += get_binds(
+                                    mode, tag, settings[param], p, param
+                                )
                     elif param.startswith('keybind_'):
                         ret += get_binds(mode, tag, settings, param)
         return ret
 
     def circle_bindings(self, mode) -> str:
         ret = ''
-        def get_binds(mode, tag, settings, p) -> str:
+        def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
-            pref = ''
+            pref, postfix = '', ''
             if mode != 'default':
-                pref = '\t'
+                pref, postfix = '\t', ', $exit'
             get_binds = p.split('_')
             mode_ = get_binds[1]
             cmd = get_binds[2]
             if len(get_binds) == 3:
                 if mode_ == mode:
                     for keybind in settings[p]:
-                        ret += f'{pref}bindsym {keybind} $circle {cmd} {tag}\n'
+                        ret += f'{pref}bindsym {keybind} $circle' \
+                            f' {cmd} {tag}{subtag}{postfix}\n'
             return ret
 
         circle = extension.get_mods()['circle']
@@ -148,7 +152,9 @@ class i3cfg(extension, cfg):
                 if isinstance(settings[param], dict):
                     for p in settings[param]:
                         if p.startswith('keybind_'):
-                            ret += get_binds(mode, tag, settings[param], p)
+                            ret += get_binds(
+                                mode, tag, settings[param], p, param
+                            )
                 elif param.startswith('keybind_'):
                     ret += get_binds(mode, tag, settings, param)
         return ret
@@ -170,17 +176,21 @@ class i3cfg(extension, cfg):
 
     def rules(self) -> str:
         def rules_groups_define_circle() -> str:
-            return """
-            set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
-            set $sclient [class="^(Steam|steam)$"]
-            set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
-            set $pdf [class="Zathura"]
-            set $fb2 [class="Cr3" instance="cr3"]
-            set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
-            set $vim [instance="nwim"]
-            set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
-            set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
-            """
+            def bind_data() -> str:
+                ret = ''
+                ret += """
+                set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
+                set $sclient [class="^(Steam|steam)$"]
+                set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
+                set $pdf [class="Zathura"]
+                set $fb2 [class="Cr3" instance="cr3"]
+                set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
+                set $vim [instance="nwim"]
+                set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
+                set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
+                """
+                return ret
+            return bind_data()
 
         def rules_groups_define_standalone() -> str:
             return  """
@@ -341,12 +351,10 @@ class i3cfg(extension, cfg):
         return ret
 
     def keybindings_mode_default(self) -> str:
-        mode_name = 'WM'
+        mode_name = 'default'
 
         def bind_data() -> str:
             return """
-            set $exit mode "default"
-
             bindsym Mod4+q fullscreen toggle
             bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
             bindsym Mod4+Control+q kill
@@ -391,10 +399,8 @@ class i3cfg(extension, cfg):
             """
 
         ret = ''
-        ret += self.keybindings_mode_start(mode_name)
         ret += str(bind_data())
         ret += str(self.bscratch_bindings(mode_name))
         ret += str(self.circle_bindings(mode_name))
-        ret += self.keybindings_mode_end()
 
         return ret

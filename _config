@@ -1,4 +1,5 @@
 
+set $exit mode "default"
 workspace_layout tabbed
 floating_modifier Mod4
 
@@ -133,14 +134,14 @@ mode SPEC {
             bindsym i $menu pulse_input; $exit
             bindsym Shift+t $exit, $menu gtk_theme
             bindsym Shift+i $exit, $menu icon_theme
-            	bindsym t $bscratch subtag im
-	bindsym s $bscratch subtag im
-	bindsym m $bscratch subtag neomutt
-	bindsym Shift+r $bscratch subtag ranger
-	bindsym w $bscratch subtag webcam
-	bindsym f $circle subtag web
-	bindsym 5 $circle subtag web
-	bindsym y $circle subtag web
+            	bindsym t $bscratch subtag im, $exit
+	bindsym s $bscratch subtag im, $exit
+	bindsym m $bscratch toggle neomutt, $exit
+	bindsym Shift+r $bscratch toggle ranger, $exit
+	bindsym w $bscratch toggle webcam, $exit
+	bindsym f $circle subtag webfirefox, $exit
+	bindsym 5 $circle subtag webtor, $exit
+	bindsym y $circle subtag webyandex, $exit
 bindsym {Return,Escape,space,Control+C,Control+G} $exit
 }
 
@@ -151,72 +152,77 @@ mode WM {
             bindsym t layout tabbed; $exit
             bindsym minus layout splith; $exit
             bindsym backslash layout splitv; $exit
-            bindsym {j,k} split vertical; $exit
-            bindsym {h,l} split horizontal; $exit
+            bindsym j split vertical; $exit
+            bindsym k split vertical; $exit
+            bindsym h split horizontal; $exit
+            bindsym l split horizontal; $exit
             bindsym m $menu xprop, $exit
+
             bindsym {w,a,s,d} move {up,left,down,right}
+            bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
+            bindsym {1,2,3,4} $win_action quad {1,2,3,4}
 
             bindsym m $win_action maximize
             bindsym Shift+m $win_action revert_maximize
-            bindsym {x,y} $win_action {maxhor,maxvert}
-            bindsym Shift+{x,y} $win_action revert_maximize
-            bindsym {1,2,3,4} $win_action quad {1,2,3,4}
-            bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
-            bindsym Shift+{plus,minus} $win_action {grow,shrink}
+            bindsym x $win_action maxhor
+            bindsym y $win_action maxvert
+            bindsym Shift+x $win_action revert_maximize
+            bindsym Shift+y $win_action revert_maximize
+            bindsym Shift+plus $win_action grow
+            bindsym Shift+minus $win_action shrink
             bindsym c $win_action center none
             bindsym Shift+c $win_action center resize
 
-            bindsym Control+{a,3} layout toggle all
+            bindsym Control+a layout toggle all
+            bindsym Control+3 layout toggle all
             bindsym Control+s layout toggle split
             bindsym Control+t layout toggle
             bindsym {Return,Escape,space,Control+C,Control+G} $exit
 }
 
 
-        set $exit mode "default"
+            bindsym Mod4+q fullscreen toggle
+            bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
+            bindsym Mod4+Control+q kill
 
-        bindsym Mod4+q fullscreen toggle
-        bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
-        bindsym Mod4+Control+q kill
+            bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
+            bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
+            bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
+            bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
+            bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
+            bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
+            bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
+            bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
+            bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
+            bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
+            bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
+            bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
 
-        bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-        bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
-        bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
-        bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
-        bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
-        bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
-        bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
-        bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
-        bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
-        bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
-        bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-        bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
+            bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+            bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
-        bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-        bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
+            bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
 
-        bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
+            bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
 
-        bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
+            bindsym Mod4+Control+Shift+R $bscratch geom_restore
+            bindsym Mod4+Control+Shift+D $bscratch geom_dump
+            bindsym Mod4+Control+Shift+S $bscratch geom_autosave
+            bindsym Mod4+3 $bscratch next
+            bindsym Mod4+s $bscratch hide_current
 
-        bindsym Mod4+Control+Shift+R $bscratch geom_restore
-        bindsym Mod4+Control+Shift+D $bscratch geom_dump
-        bindsym Mod4+Control+Shift+S $bscratch geom_autosave
-        bindsym Mod4+3 $bscratch next
-        bindsym Mod4+s $bscratch hide_current
+            bindsym Mod1+g $menu goto_win
+            bindsym Mod4+Shift+a $menu attach
+            bindsym Mod4+g $menu ws
+            bindsym Mod4+Control+g $menu movews
+            bindsym Mod4+Control+grave $menu cmd_menu
+            bindsym Mod4+Shift+s $menu autoprop
 
-        bindsym Mod1+g $menu goto_win
-        bindsym Mod4+Shift+a $menu attach
-        bindsym Mod4+g $menu ws
-        bindsym Mod4+Control+g $menu movews
-        bindsym Mod4+Control+grave $menu cmd_menu
-        bindsym Mod4+Shift+s $menu autoprop
-
-        bindsym Mod1+Tab $win_history switch
-        bindsym Mod4+slash $win_history switch
-        bindsym Mod4+grave $win_history focus_next_visible
-        bindsym Mod4+Shift+grave $win_history focus_prev_visible
-        bindsym Mod4+e $bscratch toggle im
+            bindsym Mod1+Tab $win_history switch
+            bindsym Mod4+slash $win_history switch
+            bindsym Mod4+grave $win_history focus_next_visible
+            bindsym Mod4+Shift+grave $win_history focus_prev_visible
+            bindsym Mod4+e $bscratch toggle im
 bindsym Mod4+f $bscratch toggle ncmpcpp
 bindsym Mod4+d $bscratch toggle teardrop
 bindsym Mod4+Shift+p $bscratch toggle volcontrol
@@ -233,7 +239,7 @@ bindsym Mod4+1 $circle next nwim
 bindsym Mod4+Shift+o $circle toggle obs
 bindsym Mod4+Control+5 $circle toggle remote
 bindsym Mod4+Control+c $circle next sxiv
-bindsym Mod4+Shift+c $circle subtag sxiv
+bindsym Mod4+Shift+c $circle subtag sxivwallpaper
 bindsym Mod4+Control+f $circle next looking_glass
 bindsym Mod4+Control+b $circle next bitwig
 
