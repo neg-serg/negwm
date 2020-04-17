@@ -83,24 +83,30 @@ class i3cfg(extension, cfg):
         title_align left
         """
 
-        legend = """
-        # 1 :: border
-        # 2 :: background active
-        # 3 :: foreground inactive
-        # 4 :: background inactive
-        # 5 :: indicator
-        """
+        theme = {
+            'client.focused': [
+                '#222233', '#000000', '#ddddee', '#112211', '#0C0C0D'
+            ],
+            'client.focused_inactive': [
+                '#000000', '#000000', '#005fff', '#000000', '#222233'
+            ],
+            'client.unfocused': [
+                '#000000', '#000000', '#315c70', '#000000', '#222233'
+            ],
+            'client.urgent': [
+                '#000000', '#2E2457', '#4C407C', '#32275E', '#32275E'
+            ],
+            'client.placeholder': [
+                '#000000', '#0c0c0c', '#ffffff', '#000000', '#0c0c0c'
+            ],
+            'client.background': ['#000000'],
+        }
+        colorscheme = ''
+        for param, data in theme.items():
+            colorscheme += f"{param} {' '.join(data)}\n"
 
-        colorscheme = """
-        client.focused                 #222233  #000000  #ddddee  #112211 #0C0C0D
-        client.focused_inactive        #000000  #000000  #005fff  #000000 #222233
-        client.unfocused               #000000  #000000  #315c70  #000000 #222233
-        client.urgent                  #000000  #2E2457  #4C407C  #32275E #32275E
-        client.placeholder             #000000  #0c0c0c  #ffffff  #000000 #0c0c0c
-        client.background              #000000
-        """
-
-        return textwrap.dedent(appearance + legend + colorscheme)
+        return textwrap.dedent(appearance) \
+            + textwrap.dedent(colorscheme)
 
     def bscratch_bindings(self, mode) -> str:
         ret = ''
