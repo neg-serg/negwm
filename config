@@ -1,19 +1,12 @@
-set $exit mode "default"
 workspace_layout tabbed
 floating_modifier Mod4
 set $i3 $XDG_CONFIG_HOME/i3
+set $exit mode "default"
 focus_follows_mouse no
 force_display_urgency_hint 0 ms
 focus_on_window_activation urgent
-#-- warp the mouse to the middle of the window when changing to a different screen
-mouse_warping none
 focus_wrapping yes
-title_align left
-for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
-for_window [class="^.*"] border pixel 3
-show_marks yes
-smart_borders on
-hide_edge_borders both
+mouse_warping none
 set $term "1 ::  α:term"
 set $web "2 ::  β:web"
 set $doc "3 ::  γ:doc"
@@ -31,6 +24,10 @@ set $pic "14 ::  ξ:pic"
 set $remote "15 ::  ο:remote"
 set $sound "16 ::  π:sound"
 set $obs "17 :: @ ρ:obs"
+show_marks yes
+smart_borders on
+hide_edge_borders both
+title_align left
 client.focused #222233 #000000 #ddddee #112211 #0C0C0D
 client.focused_inactive #000000 #000000 #005fff #000000 #222233
 client.unfocused #000000 #000000 #315c70 #000000 #222233
@@ -47,8 +44,6 @@ set $menu exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send menu
 set $vol exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send vol
 set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_action
 set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_history
-set $webcam [class="cheese"]
-set $webcam [class="^obs"]
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
 for_window [class="^(zoom|VK|ViberPC|IGdm)$"] move scratchpad, move absolute position 1373 0, resize set 547 1173
 for_window [class="^(zoom|VK|ViberPC|IGdm)$"] move scratchpad, move absolute position 1373 0, resize set 547 1173
@@ -93,6 +88,7 @@ for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
 for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
 for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
+for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
 for_window [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 for_window [class="Places"] $scratchpad_dialog
 bindsym Mod4+r mode "RESIZE"
@@ -124,13 +120,11 @@ bindsym Control+G $exit
 bindsym Mod1+e mode "SPEC"
 mode SPEC {
 bindsym c exec rofi-pass; $exit
-bindsym e $exit, [urgent=latest] focus
-bindsym Shift+d floating toggle; $exit
-bindsym Shift+l exec sh -c 'sudo gllock'; $exit
-bindsym v exec ~/bin/qemu/vm_menu; $exit
-bindsym Shift+v exec ~/bin/qemu/vm_menu start_win10; $exit
-bindsym o $menu pulse_output; $exit
-bindsym i $menu pulse_input; $exit
+bindsym e [urgent=latest] focus, $exit
+bindsym Shift+d floating toggle, $exit
+bindsym Shift+l exec sh -c 'sudo gllock', $exit
+bindsym o $menu pulse_output, $exit
+bindsym i $menu pulse_input, $exit
 bindsym Shift+t $exit, $menu gtk_theme
 bindsym Shift+i $exit, $menu icon_theme
 bindsym t $bscratch subtag im , $exit
@@ -252,10 +246,6 @@ gaps outer 0
 gaps top 0
 gaps bottom 0
 exec_always zsh -c $XDG_CONFIG_HOME/i3/bin/negi3wm_run &
-exec_always pkill sxhkd; sxhkd &
-exec_always pkill -f 'mpc idle'
-exec caffeine &
 exec_always ~/bin/scripts/gnome_settings &
 exec /usr/lib/gsd-xsettings &
 exec_always ~/bin/scripts/panel_run.sh hard
-exec /usr/sbin/gpaste-client daemon

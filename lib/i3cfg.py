@@ -38,13 +38,9 @@ class i3cfg(extension, cfg):
     def autostart(self) -> str:
         autostart_list = [
             "exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &",
-            "exec_always pkill sxhkd; sxhkd &",
-            "exec_always pkill -f 'mpc idle'",
-            "exec caffeine &",
             "exec_always ~/bin/scripts/gnome_settings &",
             "exec /usr/lib/gsd-xsettings &",
             "exec_always ~/bin/scripts/panel_run.sh hard",
-            "exec /usr/sbin/gpaste-client daemon",
         ]
         return '\n'.join(autostart_list) + '\n'
 
@@ -60,37 +56,41 @@ class i3cfg(extension, cfg):
 
     def general(self) -> str:
         return """
-        set $exit mode "default"
         workspace_layout tabbed
         floating_modifier Mod4
 
         set $i3 ${XDG_CONFIG_HOME}/i3
 
+        set $exit mode "default"
+        """
+
+    def focus_settings(self) -> str:
+        ret = """
         focus_follows_mouse no
         force_display_urgency_hint 0 ms
         focus_on_window_activation urgent
-
-        #-- warp the mouse to the middle of the window when changing to a different screen
-        mouse_warping none
         focus_wrapping yes
+        mouse_warping none
+        """
+        return ret
 
-        title_align left
-        for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title"
-        for_window [class="^.*"] border pixel 3
-
+    def colorscheme(self) -> str:
+        appearance = """
         show_marks yes
         smart_borders on
         hide_edge_borders both
+        title_align left
         """
 
-    def colorscheme(self) -> str:
-        return """
+        legend = """
         # 1 :: border
         # 2 :: background active
         # 3 :: foreground inactive
         # 4 :: background inactive
         # 5 :: indicator
+        """
 
+        colorscheme = """
         client.focused                 #222233  #000000  #ddddee  #112211 #0C0C0D
         client.focused_inactive        #000000  #000000  #005fff  #000000 #222233
         client.unfocused               #000000  #000000  #315c70  #000000 #222233
@@ -98,6 +98,8 @@ class i3cfg(extension, cfg):
         client.placeholder             #000000  #0c0c0c  #ffffff  #000000 #0c0c0c
         client.background              #000000
         """
+
+        return textwrap.dedent(appearance + legend + colorscheme)
 
     def bscratch_bindings(self, mode) -> str:
         ret = ''
@@ -250,9 +252,6 @@ class i3cfg(extension, cfg):
 
         def rules_groups_define_standalone() -> str:
             return  """
-            set $webcam [class="cheese"]
-            set $webcam [class="^obs"]
-
             set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
             """
 
@@ -263,6 +262,7 @@ class i3cfg(extension, cfg):
             for_window [class="spotify"] move workspace $spotify, focus
             for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
             for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
+            for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
             """
 
         def scratchpad_dialog() -> str:
@@ -307,7 +307,8 @@ class i3cfg(extension, cfg):
             bindsym {w,Shift+w} $win_action resize top {4,-4}
             bindsym {d,Shift+d} $win_action resize right {4,-4}
 
-            bindsym {semicolon,Shift+colon} resize {shrink,grow} right 4
+            bindsym semicolon resize shrink right 4
+            bindsym Shift+colon resize grow right 4
             """
 
         ret = ''
@@ -325,15 +326,13 @@ class i3cfg(extension, cfg):
         def bind_data():
             return """
             bindsym c exec rofi-pass; $exit
-            bindsym e $exit, [urgent=latest] focus
+            bindsym e [urgent=latest] focus, $exit
 
-            bindsym Shift+d floating toggle; $exit
-            bindsym Shift+l exec sh -c 'sudo gllock'; $exit
-            bindsym v exec ~/bin/qemu/vm_menu; $exit
-            bindsym Shift+v exec ~/bin/qemu/vm_menu start_win10; $exit
+            bindsym Shift+d floating toggle, $exit
+            bindsym Shift+l exec sh -c 'sudo gllock', $exit
 
-            bindsym o $menu pulse_output; $exit
-            bindsym i $menu pulse_input; $exit
+            bindsym o $menu pulse_output, $exit
+            bindsym i $menu pulse_input, $exit
             bindsym Shift+t $exit, $menu gtk_theme
             bindsym Shift+i $exit, $menu icon_theme
             """
@@ -358,10 +357,12 @@ class i3cfg(extension, cfg):
             bindsym t layout tabbed; $exit
             bindsym minus layout splith; $exit
             bindsym backslash layout splitv; $exit
+
             bindsym j split vertical; $exit
             bindsym k split vertical; $exit
             bindsym h split horizontal; $exit
             bindsym l split horizontal; $exit
+
             bindsym m $menu xprop, $exit
 
             bindsym {w,a,s,d} move {up,left,down,right}
@@ -406,7 +407,6 @@ class i3cfg(extension, cfg):
 
             bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
             bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
-            bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
             bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
             bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
             bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
@@ -414,6 +414,7 @@ class i3cfg(extension, cfg):
             bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
             bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
             bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
+            bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
             bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
             bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
 
@@ -422,7 +423,8 @@ class i3cfg(extension, cfg):
 
             bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
 
-            bindsym XF86Audio{Lower,Raise}Volume $volume {d,u}
+            bindsym XF86AudioLowerVolume $volume d
+            bindsym XF86AudioRaiseVolume $volume u
 
             bindsym Mod4+Control+Shift+R $bscratch geom_restore
             bindsym Mod4+Control+Shift+D $bscratch geom_dump
