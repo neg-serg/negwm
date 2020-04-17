@@ -2,6 +2,7 @@
 
 from cfg import cfg
 from extension import extension
+from misc import Misc
 import textwrap
 
 class i3cfg(extension, cfg):
@@ -178,23 +179,74 @@ class i3cfg(extension, cfg):
         def rules_groups_define_circle() -> str:
             def bind_data() -> str:
                 ret = ''
-                ret += """
-                set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
-                set $sclient [class="^(Steam|steam)$"]
-                set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]
-                set $pdf [class="Zathura"]
-                set $fb2 [class="Cr3" instance="cr3"]
-                set $mplayer [class="^(MPlayer|mpv|vaapi|vdpau)$"]
-                set $vim [instance="nwim"]
-                set $vms [class="(?i)^(VirtualBox|vmware|looking-glass-client|[Qq]emu.*|spic).*$"]
-                set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
-                """
                 return ret
             return textwrap.dedent(bind_data())
 
         def rules_scratchpad():
             bscratch = extension.get_mods()['bscratch']
-            return "\n".join(bscratch.show_geometry_rules())
+            return "\n".join(bscratch.show_geometry_rules()) + '\n\n'
+
+        def rules_circle() -> str:
+            cmd_dict = {}
+            ret = ''
+            circle = extension.get_mods()['circle']
+            config = circle.cfg
+
+            for tag in config:
+                cmd_dict[tag] = []
+                for attr in config[tag]:
+                    cmd_dict[tag].append(
+                        circle_info(config, tag, attr, 'class')
+                    )
+                    cmd_dict[tag].append(
+                        circle_info(config, tag, attr, 'instance')
+                    )
+                    cmd_dict[tag].append(
+                        circle_info(config, tag, attr, 'name')
+                    )
+            for tag in cmd_dict:
+                rules = list(filter(lambda str: str != '', cmd_dict[tag]))
+                ret += f'set $circle-{tag} [' + ' '.join(rules) + ']\n'
+
+            ret += '\n'
+
+            for tag in circle.cfg:
+                focus_cmd = ''
+                ws = circle.cfg[tag].get('ws', '')
+                focus = bool(circle.cfg[tag].get('focus', True))
+                if focus:
+                    focus_cmd = ', focus'
+                if ws:
+                    ret += f'for_window $circle-{tag} move workspace ${ws}{focus_cmd}\n'
+
+            return ret
+
+        def circle_info(
+            config: dict,
+            tag: str,
+            attr: str,
+            target_attr: str) -> str:
+            """ Create rule in i3 commands format
+                Args:
+                    tag (str): target tag.
+                    attr (str): tag attrubutes.
+                    target_attr (str): attribute to fill.
+            """
+            cmd = ''
+            if target_attr in attr:
+                lst = [item for item in config[tag][target_attr] if item != '']
+                if lst != []:
+                    start = '{}="'.format(attr) + \
+                        Misc.ch(config[tag][attr], '^')
+                    attrlist = []
+                    attrlist = config[tag][attr]
+                    if config[tag].get(attr + '_r', ''):
+                        attrlist += config[tag][attr + '_r']
+                    if not attr.endswith('_r'):
+                        cmd = start + Misc.parse_attr(attrlist, end='')
+                    if cmd:
+                        cmd += '"'
+            return cmd
 
         def rules_groups_define_standalone() -> str:
             return  """
@@ -206,23 +258,9 @@ class i3cfg(extension, cfg):
 
         def plain_rules() -> str:
             return """
-            for_window $browsers move workspace $web, focus
-            for_window $vms move workspace $vm, focus
-            for_window [class="^term$"] move workspace $term, focus
-            for_window [instance="^term$"] move workspace $term, focus
-            for_window $mplayer move workspace $gfx, focus
-            for_window [class="Sxiv"] move workspace $pic, focus
-            for_window $daw move workspace $sound, focus
-
             for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
             for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
             for_window [class="spotify"] move workspace $spotify, focus
-
-            for_window $fb2 move workspace $doc, focus
-            for_window $pdf move workspace $doc, focus
-            for_window $vim move workspace $dev, focus
-            for_window $sclient move workspace $steam, focus
-            for_window $games move workspace $steam, focus
             for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
             for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
             """
@@ -237,6 +275,7 @@ class i3cfg(extension, cfg):
         ret += \
             textwrap.dedent(rules_groups_define_standalone()) + \
             textwrap.dedent(rules_scratchpad()) + \
+            textwrap.dedent(rules_circle()) + \
             textwrap.dedent(rules_groups_define_circle()) + \
             textwrap.dedent(plain_rules()) + \
             textwrap.dedent(scratchpad_dialog())

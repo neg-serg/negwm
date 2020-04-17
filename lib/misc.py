@@ -8,6 +8,7 @@ import subprocess
 import errno
 import functools
 import operator
+from typing import List
 
 
 class Misc():
@@ -113,6 +114,34 @@ class Misc():
             exec_cmd = 'exec ' + send_path + ' '
             largs = functools.reduce(operator.iconcat, list(args), [])
             i3.command(exec_cmd + ' '.join(largs))
+
+    @staticmethod
+    def parse_attr(attrib_list: List, end='"] ') -> str:
+        """ Create attribute matching string.
+            Args:
+                tag (str): target tag.
+                attr (str): target attrubute.
+        """
+        ret = ''
+        if len(attrib_list) > 1:
+            ret += '('
+        for i, item in enumerate(attrib_list):
+            ret += item
+            if i + 1 < len(attrib_list):
+                ret += '|'
+        if len(attrib_list) > 1:
+            ret += ')$'
+        ret += end
+
+        return ret
+
+    @staticmethod
+    def ch(lst: List, ch: str) -> str:
+        """ Return char is list is not empty to prevent stupid commands. """
+        ret = ''
+        if len(lst) > 1:
+            ret = ch
+        return ret
 
     @staticmethod
     def validate_i3_config(i3cfg_path, remove=False) -> bool:

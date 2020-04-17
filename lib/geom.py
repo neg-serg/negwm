@@ -8,6 +8,7 @@
 import re
 from typing import List
 from display import Display
+from misc import Misc
 
 
 class geom():
@@ -45,15 +46,6 @@ class geom():
             ret = ", [con_id=__focused__] scratchpad show"
         return ret
 
-    @staticmethod
-    def ch(lst: List, ch: str) -> str:
-        """ Return char is list is not empty to prevent stupid commands.
-        """
-        ret = ''
-        if len(lst) > 1:
-            ret = ch
-        return ret
-
     def bscratch_info(self, tag: str, attr: str, target_attr: str,
                  dprefix: str, hide: bool) -> str:
         """ Create rule in i3 commands format
@@ -69,32 +61,12 @@ class geom():
             lst = [item for item in self.cfg[tag][target_attr] if item != '']
             if lst != []:
                 pref = dprefix+"[" + '{}="'.format(attr) + \
-                    self.ch(self.cfg[tag][attr], '^')
-                for_win_cmd = pref + self.parse_attr(self.cfg[tag][attr]) + \
+                    Misc.ch(self.cfg[tag][attr], '^')
+                for_win_cmd = pref + Misc.parse_attr(self.cfg[tag][attr]) + \
                     "move scratchpad, " + self.get_geom(tag) \
                         + self.scratchpad_hide_cmd(hide)
                 return for_win_cmd
         return ''
-
-    @staticmethod
-    def parse_attr(attrib_list: List) -> str:
-        """ Create attribute matching string.
-            Args:
-                tag (str): target tag.
-                attr (str): target attrubute.
-        """
-        ret = ''
-        if len(attrib_list) > 1:
-            ret += '('
-        for i, item in enumerate(attrib_list):
-            ret += item
-            if i + 1 < len(attrib_list):
-                ret += '|'
-        if len(attrib_list) > 1:
-            ret += ')$'
-        ret += '"] '
-
-        return ret
 
     def i3match_gen(self,
                     hide: bool = False,
