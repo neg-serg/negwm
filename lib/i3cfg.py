@@ -127,7 +127,7 @@ class i3cfg(extension, cfg):
                                 )
                     elif param.startswith('keybind_'):
                         ret += get_binds(mode, tag, settings, param)
-        return ret
+        return textwrap.dedent(ret)
 
     def circle_bindings(self, mode) -> str:
         ret = ''
@@ -144,7 +144,7 @@ class i3cfg(extension, cfg):
                     for keybind in settings[p]:
                         ret += f'{pref}bindsym {keybind} $circle' \
                             f' {cmd} {tag}{subtag}{postfix}\n'
-            return ret
+            return textwrap.dedent(ret)
 
         circle = extension.get_mods()['circle']
         for tag,settings in circle.cfg.items():
@@ -157,7 +157,7 @@ class i3cfg(extension, cfg):
                             )
                 elif param.startswith('keybind_'):
                     ret += get_binds(mode, tag, settings, param)
-        return ret
+        return textwrap.dedent(ret)
 
     def font(self) -> str:
         return "font pango: Iosevka Term Heavy 9"
@@ -166,13 +166,13 @@ class i3cfg(extension, cfg):
         ret = ''
         for mod in sorted(extension.get_mods()):
             ret += (f'set ${mod} exec --no-startup-id {self.send_path} {mod}\n')
-        return ret
+        return textwrap.dedent(ret)
 
     def workspaces(self) -> str:
         ret = ''
         for index, ws in enumerate(self.cfg['ws_list']):
             ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
-        return ret
+        return textwrap.dedent(ret)
 
     def rules(self) -> str:
         def rules_groups_define_circle() -> str:
@@ -190,7 +190,11 @@ class i3cfg(extension, cfg):
                 set $daw [class="Bitwig Studio" instance="^(airwave-host-32.exe|Bitwig Studio)$"]
                 """
                 return ret
-            return bind_data()
+            return textwrap.dedent(bind_data())
+
+        def rules_scratchpad():
+            bscratch = extension.get_mods()['bscratch']
+            return "\n".join(bscratch.show_geometry_rules())
 
         def rules_groups_define_standalone() -> str:
             return  """
@@ -230,11 +234,13 @@ class i3cfg(extension, cfg):
             """
 
         ret = ''
-        ret += rules_groups_define_standalone() + \
-            rules_groups_define_circle() + \
-            plain_rules() + \
-            scratchpad_dialog()
-        return ret
+        ret += \
+            textwrap.dedent(rules_groups_define_standalone()) + \
+            textwrap.dedent(rules_scratchpad()) + \
+            textwrap.dedent(rules_groups_define_circle()) + \
+            textwrap.dedent(plain_rules()) + \
+            textwrap.dedent(scratchpad_dialog())
+        return textwrap.dedent(ret)
 
 
     def keybindings_mode_start(self, name) -> str:
@@ -271,7 +277,7 @@ class i3cfg(extension, cfg):
         ret += str(bind_data())
         ret += self.keybindings_mode_end()
 
-        return ret
+        return textwrap.dedent(ret)
 
     def keybindings_mode_spec(self) -> str:
         mode_bind = 'Mod1+e'
@@ -301,7 +307,7 @@ class i3cfg(extension, cfg):
         ret += str(self.circle_bindings(mode_name))
         ret += self.keybindings_mode_end()
 
-        return ret
+        return textwrap.dedent(ret)
 
     def keybindings_mode_wm(self) -> str:
         mode_bind = 'Mod4+minus'
@@ -348,7 +354,7 @@ class i3cfg(extension, cfg):
         ret += str(self.circle_bindings(mode_name))
         ret += self.keybindings_mode_end()
 
-        return ret
+        return textwrap.dedent(ret)
 
     def keybindings_mode_default(self) -> str:
         mode_name = 'default'
@@ -399,8 +405,8 @@ class i3cfg(extension, cfg):
             """
 
         ret = ''
-        ret += str(bind_data())
+        ret += str(textwrap.dedent(bind_data()))
         ret += str(self.bscratch_bindings(mode_name))
         ret += str(self.circle_bindings(mode_name))
 
-        return ret
+        return textwrap.dedent(ret)

@@ -49,6 +49,18 @@ set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_history
 set $webcam [class="cheese"]
 set $webcam [class="^obs"]
 set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
+for_window [class="^(zoom|VK|ViberPC|IGdm)$"] move scratchpad, move absolute position 1373 0, resize set 547 1173
+for_window [class="^(zoom|VK|ViberPC|IGdm)$"] move scratchpad, move absolute position 1373 0, resize set 547 1173
+for_window [instance="^(Tauon Music Box|ncmpcpp)$"] move scratchpad, move absolute position 276 326, resize set 1381 673
+for_window [class="mutterfox"] move scratchpad, move absolute position 52 0, resize set 1835 1114
+for_window [instance="^(mutterfox|neomutt)$"] move scratchpad, move absolute position 52 0, resize set 1835 1114
+for_window [instance="ranger"] move scratchpad, move absolute position 3 1, resize set 1916 816
+for_window [instance="teardrop"] move scratchpad, move absolute position 0 0, resize set 1920 803
+for_window [class="Pavucontrol"] move scratchpad, move absolute position 1023 824, resize set 895 314
+for_window [instance="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
+for_window [instance="webcam"] move scratchpad, move absolute position 667 363, resize set 1234 771
+for_window [class="discord"] move scratchpad, move absolute position 974 127, resize set 944 1036
+for_window [class="^(skype|Skype)$"] move scratchpad, move absolute position 39 4, resize set 1844 704
 set $browsers [class="^(firefox|Chromium|Yandex-browser-beta|Tor Browser)$"]
 set $sclient [class="^(Steam|steam)$"]
 set $games [class="^(steam_app.*|PillarsOfEternityII|lutris|Lutris)$"]

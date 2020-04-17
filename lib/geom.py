@@ -54,7 +54,7 @@ class geom():
             ret = ch
         return ret
 
-    def ret_info(self, tag: str, attr: str, target_attr: str,
+    def bscratch_info(self, tag: str, attr: str, target_attr: str,
                  dprefix: str, hide: bool) -> str:
         """ Create rule in i3 commands format
 
@@ -97,9 +97,9 @@ class geom():
         return ret
 
     def i3match_gen(self,
-                    hide: bool = True,
+                    hide: bool = False,
                     dprefix: str = "for_window "
-                    ) -> None:
+                    ) -> List:
         """ Create i3 match rules for all tags.
 
         Args:
@@ -109,14 +109,19 @@ class geom():
         cmd_list = []
         for tag in self.cfg:
             for attr in self.cfg[tag]:
-                cmd_list.append(self.ret_info(
+                if attr in {"class_r", "instance_r", "name_r", "role_r"}:
+                    attr = attr[:-2]
+                cmd_list.append(self.bscratch_info(
                     tag, attr, 'class', dprefix, hide)
                 )
-                cmd_list.append(self.ret_info(
+                cmd_list.append(self.bscratch_info(
                     tag, attr, 'instance', dprefix, hide)
                 )
+                cmd_list.append(self.bscratch_info(
+                    tag, attr, 'name', dprefix, hide)
+                )
         self.cmd_list = filter(lambda str: str != '', cmd_list)
-        print(self.cmd_list)
+        return list(self.cmd_list)
 
     # nsd need this function
     def get_geom(self, tag: str) -> str:

@@ -88,6 +88,7 @@ class bscratch(extension, cfg, Matcher):
             "del_prop": self.del_prop,
             "reload": self.reload_config,
             "dialog": self.dialog_toggle,
+            "cfg_gen": self.show_geometry_rules,
         }
 
         i3.on('window::new', self.mark_tag)
@@ -98,6 +99,12 @@ class bscratch(extension, cfg, Matcher):
         tag_list = list(self.cfg.keys())
         tag_list.remove('transients')
         return tag_list
+
+    def show_geometry_rules(self, show=False) -> None:
+        ret = self.nsgeom.i3match_gen()
+        if show:
+            print(ret)
+        return ret
 
     @staticmethod
     def mark_uuid_tag(tag: str) -> str:
