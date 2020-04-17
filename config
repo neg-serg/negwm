@@ -56,13 +56,12 @@ for_window [class="Pavucontrol"] move scratchpad, move absolute position 1023 82
 for_window [instance="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
 for_window [instance="webcam"] move scratchpad, move absolute position 667 363, resize set 1234 771
 for_window [class="discord"] move scratchpad, move absolute position 974 127, resize set 944 1036
-for_window [class="^(skype|Skype)$"] move scratchpad, move absolute position 39 4, resize set 1844 704
 set $circle-web [class="^(firefox|Waterfox|Tor Browser|Chromium)$"]
 set $circle-vid [class="^(mpv|mplayer|mplayer2|Vlc)$"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
 set $circle-steam [class="Steam"]
 set $circle-doc [class="^(Zathura|cr3)$"]
-set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$)$"]
+set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$|^[Qq]emu-.*$)$"]
 set $circle-term [instance="term"]
 set $circle-nwim [instance="nwim"]
 set $circle-obs [class="obs"]
@@ -128,7 +127,6 @@ bindsym Shift+t $exit, $menu gtk_theme
 bindsym Shift+i $exit, $menu icon_theme
 bindsym t $bscratch subtag im tel , $exit
 bindsym s $bscratch subtag im skype , $exit
-bindsym m $bscratch toggle neomutt , $exit
 bindsym Shift+r $bscratch toggle ranger , $exit
 bindsym w $bscratch toggle webcam , $exit
 bindsym f $circle subtag web firefox , $exit
@@ -208,6 +206,7 @@ bindsym XF86AudioRaiseVolume $volume u
 bindsym Mod4+Control+Shift+R $bscratch geom_restore
 bindsym Mod4+Control+Shift+D $bscratch geom_dump
 bindsym Mod4+Control+Shift+S $bscratch geom_autosave
+bindsym Mod4+Control+a $bscratch dialog
 bindsym Mod4+3 $bscratch next
 bindsym Mod4+s $bscratch hide_current
 bindsym Mod1+g $menu goto_win
@@ -222,6 +221,7 @@ bindsym Mod4+grave $win_history focus_next_visible
 bindsym Mod4+Shift+grave $win_history focus_prev_visible
 bindsym Mod4+e $bscratch toggle im
 bindsym Mod4+f $bscratch toggle ncmpcpp
+bindsym Mod4+Control+o $bscratch toggle neomutt
 bindsym Mod4+d $bscratch toggle teardrop
 bindsym Mod4+Shift+p $bscratch toggle volcontrol
 bindsym Mod4+a $bscratch toggle youtube

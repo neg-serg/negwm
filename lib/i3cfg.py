@@ -438,6 +438,7 @@ class i3cfg(extension, cfg):
             bindsym Mod4+Control+Shift+R $bscratch geom_restore
             bindsym Mod4+Control+Shift+D $bscratch geom_dump
             bindsym Mod4+Control+Shift+S $bscratch geom_autosave
+            bindsym Mod4+Control+a $bscratch dialog
             bindsym Mod4+3 $bscratch next
             bindsym Mod4+s $bscratch hide_current
 
