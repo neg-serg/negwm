@@ -3,6 +3,7 @@
 from cfg import cfg
 from extension import extension
 from misc import Misc
+from typing import List
 import textwrap
 
 class i3cfg(extension, cfg):
@@ -128,17 +129,16 @@ class i3cfg(extension, cfg):
 
         bscratch = extension.get_mods()['bscratch']
         for tag,settings in bscratch.cfg.items():
-            if tag != "transients":
-                for param in settings:
-                    if isinstance(settings[param], dict):
-                        for p in settings[param]:
-                            if p.startswith('keybind_'):
-                                subtag = param
-                                ret += get_binds(
-                                    mode, tag, settings[param], p, subtag=subtag
-                                )
-                    elif param.startswith('keybind_'):
-                        ret += get_binds(mode, tag, settings, param)
+            for param in settings:
+                if isinstance(settings[param], dict):
+                    for p in settings[param]:
+                        if p.startswith('keybind_'):
+                            subtag = param
+                            ret += get_binds(
+                                mode, tag, settings[param], p, subtag=subtag
+                            )
+                elif param.startswith('keybind_'):
+                    ret += get_binds(mode, tag, settings, param)
         return textwrap.dedent(ret)
 
     def circle_bindings(self, mode) -> str:
@@ -187,35 +187,54 @@ class i3cfg(extension, cfg):
             ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
         return textwrap.dedent(ret)
 
+    @staticmethod
+    def scratchpad_hide_cmd(hide: bool) -> str:
+        """ Returns cmd needed to hide scratchpad.
+            Args:
+                hide (bool): to hide target or not.
+        """
+        ret = ""
+        if hide:
+            ret = ", [con_id=__focused__] scratchpad show"
+        return ret
+
     def rules(self) -> str:
-        def rules_groups_define_circle() -> str:
-            def bind_data() -> str:
-                ret = ''
-                return ret
-            return textwrap.dedent(bind_data())
-
-        def rules_scratchpad():
-            bscratch = extension.get_mods()['bscratch']
-            return "\n".join(bscratch.show_geometry_rules()) + '\n\n'
-
-        def rules_circle() -> str:
-            cmd_dict = {}
-            ret = ''
-            circle = extension.get_mods()['circle']
-            config = circle.cfg
-
+        def fill_rules_dict(mod, cmd_dict) -> List:
+            config = mod.cfg
             for tag in config:
                 cmd_dict[tag] = []
                 for attr in config[tag]:
-                    cmd_dict[tag].append(
-                        circle_info(config, tag, attr, 'class')
-                    )
-                    cmd_dict[tag].append(
-                        circle_info(config, tag, attr, 'instance')
-                    )
-                    cmd_dict[tag].append(
-                        circle_info(config, tag, attr, 'name')
-                    )
+                    for target_attr in ['class', 'instance', 'name', 'role']:
+                        cmd_dict[tag].append(info(
+                            config, tag, attr, target_attr
+                        ))
+            return cmd_dict
+
+        def rules_bscratch() -> str:
+            """ Create i3 match rules for all tags. """
+            ret = ''
+            bscratch = extension.get_mods()['bscratch']
+            cmd_dict = fill_rules_dict(bscratch, {})
+
+            for tag in cmd_dict:
+                rules = list(filter(lambda str: str != '', cmd_dict[tag]))
+                if rules:
+                    ret += f'set $bscratch-{tag} [' + ' '.join(rules) + ']'
+                    ret += '\n'
+
+            ret += '\n'
+            for tag in cmd_dict:
+                geom = bscratch.nsgeom.get_geom(tag)
+                ret += f'for_window $bscratch-{tag} move scratchpad, {geom}'
+                ret += '\n'
+
+            return ret
+
+        def rules_circle() -> str:
+            ret = ''
+            circle = extension.get_mods()['circle']
+            cmd_dict = fill_rules_dict(circle, {})
+
             for tag in cmd_dict:
                 rules = list(filter(lambda str: str != '', cmd_dict[tag]))
                 ret += f'set $circle-{tag} [' + ' '.join(rules) + ']\n'
@@ -234,37 +253,36 @@ class i3cfg(extension, cfg):
 
             return ret
 
-        def circle_info(
-            config: dict,
-            tag: str,
-            attr: str,
-            target_attr: str) -> str:
+        def info(config: dict, tag: str, attr: str, target_attr: str) -> str:
             """ Create rule in i3 commands format
                 Args:
+                    config (dict): extension config.
                     tag (str): target tag.
                     attr (str): tag attrubutes.
                     target_attr (str): attribute to fill.
             """
+            attr_name = {
+                'class': 'class',
+                'instance': 'instance',
+                'name': 'window_name',
+                'role': 'window_role'
+            }
             cmd = ''
             if target_attr in attr:
-                lst = [item for item in config[tag][target_attr] if item != '']
-                if lst != []:
-                    start = '{}="'.format(attr) + \
-                        Misc.ch(config[tag][attr], '^')
-                    attrlist = []
-                    attrlist = config[tag][attr]
-                    if config[tag].get(attr + '_r', ''):
-                        attrlist += config[tag][attr + '_r']
-                    if not attr.endswith('_r'):
-                        cmd = start + Misc.parse_attr(attrlist, end='')
-                    if cmd:
-                        cmd += '"'
+                if not attr.endswith('_r'):
+                    win_attr = attr_name[attr]
+                else:
+                    win_attr = attr_name[attr[:-2]]
+                start = f'{win_attr}="' + Misc.ch(config[tag][attr], '^')
+                attrlist = []
+                attrlist = config[tag][attr]
+                if config[tag].get(attr + '_r', ''):
+                    attrlist += config[tag][attr + '_r']
+                if not attr.endswith('_r'):
+                    cmd = start + Misc.parse_attr(attrlist, end='')
+                if cmd:
+                    cmd += '"'
             return cmd
-
-        def rules_groups_define_standalone() -> str:
-            return  """
-            set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
-            """
 
         def plain_rules() -> str:
             return """
@@ -276,19 +294,11 @@ class i3cfg(extension, cfg):
             for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
             """
 
-        def scratchpad_dialog() -> str:
-            return """
-            for_window [class="Places" window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
-            """
-
         ret = ''
         ret += \
-            textwrap.dedent(rules_groups_define_standalone()) + \
-            textwrap.dedent(rules_scratchpad()) + \
+            textwrap.dedent(rules_bscratch()) + \
             textwrap.dedent(rules_circle()) + \
-            textwrap.dedent(rules_groups_define_circle()) + \
-            textwrap.dedent(plain_rules()) + \
-            textwrap.dedent(scratchpad_dialog())
+            textwrap.dedent(plain_rules())
         return textwrap.dedent(ret)
 
 
@@ -296,7 +306,13 @@ class i3cfg(extension, cfg):
         return 'mode ' + name + ' {\n'
 
     def keybindings_mode_end(self) -> str:
-        return 'bindsym {Return,Escape,space,Control+C,Control+G} $exit\n' + '}\n'
+        def bind_data() -> str:
+            ret = ''
+            bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
+            for keybind in bindings:
+                ret += f'bindsym {keybind} $exit\n'
+            return ret
+        return bind_data() + '}\n'
 
     def keybindings_mode_binding(self, keymap, name) -> str:
         return f'bindsym {keymap} mode "{name}"\n'
@@ -325,7 +341,7 @@ class i3cfg(extension, cfg):
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
         ret += self.keybindings_mode_start(mode_name)
         ret += str(bind_data())
-        ret += self.keybindings_mode_end()
+        ret += str(self.keybindings_mode_end())
 
         return textwrap.dedent(ret)
 
@@ -462,3 +478,4 @@ class i3cfg(extension, cfg):
         ret += str(self.circle_bindings(mode_name))
 
         return textwrap.dedent(ret)
+

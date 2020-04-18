@@ -34,67 +34,6 @@ class geom():
         for tag in self.cfg:
             self.parsed_geom[tag] = self.parse_geom(tag)
 
-    @staticmethod
-    def scratchpad_hide_cmd(hide: bool) -> str:
-        """ Returns cmd needed to hide scratchpad.
-
-            Args:
-                hide (bool): to hide target or not.
-        """
-        ret = ""
-        if hide:
-            ret = ", [con_id=__focused__] scratchpad show"
-        return ret
-
-    def bscratch_info(self, tag: str, attr: str, target_attr: str,
-                 dprefix: str, hide: bool) -> str:
-        """ Create rule in i3 commands format
-
-        Args:
-            tag (str): target tag.
-            attr (str): tag attrubutes.
-            target_attr (str): attribute to fill.
-            dprefix (str): rule prefix.
-            hide (bool): to hide target or not.
-        """
-        if target_attr in attr:
-            lst = [item for item in self.cfg[tag][target_attr] if item != '']
-            if lst != []:
-                pref = dprefix+"[" + '{}="'.format(attr) + \
-                    Misc.ch(self.cfg[tag][attr], '^')
-                for_win_cmd = pref + Misc.parse_attr(self.cfg[tag][attr]) + \
-                    "move scratchpad, " + self.get_geom(tag) \
-                        + self.scratchpad_hide_cmd(hide)
-                return for_win_cmd
-        return ''
-
-    def i3match_gen(self,
-                    hide: bool = False,
-                    dprefix: str = "for_window "
-                    ) -> List:
-        """ Create i3 match rules for all tags.
-
-        Args:
-            hide (bool): to hide target or not, optional.
-            dprefix (str): i3-cmd prefix is "for_window " by default, optional.
-        """
-        cmd_list = []
-        for tag in self.cfg:
-            for attr in self.cfg[tag]:
-                if attr in {"class_r", "instance_r", "name_r", "role_r"}:
-                    attr = attr[:-2]
-                cmd_list.append(self.bscratch_info(
-                    tag, attr, 'class', dprefix, hide)
-                )
-                cmd_list.append(self.bscratch_info(
-                    tag, attr, 'instance', dprefix, hide)
-                )
-                cmd_list.append(self.bscratch_info(
-                    tag, attr, 'name', dprefix, hide)
-                )
-        self.cmd_list = filter(lambda str: str != '', cmd_list)
-        return list(self.cmd_list)
-
     # nsd need this function
     def get_geom(self, tag: str) -> str:
         """ External function used by nsd """

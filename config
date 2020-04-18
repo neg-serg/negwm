@@ -44,18 +44,26 @@ set $menu exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send menu
 set $vol exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send vol
 set $win_action exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_action
 set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/bin/send win_history
-set $scratchpad_dialog move scratchpad, move position 180 20, resize set 1556 620
-for_window [class="^(zoom|VK|ViberPC|IGdm)$"] move scratchpad, move absolute position 1373 0, resize set 547 1173
-for_window [class="^(zoom|VK|ViberPC|IGdm)$"] move scratchpad, move absolute position 1373 0, resize set 547 1173
-for_window [instance="^(Tauon Music Box|ncmpcpp)$"] move scratchpad, move absolute position 276 326, resize set 1381 673
-for_window [class="mutterfox"] move scratchpad, move absolute position 52 0, resize set 1835 1114
-for_window [instance="^(mutterfox|neomutt)$"] move scratchpad, move absolute position 52 0, resize set 1835 1114
-for_window [instance="ranger"] move scratchpad, move absolute position 3 1, resize set 1916 816
-for_window [instance="teardrop"] move scratchpad, move absolute position 0 0, resize set 1920 803
-for_window [class="Pavucontrol"] move scratchpad, move absolute position 1023 824, resize set 895 314
-for_window [instance="youtube-get"] move scratchpad, move absolute position 247 13, resize set 1339 866
-for_window [instance="webcam"] move scratchpad, move absolute position 667 363, resize set 1234 771
-for_window [class="discord"] move scratchpad, move absolute position 974 127, resize set 944 1036
+set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|[Ss]kype.*|[Tt]elegram.*)$"]
+set $bscratch-ncmpcpp [instance="^(Tauon Music Box|ncmpcpp)$"]
+set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
+set $bscratch-ranger [instance="ranger"]
+set $bscratch-teardrop [instance="teardrop"]
+set $bscratch-volcontrol [class="Pavucontrol"]
+set $bscratch-youtube [instance="youtube-get"]
+set $bscratch-webcam [instance="webcam"]
+set $bscratch-discord [class="discord"]
+set $bscratch-transients [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"]
+for_window $bscratch-im move scratchpad, move absolute position 1373 0, resize set 547 1173
+for_window $bscratch-ncmpcpp move scratchpad, move absolute position 276 326, resize set 1381 673
+for_window $bscratch-neomutt move scratchpad, move absolute position 52 0, resize set 1835 1114
+for_window $bscratch-ranger move scratchpad, move absolute position 3 1, resize set 1916 816
+for_window $bscratch-teardrop move scratchpad, move absolute position 0 0, resize set 1920 803
+for_window $bscratch-volcontrol move scratchpad, move absolute position 1023 824, resize set 895 314
+for_window $bscratch-youtube move scratchpad, move absolute position 247 13, resize set 1339 866
+for_window $bscratch-webcam move scratchpad, move absolute position 667 363, resize set 1234 771
+for_window $bscratch-discord move scratchpad, move absolute position 974 127, resize set 944 1036
+for_window $bscratch-transients move scratchpad, move absolute position 5 10, resize set 1347 430
 set $circle-web [class="^(firefox|Waterfox|Tor Browser|Chromium)$"]
 set $circle-vid [class="^(mpv|mplayer|mplayer2|Vlc)$"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
@@ -88,7 +96,6 @@ for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
 for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
-for_window [class="Places" window_role="^(GtkFileChooserDialog|Organizer|Manager)$"] $scratchpad_dialog
 bindsym Mod4+r mode "RESIZE"
 mode RESIZE {
 bindsym h $win_action resize left 4
