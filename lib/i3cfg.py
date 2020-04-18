@@ -323,15 +323,23 @@ class i3cfg(extension, cfg):
 
         def bind_data():
             return """
-            bindsym {h,Shift+h} $win_action resize left {4,-4}
-            bindsym {j,Shift+j} $win_action resize bottom {4,-4}
-            bindsym {k,Shift+k} $win_action resize top {4,-4}
-            bindsym {l,Shift+l} $win_action resize right {4,-4}
+            bindsym h $win_action resize left 4
+            bindsym j $win_action resize bottom 4
+            bindsym k $win_action resize top 4
+            bindsym l $win_action resize right 4
+            bindsym Shift+h $win_action resize left -4
+            bindsym Shift+j $win_action resize bottom -4
+            bindsym Shift+k $win_action resize top -4
+            bindsym Shift+l $win_action resize right 4
 
-            bindsym {a,Shift+a} $win_action resize left {4,-4}
-            bindsym {s,Shift+s} $win_action resize bottom {4,-4}
-            bindsym {w,Shift+w} $win_action resize top {4,-4}
-            bindsym {d,Shift+d} $win_action resize right {4,-4}
+            bindsym a $win_action resize left 4
+            bindsym s $win_action resize bottom 4
+            bindsym w $win_action resize top 4
+            bindsym d $win_action resize right 4
+            bindsym Shift+a $win_action resize left -4
+            bindsym Shift+s $win_action resize bottom -4
+            bindsym Shift+w $win_action resize top -4
+            bindsym Shift+d $win_action resize right -4
 
             bindsym semicolon resize shrink right 4
             bindsym Shift+colon resize grow right 4
@@ -391,9 +399,20 @@ class i3cfg(extension, cfg):
 
             bindsym m $menu xprop, $exit
 
-            bindsym {w,a,s,d} move {up,left,down,right}
-            bindsym Shift+{w,a,s,d} $win_action x2 {hup,vleft,hdown,vright}
-            bindsym {1,2,3,4} $win_action quad {1,2,3,4}
+            bindsym w move up
+            bindsym a move left
+            bindsym s move down
+            bindsym d move right
+
+            bindsym Shift+w $win_action x2 hup
+            bindsym Shift+a $win_action x2 vleft
+            bindsym Shift+s $win_action x2 hdown
+            bindsym Shift+d $win_action x2 vright
+
+            bindsym 1 $win_action quad 1
+            bindsym 2 $win_action quad 2
+            bindsym 3 $win_action quad 3
+            bindsym 4 $win_action quad 4
 
             bindsym m $win_action maximize
             bindsym Shift+m $win_action revert_maximize
@@ -447,7 +466,10 @@ class i3cfg(extension, cfg):
             bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
             bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
-            bindsym Mod4+{h,l,j,k} focus {left,right,down,up}
+            bindsym Mod4+h focus left
+            bindsym Mod4+l focus right
+            bindsym Mod4+j focus down
+            bindsym Mod4+k focus up
 
             bindsym XF86AudioLowerVolume $volume d
             bindsym XF86AudioRaiseVolume $volume u
