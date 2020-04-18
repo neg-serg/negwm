@@ -24,7 +24,6 @@ class checker():
         dependencies = {
             'mandatory' : {
                 'i3': 'you need i3 for negi3wm',
-                'ppi3': 'i3 config preprocessor',
                 'dash': 'one of the fastest non-interactive shells',
             },
             'recommended' : {

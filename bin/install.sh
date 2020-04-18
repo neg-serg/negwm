@@ -55,7 +55,7 @@ install_python_deps() {
 }
 
 install_mandatory_deps() {
-    install_deps i3 ppi3 dash
+    install_deps i3 dash
 }
 
 install_recommended_deps() {

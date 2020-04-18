@@ -2,12 +2,10 @@
 
 """ i3 negi3wm daemon script.
 
-This module loads all negi3wm an start it via main's manager
-mailoop. Inotify-based watchers for all negi3wm TOML-based configuration
-spawned here, to use it just start it from any place without parameters. Also
-there is i3 config watcher to convert it from ppi3 format to plain i3
-automatically. Moreover it contains pid-lock which prevents running several
-times.
+This module loads all negi3wm an start it via main's manager mailoop.
+Inotify-based watchers for all negi3wm TOML-based configuration spawned here,
+to use it just start it from any place without parameters. Moreover it contains
+pid-lock which prevents running several times.
 
 Usage:
     ./negi3wm.py [--debug|--tracemalloc|--start]
@@ -99,12 +97,6 @@ class negi3wm(modconfig):
             self.mods[sys.intern(mod)] = None
 
         self.prepare_notification_text()
-
-        # test config to check ppi3 conversion result
-        self.test_cfg_path = os.path.realpath(
-            os.path.expandvars('$HOME/tmp/config_test')
-        )
-
         self.port = int(self.conf('port'))
 
         self.echo = Misc.echo_on
@@ -166,12 +158,6 @@ class negi3wm(modconfig):
             if circle is not None:
                 circle.bindings['next']('term')
 
-    def cfg_i3_watcher(self):
-        """ i3 config watcher to run ppi3 on write. """
-        watcher = inotipy.Watcher.create()
-        watcher.watch(Misc.i3path(), inotipy.IN.CLOSE_WRITE)
-        return watcher
-
     async def cfg_mods_worker(self, watcher, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by
             default.
@@ -193,37 +179,11 @@ class negi3wm(modconfig):
                         '[Reloaded {' + ','.join(self.mods.keys()) + '}]'
                     )
 
-    async def cfg_i3_worker(self, watcher):
-        """ Run ppi3 when config is changed
-
-            Args:
-                watcher: watcher for i3 config.
-        """
-        while True:
-            event = await watcher.get()
-            config_is_valid = False
-            if event.pathname == '_config':
-                with open(self.test_cfg_path, "w") as fconf:
-                    try:
-                        subprocess.run(
-                            ['ppi3', Misc.i3path() + '_config'],
-                            stdout=fconf,
-                            check=True
-                        )
-                        config_is_valid = Misc.validate_i3_config(
-                            self.test_cfg_path, remove=True
-                        )
-                    except subprocess.CalledProcessError as proc_err:
-                        Misc.print_run_exception_info(proc_err)
-                if config_is_valid:
-                    self.echo("i3 config is valid!")
-                    shutil.move(self.test_cfg_path, Misc.i3path() + 'config')
-
     def run_config_watchers(self):
-        """ Start all watchers here via ensure_future to run it in background.
+        """ Start all watchers here via ensure_future to run it in
+            background.
         """
         asyncio.ensure_future(self.cfg_mods_worker(self.cfg_mods_watcher()))
-        asyncio.ensure_future(self.cfg_i3_worker(self.cfg_i3_watcher()))
 
     def run(self, verbose=False):
         """ Run negi3wm here. """

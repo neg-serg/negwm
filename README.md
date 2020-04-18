@@ -36,7 +36,7 @@ For now this collection of modules for i3 includes
 # main
 
 *negi3wm* : application that run all modules and handle configuration of
-ppi3+i3 and modules on python. Also handles TOML-configs updating. 
+i3 and modules on python. Also handles TOML-configs updating. 
 
 Some general notes:
 
@@ -168,11 +168,11 @@ scratchpad for convenience.
 
 ## circle
 
-Better run-or-raise, with jump in a circle, subtags, priorities
-and more. Run-or-raise is the following:
+Better run-or-raise, with jump in a circle, subtags, priorities and more.
+Run-or-raise is the following:
 
-If there is no window with such rules then start `prog`
-Otherwise go to the window.
+If there is no window with such rules then start `prog` Otherwise go to the
+window.
 
 More of simple going to window you can __iterate__ over them. So it's something
 like workspaces, where workspace is not about view, but about semantics. This
@@ -339,8 +339,7 @@ session handling. Supports a lot of terminal emulators, but for now only
 `alacritty` has nice support, because of I think it's the best terminal
 emulator for X11 for now.
 
-i3 config example:
-*nothing*
+i3 config example: *nothing*
 
 For now I have no any executor bindings in the i3 config, instead I use it as
 helper for another modules. For example you can use spawn argument for `circle`
@@ -408,8 +407,8 @@ Fullscreen panel hacking.
 loop to reach better performance or another goals.~~
 
 For now there are no any processes started by negi3wm. I've considered that
-this scheme of loading can cause various race condictions and another
-stability issues.
+this scheme of loading can cause various race condictions and another stability
+issues.
 
 Current procs binaries intended to be run from polybar.
 
@@ -459,9 +458,9 @@ so you need to set up your `$XDG_CONFIG_HOME` variable before install, via
 `/etc/profile`, some kind of `.zshenv` or smth else depending or your
 environment, it is mandatory to install.
 
-Before install make sure to backup your i3 configuration, install script
-should do it automatically, but it's better to do it by hand for the
-reliability reasons.
+Before install make sure to backup your i3 configuration, install script should
+do it automatically, but it's better to do it by hand for the reliability
+reasons.
 
 The most simple way to install it for now is to use install.sh from repo:
 
@@ -522,8 +521,6 @@ sudo pypy3 -m pip install -r requirements.txt --upgrade
 
 etc. Of course you are also need pip or conda, or smth to install dependencies.
 
-Also you need [ppi3] as i3 config preprocessor.
-
 # Run
 
 Install it to i3 config directory:
@@ -537,12 +534,10 @@ negi3wm help:
 ```man
 i3 negi3wm daemon script.
 
-This module loads all negi3wm an start it via main's manager
-mailoop. Inotify-based watchers for all negi3wm TOML-based configuration
-spawned here, to use it just start it from any place without parameters. Also
-there is i3 config watcher to convert it from ppi3 format to plain i3
-automatically. Moreover it contains pid-lock which prevents running several
-times.
+This module loads all negi3wm an start it via main's manager mailoop.
+Inotify-based watchers for all negi3wm TOML-based configuration spawned here,
+to use it just start it from any place without parameters.  Moreover it
+contains pid-lock which prevents running several times.
 
 Usage:
     ./negi3wm.py [--debug|--tracemalloc|--start]
@@ -561,9 +556,9 @@ cd ${XDG_CONFIG_HOME}/i3
 ./negi3wm.py
 ```
 
-but I recommend you to look at my config(_config). It can start / restart automatically,
-because of i3 connection will be closed after i3 restart and then started by
-`exec_always`.
+but I recommend you to look at my config(_config). It can start / restart
+automatically, because of i3 connection will be closed after i3 restart and
+then started by `exec_always`.
 
 # Performance
 
@@ -585,8 +580,8 @@ For now negi3wm using cpython interpreter because of more fast startup.
 
 # Why
 
-It is only my attempt to port the best UX parts from ion3/notion and also improve
-it when possible. But if you try I may find that things, like better
+It is only my attempt to port the best UX parts from ion3/notion and also
+improve it when possible. But if you try I may find that things, like better
 scratchpad or navigation very useful.
 
 # Bugs
@@ -600,5 +595,3 @@ Youtube (low quality):
 
 Vimeo (good quality):
 [![i3pluginsdemovimeo](https://i.imgur.com/QIuWrkX.png)](https://vimeo.com/255452812)
-
-[ppi3]: https://github.com/KeyboardFire/ppi3

@@ -32,7 +32,7 @@ class i3cfg(extension, cfg):
         print(''.join(self.generate()))
 
     def write_cfg(self) -> None:
-        i3_config = '/home/neg/.config/i3/_config'
+        i3_config = '/home/neg/.config/i3/config'
         with open(i3_config, 'w', encoding='utf8') as outfile:
             outfile.write('\n'.join(self.generate()))
 
