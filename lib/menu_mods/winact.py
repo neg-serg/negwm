@@ -1,6 +1,7 @@
 import subprocess
 from functools import partial
 from typing import Callable
+from extension import extension
 
 
 class winact():
@@ -44,41 +45,30 @@ class winact():
         self.win_act_simple('focus', self.menu.wrap_str('go'))
 
     def attach_win(self) -> None:
-        """ Attach window to the current workspace.
-        """
+        """ Attach window to the current workspace. """
         self.win_act_simple(
             'move window to workspace current', self.menu.wrap_str('attach')
         )
 
     def select_ws(self) -> str:
         """ Apply target function to workspace. """
-        ws_list_internal = self.menu.i3ipc.get_workspaces()
+        ws_list = extension.get_mods()['i3cfg'].cfg['ws_list']
         menu_params = {
-            'cnum': len(ws_list_internal),
+            'cnum': len(ws_list),
             'width': int(self.menu.screen_width * 0.66),
             'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}',
         }
-        wslist_fancy = {'names':[], 'ids':[]}
         try:
-            for index, ws in enumerate(ws_list_internal):
-                ws_split = ws.name.split('::')
-                wslist_fancy['names'].append(''.join(ws_split[1:]))
-                wslist_fancy['ids'].append(
-                    {'index' :index, 'num': int(ws_split[0])}
-                )
             workspace_name = subprocess.run(
                 self.menu.args(menu_params),
                 stdout=subprocess.PIPE,
-                input=bytes('\n'.join(wslist_fancy['names']), 'UTF-8'),
+                input=bytes('\n'.join(ws_list), 'UTF-8'),
                 check=False
             ).stdout
-
             selected_ws = workspace_name.decode('UTF-8').strip()
             if selected_ws:
-                names = wslist_fancy['names']
-                for wid in wslist_fancy['ids']:
-                    if names[wid['index']].strip() == selected_ws:
-                        return str(wid['num']) + ' :: ' + selected_ws
+                num = ws_list.index(selected_ws) + 1
+                return str(f'{num} :: {selected_ws}')
         except Exception:
             return ''
         return ''
