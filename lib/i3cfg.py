@@ -40,7 +40,7 @@ class i3cfg(extension, cfg):
         autostart_list = [
             "exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &",
             "exec_always ${XDG_CONFIG_HOME}/i3/bin/gnome_settings &",
-            "exec_always ${XDG_CONFIG_HOME}/i3/bin/panel_run.sh &",
+            "exec_always pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1  ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main &",
             "exec /usr/lib/gsd-xsettings &",
             "exec /usr/sbin/gpaste-client daemon &",
         ]
