@@ -31,6 +31,7 @@ year :: 2020
 """
 
 import asyncio
+from os import stat
 import sys
 
 from lib.standalone_cfg import modconfig
@@ -96,10 +97,9 @@ class polybar_vol(modconfig):
 
     def main(self):
         """ Mainloop starting here. """
-        asyncio.set_event_loop(self.loop)
         try:
             self.loop.run_until_complete(
-                self.update_mpd_volume(self.loop)
+                self.update_mpd_volume()
             )
         except ConnectionError:
             self.empty_output()
@@ -146,11 +146,11 @@ class polybar_vol(modconfig):
                 print(self.empty_str)
         return data.startswith(b'OK')
 
-    async def update_mpd_volume(self, loop):
+    async def update_mpd_volume(self):
         """ Update MPD volume here and print it. """
         prev_volume = ''
         reader, writer = await asyncio.open_connection(
-            host=self.addr, port=self.port, loop=loop
+            host=self.addr, port=self.port
         )
         if await self.initial_mpd_volume(reader, writer):
             while True:
