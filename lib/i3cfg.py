@@ -322,28 +322,28 @@ class i3cfg(extension, cfg):
         mode_name = 'RESIZE'
 
         def bind_data():
-            return """
-            bindsym h $win_action resize left 4
-            bindsym j $win_action resize bottom 4
-            bindsym k $win_action resize top 4
-            bindsym l $win_action resize right 4
-            bindsym Shift+h $win_action resize left -4
-            bindsym Shift+j $win_action resize bottom -4
-            bindsym Shift+k $win_action resize top -4
-            bindsym Shift+l $win_action resize right 4
-
-            bindsym a $win_action resize left 4
-            bindsym s $win_action resize bottom 4
-            bindsym w $win_action resize top 4
-            bindsym d $win_action resize right 4
-            bindsym Shift+a $win_action resize left -4
-            bindsym Shift+s $win_action resize bottom -4
-            bindsym Shift+w $win_action resize top -4
-            bindsym Shift+d $win_action resize right -4
-
-            bindsym semicolon resize shrink right 4
-            bindsym Shift+colon resize grow right 4
-            """
+            ret = ''
+            order = ['left', 'bottom', 'top', 'right']
+            resize_cfg = self.cfg.get('resize', {})
+            if resize_cfg:
+                step = resize_cfg.get('step', '')
+                binds = resize_cfg.get('binds', [])
+                win_action = extension.get_mods().get('win_action', '')
+                if step and binds:
+                    if win_action:
+                        for bind in binds:
+                            for i, key in enumerate(bind):
+                                ret += f'bindsym {key} $win_action ' \
+                                    f'resize {order[i]} {step}\n'
+                            for i, key in enumerate(bind):
+                                ret += f'bindsym Shift+{key} $win_action ' \
+                                    f'resize {order[i]} -{step}\n'
+                            ret += '\n'
+                    ret +=textwrap.dedent("""\
+                    bindsym semicolon resize shrink right 4
+                    bindsym Shift+colon resize grow right 4
+                    """)
+            return ret
 
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)

@@ -118,28 +118,27 @@ for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %ti
 
 bindsym Mod4+r mode "RESIZE"
 mode RESIZE {
+bindsym h $win_action resize left 4
+bindsym j $win_action resize bottom 4
+bindsym k $win_action resize top 4
+bindsym l $win_action resize right 4
+bindsym Shift+h $win_action resize left -4
+bindsym Shift+j $win_action resize bottom -4
+bindsym Shift+k $win_action resize top -4
+bindsym Shift+l $win_action resize right -4
 
-            bindsym h $win_action resize left 4
-            bindsym j $win_action resize bottom 4
-            bindsym k $win_action resize top 4
-            bindsym l $win_action resize right 4
-            bindsym Shift+h $win_action resize left -4
-            bindsym Shift+j $win_action resize bottom -4
-            bindsym Shift+k $win_action resize top -4
-            bindsym Shift+l $win_action resize right 4
+bindsym a $win_action resize left 4
+bindsym s $win_action resize bottom 4
+bindsym w $win_action resize top 4
+bindsym d $win_action resize right 4
+bindsym Shift+a $win_action resize left -4
+bindsym Shift+s $win_action resize bottom -4
+bindsym Shift+w $win_action resize top -4
+bindsym Shift+d $win_action resize right -4
 
-            bindsym a $win_action resize left 4
-            bindsym s $win_action resize bottom 4
-            bindsym w $win_action resize top 4
-            bindsym d $win_action resize right 4
-            bindsym Shift+a $win_action resize left -4
-            bindsym Shift+s $win_action resize bottom -4
-            bindsym Shift+w $win_action resize top -4
-            bindsym Shift+d $win_action resize right -4
-
-            bindsym semicolon resize shrink right 4
-            bindsym Shift+colon resize grow right 4
-            bindsym Return $exit
+bindsym semicolon resize shrink right 4
+bindsym Shift+colon resize grow right 4
+bindsym Return $exit
 bindsym Escape $exit
 bindsym space $exit
 bindsym Control+C $exit
