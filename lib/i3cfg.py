@@ -386,50 +386,89 @@ class i3cfg(extension, cfg):
         mode_name = 'WM'
 
         def bind_data() -> str:
-            return """
+            ret = """
             bindsym grave layout default; $exit
             bindsym t layout tabbed; $exit
             bindsym minus layout splith; $exit
             bindsym backslash layout splitv; $exit
-
-            bindsym j split vertical; $exit
-            bindsym k split vertical; $exit
-            bindsym h split horizontal; $exit
-            bindsym l split horizontal; $exit
-
             bindsym m $menu xprop, $exit
+            """
+            split = self.cfg.get('split', {})
+            if split:
+                split_order = ['horizontal', 'vertical', 'vertical', 'horizontal']
+                binds = split.get('binds', [])
+                if binds:
+                    ret += '\n'
+                    for bind in binds:
+                        for i, key in enumerate(bind):
+                            ret += f'bindsym {key} split ' \
+                                f'{split_order[i]}, $exit\n'
+                    ret += '\n'
 
-            bindsym w move up
-            bindsym a move left
-            bindsym s move down
-            bindsym d move right
+            move = self.cfg.get('move', {})
+            if move:
+                move_order = ['left', 'bottom', 'top', 'right']
+                binds = move.get('binds', [])
+                if binds:
+                    ret += '\n'
+                    for bind in binds:
+                        for i, key in enumerate(bind):
+                            ret += f'bindsym {key} move {move_order[i]}\n'
+                    ret += '\n'
 
-            bindsym Shift+w $win_action x2 hup
-            bindsym Shift+a $win_action x2 vleft
-            bindsym Shift+s $win_action x2 hdown
-            bindsym Shift+d $win_action x2 vright
+            win_action = extension.get_mods().get('win_action', '')
+            if win_action:
+                move_acts = self.cfg.get('move_acts', {})
+                if move_acts:
+                    move_acts_order = ['hup', 'vleft', 'hdown', 'vright']
+                    binds = move_acts.get('binds', [])
+                    coeff = move_acts.get('coeff', '')
+                    if binds and coeff:
+                        ret += '\n'
+                        for bind in binds:
+                            for i, key in enumerate(bind):
+                                ret += f'bindsym {key} $win_action {coeff} ' \
+                                    f'{move_acts_order[i]}\n'
+                        ret += '\n'
 
-            bindsym 1 $win_action quad 1
-            bindsym 2 $win_action quad 2
-            bindsym 3 $win_action quad 3
-            bindsym 4 $win_action quad 4
+                quad = self.cfg.get('quad', {})
+                if quad:
+                    quad_order = ['1', '2', '3', '4']
+                    binds = quad.get('binds', [])
+                    if binds:
+                        ret += '\n'
+                        for bind in binds:
+                            for i, key in enumerate(bind):
+                                ret += f'bindsym {key} $win_action  ' \
+                                    f'{quad_order[i]}\n'
+                        ret += '\n'
 
-            bindsym m $win_action maximize
-            bindsym Shift+m $win_action revert_maximize
-            bindsym x $win_action maxhor
-            bindsym y $win_action maxvert
-            bindsym Shift+x $win_action revert_maximize
-            bindsym Shift+y $win_action revert_maximize
-            bindsym Shift+plus $win_action grow
-            bindsym Shift+minus $win_action shrink
-            bindsym c $win_action center none
-            bindsym Shift+c $win_action center resize
+                ret += textwrap.dedent("""
+                bindsym m $win_action maximize
+                bindsym Shift+m $win_action revert_maximize
+                """)
 
+                ret += textwrap.dedent("""
+                bindsym x $win_action maxhor
+                bindsym y $win_action maxvert
+                bindsym Shift+x $win_action revert_maximize
+                bindsym Shift+y $win_action revert_maximize
+                """)
+
+                ret += textwrap.dedent("""
+                bindsym Shift+plus $win_action grow
+                bindsym Shift+minus $win_action shrink
+                bindsym c $win_action center none
+                bindsym Shift+c $win_action center resize
+                """)
+
+            ret += textwrap.dedent("""
             bindsym Control+a layout toggle all
             bindsym Control+3 layout toggle all
             bindsym Control+s layout toggle split
             bindsym Control+t layout toggle
-            """
+            """)
+            return ret
 
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
