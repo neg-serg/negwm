@@ -385,6 +385,66 @@ class i3cfg(extension, cfg):
         mode_bind = 'Mod4+minus'
         mode_name = 'WM'
 
+        def split_tiling() -> str:
+            ret = ''
+            split = self.cfg.get('split', {})
+            if split:
+                binds = split.get('binds', [])
+                order = split.get('order')
+                if binds and order:
+                    ret += '\n'
+                    for bind in binds:
+                        for i, key in enumerate(bind):
+                            ret += f'bindsym {key} split ' \
+                                f'{order[i]}, $exit\n'
+                    ret += '\n'
+            return ret
+
+        def move_acts() -> str:
+            ret = ''
+            move_acts = self.cfg.get('move_acts', {})
+            if move_acts:
+                binds = move_acts.get('binds', [])
+                order = move_acts.get('order')
+                coeff = move_acts.get('coeff', '')
+                if binds and order and coeff:
+                    ret += '\n'
+                    for bind in binds:
+                        for i, key in enumerate(bind):
+                            ret += f'bindsym {key} $win_action {coeff} ' \
+                                f'{order[i]}\n'
+                        ret += '\n'
+            return ret
+
+        def move_win() -> str:
+            ret = ''
+            move = self.cfg.get('move', {})
+            if move:
+                binds = move.get('binds', [])
+                order = move.get('order')
+                if binds and order:
+                    ret += '\n'
+                    for bind in binds:
+                        for i, key in enumerate(bind):
+                            ret += f'bindsym {key} move {order[i]}\n'
+                    ret += '\n'
+            return ret
+
+        def win_quad() -> str:
+            ret = ''
+            quad = self.cfg.get('quad', {})
+            if quad:
+                order = quad.get('order', [])
+                binds = quad.get('binds', [])
+                if binds and order:
+                    ret += '\n'
+                    for bind in binds:
+                        for i, key in enumerate(bind):
+                            ret += f'bindsym {key} $win_action  ' \
+                                f'{order[i]}\n'
+                    ret += '\n'
+            return ret
+
         def bind_data() -> str:
             ret = """
             bindsym grave layout default; $exit
@@ -393,56 +453,12 @@ class i3cfg(extension, cfg):
             bindsym backslash layout splitv; $exit
             bindsym m $menu xprop, $exit
             """
-            split = self.cfg.get('split', {})
-            if split:
-                split_order = ['horizontal', 'vertical', 'vertical', 'horizontal']
-                binds = split.get('binds', [])
-                if binds:
-                    ret += '\n'
-                    for bind in binds:
-                        for i, key in enumerate(bind):
-                            ret += f'bindsym {key} split ' \
-                                f'{split_order[i]}, $exit\n'
-                    ret += '\n'
-
-            move = self.cfg.get('move', {})
-            if move:
-                move_order = ['left', 'bottom', 'top', 'right']
-                binds = move.get('binds', [])
-                if binds:
-                    ret += '\n'
-                    for bind in binds:
-                        for i, key in enumerate(bind):
-                            ret += f'bindsym {key} move {move_order[i]}\n'
-                    ret += '\n'
-
+            ret += split_tiling()
+            ret += move_win()
             win_action = extension.get_mods().get('win_action', '')
             if win_action:
-                move_acts = self.cfg.get('move_acts', {})
-                if move_acts:
-                    move_acts_order = ['hup', 'vleft', 'hdown', 'vright']
-                    binds = move_acts.get('binds', [])
-                    coeff = move_acts.get('coeff', '')
-                    if binds and coeff:
-                        ret += '\n'
-                        for bind in binds:
-                            for i, key in enumerate(bind):
-                                ret += f'bindsym {key} $win_action {coeff} ' \
-                                    f'{move_acts_order[i]}\n'
-                        ret += '\n'
-
-                quad = self.cfg.get('quad', {})
-                if quad:
-                    quad_order = ['1', '2', '3', '4']
-                    binds = quad.get('binds', [])
-                    if binds:
-                        ret += '\n'
-                        for bind in binds:
-                            for i, key in enumerate(bind):
-                                ret += f'bindsym {key} $win_action  ' \
-                                    f'{quad_order[i]}\n'
-                        ret += '\n'
-
+                ret += move_acts()
+                ret += win_quad()
                 ret += textwrap.dedent("""
                 bindsym m $win_action maximize
                 bindsym Shift+m $win_action revert_maximize
