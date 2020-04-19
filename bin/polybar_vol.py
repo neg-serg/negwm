@@ -15,13 +15,9 @@ Config example:
 [module/volume]
 type = custom/script
 interval = 0
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_vol 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_vol 2> /dev/null
 exec-if = sleep 1
 tail = true
-
-Also you need to use unbuffered output for polybar, otherwise you will see no
-output at all. I've considered that pypy3 is better choise here, because of
-this application run pretty long time to get advantages of JIT compilation.
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
