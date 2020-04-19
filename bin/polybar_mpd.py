@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3 -u
 
 """ MPD info printing daemon.
 
@@ -27,6 +27,7 @@ year :: 2020
 """
 
 import asyncio
+from functools import update_wrapper
 import sys
 import time
 from lib.standalone_cfg import modconfig
@@ -35,33 +36,20 @@ from lib.standalone_cfg import modconfig
 class polybar_mpd(modconfig):
     def __init__(self):
         self.loop = asyncio.get_event_loop()
-
-        # Initialize modcfg.
         modconfig.__init__(self)
 
         # default MPD address
         self.addr = self.conf("mpdaddr")
-
         # default MPD port
         self.port = self.conf("mpdport")
-
         # buffer size
         self.buf_size = self.conf("bufsize")
 
-        # output string
-        self.volume = ""
-
         # command to wait for mixer or player events from MPD
-        self.idle_mixer = "idle mixer player\n"
+        self.idle_player = "idle player\n"
 
-        # command to get status from MPD
-        self.status_cmd_str = "currentsong\nstatus\n"
-
-        # set string for the empty output
-        if self.conf('show_volume').startswith('y'):
-            self.empty_str = f"empty_y"
-        else:
-            self.empty_str = f"empty_non_y"
+        # command to get song status from MPD
+        self.get_song_data_cmd = "currentsong\nstatus\n"
 
         # run mainloop
         self.main()
@@ -70,23 +58,12 @@ class polybar_mpd(modconfig):
         """ Mainloop starting here. """
         try:
             self.loop.run_until_complete(
-                self.update_mpd_currentsong()
+                self.current_song_loop()
             )
         except ConnectionError:
-            self.empty_output()
+            sys.stdout.write(f'\n')
         finally:
             self.loop.close()
-
-    def print_volume(self):
-        """ Create nice and shiny output for polybar. """
-        return f'volume'
-
-    def empty_output(self):
-        """ This output will be used if no information about volume. """
-        sys.stdout.write(f'{self.empty_str}\n')
-
-    def check_for_full(self):
-        return not (self.conf("disable_on_full") and self.volume == "100")
 
     def pretty_printing(self, song_data):
         artist = song_data.get('Artist', '')
@@ -95,41 +72,50 @@ class polybar_mpd(modconfig):
         lhs = "%{F#005f87}〉%{F#005fd7}〉%{F#395573} %{F-}"
         delim = '%{F#395573}/%{F-}'
         if artist and title and song_time:
-            sys.stdout.write(f'{lhs}{artist} ― {title} {song_time[0].strip()}{delim}{song_time[1].strip()}\n')
+            sys.stdout.write(f'{lhs}{artist} ― {title} ' \
+                f'{song_time[0].strip()}{delim}{song_time[1].strip()}\n')
 
-    async def initial_mpd_volume(self, reader, writer):
+    def time_convert(self, n):
+        return time.strftime(
+            " %M:%S", time.gmtime(n)
+        ).replace(' 0', ' ')
+
+    async def update_mpd_stat(self, reader, writer):
+        writer.write(self.get_song_data_cmd.encode(encoding='utf-8'))
+        raw_song_data = await reader.read(self.buf_size)
+        ret = raw_song_data.decode('utf-8').split('\n')
+        song_data = {}
+        for tok in ret:
+            tok = tok.split(':', maxsplit=1)
+            for t in {'Artist', 'Title', 'time', 'state'}:
+                if tok[0] == t:
+                    song_data[t] = tok[1].strip()
+                    if tok[0] == 'time':
+                        t = tok[1].split(':')
+                        current_time = float(t[0].strip())
+                        total_time = float(t[1].strip())
+                        song_data['time'] = [
+                            self.time_convert(current_time),
+                            self.time_convert(total_time)
+                        ]
+        return song_data
+
+    async def mpd_stat_at_start(self, reader, writer):
         data = await reader.read(self.buf_size)
-        writer.write(self.status_cmd_str.encode(encoding='utf-8'))
+        writer.write(self.get_song_data_cmd.encode(encoding='utf-8'))
         return data.startswith(b'OK')
 
-    async def update_mpd_currentsong(self):
+    async def current_song_loop(self):
         """ Update MPD volume here and print it. """
-        def time_convert(n):
-            return time.strftime(
-                " %M:%S", time.gmtime(n)
-            ).replace(' 0', ' ')
-
         reader, writer = await asyncio.open_connection(
             host=self.addr, port=self.port
         )
-        if await self.initial_mpd_volume(reader, writer):
+        if await self.mpd_stat_at_start(reader, writer):
             while True:
-                writer.write(self.status_cmd_str.encode(encoding='utf-8'))
-                stat_data = await reader.read(self.buf_size)
-                ret = stat_data.decode('utf-8').split('\n')
-                parsed = {}
-                for tok in ret:
-                    tok = tok.split(':')
-                    for t in {'Artist', 'Title'}:
-                        if tok[0] == t:
-                            parsed[t] = tok[1].strip()
-                    if tok[0] == 'time':
-                        current_time = float(tok[1].strip())
-                        all_time = float(tok[2].strip())
-                        parsed['time'] = [time_convert(current_time), time_convert(all_time)]
-                if parsed:
-                    self.pretty_printing(parsed)
-                await asyncio.sleep(1)
+                song_data = await self.update_mpd_stat(reader, writer)
+                if song_data.get('state', '') == 'play':
+                    self.pretty_printing(song_data)
+                await asyncio.sleep(0.1)
 
 
 if __name__ == '__main__':
