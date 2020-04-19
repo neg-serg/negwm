@@ -57,8 +57,6 @@ Current negi3wm_run is:
 ```bash
 ${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
 make -C ${XDG_CONFIG_HOME}/i3/ &
-pkill -f 'mpc idle'
-pkill sxhkd; sxhkd &
 ```
 
 Interesting parts here are:

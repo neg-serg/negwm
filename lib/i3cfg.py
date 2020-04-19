@@ -494,8 +494,49 @@ class i3cfg(extension, cfg):
             bindsym Mod4+Shift+grave $win_history focus_prev_visible
             """
 
+        def exec_binds() -> str:
+            exec_ret = ''
+            exec_ret += '\n'.join([
+                'bindsym XF86AudioPrev exec --no-startup-id mpc -q prev',
+                'bindsym XF86AudioNext exec --no-startup-id mpc -q next',
+                'bindsym XF86AudioPlay exec --no-startup-id mpc -q play',
+                'bindsym XF86AudioStop exec --no-startup-id mpc -q stop',
+                '',
+                'bindsym Mod4+comma exec --no-startup-id mpc prev',
+                'bindsym Mod4+period exec --no-startup-id mpc next',
+                'bindsym Mod4+Control+m exec --no-startup-id mpc toggle',
+                'bindsym Mod4+Shift+2 exec --no-startup-id mpc toggle',
+            ])
+            exec_ret += '\n'
+            exec_ret += '\n'.join([
+                'bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute',
+                'bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute',
+            ])
+            exec_ret += '\n'
+            exec_ret += '\n'.join([
+                'bindsym Mod4+Control+Shift+u exec --no-startup-id sudo systemctl suspend',
+                'bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend',
+            ])
+            exec_ret += '\n'
+            exec_ret += '\n'.join([
+                'bindsym Mod4+c exec --no-startup-id ~/bin/clip',
+                'bindsym Mod4+u exec --no-startup-id udiskie-umount -a',
+                'bindsym Mod4+Shift+M exec --no-startup-id ~/bin/scripts/rofi_mpd',
+                'bindsym Mod4+F4 exec --no-startup-id gpick -so --no-newline | xsel -b',
+                'bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl',
+            ])
+
+            exec_ret += '\n'
+            exec_ret += '\n'.join([
+                'bindsym Mod1+grave exec --no-startup-id ~/bin/scripts/rofi_run'
+            ])
+            exec_ret += '\n'
+
+            return exec_ret
+
         ret = ''
         ret += str(textwrap.dedent(bind_data()))
+        ret += str(textwrap.dedent(exec_binds()))
         ret += str(self.bscratch_bindings(mode_name))
         ret += str(self.circle_bindings(mode_name))
 

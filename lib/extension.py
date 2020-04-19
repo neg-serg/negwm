@@ -15,7 +15,7 @@ class extension():
             calls.
 
             This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, sxhkd, etc. Need the
+            can be used by external users as i3-bindings, etc. Need the
             [send] binary which can send commands to the appropriate socket.
 
             Args:
