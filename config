@@ -54,7 +54,7 @@ set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
-set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|[Ss]kype.*|[Tt]elegram.*|[Ss]kype.*|[Tt]elegram.*)$"]
+set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|[Ss]kype.*|[Tt]elegram.*)$"]
 set $bscratch-ncmpcpp [instance="^(Tauon Music Box|ncmpcpp)$"]
 set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $bscratch-ranger [instance="ranger"]
@@ -80,7 +80,7 @@ set $circle-vid [class="^(mpv|mplayer|mplayer2|Vlc)$"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
 set $circle-steam [class="Steam"]
 set $circle-doc [class="^(Zathura|cr3)$"]
-set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$|^[Qq]emu-.*$)$"]
+set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$)$"]
 set $circle-term [instance="term"]
 set $circle-nwim [instance="nwim"]
 set $circle-obs [class="obs"]
