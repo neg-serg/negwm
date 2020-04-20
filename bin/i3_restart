@@ -1,2 +1,2 @@
 i3-msg restart &
-systemctl --user restart picom &
+systemctl --user reload picom || systemctl --user start picom &
