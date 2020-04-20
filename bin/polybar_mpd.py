@@ -115,6 +115,8 @@ class polybar_mpd(modconfig):
                 song_data = await self.update_mpd_stat(reader, writer)
                 if song_data.get('state', '') == 'play':
                     self.pretty_printing(song_data)
+                else:
+                    sys.stdout.write('\n')
                 await asyncio.sleep(0.1)
 
 
