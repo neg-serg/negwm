@@ -569,7 +569,6 @@ class i3cfg(extension, cfg):
             ])
             exec_ret += '\n'
             exec_ret += '\n'.join([
-                'bindsym Mod4+Control+Shift+u exec --no-startup-id sudo systemctl suspend',
                 'bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend',
             ])
             exec_ret += '\n'
@@ -583,7 +582,9 @@ class i3cfg(extension, cfg):
 
             exec_ret += '\n'
             exec_ret += '\n'.join([
-                'bindsym Mod1+grave exec --no-startup-id ~/bin/scripts/rofi_run'
+                'bindsym Mod1+grave exec --no-startup-id rofi ' \
+                '-no-plugins -show run -lines 1 -columns 4 '\
+                '-disable-history -theme run'
             ])
             exec_ret += '\n'
 
