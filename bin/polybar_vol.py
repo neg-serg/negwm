@@ -93,14 +93,7 @@ class polybar_vol(modconfig):
 
     def main(self):
         """ Mainloop starting here. """
-        try:
-            self.loop.run_until_complete(
-                self.update_mpd_volume()
-            )
-        except ConnectionError:
-            self.empty_output()
-        finally:
-            self.loop.close()
+        asyncio.run(self.update_mpd_volume())
 
     def print_volume(self):
         """ Create nice and shiny output for polybar. """

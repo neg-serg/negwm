@@ -56,14 +56,7 @@ class polybar_mpd(modconfig):
 
     def main(self):
         """ Mainloop starting here. """
-        try:
-            self.loop.run_until_complete(
-                self.current_song_loop()
-            )
-        except ConnectionError:
-            sys.stdout.write(f'\n')
-        finally:
-            self.loop.close()
+        asyncio.run(self.current_song_loop())
 
     def pretty_printing(self, song_data):
         artist = song_data.get('Artist', '')
