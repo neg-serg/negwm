@@ -295,7 +295,7 @@ bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -columns 4 -disable-history -theme run
 bindsym Mod4+e $bscratch toggle im  
 bindsym Mod4+f $bscratch toggle ncmpcpp  
-bindsym Mod4+Control+n $bscratch toggle neomutt  
+bindsym Mod4+n $bscratch toggle neomutt  
 bindsym Mod4+d $bscratch toggle teardrop  
 bindsym Mod4+Shift+p $bscratch toggle volcontrol  
 bindsym Mod4+a $bscratch toggle youtube  
