@@ -4,14 +4,10 @@ exec_always pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1  ] && polybar -c
 exec /usr/lib/gsd-xsettings &
 exec /usr/sbin/gpaste-client daemon &
 
-
 workspace_layout tabbed
 floating_modifier Mod4
-
 set $i3 ${XDG_CONFIG_HOME}/i3
-
 set $exit mode "default"
-
 
 focus_follows_mouse no
 force_display_urgency_hint 0 ms
@@ -36,7 +32,6 @@ set $pic "14 ::  ξ:pic"
 set $remote "15 ::  ο:remote"
 set $sound "16 ::  π:sound"
 set $obs "17 :: @ ρ:obs"
-
 
 show_marks yes
 smart_borders on
@@ -94,7 +89,6 @@ set $circle-remote [class="^(xfreerdp|reminna|org.remmina.Remmina)$"]
 set $circle-sxiv [class="Sxiv"]
 set $circle-looking_glass [class="looking-glass-client"]
 set $circle-bitwig [class="Bitwig Studio"]
-
 for_window $circle-web move workspace $web, focus
 for_window $circle-vid move workspace $gfx, focus
 for_window $circle-lutris move workspace $steam, focus
@@ -108,7 +102,6 @@ for_window $circle-remote move workspace $remote, focus
 for_window $circle-sxiv move workspace $gfx, focus
 for_window $circle-looking_glass move workspace $vm, focus
 for_window $circle-bitwig move workspace $sound, focus
-
 for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
 for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
 for_window [class="spotify"] move workspace $spotify, focus
@@ -154,11 +147,13 @@ mode SPEC {
             bindsym Shift+d floating toggle, $exit
             bindsym Shift+l exec sh -c 'sudo gllock', $exit
 
-            bindsym o $menu pulse_output, $exit
-            bindsym i $menu pulse_input, $exit
-            bindsym Shift+t $exit, $menu gtk_theme
-            bindsym Shift+i $exit, $menu icon_theme
-            bindsym t $bscratch subtag im tel , $exit
+bindsym o $menu pulse_output, $exit
+bindsym i $menu pulse_input, $exit
+bindsym Shift+t $menu gtk_theme, $exit
+bindsym Shift+i $menu icon_theme, $exit
+bindsym m $menu xprop, $exit
+
+bindsym t $bscratch subtag im tel , $exit
 bindsym s $bscratch subtag im skype , $exit
 bindsym Shift+r $bscratch toggle ranger  , $exit
 bindsym w $bscratch toggle webcam  , $exit
@@ -174,11 +169,15 @@ bindsym Control+G $exit
 bindsym Mod4+minus mode "WM"
 mode WM {
 
-            bindsym grave layout default; $exit
-            bindsym t layout tabbed; $exit
-            bindsym minus layout splith; $exit
-            bindsym backslash layout splitv; $exit
-            bindsym m $menu xprop, $exit
+bindsym grave layout default, $exit
+bindsym t layout tabbed, $exit
+bindsym minus layout splith, $exit
+bindsym backslash layout splitv, $exit
+bindsym Control+a layout toggle all, $exit
+bindsym Control+3 layout toggle all, $exit
+bindsym Control+s layout toggle split, $exit
+bindsym Control+t layout toggle, $exit
+
 
 bindsym h split horizontal, $exit
 bindsym j split vertical, $exit
@@ -198,29 +197,23 @@ bindsym Shift+w $win_action x2 hdown
 bindsym Shift+d $win_action x2 vright
 
 
-bindsym 1 $win_action  1
-bindsym 2 $win_action  2
-bindsym 3 $win_action  3
-bindsym 4 $win_action  4
+bindsym 1 $win_action 1
+bindsym 2 $win_action 2
+bindsym 3 $win_action 3
+bindsym 4 $win_action 4
 
 
 bindsym m $win_action maximize
 bindsym Shift+m $win_action revert_maximize
-
 bindsym x $win_action maxhor
 bindsym y $win_action maxvert
 bindsym Shift+x $win_action revert_maximize
 bindsym Shift+y $win_action revert_maximize
-
 bindsym Shift+plus $win_action grow
 bindsym Shift+minus $win_action shrink
-bindsym c $win_action center none
-bindsym Shift+c $win_action center resize
+bindsym c $win_action none
+bindsym Shift+c $win_action resize
 
-bindsym Control+a layout toggle all
-bindsym Control+3 layout toggle all
-bindsym Control+s layout toggle split
-bindsym Control+t layout toggle
 bindsym Return $exit
 bindsym Escape $exit
 bindsym space $exit
@@ -230,69 +223,83 @@ bindsym Control+G $exit
 
 
 bindsym Mod4+q fullscreen toggle
-bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
 bindsym Mod4+Control+q kill
 
-bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
-bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
-bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
-bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
-bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
-bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
-bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
-bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
-bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
-bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
-
-bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
-
 bindsym Mod4+h focus left
-bindsym Mod4+l focus right
 bindsym Mod4+j focus down
 bindsym Mod4+k focus up
+bindsym Mod4+l focus right
 
-bindsym XF86AudioLowerVolume $volume d
-bindsym XF86AudioRaiseVolume $volume u
 
-bindsym Mod4+Control+Shift+R $bscratch geom_restore
-bindsym Mod4+Control+Shift+D $bscratch geom_dump
-bindsym Mod4+Control+Shift+S $bscratch geom_autosave
-bindsym Mod4+Control+a $bscratch dialog
-bindsym Mod4+3 $bscratch next
-bindsym Mod4+s $bscratch hide_current
 
-bindsym Mod1+g $menu goto_win
-bindsym Mod4+Shift+a $menu attach
-bindsym Mod4+g $menu ws
-bindsym Mod4+Control+g $menu movews
-bindsym Mod4+Control+grave $menu cmd_menu
-bindsym Mod4+Shift+s $menu autoprop
 
-bindsym Mod1+Tab $win_history switch
-bindsym Mod4+slash $win_history switch
-bindsym Mod4+grave $win_history focus_next_visible
-bindsym Mod4+Shift+grave $win_history focus_prev_visible
 bindsym XF86AudioPrev exec --no-startup-id mpc -q prev
 bindsym XF86AudioNext exec --no-startup-id mpc -q next
 bindsym XF86AudioPlay exec --no-startup-id mpc -q play
 bindsym XF86AudioStop exec --no-startup-id mpc -q stop
 
-bindsym Mod4+comma exec --no-startup-id mpc prev
-bindsym Mod4+period exec --no-startup-id mpc next
-bindsym Mod4+Control+m exec --no-startup-id mpc toggle
-bindsym Mod4+Shift+2 exec --no-startup-id mpc toggle
+
+
+bindsym Mod4+comma exec --no-startup-id mpc -q prev
+bindsym Mod4+period exec --no-startup-id mpc -q next
+bindsym Mod4+Shift+2 exec --no-startup-id mpc -q toggle
+
+
+
+bindsym XF86AudioLowerVolume $vol d
+bindsym XF86AudioRaiseVolume $vol u
+
+
+
+bindsym Mod1+g $menu goto_win
+bindsym Mod4+g $menu ws
+bindsym Mod4+Shift+a $menu attach
+bindsym Mod4+Control+g $menu movews
+bindsym Mod4+Control+grave $menu cmd_menu
+bindsym Mod4+Shift+s $menu autoprop
+
+
+
+bindsym Mod4+Control+Shift+R $bscratch geom_restore
+bindsym Mod4+Control+Shift+D $bscratch geom_dump
+bindsym Mod4+Mod4+Control+Shift $bscratch geom_autosave
+bindsym Mod4+Control+a $bscratch dialog
+bindsym Mod4+3 $bscratch next
+bindsym Mod4+s $bscratch hide_current
+
+
+
+bindsym Mod1+Tab $win_history switch
+bindsym Mod4+slash $win_history switch
+bindsym Mod4+grave $win_history focus_next_visible
+bindsym Mod4+Shift+grave $win_history focus_prev_visible
+
+
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
 bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
 bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
+bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
+bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
+bindsym Mod4+Shift+d exec --no-startup-id ~/bin/scripts/dw s
+bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
+bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
+bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
+bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
+bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
+bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
+bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
+bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
+bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
+bindsym Mod4+apostrophe exec --no-startup-id zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+bindsym Mod4+Shift+apostrophe exec --no-startup-id zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+u exec --no-startup-id udiskie-umount -a
 bindsym Mod4+Shift+M exec --no-startup-id ~/bin/scripts/rofi_mpd
 bindsym Mod4+F4 exec --no-startup-id gpick -so --no-newline | xsel -b
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -columns 4 -disable-history -theme run
+
 bindsym Mod4+e $bscratch toggle im  
 bindsym Mod4+f $bscratch toggle ncmpcpp  
 bindsym Mod4+n $bscratch toggle neomutt  

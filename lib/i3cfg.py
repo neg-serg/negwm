@@ -37,13 +37,7 @@ class i3cfg(extension, cfg):
             outfile.write('\n'.join(self.generate()))
 
     def autostart(self) -> str:
-        autostart_list = [
-            "exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run &",
-            "exec_always ${XDG_CONFIG_HOME}/i3/bin/gnome_settings &",
-            "exec_always pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1  ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main &",
-            "exec /usr/lib/gsd-xsettings &",
-            "exec /usr/sbin/gpaste-client daemon &",
-        ]
+        autostart_list = self.cfg.get('autostart', [])
         return '\n'.join(autostart_list) + '\n'
 
     def gaps(self) -> str:
@@ -57,33 +51,16 @@ class i3cfg(extension, cfg):
         return '\n'.join(gaps_params) + '\n'
 
     def general(self) -> str:
-        return """
-        workspace_layout tabbed
-        floating_modifier Mod4
-
-        set $i3 ${XDG_CONFIG_HOME}/i3
-
-        set $exit mode "default"
-        """
+        ret = self.cfg.get('general', [])
+        return '\n'.join(ret) + '\n'
 
     def focus_settings(self) -> str:
-        ret = """
-        focus_follows_mouse no
-        force_display_urgency_hint 0 ms
-        focus_on_window_activation urgent
-        focus_wrapping yes
-        mouse_warping none
-        """
-        return ret
+        ret = self.cfg.get('focus_settings', [])
+        return '\n'.join(ret) + '\n'
 
     def colorscheme(self) -> str:
-        appearance = """
-        show_marks yes
-        smart_borders on
-        hide_edge_borders both
-        title_align left
-        """
-
+        ret = self.cfg.get('appearance', [])
+        appearance = '\n'.join(ret) + '\n'
         theme = {
             'client.focused': [
                 '#222233', '#000000', '#ddddee', '#112211', '#0C0C0D'
@@ -210,37 +187,32 @@ class i3cfg(extension, cfg):
                         ))
             return cmd_dict
 
-        def rules_bscratch() -> str:
+        def rules_mod(modname):
             """ Create i3 match rules for all tags. """
             ret = ''
-            bscratch = extension.get_mods()['bscratch']
-            cmd_dict = fill_rules_dict(bscratch, {})
-
+            mod = extension.get_mods().get(modname, None)
+            if mod is None:
+                return ''
+            cmd_dict = fill_rules_dict(mod, {})
             for tag in cmd_dict:
                 rules = list(filter(lambda str: str != '', cmd_dict[tag]))
                 if rules:
-                    ret += f'set $bscratch-{tag} [' + ' '.join(rules) + ']'
+                    ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']'
                     ret += '\n'
+            return ret, cmd_dict, mod
 
+        def rules_bscratch() -> str:
+            """ Create i3 match rules for all tags. """
+            ret, cmd_dict, bscratch = rules_mod('bscratch')
             ret += '\n'
             for tag in cmd_dict:
                 geom = bscratch.nsgeom.get_geom(tag)
                 ret += f'for_window $bscratch-{tag} move scratchpad, {geom}'
                 ret += '\n'
-
             return ret
 
         def rules_circle() -> str:
-            ret = ''
-            circle = extension.get_mods()['circle']
-            cmd_dict = fill_rules_dict(circle, {})
-
-            for tag in cmd_dict:
-                rules = list(filter(lambda str: str != '', cmd_dict[tag]))
-                ret += f'set $circle-{tag} [' + ' '.join(rules) + ']\n'
-
-            ret += '\n'
-
+            ret, _, circle = rules_mod('circle')
             for tag in circle.cfg:
                 focus_cmd = ''
                 ws = circle.cfg[tag].get('ws', '')
@@ -261,7 +233,7 @@ class i3cfg(extension, cfg):
                     attr (str): tag attrubutes.
                     target_attr (str): attribute to fill.
             """
-            attr_name = {
+            conv_dict_attr = {
                 'class': 'class',
                 'instance': 'instance',
                 'name': 'window_name',
@@ -270,9 +242,9 @@ class i3cfg(extension, cfg):
             cmd = ''
             if target_attr in attr:
                 if not attr.endswith('_r'):
-                    win_attr = attr_name[attr]
+                    win_attr = conv_dict_attr[attr]
                 else:
-                    win_attr = attr_name[attr[:-2]]
+                    win_attr = conv_dict_attr[attr[:-2]]
                 start = f'{win_attr}="' + Misc.ch(config[tag][attr], '^')
                 attrlist = []
                 attrlist = config[tag][attr]
@@ -285,14 +257,7 @@ class i3cfg(extension, cfg):
             return cmd
 
         def plain_rules() -> str:
-            return """
-            for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
-            for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
-            for_window [class="spotify"] move workspace $spotify, focus
-            for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
-            for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
-            for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
-            """
+            return self.cfg.get('plain_rules', '')
 
         ret = ''
         ret += \
@@ -357,6 +322,9 @@ class i3cfg(extension, cfg):
         mode_bind = 'Mod1+e'
         mode_name = 'SPEC'
 
+        def menu_spec() -> str:
+            return self.bind('menu_spec', '$menu', ', $exit')
+
         def bind_data():
             return """
             bindsym c exec rofi-pass; $exit
@@ -364,41 +332,48 @@ class i3cfg(extension, cfg):
 
             bindsym Shift+d floating toggle, $exit
             bindsym Shift+l exec sh -c 'sudo gllock', $exit
-
-            bindsym o $menu pulse_output, $exit
-            bindsym i $menu pulse_input, $exit
-            bindsym Shift+t $exit, $menu gtk_theme
-            bindsym Shift+i $exit, $menu icon_theme
             """
 
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
         ret += self.keybindings_mode_start(mode_name)
         ret += str(bind_data())
+        ret += menu_spec()
         ret += str(self.bscratch_bindings(mode_name))
         ret += str(self.circle_bindings(mode_name))
         ret += self.keybindings_mode_end()
 
         return textwrap.dedent(ret)
 
+    def bind(self, section_name, post, end, pre='bindsym') -> str:
+        ret = ''
+        section = self.cfg.get(section_name, {})
+        if section:
+            binds = section.get('binds', [])
+            order = section.get('order')
+            modkey = section.get('modkey', '')
+            if modkey:
+                modkey += '+'
+            if binds and order:
+                ret += '\n'
+                for bind in binds:
+                    for i, key in enumerate(bind):
+                        ret += f'{pre} {modkey}{key} {post} {order[i]}{end}\n'
+                ret += '\n'
+        return ret
+
     def keybindings_mode_wm(self) -> str:
         mode_bind = 'Mod4+minus'
         mode_name = 'WM'
 
         def split_tiling() -> str:
-            ret = ''
-            split = self.cfg.get('split', {})
-            if split:
-                binds = split.get('binds', [])
-                order = split.get('order')
-                if binds and order:
-                    ret += '\n'
-                    for bind in binds:
-                        for i, key in enumerate(bind):
-                            ret += f'bindsym {key} split ' \
-                                f'{order[i]}, $exit\n'
-                    ret += '\n'
-            return ret
+            return self.bind('split', 'split', ', $exit')
+
+        def move_win() -> str:
+            return self.bind('move', 'move', '')
+
+        def win_quad() -> str:
+            return self.bind('quad', '$win_action', '')
 
         def move_acts() -> str:
             ret = ''
@@ -407,6 +382,9 @@ class i3cfg(extension, cfg):
                 binds = move_acts.get('binds', [])
                 order = move_acts.get('order')
                 coeff = move_acts.get('coeff', '')
+                modkey = move_acts.get('modkey', '')
+                if modkey:
+                    modkey += '+'
                 if binds and order and coeff:
                     ret += '\n'
                     for bind in binds:
@@ -416,74 +394,22 @@ class i3cfg(extension, cfg):
                         ret += '\n'
             return ret
 
-        def move_win() -> str:
-            ret = ''
-            move = self.cfg.get('move', {})
-            if move:
-                binds = move.get('binds', [])
-                order = move.get('order')
-                if binds and order:
-                    ret += '\n'
-                    for bind in binds:
-                        for i, key in enumerate(bind):
-                            ret += f'bindsym {key} move {order[i]}\n'
-                    ret += '\n'
-            return ret
+        def layout_wm() -> str:
+            return self.bind('layout_wm', 'layout', ', $exit')
 
-        def win_quad() -> str:
-            ret = ''
-            quad = self.cfg.get('quad', {})
-            if quad:
-                order = quad.get('order', [])
-                binds = quad.get('binds', [])
-                if binds and order:
-                    ret += '\n'
-                    for bind in binds:
-                        for i, key in enumerate(bind):
-                            ret += f'bindsym {key} $win_action  ' \
-                                f'{order[i]}\n'
-                    ret += '\n'
-            return ret
+        def win_action_wm() -> str:
+            return self.bind('win_action_wm', '$win_action', '')
 
         def bind_data() -> str:
-            ret = """
-            bindsym grave layout default; $exit
-            bindsym t layout tabbed; $exit
-            bindsym minus layout splith; $exit
-            bindsym backslash layout splitv; $exit
-            bindsym m $menu xprop, $exit
-            """
+            ret = ''
+            ret += layout_wm()
             ret += split_tiling()
             ret += move_win()
             win_action = extension.get_mods().get('win_action', '')
             if win_action:
                 ret += move_acts()
                 ret += win_quad()
-                ret += textwrap.dedent("""
-                bindsym m $win_action maximize
-                bindsym Shift+m $win_action revert_maximize
-                """)
-
-                ret += textwrap.dedent("""
-                bindsym x $win_action maxhor
-                bindsym y $win_action maxvert
-                bindsym Shift+x $win_action revert_maximize
-                bindsym Shift+y $win_action revert_maximize
-                """)
-
-                ret += textwrap.dedent("""
-                bindsym Shift+plus $win_action grow
-                bindsym Shift+minus $win_action shrink
-                bindsym c $win_action center none
-                bindsym Shift+c $win_action center resize
-                """)
-
-            ret += textwrap.dedent("""
-            bindsym Control+a layout toggle all
-            bindsym Control+3 layout toggle all
-            bindsym Control+s layout toggle split
-            bindsym Control+t layout toggle
-            """)
+                ret += win_action_wm()
             return ret
 
         ret = ''
@@ -502,96 +428,50 @@ class i3cfg(extension, cfg):
         def bind_data() -> str:
             return """
             bindsym Mod4+q fullscreen toggle
-            bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
             bindsym Mod4+Control+q kill
-
-            bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-            bindsym Mod4+Shift+d exec --no-startup-id "zsh -c '~/bin/scripts/dw s'"
-            bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
-            bindsym Mod4+Shift+l exec --no-startup-id "~/bin/scripts/rofi_lutris"
-            bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
-            bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
-            bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
-            bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
-            bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
-            bindsym Mod4+Shift+y exec --no-startup-id "~/bin/clip youtube-dw-list"
-            bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-            bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
-
-            bindsym Mod4+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-            bindsym Mod4+Shift+apostrophe exec zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
-
-            bindsym Mod4+h focus left
-            bindsym Mod4+l focus right
-            bindsym Mod4+j focus down
-            bindsym Mod4+k focus up
-
-            bindsym XF86AudioLowerVolume $volume d
-            bindsym XF86AudioRaiseVolume $volume u
-
-            bindsym Mod4+Control+Shift+R $bscratch geom_restore
-            bindsym Mod4+Control+Shift+D $bscratch geom_dump
-            bindsym Mod4+Control+Shift+S $bscratch geom_autosave
-            bindsym Mod4+Control+a $bscratch dialog
-            bindsym Mod4+3 $bscratch next
-            bindsym Mod4+s $bscratch hide_current
-
-            bindsym Mod1+g $menu goto_win
-            bindsym Mod4+Shift+a $menu attach
-            bindsym Mod4+g $menu ws
-            bindsym Mod4+Control+g $menu movews
-            bindsym Mod4+Control+grave $menu cmd_menu
-            bindsym Mod4+Shift+s $menu autoprop
-
-            bindsym Mod1+Tab $win_history switch
-            bindsym Mod4+slash $win_history switch
-            bindsym Mod4+grave $win_history focus_next_visible
-            bindsym Mod4+Shift+grave $win_history focus_prev_visible
             """
+
+        def vol_def() -> str:
+            return self.bind('vol_def', '$vol', '')
+
+        def win_history_def() -> str:
+            return self.bind('win_history_def', '$win_history', '')
+
+        def menu_def() -> str:
+            return self.bind('menu_def', '$menu', '')
+
+        def bscratch_def() -> str:
+            return self.bind('bscratch_def', '$bscratch', '')
+
+        def focus() -> str:
+            return self.bind('focus', 'focus', '')
+
+        def mpd_media() -> str:
+            cmd = 'exec --no-startup-id mpc -q'
+            return self.bind('mpd_media', cmd, '')
+
+        def mpd_normal() -> str:
+            cmd = 'exec --no-startup-id mpc -q'
+            return self.bind('mpd_normal', cmd, '')
 
         def exec_binds() -> str:
             exec_ret = ''
-            exec_ret += '\n'.join([
-                'bindsym XF86AudioPrev exec --no-startup-id mpc -q prev',
-                'bindsym XF86AudioNext exec --no-startup-id mpc -q next',
-                'bindsym XF86AudioPlay exec --no-startup-id mpc -q play',
-                'bindsym XF86AudioStop exec --no-startup-id mpc -q stop',
-                '',
-                'bindsym Mod4+comma exec --no-startup-id mpc prev',
-                'bindsym Mod4+period exec --no-startup-id mpc next',
-                'bindsym Mod4+Control+m exec --no-startup-id mpc toggle',
-                'bindsym Mod4+Shift+2 exec --no-startup-id mpc toggle',
-            ])
+            exec_ret += '\n' \
+                + '\n' + mpd_media() \
+                + '\n' + mpd_normal() \
+                + '\n' + vol_def() \
+                + '\n' + menu_def() \
+                + '\n' + bscratch_def() \
+                + '\n' + win_history_def()
             exec_ret += '\n'
-            exec_ret += '\n'.join([
-                'bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute',
-                'bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute',
-            ])
-            exec_ret += '\n'
-            exec_ret += '\n'.join([
-                'bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend',
-            ])
-            exec_ret += '\n'
-            exec_ret += '\n'.join([
-                'bindsym Mod4+c exec --no-startup-id ~/bin/clip',
-                'bindsym Mod4+u exec --no-startup-id udiskie-umount -a',
-                'bindsym Mod4+Shift+M exec --no-startup-id ~/bin/scripts/rofi_mpd',
-                'bindsym Mod4+F4 exec --no-startup-id gpick -so --no-newline | xsel -b',
-                'bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl',
-            ])
-
-            exec_ret += '\n'
-            exec_ret += '\n'.join([
-                'bindsym Mod1+grave exec --no-startup-id rofi ' \
-                '-no-plugins -show run -lines 1 -columns 4 '\
-                '-disable-history -theme run'
-            ])
+            exec_ret += self.cfg.get('exec_binds','')
             exec_ret += '\n'
 
             return exec_ret
 
         ret = ''
         ret += str(textwrap.dedent(bind_data()))
+        ret += str(textwrap.dedent(focus()))
         ret += str(textwrap.dedent(exec_binds()))
         ret += str(self.bscratch_bindings(mode_name))
         ret += str(self.circle_bindings(mode_name))
