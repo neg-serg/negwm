@@ -124,6 +124,9 @@ class negi3wm(modconfig):
             benchmarks.
         """
         mod_startup_times = []
+        main_color = fg(249)
+        delim_color = fg(25)
+        delim = f'{delim_color}❯{main_color}'
         for mod in self.mods:
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
@@ -132,16 +135,14 @@ class negi3wm(modconfig):
                 self.mods[mod].asyncio_init(self.loop)
             except Exception:
                 pass
-            pref = f'{fg(4)}⦓ {fg(7)}'
-            post = f'{fg(4)} ⦔{fg(7)}'
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}'
-            mod_loaded_info = f'{pref}{mod:<14s} {time_elapsed:>10s}{post}'
+            mod_loaded_info = f'{main_color}{mod:<14s}{delim} {time_elapsed:>10s}'
             self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
             self.echo(mod_loaded_info, flush=True)
         total_startup_time = str(round(sum(mod_startup_times), 6))
-        loading_time_msg = f'{pref}{"total":<14s}' \
-            f'{total_startup_time:>11s}{post}{fg(241)}'
+        loading_time_msg = f'{"total":<14s}{delim}' \
+            f'{main_color}{total_startup_time:>11s}{fg(240)}'
         self.notification_text += loading_time_msg
         self.echo(loading_time_msg)
 
