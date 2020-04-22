@@ -55,7 +55,7 @@ set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
-set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|TelegramDesktop|[Ss]kype.*)$"]
+set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|TelegramDesktop|KotatogramDesktop|[Ss]kype.*)$"]
 set $bscratch-ncmpcpp [instance="^(Tauon Music Box|ncmpcpp)$"]
 set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $bscratch-ranger [instance="ranger"]
