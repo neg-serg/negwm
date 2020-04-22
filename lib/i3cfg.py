@@ -99,7 +99,7 @@ class i3cfg(extension, cfg):
             if len(get_binds) == 3:
                 if mode_ == mode:
                     for keybind in settings[p]:
-                        ret += f'{pref.strip()} bindsym {keybind.strip()}' \
+                        ret += f'{pref.strip()}bindsym {keybind.strip()}' \
                             f' $bscratch {cmd.strip()} {tag.strip()} ' \
                             f'{subtag.strip()} {postfix.strip()}\n'
             return ret
@@ -116,7 +116,7 @@ class i3cfg(extension, cfg):
                             )
                 elif param.startswith('keybind_'):
                     ret += get_binds(mode, tag, settings, param)
-        return textwrap.dedent(ret)
+        return ret
 
     def circle_bindings(self, mode) -> str:
         ret = ''
@@ -166,10 +166,7 @@ class i3cfg(extension, cfg):
 
     @staticmethod
     def scratchpad_hide_cmd(hide: bool) -> str:
-        """ Returns cmd needed to hide scratchpad.
-            Args:
-                hide (bool): to hide target or not.
-        """
+        """ Returns cmd needed to hide scratchpad. """
         ret = ""
         if hide:
             ret = ", [con_id=__focused__] scratchpad show"
@@ -257,13 +254,16 @@ class i3cfg(extension, cfg):
             return cmd
 
         def plain_rules() -> str:
-            return self.cfg.get('plain_rules', '')
+            rules = self.cfg.get('plain_rules', [])
+            if rules:
+                return ''.join(map(lambda s: 'for_window ' + s + '\n', rules))
+            return ''
 
         ret = ''
         ret += \
-            textwrap.dedent(rules_bscratch()) + \
-            textwrap.dedent(rules_circle()) + \
-            textwrap.dedent(plain_rules())
+            rules_bscratch() + \
+            rules_circle() + \
+            plain_rules()
         return textwrap.dedent(ret)
 
 
@@ -313,8 +313,8 @@ class i3cfg(extension, cfg):
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
         ret += self.keybindings_mode_start(mode_name)
-        ret += str(bind_data())
-        ret += str(self.keybindings_mode_end())
+        ret += bind_data()
+        ret += self.keybindings_mode_end()
 
         return textwrap.dedent(ret)
 
@@ -337,10 +337,10 @@ class i3cfg(extension, cfg):
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
         ret += self.keybindings_mode_start(mode_name)
-        ret += str(bind_data())
+        ret += bind_data()
         ret += menu_spec()
-        ret += str(self.bscratch_bindings(mode_name))
-        ret += str(self.circle_bindings(mode_name))
+        ret += self.bscratch_bindings(mode_name)
+        ret += self.circle_bindings(mode_name)
         ret += self.keybindings_mode_end()
 
         return textwrap.dedent(ret)
@@ -352,13 +352,15 @@ class i3cfg(extension, cfg):
             binds = section.get('binds', [])
             funcs = section.get('funcs')
             modkey = section.get('modkey', '')
+            params = section.get('params', [])
             if modkey:
                 modkey += '+'
             if binds and funcs:
                 ret += '\n'
+                param_str = ' '.join(params).strip()
                 for bind in binds:
                     for i, key in enumerate(bind):
-                        ret += f'{pre} {modkey}{key} {post} {funcs[i]}{end}\n'
+                        ret += f'{pre} {modkey}{key} {post} {funcs[i]} {param_str}{end}\n'
                 ret += '\n'
         return ret
 
@@ -376,23 +378,7 @@ class i3cfg(extension, cfg):
             return self.bind('quad', '$win_action', '')
 
         def move_acts() -> str:
-            ret = ''
-            move_acts = self.cfg.get('move_acts', {})
-            if move_acts:
-                binds = move_acts.get('binds', [])
-                funcs = move_acts.get('funcs')
-                coeff = move_acts.get('coeff', '')
-                modkey = move_acts.get('modkey', '')
-                if modkey:
-                    modkey += '+'
-                if binds and funcs and coeff:
-                    ret += '\n'
-                    for bind in binds:
-                        for i, key in enumerate(bind):
-                            ret += f'bindsym {key} $win_action {coeff} ' \
-                                f'{funcs[i]}\n'
-                        ret += '\n'
-            return ret
+            return self.bind('move_acts', '$win_action', '')
 
         def layout_wm() -> str:
             return self.bind('layout_wm', 'layout', ', $exit')
@@ -415,9 +401,9 @@ class i3cfg(extension, cfg):
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
         ret += self.keybindings_mode_start(mode_name)
-        ret += str(bind_data())
-        ret += str(self.bscratch_bindings(mode_name))
-        ret += str(self.circle_bindings(mode_name))
+        ret += bind_data()
+        ret += self.bscratch_bindings(mode_name)
+        ret += self.circle_bindings(mode_name)
         ret += self.keybindings_mode_end()
 
         return textwrap.dedent(ret)
@@ -425,11 +411,8 @@ class i3cfg(extension, cfg):
     def keybindings_mode_default(self) -> str:
         mode_name = 'default'
 
-        def bind_data() -> str:
-            return """
-            bindsym Mod4+q fullscreen toggle
-            bindsym Mod4+Control+q kill
-            """
+        def misc_def() -> str:
+            return self.bind('misc_def', '', '')
 
         def vol_def() -> str:
             return self.bind('vol_def', '$vol', '')
@@ -470,11 +453,11 @@ class i3cfg(extension, cfg):
             return exec_ret
 
         ret = ''
-        ret += str(textwrap.dedent(bind_data()))
-        ret += str(textwrap.dedent(focus()))
-        ret += str(textwrap.dedent(exec_binds()))
-        ret += str(self.bscratch_bindings(mode_name))
-        ret += str(self.circle_bindings(mode_name))
+        ret += misc_def()
+        ret += focus()
+        ret += exec_binds()
+        ret += self.bscratch_bindings(mode_name)
+        ret += self.circle_bindings(mode_name)
 
         return textwrap.dedent(ret)
 

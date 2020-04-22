@@ -147,11 +147,11 @@ mode SPEC {
             bindsym Shift+d floating toggle, $exit
             bindsym Shift+l exec sh -c 'sudo gllock', $exit
 
-bindsym o $menu pulse_output, $exit
-bindsym i $menu pulse_input, $exit
-bindsym Shift+t $menu gtk_theme, $exit
-bindsym Shift+i $menu icon_theme, $exit
-bindsym m $menu xprop, $exit
+bindsym o $menu pulse_output , $exit
+bindsym i $menu pulse_input , $exit
+bindsym Shift+t $menu gtk_theme , $exit
+bindsym Shift+i $menu icon_theme , $exit
+bindsym m $menu xprop , $exit
 
 bindsym t $bscratch subtag im tel , $exit
 bindsym s $bscratch subtag im skype , $exit
@@ -169,50 +169,50 @@ bindsym Control+G $exit
 bindsym Mod4+minus mode "WM"
 mode WM {
 
-bindsym grave layout default, $exit
-bindsym t layout tabbed, $exit
-bindsym minus layout splith, $exit
-bindsym backslash layout splitv, $exit
-bindsym Control+a layout toggle all, $exit
-bindsym Control+3 layout toggle all, $exit
-bindsym Control+s layout toggle split, $exit
-bindsym Control+t layout toggle, $exit
+bindsym grave layout default , $exit
+bindsym t layout tabbed , $exit
+bindsym minus layout splith , $exit
+bindsym backslash layout splitv , $exit
+bindsym Control+a layout toggle all , $exit
+bindsym Control+3 layout toggle all , $exit
+bindsym Control+s layout toggle split , $exit
+bindsym Control+t layout toggle , $exit
 
 
-bindsym h split horizontal, $exit
-bindsym j split vertical, $exit
-bindsym k split vertical, $exit
-bindsym l split horizontal, $exit
+bindsym h split horizontal , $exit
+bindsym j split vertical , $exit
+bindsym k split vertical , $exit
+bindsym l split horizontal , $exit
 
 
-bindsym a move left
-bindsym s move bottom
-bindsym w move top
-bindsym d move right
+bindsym a move left 
+bindsym s move bottom 
+bindsym w move top 
+bindsym d move right 
 
 
-bindsym Shift+a $win_action x2 hup
-bindsym Shift+s $win_action x2 vleft
-bindsym Shift+w $win_action x2 hdown
-bindsym Shift+d $win_action x2 vright
+bindsym Shift+a $win_action hup x2
+bindsym Shift+s $win_action vleft x2
+bindsym Shift+w $win_action hdown x2
+bindsym Shift+d $win_action vright x2
 
 
-bindsym 1 $win_action 1
-bindsym 2 $win_action 2
-bindsym 3 $win_action 3
-bindsym 4 $win_action 4
+bindsym 1 $win_action 1 
+bindsym 2 $win_action 2 
+bindsym 3 $win_action 3 
+bindsym 4 $win_action 4 
 
 
-bindsym m $win_action maximize
-bindsym Shift+m $win_action revert_maximize
-bindsym x $win_action maxhor
-bindsym y $win_action maxvert
-bindsym Shift+x $win_action revert_maximize
-bindsym Shift+y $win_action revert_maximize
-bindsym Shift+plus $win_action grow
-bindsym Shift+minus $win_action shrink
-bindsym c $win_action none
-bindsym Shift+c $win_action resize
+bindsym m $win_action maximize 
+bindsym Shift+m $win_action revert_maximize 
+bindsym x $win_action maxhor 
+bindsym y $win_action maxvert 
+bindsym Shift+x $win_action revert_maximize 
+bindsym Shift+y $win_action revert_maximize 
+bindsym Shift+plus $win_action grow 
+bindsym Shift+minus $win_action shrink 
+bindsym c $win_action none 
+bindsym Shift+c $win_action resize 
 
 bindsym Return $exit
 bindsym Escape $exit
@@ -222,57 +222,58 @@ bindsym Control+G $exit
 }
 
 
-bindsym Mod4+q fullscreen toggle
-bindsym Mod4+Control+q kill
-
-bindsym Mod4+h focus left
-bindsym Mod4+j focus down
-bindsym Mod4+k focus up
-bindsym Mod4+l focus right
+bindsym Mod4+q  fullscreen toggle 
+bindsym Mod4+Control+q  kill 
 
 
-
-
-bindsym XF86AudioPrev exec --no-startup-id mpc -q prev
-bindsym XF86AudioNext exec --no-startup-id mpc -q next
-bindsym XF86AudioPlay exec --no-startup-id mpc -q play
-bindsym XF86AudioStop exec --no-startup-id mpc -q stop
+bindsym Mod4+h focus left 
+bindsym Mod4+j focus down 
+bindsym Mod4+k focus up 
+bindsym Mod4+l focus right 
 
 
 
-bindsym Mod4+comma exec --no-startup-id mpc -q prev
-bindsym Mod4+period exec --no-startup-id mpc -q next
-bindsym Mod4+Shift+2 exec --no-startup-id mpc -q toggle
+
+bindsym XF86AudioPrev exec --no-startup-id mpc -q prev 
+bindsym XF86AudioNext exec --no-startup-id mpc -q next 
+bindsym XF86AudioPlay exec --no-startup-id mpc -q play 
+bindsym XF86AudioStop exec --no-startup-id mpc -q stop 
 
 
 
-bindsym XF86AudioLowerVolume $vol d
-bindsym XF86AudioRaiseVolume $vol u
+bindsym Mod4+comma exec --no-startup-id mpc -q prev 
+bindsym Mod4+period exec --no-startup-id mpc -q next 
+bindsym Mod4+Shift+2 exec --no-startup-id mpc -q toggle 
 
 
 
-bindsym Mod1+g $menu goto_win
-bindsym Mod4+g $menu ws
-bindsym Mod4+Shift+a $menu attach
-bindsym Mod4+Control+g $menu movews
-bindsym Mod4+Control+grave $menu cmd_menu
-bindsym Mod4+Shift+s $menu autoprop
+bindsym XF86AudioLowerVolume $vol d 
+bindsym XF86AudioRaiseVolume $vol u 
 
 
 
-bindsym Mod4+Control+Shift+R $bscratch geom_restore
-bindsym Mod4+Control+Shift+D $bscratch geom_dump
-bindsym Mod4+Mod4+Control+Shift $bscratch geom_autosave
-bindsym Mod4+Control+a $bscratch dialog
-bindsym Mod4+3 $bscratch next
-bindsym Mod4+s $bscratch hide_current
+bindsym Mod1+g $menu goto_win 
+bindsym Mod4+g $menu ws 
+bindsym Mod4+Shift+a $menu attach 
+bindsym Mod4+Control+g $menu movews 
+bindsym Mod4+Control+grave $menu cmd_menu 
+bindsym Mod4+Shift+s $menu autoprop 
 
 
 
-bindsym Mod1+Tab $win_history switch
-bindsym Mod4+slash $win_history switch
-bindsym Mod4+grave $win_history focus_next_visible
-bindsym Mod4+Shift+grave $win_history focus_prev_visible
+bindsym Mod4+Control+Shift+R $bscratch geom_restore 
+bindsym Mod4+Control+Shift+D $bscratch geom_dump 
+bindsym Mod4+Mod4+Control+Shift $bscratch geom_autosave 
+bindsym Mod4+Control+a $bscratch dialog 
+bindsym Mod4+3 $bscratch next 
+bindsym Mod4+s $bscratch hide_current 
+
+
+
+bindsym Mod1+Tab $win_history switch 
+bindsym Mod4+slash $win_history switch 
+bindsym Mod4+grave $win_history focus_next_visible 
+bindsym Mod4+Shift+grave $win_history focus_prev_visible 
 
 
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
