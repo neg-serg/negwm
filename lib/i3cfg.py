@@ -288,7 +288,7 @@ class i3cfg(extension, cfg):
 
         def bind_data():
             ret = ''
-            order = ['left', 'bottom', 'top', 'right']
+            funcs = ['left', 'bottom', 'top', 'right']
             resize_cfg = self.cfg.get('resize', {})
             if resize_cfg:
                 step = resize_cfg.get('step', '')
@@ -299,10 +299,10 @@ class i3cfg(extension, cfg):
                         for bind in binds:
                             for i, key in enumerate(bind):
                                 ret += f'bindsym {key} $win_action ' \
-                                    f'resize {order[i]} {step}\n'
+                                    f'resize {funcs[i]} {step}\n'
                             for i, key in enumerate(bind):
                                 ret += f'bindsym Shift+{key} $win_action ' \
-                                    f'resize {order[i]} -{step}\n'
+                                    f'resize {funcs[i]} -{step}\n'
                             ret += '\n'
                     ret +=textwrap.dedent("""\
                     bindsym semicolon resize shrink right 4
@@ -350,15 +350,15 @@ class i3cfg(extension, cfg):
         section = self.cfg.get(section_name, {})
         if section:
             binds = section.get('binds', [])
-            order = section.get('order')
+            funcs = section.get('funcs')
             modkey = section.get('modkey', '')
             if modkey:
                 modkey += '+'
-            if binds and order:
+            if binds and funcs:
                 ret += '\n'
                 for bind in binds:
                     for i, key in enumerate(bind):
-                        ret += f'{pre} {modkey}{key} {post} {order[i]}{end}\n'
+                        ret += f'{pre} {modkey}{key} {post} {funcs[i]}{end}\n'
                 ret += '\n'
         return ret
 
@@ -380,17 +380,17 @@ class i3cfg(extension, cfg):
             move_acts = self.cfg.get('move_acts', {})
             if move_acts:
                 binds = move_acts.get('binds', [])
-                order = move_acts.get('order')
+                funcs = move_acts.get('funcs')
                 coeff = move_acts.get('coeff', '')
                 modkey = move_acts.get('modkey', '')
                 if modkey:
                     modkey += '+'
-                if binds and order and coeff:
+                if binds and funcs and coeff:
                     ret += '\n'
                     for bind in binds:
                         for i, key in enumerate(bind):
                             ret += f'bindsym {key} $win_action {coeff} ' \
-                                f'{order[i]}\n'
+                                f'{funcs[i]}\n'
                         ret += '\n'
             return ret
 
