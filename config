@@ -67,7 +67,7 @@ set $bscratch-discord [class="discord"]
 set $bscratch-transients [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"]
 
 for_window $bscratch-im move scratchpad, move absolute position 1373 0, resize set 547 1173
-for_window $bscratch-ncmpcpp move scratchpad, move absolute position 276 326, resize set 1381 673
+for_window $bscratch-ncmpcpp move scratchpad, move absolute position 829 780, resize set 1066 330
 for_window $bscratch-neomutt move scratchpad, move absolute position 52 0, resize set 1835 1114
 for_window $bscratch-ranger move scratchpad, move absolute position 3 1, resize set 1916 816
 for_window $bscratch-teardrop move scratchpad, move absolute position 0 0, resize set 1920 803
@@ -261,9 +261,8 @@ bindsym Mod4+Shift+s $menu autoprop
 
 
 
-bindsym Mod4+Control+Shift+R $bscratch geom_restore 
-bindsym Mod4+Control+Shift+D $bscratch geom_dump 
-bindsym Mod4+Mod4+Control+Shift $bscratch geom_autosave 
+bindsym Mod4+space $bscratch geom_restore 
+bindsym Mod4+Control+s $bscratch geom_dump 
 bindsym Mod4+Control+a $bscratch dialog 
 bindsym Mod4+3 $bscratch next 
 bindsym Mod4+s $bscratch hide_current 
