@@ -432,7 +432,20 @@ class i3cfg(extension, cfg):
                 + '\n' + bscratch_def() \
                 + '\n' + win_history_def()
             exec_ret += '\n'
-            exec_ret += self.cfg.get('exec_binds','')
+            key_prog_gui = self.cfg.get('exec', [])
+            if key_prog_gui:
+                exec_ret += ''.join(map(
+                    lambda p:
+                    f'bindsym {str(p[0])} exec {str(p[1])}\n',
+                    key_prog_gui
+                ))
+            key_prog = self.cfg.get('exec_no_startup_id', [])
+            if key_prog:
+                exec_ret += ''.join(map(
+                    lambda p:
+                    f'bindsym {str(p[0])} exec --no-startup-id {str(p[1])}\n',
+                    key_prog
+                ))
             exec_ret += '\n'
 
             return exec_ret

@@ -55,7 +55,7 @@ set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
-set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|TelegramDesktop|KotatogramDesktop|[Ss]kype.*)$"]
+set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|TelegramDesktop|KotatogramDesktop|[Ss]kype.*|[Ss]kype.*)$"]
 set $bscratch-ncmpcpp [instance="^(Tauon Music Box|ncmpcpp)$"]
 set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $bscratch-ranger [instance="ranger"]
@@ -81,7 +81,7 @@ set $circle-vid [class="^(mpv|mplayer|mplayer2|Vlc)$"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
 set $circle-steam [class="Steam"]
 set $circle-doc [class="^(Zathura|cr3)$"]
-set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$)$"]
+set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$|^[Qq]emu-.*$)$"]
 set $circle-term [instance="term"]
 set $circle-nwim [instance="nwim"]
 set $circle-obs [class="obs"]
@@ -168,29 +168,28 @@ bindsym Mod4+grave $win_history focus_next_visible
 bindsym Mod4+Shift+grave $win_history focus_prev_visible 
 
 
+bindsym Shift+Print exec ~/bin/scripts/screenshot -c
+bindsym Control+Print exec ~/bin/scripts/screenshot -r
+bindsym Mod4+Shift+3 exec ~/bin/scripts/screenshot -r
+bindsym Mod4+Shift+4 exec flameshot gui
+bindsym Mod4+F4 exec gpick -so --no-newline | xsel -b
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
 bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
 bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
-bindsym Mod4+p exec ~/bin/scripts/rofi_tmux_urls
+bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi_tmux_urls
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
 bindsym Mod4+Shift+d exec --no-startup-id ~/bin/scripts/dw s
-bindsym Mod4+Shift+0 exec --no-startup-id splatmoji type
 bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
-bindsym Shift+Print exec --no-startup-id ~/bin/scripts/screenshot -c
-bindsym Control+Print exec --no-startup-id ~/bin/scripts/screenshot -r
-bindsym Mod4+Shift+3 exec --no-startup-id ~/bin/scripts/screenshot -r
-bindsym Mod4+Shift+4 exec --no-startup-id flameshot gui
+bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
-bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
-bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
 bindsym Mod4+apostrophe exec --no-startup-id zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
 bindsym Mod4+Shift+apostrophe exec --no-startup-id zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
-bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+u exec --no-startup-id udiskie-umount -a
-bindsym Mod4+Shift+M exec --no-startup-id ~/bin/scripts/rofi_mpd
-bindsym Mod4+F4 exec --no-startup-id gpick -so --no-newline | xsel -b
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
+bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
+bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
+bindsym Mod4+Shift+M exec --no-startup-id ~/bin/scripts/rofi_mpd
 bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -columns 4 -disable-history -theme run
 
 bindsym Mod4+e $bscratch toggle im  
