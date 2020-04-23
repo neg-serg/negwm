@@ -141,11 +141,11 @@ bindsym Control+G $exit
 bindsym Mod1+e mode "SPEC"
 mode SPEC {
 
-            bindsym c exec rofi-pass; $exit
-            bindsym e [urgent=latest] focus, $exit
+bindsym c  exec rofi-pass , $exit
+bindsym e  [urgent=latest] focus , $exit
+bindsym Shift+d  floating toggle , $exit
+bindsym Shift+l  exec sh -c 'sudo gllock' , $exit
 
-            bindsym Shift+d floating toggle, $exit
-            bindsym Shift+l exec sh -c 'sudo gllock', $exit
 
 bindsym o $menu pulse_output , $exit
 bindsym i $menu pulse_input , $exit

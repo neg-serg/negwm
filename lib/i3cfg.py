@@ -325,19 +325,13 @@ class i3cfg(extension, cfg):
         def menu_spec() -> str:
             return self.bind('menu_spec', '$menu', ', $exit')
 
-        def bind_data():
-            return """
-            bindsym c exec rofi-pass; $exit
-            bindsym e [urgent=latest] focus, $exit
-
-            bindsym Shift+d floating toggle, $exit
-            bindsym Shift+l exec sh -c 'sudo gllock', $exit
-            """
+        def misc_spec() -> str:
+            return self.bind('misc_spec', '', ', $exit')
 
         ret = ''
         ret += self.keybindings_mode_binding(mode_bind, mode_name)
         ret += self.keybindings_mode_start(mode_name)
-        ret += bind_data()
+        ret += misc_spec()
         ret += menu_spec()
         ret += self.bscratch_bindings(mode_name)
         ret += self.circle_bindings(mode_name)
