@@ -9,14 +9,11 @@ import textwrap
 class i3cfg(extension, cfg):
     def __init__(self, i3) -> None:
         cfg.__init__(self, i3)
-        # i3ipc connection, bypassed by negi3wm runner
         self.i3ipc = i3
-
         self.bindings = {
             "show": self.show_cfg,
             "write":self.write_cfg,
         }
-
         self.send_path = '${XDG_CONFIG_HOME}/i3/bin/send'
 
     def generate(self):
@@ -26,6 +23,14 @@ class i3cfg(extension, cfg):
             for section in cfg_sections:
                 section_data = getattr(self, section)()
                 ret.append(textwrap.dedent(section_data))
+        keybindings = self.cfg.get('keybindings', [])
+        if keybindings:
+            for keybind in keybindings:
+                bind_name, mode_bind = keybind[0], keybind[1]
+                keybind_data = getattr(self, 'mode_' + bind_name)(
+                    mode_name=bind_name, mode_bind=mode_bind
+                )
+                ret.append(textwrap.dedent(keybind_data))
         return ret
 
     def show_cfg(self) -> None:
@@ -178,10 +183,8 @@ class i3cfg(extension, cfg):
             for tag in config:
                 cmd_dict[tag] = []
                 for attr in config[tag]:
-                    for target_attr in ['class', 'instance', 'name', 'role']:
-                        cmd_dict[tag].append(info(
-                            config, tag, attr, target_attr
-                        ))
+                    for fill in ['class', 'instance', 'name', 'role']:
+                        cmd_dict[tag].append(info(config, tag, attr, fill))
             return cmd_dict
 
         def rules_mod(modname):
@@ -204,8 +207,7 @@ class i3cfg(extension, cfg):
             ret += '\n'
             for tag in cmd_dict:
                 geom = bscratch.nsgeom.get_geom(tag)
-                ret += f'for_window $bscratch-{tag} move scratchpad, {geom}'
-                ret += '\n'
+                ret += f'for_window $bscratch-{tag} move scratchpad, {geom}\n'
             return ret
 
         def rules_circle() -> str:
@@ -222,13 +224,13 @@ class i3cfg(extension, cfg):
 
             return ret
 
-        def info(config: dict, tag: str, attr: str, target_attr: str) -> str:
+        def info(config: dict, tag: str, attr: str, fill: str) -> str:
             """ Create rule in i3 commands format
                 Args:
                     config (dict): extension config.
                     tag (str): target tag.
                     attr (str): tag attrubutes.
-                    target_attr (str): attribute to fill.
+                    fill (str): attribute to fill.
             """
             conv_dict_attr = {
                 'class': 'class',
@@ -237,7 +239,7 @@ class i3cfg(extension, cfg):
                 'role': 'window_role'
             }
             cmd = ''
-            if target_attr in attr:
+            if fill in attr:
                 if not attr.endswith('_r'):
                     win_attr = conv_dict_attr[attr]
                 else:
@@ -267,25 +269,40 @@ class i3cfg(extension, cfg):
         return textwrap.dedent(ret)
 
 
-    def keybindings_mode_start(self, name) -> str:
+    def mode_start(self, name) -> str:
         return 'mode ' + name + ' {\n'
 
-    def keybindings_mode_end(self) -> str:
-        def bind_data() -> str:
-            ret = ''
-            bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
-            for keybind in bindings:
-                ret += f'bindsym {keybind} $exit\n'
-            return ret
-        return bind_data() + '}\n'
+    def mode_end(self) -> str:
+        ret = ''
+        bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
+        for keybind in bindings:
+            ret += f'bindsym {keybind} $exit\n'
+        return ret + '}\n'
 
-    def keybindings_mode_binding(self, keymap, name) -> str:
+    def mode_binding(self, keymap, name) -> str:
         return f'bindsym {keymap} mode "{name}"\n'
 
-    def keybindings_mode_resize(self) -> str:
-        mode_bind = 'Mod4+r'
-        mode_name = 'RESIZE'
+    def bind(self, section_name, post, end, pre='bindsym') -> str:
+        ret = ''
+        section = self.cfg.get(section_name, {})
+        if section:
+            binds = section.get('binds', [])
+            funcs = section.get('funcs')
+            modkey = section.get('modkey', '')
+            params = section.get('params', [])
+            if modkey:
+                modkey += '+'
+            if binds and funcs:
+                ret += '\n'
+                param_str = ' '.join(params).strip()
+                for bind in binds:
+                    for i, key in enumerate(bind):
+                        ret += f'{pre} {modkey}{key} {post} ' \
+                            f'{funcs[i]} {param_str}{end}\n'
+                ret += '\n'
+        return ret
 
+    def mode_resize(self, mode_name, mode_bind) -> str:
         def bind_data():
             ret = ''
             funcs = ['left', 'bottom', 'top', 'right']
@@ -311,17 +328,14 @@ class i3cfg(extension, cfg):
             return ret
 
         ret = ''
-        ret += self.keybindings_mode_binding(mode_bind, mode_name)
-        ret += self.keybindings_mode_start(mode_name)
-        ret += bind_data()
-        ret += self.keybindings_mode_end()
+        ret += self.mode_binding(mode_bind, mode_name) + \
+               self.mode_start(mode_name) + \
+               bind_data() + \
+               self.mode_end()
 
         return textwrap.dedent(ret)
 
-    def keybindings_mode_spec(self) -> str:
-        mode_bind = 'Mod1+e'
-        mode_name = 'SPEC'
-
+    def mode_spec(self, mode_name, mode_bind) -> str:
         def menu_spec() -> str:
             return self.bind('menu_spec', '$menu', ', $exit')
 
@@ -329,40 +343,17 @@ class i3cfg(extension, cfg):
             return self.bind('misc_spec', '', ', $exit')
 
         ret = ''
-        ret += self.keybindings_mode_binding(mode_bind, mode_name)
-        ret += self.keybindings_mode_start(mode_name)
-        ret += misc_spec()
-        ret += menu_spec()
-        ret += self.bscratch_bindings(mode_name)
-        ret += self.circle_bindings(mode_name)
-        ret += self.keybindings_mode_end()
+        ret += self.mode_binding(mode_bind, mode_name) + \
+               self.mode_start(mode_name) + \
+               misc_spec() + \
+               menu_spec() + \
+               self.bscratch_bindings(mode_name) + \
+               self.circle_bindings(mode_name) + \
+               self.mode_end()
 
         return textwrap.dedent(ret)
 
-    def bind(self, section_name, post, end, pre='bindsym') -> str:
-        ret = ''
-        section = self.cfg.get(section_name, {})
-        if section:
-            binds = section.get('binds', [])
-            funcs = section.get('funcs')
-            modkey = section.get('modkey', '')
-            params = section.get('params', [])
-            if modkey:
-                modkey += '+'
-            if binds and funcs:
-                ret += '\n'
-                param_str = ' '.join(params).strip()
-                for bind in binds:
-                    for i, key in enumerate(bind):
-                        ret += f'{pre} {modkey}{key} {post} ' \
-                            f'{funcs[i]} {param_str}{end}\n'
-                ret += '\n'
-        return ret
-
-    def keybindings_mode_wm(self) -> str:
-        mode_bind = 'Mod4+minus'
-        mode_name = 'WM'
-
+    def mode_wm(self, mode_name, mode_bind) -> str:
         def split_tiling() -> str:
             return self.bind('split', 'split', ', $exit')
 
@@ -383,29 +374,28 @@ class i3cfg(extension, cfg):
 
         def bind_data() -> str:
             ret = ''
-            ret += layout_wm()
-            ret += split_tiling()
-            ret += move_win()
+            ret += layout_wm() + \
+                   split_tiling() + \
+                   move_win()
             win_action = extension.get_mods().get('win_action', '')
             if win_action:
-                ret += move_acts()
-                ret += win_quad()
-                ret += win_action_wm()
+                ret += move_acts() + \
+                       win_quad() + \
+                       win_action_wm()
             return ret
 
         ret = ''
-        ret += self.keybindings_mode_binding(mode_bind, mode_name)
-        ret += self.keybindings_mode_start(mode_name)
-        ret += bind_data()
-        ret += self.bscratch_bindings(mode_name)
-        ret += self.circle_bindings(mode_name)
-        ret += self.keybindings_mode_end()
+        ret += self.mode_binding(mode_bind, mode_name) + \
+                self.mode_start(mode_name) + \
+                bind_data() + \
+                self.bscratch_bindings(mode_name) + \
+                self.circle_bindings(mode_name) + \
+                self.mode_end()
 
         return textwrap.dedent(ret)
 
-    def keybindings_mode_default(self) -> str:
-        mode_name = 'default'
-
+    def mode_default(self, mode_name, mode_bind) -> str:
+        _ = mode_bind
         def misc_def() -> str:
             return self.bind('misc_def', '', '')
 
@@ -448,11 +438,11 @@ class i3cfg(extension, cfg):
             return exec_ret
 
         ret = ''
-        ret += misc_def()
-        ret += focus()
-        ret += exec_binds()
-        ret += self.bscratch_bindings(mode_name)
-        ret += self.circle_bindings(mode_name)
+        ret += misc_def() \
+            + focus() \
+            + exec_binds() \
+            + self.bscratch_bindings(mode_name) \
+            + self.circle_bindings(mode_name)
 
         return textwrap.dedent(ret)
 
