@@ -354,7 +354,8 @@ class i3cfg(extension, cfg):
                 param_str = ' '.join(params).strip()
                 for bind in binds:
                     for i, key in enumerate(bind):
-                        ret += f'{pre} {modkey}{key} {post} {funcs[i]} {param_str}{end}\n'
+                        ret += f'{pre} {modkey}{key} {post} ' \
+                            f'{funcs[i]} {param_str}{end}\n'
                 ret += '\n'
         return ret
 
