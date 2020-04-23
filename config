@@ -154,7 +154,7 @@ bindsym Mod4+Shift+s $menu autoprop
 
 
 
-bindsym Mod4+space $bscratch geom_restore 
+bindsym Mod4+Control+space $bscratch geom_restore 
 bindsym Mod4+Control+s $bscratch geom_dump 
 bindsym Mod4+Control+a $bscratch dialog 
 bindsym Mod4+3 $bscratch next 
