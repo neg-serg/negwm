@@ -74,7 +74,6 @@ install_deps() {
     done
 }
 
-# 'xrescat': 'extract xresources for theming',
 main(){
     xdg_config_home_check
     git_clone

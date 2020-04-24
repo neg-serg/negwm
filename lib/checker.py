@@ -31,7 +31,6 @@ class checker():
                 'rofi': 'you need rofi for the all menus',
                 'dunst': 'you need dunst for notifications',
                 'dunstify': 'dunstify is better notify-send alternative',
-                'xrescat': 'extract xresources for theming',
                 'xdo': 'optional polybar hide support instead of built-in',
                 'zsh': 'use zsh as one of the best interactive shells',
                 'alacritty': 'alacritty is recommended as default shell',

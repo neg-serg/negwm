@@ -66,15 +66,9 @@ class polybar_vol(modconfig):
         self.vol_prefix = self.conf("vol_prefix")
         self.vol_suffix = self.conf("vol_suffix")
 
-        self.bracket_color = Misc.extract_xrdb_value(
-            self.conf("bracket_color_field")
-        ) or '#395573'
-        self.bright_color = Misc.extract_xrdb_value(
-            self.conf("bright_color_field")
-        ) or '#cccccc'
-        self.foreground_color = Misc.extract_xrdb_value(
-            self.conf("foreground_color_field")
-        ) or '#cccccc'
+        self.bracket_color = '#395573'
+        self.bright_color = '#cccccc'
+        self.foreground_color = '#cccccc'
 
         self.right_bracket = ""
 

@@ -33,24 +33,6 @@ class Misc():
         """ Easy way to return i3 config path. """
         return os.environ.get("XDG_CONFIG_HOME") + "/i3/"
 
-    @staticmethod
-    def extract_xrdb_value(field: str) -> str:
-        """ Extracts field from xrdb executable. """
-        try:
-            out = subprocess.run(
-                f"xrescat '{field}'",
-                shell=True,
-                stdout=subprocess.PIPE,
-                check=True
-            ).stdout
-            if out is not None and out:
-                ret = out.decode('UTF-8').split()[0]
-                return ret
-        except subprocess.CalledProcessError as proc_err:
-            Misc.print_run_exception_info(proc_err)
-
-        return ""
-
     @classmethod
     def notify_msg(cls, msg: str, prefix: str = " ") -> None:
         """ Send messages via notify-osd based notifications.
@@ -70,11 +52,10 @@ class Misc():
             return bool(pidlist)
 
         if get_pids('dunst'):
-            foreground_color = cls.extract_xrdb_value('\\*.foreground') \
-                or '#617287'
+            fg = '#617287'
             notify_msg = [
                 'dunstify', '',
-                f"<span weight='normal' color='{foreground_color}'>" +
+                f"<span weight='normal' color='{fg}'>" +
                 prefix + msg +
                 "</span>"
             ]
