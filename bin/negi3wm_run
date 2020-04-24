@@ -1,9 +1,6 @@
 log_dir="${HOME}/tmp"
-
 if [ ! -d "$log_dir" ] && [ ! -L "$log_dir" ]; then
-    if mkdir -v "$log_dir"; then
-        echo "$log_dir if created"
-    else
+    if ! mkdir -v "$log_dir"; then
         echo "cannot create target $log_dir directory, fail :("
         exit 1
     fi
