@@ -65,11 +65,10 @@ class checker():
                 print('Please check for libbsd-dev build dependency')
 
     @staticmethod
-    def check_i3_config(verbose):
+    def check_i3_config(verbose, cfg='config'):
         if verbose:
             print('Check for i3 config consistency')
-        xdg_config_home = os.getenv('XDG_CONFIG_HOME')
-        i3_cfg = xdg_config_home + '/i3/config'
+        i3_cfg = f'{Misc.i3path()}/{cfg}'
         if not (os.path.isfile(i3_cfg) and \
                 os.path.getsize(i3_cfg) > 0):
             print(f'There is no target i3 config file in {i3_cfg}, fail')
@@ -81,9 +80,10 @@ class checker():
                 print('i3 config is valid [OK]')
         else:
             print('i3 config is invalid [FAIL]'
-                f'please run i3 -C {xdg_config_home}/i3/config to check it'
+                f'please run i3 -C {Misc.i3path()}/{cfg} to check it'
             )
             os._exit(1)
+        return True
 
     @staticmethod
     def check_env(verbose):

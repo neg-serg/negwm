@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 
-from cfg import cfg
-from extension import extension
-from misc import Misc
+import os
 from typing import List
 import textwrap
+
+from misc import Misc
+from cfg import cfg
+from extension import extension
+from lib.checker import checker
 
 class i3cfg(extension, cfg):
     def __init__(self, i3) -> None:
@@ -12,9 +15,25 @@ class i3cfg(extension, cfg):
         self.i3ipc = i3
         self.bindings = {
             "show": self.show_cfg,
-            "write":self.write_cfg,
+            "write": self.write_cfg,
+            "reload": self.reload_config,
         }
         self.send_path = '${XDG_CONFIG_HOME}/i3/bin/send'
+
+    def show_cfg(self) -> None:
+        print(''.join(self.generate()))
+
+    def write_cfg(self) -> None:
+        i3_cfg, test_cfg = 'config', '.config'
+        generated_cfg = '\n'.join(self.generate())
+
+        with open(test_cfg, 'w', encoding='utf8') as fp:
+            fp.write(generated_cfg)
+
+        if checker.check_i3_config(verbose=False, cfg=test_cfg):
+            with open(i3_cfg, 'w', encoding='utf8') as fp:
+                fp.write(generated_cfg)
+            os.remove(Misc.i3path() + test_cfg)
 
     def generate(self):
         ret = []
@@ -32,14 +51,6 @@ class i3cfg(extension, cfg):
                 )
                 ret.append(textwrap.dedent(keybind_data))
         return ret
-
-    def show_cfg(self) -> None:
-        print(''.join(self.generate()))
-
-    def write_cfg(self) -> None:
-        i3_config = '/home/neg/.config/i3/config'
-        with open(i3_config, 'w', encoding='utf8') as outfile:
-            outfile.write('\n'.join(self.generate()))
 
     def autostart(self) -> str:
         autostart_list = self.cfg.get('autostart', [])
