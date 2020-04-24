@@ -26,10 +26,8 @@ class i3cfg(extension, cfg):
     def dump_cfg(self) -> None:
         i3_cfg, test_cfg = 'config', '.config'
         generated_cfg = '\n'.join(self.generate())
-
         with open(test_cfg, 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
-
         if checker.check_i3_config(verbose=False, cfg=test_cfg):
             with open(i3_cfg, 'w', encoding='utf8') as fp:
                 fp.write(generated_cfg)
@@ -52,8 +50,7 @@ class i3cfg(extension, cfg):
         return ret
 
     def autostart(self) -> str:
-        autostart_list = self.cfg.get('autostart', [])
-        return '\n'.join(autostart_list) + '\n'
+        return '\n'.join(self.cfg.get('autostart', [])) + '\n'
 
     def gaps(self) -> str:
         gaps = [0, 0, 0, 0]
@@ -94,7 +91,6 @@ class i3cfg(extension, cfg):
         theme_ret = ''
         for param, data in color_theme.items():
             theme_ret += f"{param} {' '.join(data)}\n"
-
         return theme + theme_ret
 
     def bscratch_bindings(self, mode) -> str:
@@ -160,9 +156,6 @@ class i3cfg(extension, cfg):
                     ret += get_binds(mode, tag, settings, param)
         return textwrap.dedent(ret)
 
-    def font(self) -> str:
-        return "font pango: Iosevka Term Heavy 9"
-
     def mods_commands(self) -> str:
         ret = ''
         for mod in sorted(extension.get_mods()):
@@ -178,10 +171,9 @@ class i3cfg(extension, cfg):
     @staticmethod
     def scratchpad_hide_cmd(hide: bool) -> str:
         """ Returns cmd needed to hide scratchpad. """
-        ret = ""
         if hide:
-            ret = ", [con_id=__focused__] scratchpad show"
-        return ret
+            return ", [con_id=__focused__] scratchpad show"
+        return ""
 
     def rules(self) -> str:
         def fill_rules_dict(mod, cmd_dict) -> List:
@@ -330,13 +322,12 @@ class i3cfg(extension, cfg):
                     """)
             return ret
 
-        ret = ''
-        ret += self.mode_binding(mode_bind, mode_name) + \
+        return textwrap.dedent(
+            self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
             bind_data() + \
             self.mode_end()
-
-        return textwrap.dedent(ret)
+        )
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         def menu_spec() -> str:
@@ -345,16 +336,15 @@ class i3cfg(extension, cfg):
         def misc_spec() -> str:
             return self.bind('misc_spec', '', ', $exit')
 
-        ret = ''
-        ret += self.mode_binding(mode_bind, mode_name) + \
+        return textwrap.dedent(
+            self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
             misc_spec() + \
             menu_spec() + \
             self.bscratch_bindings(mode_name) + \
             self.circle_bindings(mode_name) + \
             self.mode_end()
-
-        return textwrap.dedent(ret)
+        )
 
     def mode_wm(self, mode_name, mode_bind) -> str:
         def split_tiling() -> str:
@@ -387,15 +377,14 @@ class i3cfg(extension, cfg):
                     win_action_wm()
             return ret
 
-        ret = ''
-        ret += self.mode_binding(mode_bind, mode_name) + \
+        return textwrap.dedent(
+            self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
             bind_data() + \
             self.bscratch_bindings(mode_name) + \
             self.circle_bindings(mode_name) + \
             self.mode_end()
-
-        return textwrap.dedent(ret)
+        )
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
@@ -450,15 +439,13 @@ class i3cfg(extension, cfg):
                     key_prog
                 ))
             exec_ret += '\n'
-
             return exec_ret
 
-        ret = ''
-        ret += misc_def() \
+        return textwrap.dedent(
+            misc_def() \
             + focus() \
             + exec_binds() \
             + self.bscratch_bindings(mode_name) \
             + self.circle_bindings(mode_name)
-
-        return textwrap.dedent(ret)
+        )
 
