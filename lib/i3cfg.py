@@ -298,34 +298,11 @@ class i3cfg(extension, cfg):
         return ret
 
     def mode_resize(self, mode_name, mode_bind) -> str:
-        def bind_data():
-            ret = ''
-            funcs = ['left', 'bottom', 'top', 'right']
-            resize_cfg = self.cfg.get('resize', {})
-            if resize_cfg:
-                step = resize_cfg.get('step', '')
-                binds = resize_cfg.get('binds', [])
-                win_action = extension.get_mods().get('win_action', '')
-                if step and binds:
-                    if win_action:
-                        for bind in binds:
-                            for i, key in enumerate(bind):
-                                ret += f'bindsym {key} $win_action ' \
-                                    f'resize {funcs[i]} {step}\n'
-                            for i, key in enumerate(bind):
-                                ret += f'bindsym Shift+{key} $win_action ' \
-                                    f'resize {funcs[i]} -{step}\n'
-                            ret += '\n'
-                    ret +=textwrap.dedent("""\
-                    bindsym semicolon resize shrink right 4
-                    bindsym Shift+colon resize grow right 4
-                    """)
-            return ret
-
         return textwrap.dedent(
             self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
-            bind_data() + \
+            self.bind('resize_plus', '$win_action resize', '') + \
+            self.bind('resize_minus', '$win_action resize', '') + \
             self.mode_end()
         )
 
