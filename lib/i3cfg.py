@@ -342,22 +342,15 @@ class i3cfg(extension, cfg):
         def win_action_wm() -> str:
             return self.bind('win_action_wm', '$win_action', '')
 
-        def bind_data() -> str:
-            ret = ''
-            ret += layout_wm() + \
-                split_tiling() + \
-                move_win()
-            win_action = extension.get_mods().get('win_action', '')
-            if win_action:
-                ret += move_acts() + \
-                    win_quad() + \
-                    win_action_wm()
-            return ret
-
         return textwrap.dedent(
             self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
-            bind_data() + \
+            layout_wm() + \
+            split_tiling() + \
+            move_win() + \
+            move_acts() + \
+            win_quad() + \
+            win_action_wm() + \
             self.bscratch_bindings(mode_name) + \
             self.circle_bindings(mode_name) + \
             self.mode_end()
