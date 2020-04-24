@@ -14,16 +14,16 @@ class i3cfg(extension, cfg):
         cfg.__init__(self, i3)
         self.i3ipc = i3
         self.bindings = {
-            "show": self.show_cfg,
-            "write": self.write_cfg,
+            "print": self.print,
+            "dump": self.dump_cfg,
             "reload": self.reload_config,
         }
         self.send_path = '${XDG_CONFIG_HOME}/i3/bin/send'
 
-    def show_cfg(self) -> None:
+    def print(self) -> None:
         print(''.join(self.generate()))
 
-    def write_cfg(self) -> None:
+    def dump_cfg(self) -> None:
         i3_cfg, test_cfg = 'config', '.config'
         generated_cfg = '\n'.join(self.generate())
 
@@ -42,14 +42,13 @@ class i3cfg(extension, cfg):
             for section in cfg_sections:
                 section_data = getattr(self, section)()
                 ret.append(textwrap.dedent(section_data))
-        keybindings = self.cfg.get('keybindings', [])
-        if keybindings:
-            for keybind in keybindings:
-                bind_name, mode_bind = keybind[0], keybind[1]
-                keybind_data = getattr(self, 'mode_' + bind_name)(
-                    mode_name=bind_name, mode_bind=mode_bind
-                )
-                ret.append(textwrap.dedent(keybind_data))
+        bind_modes = self.cfg.get('bind_modes', [])
+        for keybind in bind_modes:
+            bind_name, mode_bind = keybind[0], keybind[1]
+            keybind_data = getattr(self, 'mode_' + bind_name)(
+                mode_name=bind_name, mode_bind=mode_bind
+            )
+            ret.append(textwrap.dedent(keybind_data))
         return ret
 
     def autostart(self) -> str:
@@ -67,17 +66,14 @@ class i3cfg(extension, cfg):
         return '\n'.join(gaps_params) + '\n'
 
     def general(self) -> str:
-        ret = self.cfg.get('general', [])
-        return '\n'.join(ret) + '\n'
+        return '\n'.join(self.cfg.get('general', [])) + '\n'
 
     def focus_settings(self) -> str:
-        ret = self.cfg.get('focus_settings', [])
-        return '\n'.join(ret) + '\n'
+        return '\n'.join(self.cfg.get('focus_settings', [])) + '\n'
 
-    def colorscheme(self) -> str:
-        ret = self.cfg.get('appearance', [])
-        appearance = '\n'.join(ret) + '\n'
-        theme = {
+    def theme(self) -> str:
+        theme = '\n'.join(self.cfg.get('theme', [])) + '\n'
+        color_theme = {
             'client.focused': [
                 '#222233', '#000000', '#ddddee', '#112211', '#0C0C0D'
             ],
@@ -95,12 +91,11 @@ class i3cfg(extension, cfg):
             ],
             'client.background': ['#000000'],
         }
-        colorscheme = ''
-        for param, data in theme.items():
-            colorscheme += f"{param} {' '.join(data)}\n"
+        theme_ret = ''
+        for param, data in color_theme.items():
+            theme_ret += f"{param} {' '.join(data)}\n"
 
-        return textwrap.dedent(appearance) \
-            + textwrap.dedent(colorscheme)
+        return theme + theme_ret
 
     def bscratch_bindings(self, mode) -> str:
         ret = ''
@@ -232,7 +227,6 @@ class i3cfg(extension, cfg):
                 if ws:
                     ret += f'for_window $circle-{tag}' \
                         f' move workspace ${ws}{focus_cmd}\n'
-
             return ret
 
         def info(config: dict, tag: str, attr: str, fill: str) -> str:
@@ -271,13 +265,11 @@ class i3cfg(extension, cfg):
             if rules:
                 return ''.join(map(lambda s: 'for_window ' + s + '\n', rules))
             return ''
-
-        ret = ''
-        ret += \
+        return textwrap.dedent(
             rules_bscratch() + \
             rules_circle() + \
             plain_rules()
-        return textwrap.dedent(ret)
+        )
 
 
     def mode_start(self, name) -> str:
@@ -340,9 +332,9 @@ class i3cfg(extension, cfg):
 
         ret = ''
         ret += self.mode_binding(mode_bind, mode_name) + \
-               self.mode_start(mode_name) + \
-               bind_data() + \
-               self.mode_end()
+            self.mode_start(mode_name) + \
+            bind_data() + \
+            self.mode_end()
 
         return textwrap.dedent(ret)
 
@@ -355,12 +347,12 @@ class i3cfg(extension, cfg):
 
         ret = ''
         ret += self.mode_binding(mode_bind, mode_name) + \
-               self.mode_start(mode_name) + \
-               misc_spec() + \
-               menu_spec() + \
-               self.bscratch_bindings(mode_name) + \
-               self.circle_bindings(mode_name) + \
-               self.mode_end()
+            self.mode_start(mode_name) + \
+            misc_spec() + \
+            menu_spec() + \
+            self.bscratch_bindings(mode_name) + \
+            self.circle_bindings(mode_name) + \
+            self.mode_end()
 
         return textwrap.dedent(ret)
 
@@ -386,22 +378,22 @@ class i3cfg(extension, cfg):
         def bind_data() -> str:
             ret = ''
             ret += layout_wm() + \
-                   split_tiling() + \
-                   move_win()
+                split_tiling() + \
+                move_win()
             win_action = extension.get_mods().get('win_action', '')
             if win_action:
                 ret += move_acts() + \
-                       win_quad() + \
-                       win_action_wm()
+                    win_quad() + \
+                    win_action_wm()
             return ret
 
         ret = ''
         ret += self.mode_binding(mode_bind, mode_name) + \
-                self.mode_start(mode_name) + \
-                bind_data() + \
-                self.bscratch_bindings(mode_name) + \
-                self.circle_bindings(mode_name) + \
-                self.mode_end()
+            self.mode_start(mode_name) + \
+            bind_data() + \
+            self.bscratch_bindings(mode_name) + \
+            self.circle_bindings(mode_name) + \
+            self.mode_end()
 
         return textwrap.dedent(ret)
 

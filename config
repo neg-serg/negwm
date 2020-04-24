@@ -33,6 +33,7 @@ set $remote "15 ::  ο:remote"
 set $sound "16 ::  π:sound"
 set $obs "17 :: @ ρ:obs"
 
+font pango: Iosevka Term Heavy 9
 show_marks yes
 smart_borders on
 hide_edge_borders both
@@ -44,7 +45,6 @@ client.urgent #000000 #2E2457 #4C407C #32275E #32275E
 client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
 client.background #000000
 
-font pango: Iosevka Term Heavy 9
 set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send bscratch
 set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send circle
 set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
