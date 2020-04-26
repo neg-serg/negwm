@@ -15,11 +15,6 @@ from extension import extension
 
 class vol(extension, cfg):
     def __init__(self, i3) -> None:
-        """ Init function
-
-        Args:
-            i3: i3ipc connection
-        """
         # Initialize cfg.
         cfg.__init__(self, i3)
 
@@ -71,13 +66,7 @@ class vol(extension, cfg):
         self.current_win = self.i3ipc.get_tree().find_focused()
 
     def set_curr_win(self, _, event) -> None:
-        """ Cache the current window.
-
-            Args:
-                i3: i3ipc connection.
-                event: i3ipc event. We can extract window from it using
-                event.container.
-        """
+        """ Cache the current window. """
         self.current_win = event.container
 
     def asyncio_init(self, loop) -> None:
@@ -86,11 +75,7 @@ class vol(extension, cfg):
         asyncio.ensure_future(self.update_mpd_status(loop))
 
     async def update_mpd_status(self, loop) -> None:
-        """ Asynchronous function to get current MPD status.
-
-            Args:
-                loop: asyncio.loop
-        """
+        """ Asynchronous function to get current MPD status. """
         reader, writer = await asyncio.open_connection(
             host=self.mpd_addr, port=self.mpd_port, loop=loop
         )
@@ -164,43 +149,23 @@ class vol(extension, cfg):
             return
 
     def volume_up(self, *args) -> None:
-        """ Increase target volume level.
-
-            Args:
-                args (*args): used as multiplexer for volume changing because
-                              of pipe-based nature of negi3wm IPC.
-        """
+        """ Increase target volume level. """
         count = len(args)
         if count <= 0:
             count = 1
         self.change_volume(count)
 
     def volume_down(self, *args) -> None:
-        """ Decrease target volume level.
-
-            Args:
-                args (*args): used as multiplexer for volume changing because
-                              of pipe-based nature of negi3wm IPC.
-        """
+        """ Decrease target volume level. """
         count = len(args)
         if count <= 0:
             count = 1
         self.change_volume(-count)
 
     def volume_mute(self) -> None:
-        """ Mute target volume level.
-
-            Args:
-                args (*args): used as multiplexer for volume changing because
-                of pipe-based nature of negi3wm IPC.
-        """
+        """ Mute target volume level. """
         self.change_volume(-100)
 
     def volume_max(self) -> None:
-        """ Maximize target volume level.
-
-            Args:
-            args (*args): used as multiplexer for volume changing because
-            of pipe-based nature of negi3wm IPC.
-        """
+        """ Maximize target volume level. """
         self.change_volume(+100)
