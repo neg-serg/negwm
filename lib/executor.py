@@ -38,15 +38,15 @@ class env():
         self.cache_dir = Misc.i3path() + '/cache'
         Misc.create_dir(self.cache_dir)
 
-        self.tmux_socket_dir = expanduser(f'{self.cache_dir}/tmux_sockets')
-        self.dtach_session_dir = expanduser(f'{self.cache_dir}/dtach_sessions')
+        tmux_socket_dir = expanduser(f'{self.cache_dir}/tmux_sockets')
+        dtach_session_dir = expanduser(f'{self.cache_dir}/dtach_sessions')
         self.alacritty_cfg_dir = expanduser(f'{self.cache_dir}/alacritty_cfg')
 
-        Misc.create_dir(self.tmux_socket_dir)
+        Misc.create_dir(tmux_socket_dir)
         Misc.create_dir(self.alacritty_cfg_dir)
-        Misc.create_dir(self.dtach_session_dir)
+        Misc.create_dir(dtach_session_dir)
 
-        self.sockpath = expanduser(f'{self.tmux_socket_dir}/{name}.socket')
+        self.sockpath = expanduser(f'{tmux_socket_dir}/{name}.socket')
 
         for sh in ['dash', 'zsh', 'bash', 'sh']:
             if shutil.which(sh):
@@ -118,7 +118,7 @@ class env():
             if not exec_dtach:
                 self.prog = config.get(name, {}).get('exec', 'true')
             else:
-                self.prog = f'dtach -A {self.dtach_session_dir}' \
+                self.prog = f'dtach -A {dtach_session_dir}' \
                             f'/{name}.session {exec_dtach}'
 
         self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
