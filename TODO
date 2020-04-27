@@ -5,7 +5,7 @@ add https://www.python.org/dev/peps/pep-0519/
 new module idea: mouse helper, for example get windows size and then click on x,y = 20px, 20px
 add executor run check via something like dash -c
 percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
-
+update alacritty config without rm -rf cache
 https://www.reddit.com/r/i3wm/comments/bgwz85/quickly_make_main_stack_and_side_windows_layout/
 https://github.com/nwg-piotr/autotiling
 https://github.com/chmln/i3-auto-layout
