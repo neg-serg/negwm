@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-default_font='Iosevka Term 12'
-icon_theme='Compass'
-gtk_theme='Blueberry-breeze-gtk'
+default_font='Iosevka Medium 12'
+icon_theme='Flat-Remix-Blue-Dark'
+gtk_theme='Flat-Neg'
 
 gtk_settings(){
     if [[ $1 == "" ]]; then
