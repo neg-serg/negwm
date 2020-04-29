@@ -8,17 +8,16 @@ there is no parsing / translation phase here in runtime.
 """
 import subprocess
 import os
+from os.path import expanduser
 import shlex
 import shutil
 import threading
 import multiprocessing
 import yaml
 import yamlloader
+from typing import List
 
 from extension import extension
-from typing import List
-import os
-from os.path import expanduser
 from cfg import cfg
 from misc import Misc
 
@@ -35,12 +34,14 @@ class env():
 
     def __init__(self, name: str, config) -> None:
         self.name = name
-        self.cache_dir = Misc.i3path() + '/cache'
-        Misc.create_dir(self.cache_dir)
+        cache_dir = Misc.i3path() + '/cache'
+        Misc.create_dir(cache_dir)
 
-        tmux_socket_dir = expanduser(f'{self.cache_dir}/tmux_sockets')
-        dtach_session_dir = expanduser(f'{self.cache_dir}/dtach_sessions')
-        self.alacritty_cfg_dir = expanduser(f'{self.cache_dir}/alacritty_cfg')
+        tmux_socket_dir = expanduser(f'{cache_dir}/tmux_sockets')
+        dtach_session_dir = expanduser(f'{cache_dir}/dtach_sessions')
+        self.alacritty_cfg_dir = expanduser(f'{cache_dir}/alacritty_cfg')
+        self.alacritty_cfg = expanduser(os.environ.get("XDG_CONFIG_HOME") + \
+            "/alacritty/alacritty.yml")
 
         Misc.create_dir(tmux_socket_dir)
         Misc.create_dir(self.alacritty_cfg_dir)
@@ -56,47 +57,38 @@ class env():
         # get terminal from config, use Alacritty by default
         self.term = config.get(name, {}).get("term", "alacritty").lower()
 
-        alacritty_cfg_path = expanduser(
-            os.environ.get("XDG_CONFIG_HOME") + "/alacritty/alacritty.yml")
-        if os.path.exists(alacritty_cfg_path):
-            if os.stat(alacritty_cfg_path).st_size == 0:
-                print('Alacritty cfg {alacritty_cfg_path} is empty')
+        if os.path.exists(self.alacritty_cfg):
+            if os.stat(self.alacritty_cfg).st_size == 0:
+                print('Alacritty cfg {self.alacritty_cfg} is empty')
                 self.term = env.terminal_fallback_detect()
         else:
-            print('Alacritty cfg {alacritty_cfg_path} not exists, put it here')
+            print('Alacritty cfg {self.alacritty_cfg} not exists, put it here')
             self.term = env.terminal_fallback_detect()
 
         self.wclass = config.get(name, {}).get("class", self.term)
         self.title = config.get(name, {}).get("title", self.wclass)
-
         self.font = config.get("default_font", "")
         if not self.font:
             self.font = config.get(name, {}).get("font", "Iosevka Term")
         self.font_size = config.get("default_font_size", "")
         if not self.font_size:
-            self.font_size = config.get(name, {}).get("font_size", "18")
-
+            self.font_size = config.get(name, {}).get("font_size", "14")
         use_one_fontstyle = config.get("use_one_fontstyle", False)
         self.font_style = config.get("default_font_style", "")
         if not self.font_style:
             self.font_style = config.get(name, {}).get("font_style", "Regular")
-
         if use_one_fontstyle:
             self.font_style_normal = config.get(name, {})\
                 .get("font_style_normal", self.font_style)
-
             self.font_style_bold = config.get(name, {})\
                 .get("font_style_bold", self.font_style)
-
             self.font_style_italic = config.get(name, {})\
                 .get("font_style_italic", self.font_style)
         else:
             self.font_style_normal = config.get(name, {})\
                 .get("font_style_normal", 'Regular')
-
             self.font_style_bold = config.get(name, {})\
                 .get("font_style_bold", 'Bold')
-
             self.font_style_italic = config.get(name, {})\
                 .get("font_style_italic", 'Italic')
 
@@ -123,7 +115,6 @@ class env():
 
         self.padding = config.get(name, {}).get('padding', [2, 2])
         self.opacity = config.get(name, {}).get('opacity', 0.88)
-
         self.statusline = config.get(name, {}).get('statusline', 1)
 
         self.create_term_params(config, name)
@@ -165,13 +156,12 @@ class env():
         app_name = expanduser(app_name + '.yml')
         cfgname = expanduser(f'{alacritty_cfg_dir}/{app_name}')
 
-        if not os.path.exists(cfgname):
-            shutil.copyfile(
-                expanduser(os.environ.get(
-                    "XDG_CONFIG_HOME") + "/alacritty/alacritty.yml"
-                ),
-                cfgname
-            )
+        shutil.copyfile(
+            expanduser(os.environ.get(
+                "XDG_CONFIG_HOME") + "/alacritty/alacritty.yml"
+            ),
+            cfgname
+        )
 
         return cfgname
 
@@ -263,13 +253,7 @@ class executor(extension, cfg):
                   TOML-configutation with inotify
     """
     def __init__(self, i3) -> None:
-        """ Init function.
-
-        Arguments for this constructor used only for compatibility.
-
-        Args:
-            i3: i3ipc connection(not used).
-        """
+        """ Init function. """
         cfg.__init__(self, i3)
         self.envs = {}
         for app in self.cfg:
