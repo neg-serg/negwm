@@ -121,9 +121,6 @@ class env():
                 self.prog = f'dtach -A {dtach_session_dir}' \
                             f'/{name}.session {exec_dtach}'
 
-        self.set_wm_class = config.get(name, {}).get('set_wm_class', '')
-        self.set_instance = config.get(name, {}).get('set_instance', '')
-
         self.padding = config.get(name, {}).get('padding', [2, 2])
         self.opacity = config.get(name, {}).get('opacity', 0.88)
 
@@ -287,25 +284,8 @@ class executor(extension, cfg):
         self.envs.clear()
 
     def run_app(self, args: List) -> None:
-        """ Wrapper to run selected application in background.
-            Args:
-                args (List): arguments list.
-        """
-        if not self.env.set_wm_class:
-            subprocess.Popen(args)
-        else:
-            if not self.env.set_instance:
-                self.env.set_instance = self.env.set_wm_class
-            subprocess.Popen(
-                [
-                    './bin/wm_class',
-                    '--run',
-                    self.env.set_wm_class,
-                    self.env.set_instance,
-                ] + args,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
+        """ Wrapper to run selected application in background. """
+        subprocess.Popen(args)
 
     @staticmethod
     def detect_session_bind(sockpath, name) -> str:
