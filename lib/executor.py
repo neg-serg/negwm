@@ -1,4 +1,4 @@
-""" Tmux Manager.
+""" Terminal manager.
 
 Give simple and consistent way for user to create tmux sessions on dedicated
 sockets. Also it can run simply run applications without Tmux. The main
@@ -20,6 +20,7 @@ from typing import List
 from extension import extension
 from cfg import cfg
 from misc import Misc
+from matcher import Matcher
 
 
 class env():
@@ -140,10 +141,9 @@ class env():
             We need it because of alacritty cannot bypass most of user
             parameters with command line now.
 
-            Args:
-                alacritty_cfg_dir: alacritty config dir
-                config: config dirtionary
-                name(str): name of config to generate
+            alacritty_cfg_dir: alacritty config dir
+            config: config dirtionary
+            name(str): name of config to generate
 
             Return:
                cfgname(str): configname
@@ -151,8 +151,7 @@ class env():
         app_name = config.get(name, {}).get('app_name', '')
         if not app_name:
             app_name = config.get(name, {}).get('class')
-
-        app_name = expanduser(app_name + '.yml')
+        app_name += '.yml'
         cfgname = expanduser(f'{alacritty_cfg_dir}/{app_name}')
         shutil.copyfile(self.alacritty_cfg, cfgname)
 
@@ -160,9 +159,7 @@ class env():
 
     def yaml_config_create(self, custom_config: str) -> None:
         """ Create config for alacritty
-
-            Args:
-                custom_config(str): config name to create
+            custom_config(str): config name to create
         """
         conf = None
         with open(custom_config, "r") as cfg_file:
@@ -201,9 +198,8 @@ class env():
     def create_term_params(self, config: dict, name: str) -> None:
         """ This function fill self.term_opts for settings.abs
 
-            Args:
-                config(dict): config dictionary which should be adopted to
-                commandline options or settings.
+            config(dict): config dictionary which should be adopted to
+            commandline options or settings.
         """
         if self.term == "alacritty":
             custom_config = self.create_alacritty_cfg(
@@ -257,6 +253,8 @@ class executor(extension, cfg):
             "reload": self.reload_config,
         }
 
+        self.i3 = i3
+
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         self.envs.clear()
 
@@ -286,14 +284,6 @@ class executor(extension, cfg):
             [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
         )
 
-    def search_classname(self) -> bytes:
-        """ Search for selected window class. """
-        return subprocess.run(
-            shlex.split(f"xdotool search --classname {self.env.wclass}"),
-            stdout=subprocess.PIPE,
-            check=False
-        ).stdout
-
     def create_new_session(self) -> None:
         """ Run tmux to create the new session on given socket. """
         exec_cmd = ''
@@ -314,25 +304,19 @@ class executor(extension, cfg):
     def run(self, name: str) -> None:
         """ Entry point, run application with Tmux on dedicated socket(in most
             cases), or without tmux, if config value with_tmux=0.
-            Args:
-                name (str): target application name, with configuration taken
-                            from TOML.
+
+            name (str): target application name, with configuration taken from
+            TOML.
         """
         self.env = self.envs[name]
         if self.env.with_tmux:
             if self.env.name in self.detect_session_bind(
                     self.env.sockpath, self.env.name):
-                wid = self.search_classname()
-                try:
-                    if int(wid.decode()):
-                        pass
-                except ValueError:
+                if not self.i3.get_tree().find_classed(self.env.wclass):
                     self.attach_to_session()
             else:
                 self.create_new_session()
         else:
             self.run_app(
-                self.env.term_opts + [
-                    self.env.set_colorscheme + self.env.prog
-                ]
+                self.env.term_opts + [self.env.set_colorscheme + self.env.prog]
             )
