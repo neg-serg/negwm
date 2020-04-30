@@ -134,9 +134,8 @@ class env():
         print('No supported terminal installed, fail :(')
         return ''
 
-    @staticmethod
     def create_alacritty_cfg(
-            alacritty_cfg_dir, config: dict, name: str) -> str:
+            self, alacritty_cfg_dir, config: dict, name: str) -> str:
         """ Config generator for alacritty.
             We need it because of alacritty cannot bypass most of user
             parameters with command line now.
@@ -149,19 +148,13 @@ class env():
             Return:
                cfgname(str): configname
         """
-        app_name = config.get(name, {}).get('app_name', {})
+        app_name = config.get(name, {}).get('app_name', '')
         if not app_name:
             app_name = config.get(name, {}).get('class')
 
         app_name = expanduser(app_name + '.yml')
         cfgname = expanduser(f'{alacritty_cfg_dir}/{app_name}')
-
-        shutil.copyfile(
-            expanduser(os.environ.get(
-                "XDG_CONFIG_HOME") + "/alacritty/alacritty.yml"
-            ),
-            cfgname
-        )
+        shutil.copyfile(self.alacritty_cfg, cfgname)
 
         return cfgname
 
