@@ -85,9 +85,6 @@ class win_action(extension, cfg):
             "next_ws": self.next_ws,
         }
 
-        if self.conf('alternative_layout') == 1:
-            self.i3ipc.on('window::focus', self.alternative_layout)
-
     def load_useless_gaps(self) -> None:
         """ Load useless gaps settings. """
         try:
@@ -606,23 +603,6 @@ class win_action(extension, cfg):
             node = self.focused_child(node)
 
         self.i3ipc.command(f'[con_id="{node.id}"] focus')
-
-    def alternative_layout(self, i3, _):
-        """
-            Split depending on window size
-            Inspired by: deadc0de6
-        """
-        window = self.i3ipc.get_tree().find_focused()
-        if (not window) or (not window.rect) \
-                or (window.layout in ['stacked', 'tabbed']):
-            return
-
-        height, width = window.rect.height, window.rect.width
-        if height > width:
-            layout = 'vertical'
-        else:
-            layout = 'horizontal'
-        self.i3ipc.command(f'split {layout}')
 
     def visible_ws(self):
         result = []
