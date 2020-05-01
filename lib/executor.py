@@ -134,7 +134,7 @@ class env():
     @staticmethod
     def terminal_fallback_detect() -> str:
         """ Detect non alacritty terminal """
-        for t in ['st', 'urxvt']:
+        for t in ['st']:
             if shutil.which(t):
                 return t
         print('No supported terminal installed, fail :(')
@@ -226,12 +226,6 @@ class env():
             self.term_opts = ["st"] + [
                 "-c", self.wclass,
                 "-f", self.font + ":size=" + str(self.font_size),
-                "-e", self.default_shell, "-c",
-            ]
-        elif self.term == "urxvt":
-            self.term_opts = ["urxvt"] + [
-                "-name", self.wclass,
-                "-fn", "xft:" + self.font + ":size=" + str(self.font_size),
                 "-e", self.default_shell, "-c",
             ]
 
