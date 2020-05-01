@@ -53,14 +53,7 @@ class i3cfg(extension, cfg):
         return '\n'.join(self.cfg.get('autostart', [])) + '\n'
 
     def gaps(self) -> str:
-        gaps = [0, 0, 0, 0]
-        gaps_params = [
-            f'gaps inner {gaps[0]}',
-            f'gaps outer {gaps[1]}',
-            f'gaps top {gaps[2]}',
-            f'gaps bottom {gaps[3]}'
-        ]
-        return '\n'.join(gaps_params) + '\n'
+        return '\n'.join(self.cfg.get('gaps', [])) + '\n'
 
     def general(self) -> str:
         return '\n'.join(self.cfg.get('general', [])) + '\n'
@@ -70,28 +63,8 @@ class i3cfg(extension, cfg):
 
     def theme(self) -> str:
         theme = '\n'.join(self.cfg.get('theme', [])) + '\n'
-        color_theme = {
-            'client.focused': [
-                '#222233', '#000000', '#ddddee', '#112211', '#0C0C0D'
-            ],
-            'client.focused_inactive': [
-                '#000000', '#000000', '#005fff', '#000000', '#222233'
-            ],
-            'client.unfocused': [
-                '#000000', '#000000', '#315c70', '#000000', '#222233'
-            ],
-            'client.urgent': [
-                '#000000', '#2E2457', '#4C407C', '#32275E', '#32275E'
-            ],
-            'client.placeholder': [
-                '#000000', '#0c0c0c', '#ffffff', '#000000', '#0c0c0c'
-            ],
-            'client.background': ['#000000'],
-        }
-        theme_ret = ''
-        for param, data in color_theme.items():
-            theme_ret += f"{param} {' '.join(data)}\n"
-        return theme + theme_ret
+        color_theme = '\n'.join(self.cfg.get('color_theme', [])) + '\n'
+        return theme + color_theme
 
     def bscratch_bindings(self, mode) -> str:
         ret = ''

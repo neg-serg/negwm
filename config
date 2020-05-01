@@ -4,7 +4,8 @@ exec /usr/lib/gsd-xsettings
 exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
 exec /usr/sbin/gpaste-client daemon
 
-workspace_layout tabbed
+workspace_layout default
+default_orientation auto
 floating_modifier Mod4
 set $i3 ${XDG_CONFIG_HOME}/i3
 set $exit mode "default"
@@ -56,7 +57,7 @@ set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
 set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|TelegramDesktop|KotatogramDesktop|[Ss]kype.*)$"]
-set $bscratch-ncmpcpp [instance="^(Tauon Music Box|ncmpcpp)$"]
+set $bscratch-ncmpcpp [instance="^(Tauon Music Box|ncmpcpp|cool-retro-term)$"]
 set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $bscratch-ranger [instance="ranger"]
 set $bscratch-teardrop [instance="teardrop"]
@@ -75,7 +76,7 @@ for_window $bscratch-volcontrol move scratchpad, move absolute position 1023 824
 for_window $bscratch-youtube move scratchpad, move absolute position 247 13, resize set 1339 866
 for_window $bscratch-webcam move scratchpad, move absolute position 667 363, resize set 1234 771
 for_window $bscratch-discord move scratchpad, move absolute position 974 127, resize set 944 1036
-for_window $bscratch-transients move scratchpad, move absolute position 5 10, resize set 1347 430
+for_window $bscratch-transients move scratchpad, move absolute position 2 7, resize set 1412 429
 set $circle-web [class="^(firefox|Waterfox|Tor Browser|Chromium)$"]
 set $circle-vid [class="^(mpv|mplayer|mplayer2|Vlc)$"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
