@@ -104,6 +104,12 @@ class env():
         else:
             self.set_colorscheme = ''
         self.exec = config.get(name, {}).get("exec", '')
+        env_list = config.get(name, {}).get("env", '')
+        self.env_dict = {**os.environ}
+        for env_str in env_list:
+            env_data = env_str.split('=')
+            if len(env_data) > 1:
+                self.env_dict.update({env_data[0]: ' '.join(env_data[1:])})
         self.exec_tmux = config.get(name, {}).get("exec_tmux", [])
         self.with_tmux = bool(self.exec_tmux)
         if not self.with_tmux:
@@ -258,10 +264,6 @@ class executor(extension, cfg):
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         self.envs.clear()
 
-    def run_app(self, args: List) -> None:
-        """ Wrapper to run selected application in background. """
-        subprocess.Popen(args)
-
     @staticmethod
     def detect_session_bind(sockpath, name) -> str:
         """ Find target session for given socket. """
@@ -279,9 +281,10 @@ class executor(extension, cfg):
 
     def attach_to_session(self) -> None:
         """ Run tmux to attach to given socket. """
-        self.run_app(
+        subprocess.Popen(
             self.env.term_opts +
-            [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"]
+            [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"],
+            env=self.env.env_dict
         )
 
     def create_new_session(self) -> None:
@@ -294,11 +297,12 @@ class executor(extension, cfg):
                 exec_cmd += f'neww -n {token[0]} {token[1]}\\; '
         if not self.env.statusline:
             exec_cmd += f'set status off\\; '
-        self.run_app(
+        subprocess.Popen(
             self.env.term_opts +
             [f"{self.env.set_colorscheme} \
             {self.env.tmux_new_session} {exec_cmd} && \
-                {self.env.tmux_session_attach}"]
+                {self.env.tmux_session_attach}"],
+            env=self.env.env_dict
         )
 
     def run(self, name: str) -> None:
@@ -317,6 +321,7 @@ class executor(extension, cfg):
             else:
                 self.create_new_session()
         else:
-            self.run_app(
-                self.env.term_opts + [self.env.set_colorscheme + self.env.prog]
+            subprocess.Popen(
+                self.env.term_opts + [self.env.set_colorscheme + self.env.prog],
+                env=self.env.env_dict
             )
