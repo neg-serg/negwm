@@ -134,19 +134,15 @@ class env():
     @staticmethod
     def terminal_fallback_detect() -> str:
         """ Detect non alacritty terminal """
-        for t in ['st']:
-            if shutil.which(t):
-                return t
         print('No supported terminal installed, fail :(')
         return ''
 
-    def create_alacritty_cfg(
-            self, alacritty_cfg_dir, config: dict, name: str) -> str:
+    def create_alacritty_cfg(self, cfg_dir, config: dict, name: str) -> str:
         """ Config generator for alacritty.
             We need it because of alacritty cannot bypass most of user
             parameters with command line now.
 
-            alacritty_cfg_dir: alacritty config dir
+            cfg_dir: alacritty config dir
             config: config dirtionary
             name(str): name of config to generate
 
@@ -157,7 +153,7 @@ class env():
         if not app_name:
             app_name = config.get(name, {}).get('class')
         app_name += '.yml'
-        cfgname = expanduser(f'{alacritty_cfg_dir}/{app_name}')
+        cfgname = expanduser(f'{cfg_dir}/{app_name}')
         shutil.copyfile(self.alacritty_cfg, cfgname)
 
         return cfgname
@@ -221,12 +217,6 @@ class env():
                 "--class", self.wclass,
                 "-t", self.title,
                 "-e", self.default_shell, "-c"
-            ]
-        elif self.term == "st":
-            self.term_opts = ["st"] + [
-                "-c", self.wclass,
-                "-f", self.font + ":size=" + str(self.font_size),
-                "-e", self.default_shell, "-c",
             ]
 
 
