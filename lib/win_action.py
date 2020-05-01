@@ -12,6 +12,7 @@ you, miseran(https://github.com/miseran)
 """
 
 import collections
+import sys
 from typing import Mapping
 from display import Display
 from cfg import cfg
@@ -39,6 +40,7 @@ class win_action(extension, cfg):
         cfg.__init__(self, i3)
         # i3ipc connection, bypassed by negi3wm runner.
         self.i3ipc = i3
+        self.i3ipc.on("window::focus", self.auto_tiling)
 
         # cache list length
         maxlength = self.conf("cache_list_size")
@@ -668,3 +670,33 @@ class win_action(extension, cfg):
             self.i3ipc.command(
                 f'[con_id="{node.id}"] swap container with con_id {other.id}'
             )
+
+    def auto_tiling(self, _i3, _event):
+        try:
+            con = self.i3ipc.get_tree().find_focused()
+            if con:
+                # We're on i3: on sway it would be None
+                if con.floating:
+                    # May be 'auto_on' or 'user_on'
+                    is_floating = '_on' in con.floating
+                    is_full_screen = con.fullscreen_mode == 1
+                # We are on sway
+                else:
+                    is_floating = con.type == 'floating_con'
+                    # On sway on 1st focus the parent container returns 1, then
+                    # forever the focused container itself
+                    is_full_screen = con.fullscreen_mode == 1 or \
+                        con.parent.fullscreen_mode == 1
+                is_stacked = con.parent.layout == 'stacked'
+                is_tabbed = con.parent.layout == 'tabbed'
+
+                # Let's exclude floating containers, stacked layouts, tabbed
+                # layouts and full screen mode
+                if not is_floating and not is_stacked and \
+                   not is_tabbed and not is_full_screen:
+                    new_layout = 'splitv' if con.rect.height > con.rect.width \
+                        else 'splith'
+                    if new_layout != con.parent.layout:
+                        self.i3ipc.command(new_layout)
+        except Exception as exception:
+            print(f'Error: {exception}', file=sys.stderr)
