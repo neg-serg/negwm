@@ -15,7 +15,6 @@ import threading
 import multiprocessing
 import yaml
 import yamlloader
-from typing import List
 
 from extension import extension
 from cfg import cfg
@@ -55,8 +54,10 @@ class env():
                 self.default_shell = sh
                 break
 
+        cfg_block = config.get(name, {})
+
         # get terminal from config, use Alacritty by default
-        self.term = config.get(name, {}).get("term", "alacritty").lower()
+        self.term = cfg_block.get("term", "alacritty").lower()
 
         if os.path.exists(self.alacritty_cfg):
             if os.stat(self.alacritty_cfg).st_size == 0:
@@ -66,63 +67,61 @@ class env():
             print('Alacritty cfg {self.alacritty_cfg} not exists, put it here')
             self.term = env.terminal_fallback_detect()
 
-        self.wclass = config.get(name, {}).get("class", self.term)
-        self.title = config.get(name, {}).get("title", self.wclass)
+        self.wclass = cfg_block.get("class", self.term)
+        self.title = cfg_block.get("title", self.wclass)
         self.font = config.get("default_font", "")
         if not self.font:
-            self.font = config.get(name, {}).get("font", "Iosevka Term")
+            self.font = cfg_block.get("font", "Iosevka Term")
         self.font_size = config.get("default_font_size", "")
         if not self.font_size:
-            self.font_size = config.get(name, {}).get("font_size", "14")
+            self.font_size = cfg_block.get("font_size", "14")
         use_one_fontstyle = config.get("use_one_fontstyle", False)
         self.font_style = config.get("default_font_style", "")
         if not self.font_style:
-            self.font_style = config.get(name, {}).get("font_style", "Regular")
+            self.font_style = cfg_block.get("font_style", "Regular")
         if use_one_fontstyle:
-            self.font_style_normal = config.get(name, {})\
+            self.font_style_normal = cfg_block\
                 .get("font_style_normal", self.font_style)
-            self.font_style_bold = config.get(name, {})\
+            self.font_style_bold = cfg_block\
                 .get("font_style_bold", self.font_style)
-            self.font_style_italic = config.get(name, {})\
+            self.font_style_italic = cfg_block\
                 .get("font_style_italic", self.font_style)
         else:
-            self.font_style_normal = config.get(name, {})\
+            self.font_style_normal = cfg_block\
                 .get("font_style_normal", 'Regular')
-            self.font_style_bold = config.get(name, {})\
+            self.font_style_bold = cfg_block\
                 .get("font_style_bold", 'Bold')
-            self.font_style_italic = config.get(name, {})\
+            self.font_style_italic = cfg_block\
                 .get("font_style_italic", 'Italic')
 
-        self.tmux_session_attach = \
-            f"tmux -S {self.sockpath} a -t {name}"
-        self.tmux_new_session = \
-            f"tmux -S {self.sockpath} new-session -s {name}"
+        self.tmux_session_attach = f"tmux -S {self.sockpath} a -t {name}"
+        self.tmux_new_session = f"tmux -S {self.sockpath} new-session -s {name}"
         colorscheme = config.get("colorscheme", '')
         if colorscheme:
             self.set_colorscheme = \
                 f"{Misc.i3path() + 'bin/dynamic-colors'} switch {colorscheme};"
         else:
             self.set_colorscheme = ''
-        self.exec = config.get(name, {}).get("exec", '')
-        env_list = config.get(name, {}).get("env", '')
+        self.exec = cfg_block.get("exec", '')
+        env_list = cfg_block.get("env", '')
         self.env_dict = {**os.environ}
         for env_str in env_list:
             env_data = env_str.split('=')
             if len(env_data) > 1:
                 self.env_dict.update({env_data[0]: ' '.join(env_data[1:])})
-        self.exec_tmux = config.get(name, {}).get("exec_tmux", [])
+        self.exec_tmux = cfg_block.get("exec_tmux", [])
         self.with_tmux = bool(self.exec_tmux)
         if not self.with_tmux:
-            exec_dtach = config.get(name, {}).get('exec_dtach', '')
+            exec_dtach = cfg_block.get('exec_dtach', '')
             if not exec_dtach:
-                self.prog = config.get(name, {}).get('exec', 'true')
+                self.prog = cfg_block.get('exec', 'true')
             else:
                 self.prog = f'dtach -A {dtach_session_dir}' \
                             f'/{name}.session {exec_dtach}'
 
-        self.padding = config.get(name, {}).get('padding', [2, 2])
-        self.opacity = config.get(name, {}).get('opacity', 0.88)
-        self.statusline = config.get(name, {}).get('statusline', 1)
+        self.padding = cfg_block.get('padding', [2, 2])
+        self.opacity = cfg_block.get('opacity', 0.88)
+        self.statusline = cfg_block.get('statusline', 1)
 
         self.create_term_params(config, name)
 
