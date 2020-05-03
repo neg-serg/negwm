@@ -26,10 +26,10 @@ class i3cfg(extension, cfg):
     def dump_cfg(self) -> None:
         i3_cfg, test_cfg = 'config', '.config'
         generated_cfg = '\n'.join(self.generate())
-        with open(test_cfg, 'w', encoding='utf8') as fp:
+        with open(Misc.i3path() + test_cfg, 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
         if checker.check_i3_config(verbose=False, cfg=test_cfg):
-            with open(i3_cfg, 'w', encoding='utf8') as fp:
+            with open(Misc.i3path() + i3_cfg, 'w', encoding='utf8') as fp:
                 fp.write(generated_cfg)
             os.remove(Misc.i3path() + test_cfg)
 
