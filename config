@@ -4,7 +4,7 @@ exec /usr/lib/gsd-xsettings
 exec_always zsh -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
 exec /usr/sbin/gpaste-client daemon
 
-workspace_layout default
+workspace_layout tabbed
 default_orientation auto
 floating_modifier Mod4
 set $i3 ${XDG_CONFIG_HOME}/i3
@@ -184,8 +184,8 @@ bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
-bindsym Mod4+apostrophe exec --no-startup-id zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-bindsym Mod4+Shift+apostrophe exec --no-startup-id zsh -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
+bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 bindsym Mod4+u exec --no-startup-id udiskie-umount -a
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py

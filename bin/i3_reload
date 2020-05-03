@@ -1,4 +1,5 @@
 make -C ~/.config/i3/
+i3-msg reload
 pkill negi3wm
 $XDG_CONFIG_HOME/i3/negi3wm.py >> $HOME/tmp/negi3wm.log 2>&1 &
-i3-msg reload
+$XDG_CONFIG_HOME/i3/bin/send i3cfg dump
