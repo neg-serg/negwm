@@ -243,6 +243,7 @@ class executor(extension, cfg):
         }
 
         self.i3 = i3
+        self.env = None
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         self.envs.clear()
