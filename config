@@ -1,7 +1,7 @@
 exec_always pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1  ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main
 exec_always ${XDG_CONFIG_HOME}/i3/bin/gnome_settings
 exec /usr/lib/gsd-xsettings
-exec_always dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
+exec_always dash - ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
 exec /usr/sbin/gpaste-client daemon
 
 workspace_layout tabbed
@@ -185,8 +185,8 @@ bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
-bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
+bindsym Mod4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+bindsym Mod4+Shift+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 bindsym Mod4+u exec --no-startup-id udiskie-umount -a
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py

@@ -55,6 +55,8 @@ class env():
                 break
 
         cfg_block = config.get(name, {})
+        if not cfg_block:
+            return
 
         # get terminal from config, use Alacritty by default
         self.term = cfg_block.get("term", "alacritty").lower()
@@ -80,19 +82,13 @@ class env():
         if not self.font_style:
             self.font_style = cfg_block.get("font_style", "Regular")
         if use_one_fontstyle:
-            self.font_style_normal = cfg_block\
-                .get("font_style_normal", self.font_style)
-            self.font_style_bold = cfg_block\
-                .get("font_style_bold", self.font_style)
-            self.font_style_italic = cfg_block\
-                .get("font_style_italic", self.font_style)
+            self.font_normal = cfg_block.get("font_normal", self.font_style)
+            self.font_bold = cfg_block.get("font_bold", self.font_style)
+            self.font_italic = cfg_block.get("font_italic", self.font_style)
         else:
-            self.font_style_normal = cfg_block\
-                .get("font_style_normal", 'Regular')
-            self.font_style_bold = cfg_block\
-                .get("font_style_bold", 'Bold')
-            self.font_style_italic = cfg_block\
-                .get("font_style_italic", 'Italic')
+            self.font_normal = cfg_block.get("font_normal", 'Regular')
+            self.font_bold = cfg_block.get("font_bold", 'Bold')
+            self.font_italic = cfg_block.get("font_italic", 'Italic')
 
         self.tmux_session_attach = f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = f"tmux -S {self.sockpath} new-session -s {name}"
@@ -171,9 +167,9 @@ class env():
                     conf["font"]["normal"]["family"] = self.font
                     conf["font"]["bold"]["family"] = self.font
                     conf["font"]["italic"]["family"] = self.font
-                    conf["font"]["normal"]["style"] = self.font_style_normal
-                    conf["font"]["bold"]["style"] = self.font_style_bold
-                    conf["font"]["italic"]["style"] = self.font_style_italic
+                    conf["font"]["normal"]["style"] = self.font_normal
+                    conf["font"]["bold"]["style"] = self.font_bold
+                    conf["font"]["italic"]["style"] = self.font_italic
                     conf["font"]["size"] = self.font_size
                     conf["background_opacity"] = self.opacity
                     conf["window"]["padding"]['x'] = int(self.padding[0])
@@ -211,12 +207,9 @@ class env():
                 daemon=True
             ).start()
             self.term_opts = [
-                "alacritty", '-qq', "--live-config-reload", "--config-file",
-                expanduser(custom_config)
-            ] + [
-                "--class", self.wclass,
-                "-t", self.title,
-                "-e", self.default_shell, "-c"
+                "alacritty", "--live-config-reload", "--config-file",
+                expanduser(custom_config), "--class", self.wclass,
+                "-t", self.title, "-e", self.default_shell, "-i", "-c"
             ]
 
 
@@ -275,7 +268,7 @@ class executor(extension, cfg):
         """ Run tmux to create the new session on given socket. """
         exec_cmd = ''
         for pos, token in enumerate(self.env.exec_tmux):
-            if pos == 0:
+            if 0 == pos:
                 exec_cmd += f'-n {token[0]} {token[1]}\\; '
             else:
                 exec_cmd += f'neww -n {token[0]} {token[1]}\\; '

@@ -1,5 +1,5 @@
-#!/bin/dash
 make -C ~/.config/i3/
+ENV=$HOME/.profile; export ENV
 i3-msg reload
 pkill negi3wm.py
 $XDG_CONFIG_HOME/i3/negi3wm.py >> $HOME/tmp/negi3wm.log 2>&1 &
