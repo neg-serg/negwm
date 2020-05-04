@@ -61,9 +61,10 @@ class i3cfg(extension, cfg):
         return '\n'.join(self.cfg.get('focus_settings', [])) + '\n'
 
     def theme(self) -> str:
-        theme = '\n'.join(self.cfg.get('theme', [])) + '\n'
-        color_theme = '\n'.join(self.cfg.get('color_theme', [])) + '\n'
-        return theme + color_theme
+        return '\n'.join(self.cfg.get('theme', [])) + '\n'
+
+    def color_theme(self) -> str:
+        return '\n'.join(self.cfg.get('color_theme', [])) + '\n'
 
     def bscratch_bindings(self, mode) -> str:
         ret = ''
@@ -71,7 +72,7 @@ class i3cfg(extension, cfg):
             ret = ''
             pref, postfix = '', ''
             if mode != 'default':
-                pref, postfix = '\t', ', $exit'
+                pref, postfix = '\t', ',$exit'
             get_binds = p.split('_')
             mode_ = get_binds[1]
             cmd = get_binds[2]
@@ -103,7 +104,7 @@ class i3cfg(extension, cfg):
             ret = ''
             pref, postfix = '', ''
             if mode != 'default':
-                pref, postfix = '\t', ', $exit'
+                pref, postfix = '\t', ',$exit'
             get_binds = p.split('_')
             mode_ = get_binds[1]
             cmd = get_binds[2]
@@ -169,11 +170,11 @@ class i3cfg(extension, cfg):
                 if rules:
                     ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']'
                     ret += '\n'
-            return ret, cmd_dict, mod
+            return (ret, cmd_dict, mod)
 
         def rules_bscratch() -> str:
             """ Create i3 match rules for all tags. """
-            ret, cmd_dict, bscratch = rules_mod('bscratch')
+            (ret, cmd_dict, bscratch) = rules_mod('bscratch')
             ret += '\n'
             for tag in cmd_dict:
                 geom = bscratch.nsgeom.get_geom(tag)
@@ -181,13 +182,13 @@ class i3cfg(extension, cfg):
             return ret
 
         def rules_circle() -> str:
-            ret, _, circle = rules_mod('circle')
+            (ret, _, circle) = rules_mod('circle')
             for tag in circle.cfg:
                 focus_cmd = ''
                 ws = circle.cfg[tag].get('ws', '')
                 focus = bool(circle.cfg[tag].get('focus', True))
                 if focus:
-                    focus_cmd = ', focus'
+                    focus_cmd = ',focus'
                 if ws:
                     ret += f'for_window $circle-{tag}' \
                         f' move workspace ${ws}{focus_cmd}\n'
@@ -241,7 +242,7 @@ class i3cfg(extension, cfg):
         ret = ''
         bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
         for keybind in bindings:
-            ret += f'bindsym {keybind} $exit\n'
+            ret += f'bindsym {keybind},$exit\n'
         return ret + '}\n'
 
     def mode_binding(self, keymap, name) -> str:
@@ -263,7 +264,7 @@ class i3cfg(extension, cfg):
                 for bind in binds:
                     for i, key in enumerate(bind):
                         ret += f'{pre} {modkey}{key} {post} ' \
-                            f'{funcs[i]} {param_str}{end}\n'
+                            f'{funcs[i]}{param_str}{end}\n'
                 ret += '\n'
         return ret
 
@@ -276,10 +277,10 @@ class i3cfg(extension, cfg):
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         def menu_spec() -> str:
-            return self.bind('menu_spec', '$menu', ', $exit')
+            return self.bind('menu_spec', '$menu', ',$exit')
 
         def misc_spec() -> str:
-            return self.bind('misc_spec', '', ', $exit')
+            return self.bind('misc_spec', '', ',$exit')
 
         return self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
@@ -291,7 +292,7 @@ class i3cfg(extension, cfg):
 
     def mode_wm(self, mode_name, mode_bind) -> str:
         def split_tiling() -> str:
-            return self.bind('split', 'split', ', $exit')
+            return self.bind('split', 'split', ',$exit')
 
         def move_win() -> str:
             return self.bind('move', 'move', '')
@@ -303,7 +304,7 @@ class i3cfg(extension, cfg):
             return self.bind('move_acts', '$win_action', '')
 
         def layout_wm() -> str:
-            return self.bind('layout_wm', 'layout', ', $exit')
+            return self.bind('layout_wm', 'layout', ',$exit')
 
         def win_action_wm() -> str:
             return self.bind('win_action_wm', '$win_action', '')
