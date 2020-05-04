@@ -61,7 +61,7 @@ class checker():
             if make_result.returncode == 0:
                 print('send build is successful')
             else:
-                print('Please check for libbsd-dev build dependency')
+                print('Please try to run `make` manually and check the results')
 
     @staticmethod
     def check_i3_config(verbose, cfg='config'):
