@@ -263,8 +263,8 @@ bindsym t $bscratch subtag im tel , $exit
 bindsym s $bscratch subtag im skype , $exit
 bindsym Shift+r $bscratch toggle ranger  , $exit
 bindsym w $bscratch toggle webcam  , $exit
-bindsym f $circle subtag web firefox , $exit
-bindsym 5 $circle subtag web tor , $exit
+	bindsym f $circle subtag web firefox , $exit
+	bindsym 5 $circle subtag web tor , $exit
 bindsym Return $exit
 bindsym Escape $exit
 bindsym space $exit

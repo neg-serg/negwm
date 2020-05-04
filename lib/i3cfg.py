@@ -2,7 +2,6 @@
 
 import os
 from typing import List
-import textwrap
 
 from misc import Misc
 from cfg import cfg
@@ -39,14 +38,14 @@ class i3cfg(extension, cfg):
         if cfg_sections:
             for section in cfg_sections:
                 section_data = getattr(self, section)()
-                ret.append(textwrap.dedent(section_data))
+                ret.append(section_data)
         bind_modes = self.cfg.get('bind_modes', [])
         for keybind in bind_modes:
             bind_name, mode_bind = keybind[0], keybind[1]
             keybind_data = getattr(self, 'mode_' + bind_name)(
                 mode_name=bind_name, mode_bind=mode_bind
             )
-            ret.append(textwrap.dedent(keybind_data))
+            ret.append(keybind_data)
         return ret
 
     def autostart(self) -> str:
@@ -113,7 +112,7 @@ class i3cfg(extension, cfg):
                     for keybind in settings[p]:
                         ret += f'{pref}bindsym {keybind} $circle' \
                             f' {cmd} {tag} {subtag} {postfix}\n'
-            return textwrap.dedent(ret)
+            return ret
 
         circle = extension.get_mods()['circle']
         for tag, settings in circle.cfg.items():
@@ -127,19 +126,19 @@ class i3cfg(extension, cfg):
                             )
                 elif param.startswith('keybind_'):
                     ret += get_binds(mode, tag, settings, param)
-        return textwrap.dedent(ret)
+        return ret
 
     def mods_commands(self) -> str:
         ret = ''
         for mod in sorted(extension.get_mods()):
             ret += (f'set ${mod} exec --no-startup-id {self.send_path} {mod}\n')
-        return textwrap.dedent(ret)
+        return ret
 
     def workspaces(self) -> str:
         ret = ''
         for index, ws in enumerate(self.cfg['ws_list']):
             ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
-        return textwrap.dedent(ret)
+        return ret
 
     @staticmethod
     def scratchpad_hide_cmd(hide: bool) -> str:
@@ -230,11 +229,9 @@ class i3cfg(extension, cfg):
             if rules:
                 return ''.join(map(lambda s: 'for_window ' + s + '\n', rules))
             return ''
-        return textwrap.dedent(
-            rules_bscratch() + \
+        return rules_bscratch() + \
             rules_circle() + \
             plain_rules()
-        )
 
 
     def mode_start(self, name) -> str:
@@ -271,13 +268,11 @@ class i3cfg(extension, cfg):
         return ret
 
     def mode_resize(self, mode_name, mode_bind) -> str:
-        return textwrap.dedent(
-            self.mode_binding(mode_bind, mode_name) + \
+        return self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
             self.bind('resize_plus', '$win_action resize', '') + \
             self.bind('resize_minus', '$win_action resize', '') + \
             self.mode_end()
-        )
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         def menu_spec() -> str:
@@ -286,15 +281,13 @@ class i3cfg(extension, cfg):
         def misc_spec() -> str:
             return self.bind('misc_spec', '', ', $exit')
 
-        return textwrap.dedent(
-            self.mode_binding(mode_bind, mode_name) + \
+        return self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
             misc_spec() + \
             menu_spec() + \
             self.bscratch_bindings(mode_name) + \
             self.circle_bindings(mode_name) + \
             self.mode_end()
-        )
 
     def mode_wm(self, mode_name, mode_bind) -> str:
         def split_tiling() -> str:
@@ -315,8 +308,7 @@ class i3cfg(extension, cfg):
         def win_action_wm() -> str:
             return self.bind('win_action_wm', '$win_action', '')
 
-        return textwrap.dedent(
-            self.mode_binding(mode_bind, mode_name) + \
+        return self.mode_binding(mode_bind, mode_name) + \
             self.mode_start(mode_name) + \
             layout_wm() + \
             split_tiling() + \
@@ -327,7 +319,6 @@ class i3cfg(extension, cfg):
             self.bscratch_bindings(mode_name) + \
             self.circle_bindings(mode_name) + \
             self.mode_end()
-        )
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
@@ -384,11 +375,8 @@ class i3cfg(extension, cfg):
             exec_ret += '\n'
             return exec_ret
 
-        return textwrap.dedent(
-            misc_def() \
+        return misc_def() \
             + focus() \
             + exec_binds() \
             + self.bscratch_bindings(mode_name) \
             + self.circle_bindings(mode_name)
-        )
-
