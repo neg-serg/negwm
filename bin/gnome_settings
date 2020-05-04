@@ -1,23 +1,23 @@
-#!/bin/zsh
+#!/bin/dash
 
 default_font='Iosevka Medium 12'
 icon_theme='Flat-Remix-Blue-Dark'
 gtk_theme='Flat-Neg'
 
-gtk_settings(){
-    if [[ $1 == "" ]]; then
-        gsettings set org.gnome.desktop.interface gtk-theme "${gtk_theme}"
+gtk_settings() {
+    if [ -z $1 ]; then
+        gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme"
     else
         gsettings set org.gnome.desktop.interface gtk-theme "$1"
     fi
     gsettings set org.gnome.desktop.interface gtk-key-theme Emacs
 
-    gsettings set org.gnome.desktop.interface icon-theme "${icon_theme}"
+    gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
     gsettings set org.gnome.desktop.interface cursor-theme 'Bibata_Oil'
     gsettings set org.gnome.desktop.interface cursor-size 32
 }
 
-gnome_settings(){
+gnome_settings() {
     gsettings set org.gnome.desktop.background show-desktop-icons true
     gsettings set org.gnome.desktop.interface clock-show-date true
     gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
@@ -25,23 +25,23 @@ gnome_settings(){
     gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
 }
 
-font_settings(){
-    gsettings set org.gnome.desktop.interface monospace-font-name "${default_font}"
-    gsettings set org.gnome.desktop.interface document-font-name "${default_font}"
-    gsettings set org.gnome.desktop.interface font-name "${default_font}"
-    gsettings set org.gnome.desktop.wm.preferences titlebar-font "${default_font}"
+font_settings() {
+    gsettings set org.gnome.desktop.interface monospace-font-name "$default_font"
+    gsettings set org.gnome.desktop.interface document-font-name "$default_font"
+    gsettings set org.gnome.desktop.interface font-name "$default_font"
+    gsettings set org.gnome.desktop.wm.preferences titlebar-font "$default_font"
 }
 
-icon_settings(){
-    if [[ $1 == "" ]]; then
-        gsettings set org.gnome.desktop.interface icon-theme "${icon_theme}"
+icon_settings() {
+    if [ -z $1 ]; then
+        gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
     else
         gsettings set org.gnome.desktop.interface icon-theme "$1"
     fi
     gsettings set org.gnome.desktop.background show-desktop-icons true
 }
 
-main(){
+main() {
     case $1 in
         '-a')
             shift
