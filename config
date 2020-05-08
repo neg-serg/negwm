@@ -78,12 +78,12 @@ for_window $bscratch-youtube move scratchpad, move absolute position 247 13, res
 for_window $bscratch-webcam move scratchpad, move absolute position 667 363, resize set 1234 771
 for_window $bscratch-discord move scratchpad, move absolute position 974 127, resize set 944 1036
 for_window $bscratch-transients move scratchpad, move absolute position 2 7, resize set 1412 429
-set $circle-web [class="^(firefox|Waterfox|Tor Browser|Chromium)$"]
-set $circle-vid [class="^(mpv|mplayer|mplayer2|Vlc)$"]
+set $circle-web [class="^(firefox|Tor Browser|Chromium)$"]
+set $circle-vid [class="mpv"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
 set $circle-steam [class="Steam"]
 set $circle-doc [class="^(Zathura|cr3)$"]
-set $circle-vm [class="^(vmware|spicy|^[Qq]emu-.*$)$"]
+set $circle-vm [class="(spicy|^[Qq]emu-.*$)$"]
 set $circle-term [instance="term"]
 set $circle-nwim [instance="nwim"]
 set $circle-obs [class="obs"]
