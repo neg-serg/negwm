@@ -57,8 +57,8 @@ set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
-set $bscratch-im [class="^(zoom|VK|ViberPC|IGdm|TelegramDesktop|KotatogramDesktop|[Ss]kype.*)$"]
-set $bscratch-ncmpcpp [instance="^(Tauon Music Box|ncmpcpp|cool-retro-term)$"]
+set $bscratch-im [class="^(zoom|KotatogramDesktop)$"]
+set $bscratch-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
 set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $bscratch-ranger [instance="ranger"]
 set $bscratch-teardrop [instance="teardrop"]
@@ -261,7 +261,6 @@ bindsym Shift+i $menu icon_theme,$exit
 bindsym m $menu xprop,$exit
 
 bindsym t $bscratch subtag im tel ,$exit
-bindsym s $bscratch subtag im skype ,$exit
 bindsym Shift+r $bscratch toggle ranger  ,$exit
 bindsym w $bscratch toggle webcam  ,$exit
 	bindsym f $circle subtag web firefox ,$exit
