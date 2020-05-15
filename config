@@ -23,16 +23,11 @@ set $dev "4 ::  δ:dev"
 set $gfx "5 ::  ε:gfx"
 set $draw "6 ::  ζ:draw"
 set $sys "7 ::  η:sys"
-set $ide "8 ::  θ:ide"
-set $steam "9 ::  ι:steam"
-set $torrent "10 ::  κ:torrent"
-set $vm "11 ::  λ:vm"
-set $wine "12 ::  μ:wine"
-set $spotify "13 ::  ν:spotify"
-set $pic "14 ::  ξ:pic"
-set $remote "15 ::  ο:remote"
-set $sound "16 ::  π:sound"
-set $obs "17 :: @ ρ:obs"
+set $steam "8 ::  ι:steam"
+set $vm "9 ::  λ:vm"
+set $wine "10 ::  μ:wine"
+set $pic "11 ::  ξ:pic"
+set $obs "12 :: @ ρ:obs"
 
 font pango: Iosevka Term Heavy 9
 show_marks yes
@@ -104,12 +99,10 @@ for_window $circle-remote move workspace $remote,focus
 for_window $circle-sxiv move workspace $gfx,focus
 for_window $circle-looking_glass move workspace $vm,focus
 for_window $circle-bitwig move workspace $sound,focus
+for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
 for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
-for_window [title="^Java iKVM Viewer.*$"] move workspace $remote, focus
-for_window [class="spotify"] move workspace $spotify, focus
 for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
 for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
-for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
 
 gaps inner 0
 gaps outer 0
@@ -170,29 +163,26 @@ bindsym Mod4+grave $win_history focus_next_visible
 bindsym Mod4+Shift+grave $win_history focus_prev_visible
 
 
-bindsym Shift+Print exec ~/bin/scripts/screenshot -c
-bindsym Control+Print exec ~/bin/scripts/screenshot -r
-bindsym Mod4+Shift+3 exec ~/bin/scripts/screenshot -r
+bindsym Mod4+4 exec ~/bin/scripts/screenshot
 bindsym Mod4+Shift+4 exec flameshot gui
+bindsym Mod4+Control+4 exec ~/bin/scripts/screenshot -r
 bindsym Mod4+F4 exec gpick -so --no-newline | xsel -b
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
 bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
 bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
 bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi_tmux_urls
 bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym Mod4+Shift+d exec --no-startup-id ~/bin/scripts/dw s
 bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
-bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
-bindsym Mod4+u exec --no-startup-id udiskie-umount -a
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
 bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
 bindsym Mod4+Shift+M exec --no-startup-id ~/bin/scripts/rofi_mpd
 bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -columns 4 -disable-history -theme run
+bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
 bindsym Mod4+e $bscratch toggle im  
 bindsym Mod4+f $bscratch toggle ncmpcpp  
