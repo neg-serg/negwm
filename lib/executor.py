@@ -92,12 +92,6 @@ class env():
 
         self.tmux_session_attach = f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = f"tmux -S {self.sockpath} new-session -s {name}"
-        colorscheme = config.get("colorscheme", '')
-        if colorscheme:
-            self.set_colorscheme = \
-                f"{Misc.i3path() + 'bin/dynamic-colors'} switch {colorscheme};"
-        else:
-            self.set_colorscheme = ''
         self.exec = cfg_block.get("exec", '')
         env_list = cfg_block.get("env", '')
         self.env_dict = {**os.environ}
@@ -260,7 +254,7 @@ class executor(extension, cfg):
         """ Run tmux to attach to given socket. """
         subprocess.Popen(
             self.env.term_opts +
-            [f"{self.env.set_colorscheme} {self.env.tmux_session_attach}"],
+            [f"{self.env.tmux_session_attach}"],
             env=self.env.env_dict
         )
 
@@ -276,8 +270,7 @@ class executor(extension, cfg):
             exec_cmd += f'set status off\\; '
         subprocess.Popen(
             self.env.term_opts +
-            [f"{self.env.set_colorscheme} \
-            {self.env.tmux_new_session} {exec_cmd} && \
+            [f"{self.env.tmux_new_session} {exec_cmd} && \
                 {self.env.tmux_session_attach}"],
             env=self.env.env_dict
         )
@@ -299,6 +292,6 @@ class executor(extension, cfg):
                 self.create_new_session()
         else:
             subprocess.Popen(
-                self.env.term_opts + [self.env.set_colorscheme + self.env.prog],
+                self.env.term_opts + [self.env.prog],
                 env=self.env.env_dict
             )
