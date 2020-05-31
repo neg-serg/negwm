@@ -6,4 +6,3 @@
 * add executor run check via something like dash -c
 * percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
 * bscratch: add ability to set geometry with mouse
-* circle: add bindings
