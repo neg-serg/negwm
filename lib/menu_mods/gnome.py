@@ -2,7 +2,6 @@
 import os
 import configparser
 import subprocess
-import glob
 import pathlib
 
 from misc import Misc
@@ -46,7 +45,7 @@ class gnome():
     def change_icon_theme(self):
         """ Changes icon theme with help of gsd-xsettings """
         icon_dirs = []
-        icons_path = pathlib.Path('~/.icons').expanduser()
+        icons_path = pathlib.Path('~/.local/share/icons').expanduser()
         for icon in icons_path.glob('*'):
             if icon:
                 icon_dirs += [pathlib.Path(icon).name]
@@ -54,15 +53,20 @@ class gnome():
         menu_params = self.menu_params(len(icon_dirs), 'icon theme')
 
         selection = ''
-        try:
-            selection = subprocess.run(
-                self.menu.args(menu_params),
-                stdout=subprocess.PIPE,
-                input=bytes('\n'.join(icon_dirs), 'UTF-8'),
-                check=True
-            ).stdout
-        except subprocess.CalledProcessError as proc_err:
-            Misc.print_run_exception_info(proc_err)
+        if not icon_dirs:
+            return
+        if len(icon_dirs) == 1:
+            selection = icon_dirs[0]
+        else:
+            try:
+                selection = subprocess.run(
+                    self.menu.args(menu_params),
+                    stdout=subprocess.PIPE,
+                    input=bytes('\n'.join(icon_dirs), 'UTF-8'),
+                    check=True
+                ).stdout
+            except subprocess.CalledProcessError as proc_err:
+                Misc.print_run_exception_info(proc_err)
 
         if selection:
             self.apply_settings(selection, '-i')
@@ -70,23 +74,27 @@ class gnome():
     def change_gtk_theme(self):
         """ Changes gtk theme with help of gsd-xsettings """
         theme_dirs = []
-        gtk_theme_path = pathlib.Path('~/.themes').expanduser()
-        for theme in gtk_theme_path.glob('./*/*/gtk.css'):
+        gtk_theme_path = pathlib.Path('~/.local/share/themes').expanduser()
+        for theme in gtk_theme_path.glob('*/*/gtk.css'):
             if theme:
                 theme_dirs += [pathlib.PurePath(theme).parent.parent.name]
-
         menu_params = self.menu_params(len(theme_dirs), 'gtk theme')
 
         selection = ''
-        try:
-            selection = subprocess.run(
-                self.menu.args(menu_params),
-                stdout=subprocess.PIPE,
-                input=bytes('\n'.join(theme_dirs), 'UTF-8'),
-                check=True
-            ).stdout
-        except subprocess.CalledProcessError as proc_err:
-            Misc.print_run_exception_info(proc_err)
+        if not theme_dirs:
+            return
+        if len(theme_dirs) == 1:
+            selection = theme_dirs[0]
+        else:
+            try:
+                selection = subprocess.run(
+                    self.menu.args(menu_params),
+                    stdout=subprocess.PIPE,
+                    input=bytes('\n'.join(theme_dirs), 'UTF-8'),
+                    check=True
+                ).stdout
+            except subprocess.CalledProcessError as proc_err:
+                Misc.print_run_exception_info(proc_err)
 
         if selection:
             self.apply_settings(selection, '-a')
