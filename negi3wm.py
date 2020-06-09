@@ -27,12 +27,10 @@ import os
 import timeit
 import atexit
 import sys
-import subprocess
 import signal
 import functools
 import importlib
 import tracemalloc
-import shutil
 from threading import Thread
 from colored import fg
 
@@ -236,7 +234,6 @@ def main():
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('lineno')
 
-        print("[ Top 10 ]")
         for stat in top_stats[:10]:
             print(stat)
 
