@@ -13,8 +13,8 @@ gtk_settings() {
     gsettings set org.gnome.desktop.interface gtk-key-theme Emacs
 
     gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
-    gsettings set org.gnome.desktop.interface cursor-theme 'Bibata_Oil'
-    gsettings set org.gnome.desktop.interface cursor-size 32
+    gsettings set org.gnome.desktop.interface cursor-theme 'Breeze_Hacked'
+    gsettings set org.gnome.desktop.interface cursor-size 38
 }
 
 gnome_settings() {
