@@ -177,8 +177,11 @@ class i3cfg(extension, cfg):
             (ret, cmd_dict, bscratch) = rules_mod('bscratch')
             ret += '\n'
             for tag in cmd_dict:
-                geom = bscratch.nsgeom.get_geom(tag)
-                ret += f'for_window $bscratch-{tag} move scratchpad, {geom}\n'
+                if tag in {'transients'}:
+                    geom = bscratch.nsgeom.get_geom(tag)
+                    ret += f'for_window $bscratch-{tag} move scratchpad, {geom}\n'
+                else:
+                    ret += f'for_window $bscratch-{tag} floating enable\n'
             return ret
 
         def rules_circle() -> str:
