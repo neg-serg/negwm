@@ -238,10 +238,9 @@ bindsym Control+G,$exit
 bindsym Mod1+e mode "spec"
 mode spec {
 
-bindsym c  exec PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass rofi-pass,$exit
+bindsym c  exec dash -c "PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass rofi-pass",$exit
 bindsym e  [urgent=latest] focus,$exit
 bindsym Shift+d  floating toggle,$exit
-bindsym Shift+l  exec sh -c 'sudo gllock',$exit
 
 
 bindsym o $menu pulse_output,$exit
