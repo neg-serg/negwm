@@ -14,7 +14,7 @@ gtk_settings() {
 
     gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
     gsettings set org.gnome.desktop.interface cursor-theme 'Breeze_Hacked'
-    gsettings set org.gnome.desktop.interface cursor-size 38
+    gsettings set org.gnome.desktop.interface cursor-size 128
 }
 
 gnome_settings() {
@@ -22,7 +22,7 @@ gnome_settings() {
     gsettings set org.gnome.desktop.interface clock-show-date true
     gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
     gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
-    gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
+    gsettings set org.gnome.desktop.interface text-scaling-factor '0.5'
 }
 
 font_settings() {
