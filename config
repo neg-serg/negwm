@@ -238,7 +238,7 @@ bindsym Control+G,$exit
 bindsym Mod1+e mode "spec"
 mode spec {
 
-bindsym c  exec dash -c "PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass rofi-pass",$exit
+bindsym c  exec dash -c -i "PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass rofi-pass",$exit
 bindsym e  [urgent=latest] focus,$exit
 bindsym Shift+d  floating toggle,$exit
 
