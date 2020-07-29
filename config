@@ -29,7 +29,7 @@ set $wine "10 ::  μ:wine"
 set $pic "11 ::  ξ:pic"
 set $obs "12 :: @ ρ:obs"
 
-font pango: Iosevka Term Heavy 9
+font pango: Iosevka Heavy 18
 show_marks yes
 smart_borders on
 hide_edge_borders both
