@@ -52,7 +52,7 @@ set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
-set $bscratch-im [class="^(zoom|KotatogramDesktop)$"]
+set $bscratch-im [class="^(zoom|KotatogramDesktop|Slack)$"]
 set $bscratch-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
 set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $bscratch-ranger [instance="ranger"]
@@ -72,7 +72,7 @@ for_window $bscratch-volcontrol floating enable
 for_window $bscratch-youtube floating enable
 for_window $bscratch-webcam floating enable
 for_window $bscratch-discord floating enable
-for_window $bscratch-transients move scratchpad, move absolute position 2 7, resize set 1412 429
+for_window $bscratch-transients move scratchpad, move absolute position 4 12, resize set 2824 772
 set $circle-web [class="^(firefox|Tor Browser|Chromium)$"]
 set $circle-vid [class="mpv"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
