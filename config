@@ -3,6 +3,7 @@ exec /usr/lib/gsd-xsettings
 exec_always ${XDG_CONFIG_HOME}/i3/bin/gnome_settings
 exec_always dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
 exec /usr/sbin/gpaste-client daemon
+exec xiccd &
 
 workspace_layout tabbed
 default_orientation auto
