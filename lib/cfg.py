@@ -8,10 +8,10 @@ pretty simple API. I've considered that inheritance here is good idea.
 import re
 import os
 import sys
-from typing import Set, Callable
-import traceback
-
 import qtoml
+import traceback
+from typing import Set, Callable
+
 from misc import Misc
 
 
@@ -37,6 +37,9 @@ class cfg():
             'title': 'name',
         }
 
+        if not self.cfg:
+            self.cfg = {}
+
         self.i3ipc = i3
 
     def conf(self, *conf_path):
@@ -45,18 +48,22 @@ class cfg():
         Args:
             conf_path: path of config from where extract.
         """
-        ret = None
+        ret = {}
         for part in conf_path:
-            ret = self.cfg.get(part)
+            if not ret:
+                ret = self.cfg.get(part)
+            else:
+                ret = ret.get(part)
+                return ret
         return ret
 
     @staticmethod
-    def extract_prog_str(conf_part: str,
+    def extract_prog_str(conf_part: dict,
                          prog_field: str = "prog", exe_file: bool = True):
         """ Helper to extract prog(by default) string from config
 
         Args:
-            conf_part (str): part of config from where you want to extract it.
+            conf_part (dict): part of config from where you want to extract it.
             prog_field (str): string name to extract.
         """
         if conf_part is None:
@@ -112,7 +119,7 @@ class cfg():
             print(f"[{self.mod}] config reload failed")
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
-            self.__init__()
+            self.__init__(*_)
 
     def dict_apply(self, field_conv: Callable, subtag_conv: Callable) -> None:
         """ Convert list attributes to set for the better performance.
@@ -232,6 +239,7 @@ class cfg():
                 # self.cfg[target_tag][prop].remove(target_tag)
                 pass
 
+        lst_by_reg = []
         # Delete appropriate regexes
         for prop in self.cfg[target_tag].copy():
             if prop in self.cfg_regex_props():
