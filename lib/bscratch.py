@@ -14,15 +14,13 @@ window when needed.
 """
 
 import uuid
-from typing import List, Callable, Set, Optional
-
-import geom
-from cfg import cfg
-from matcher import Matcher
-from misc import Misc
-from negewmh import NegEWMH
-from extension import extension
-
+from typing import List, Callable, Set
+from . import geom
+from . cfg import cfg
+from . matcher import Matcher
+from . misc import Misc
+from . negewmh import NegEWMH
+from . extension import extension
 
 class bscratch(extension, cfg, Matcher):
     """ Named scratchpad class
@@ -41,6 +39,7 @@ class bscratch(extension, cfg, Matcher):
             i3: i3ipc connection
         """
         # Initialize superclasses.
+        super().__init__()
         cfg.__init__(self, i3)
         Matcher.__init__(self)
 
