@@ -3,13 +3,14 @@
 import os
 from typing import List
 
-from misc import Misc
-from cfg import cfg
-from extension import extension
-from lib.checker import checker
+from . misc import Misc
+from . cfg import cfg
+from . extension import extension
+from . checker import checker
 
 class i3cfg(extension, cfg):
     def __init__(self, i3) -> None:
+        super().__init__()
         cfg.__init__(self, i3)
         self.i3ipc = i3
         self.bindings = {
@@ -66,7 +67,8 @@ class i3cfg(extension, cfg):
     def color_theme(self) -> str:
         return '\n'.join(self.cfg.get('color_theme', [])) + '\n'
 
-    def bscratch_bindings(self, mode) -> str:
+    @staticmethod
+    def bscratch_bindings(mode) -> str:
         ret = ''
         def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
@@ -98,7 +100,8 @@ class i3cfg(extension, cfg):
                     ret += get_binds(mode, tag, settings, param)
         return ret
 
-    def circle_bindings(self, mode) -> str:
+    @staticmethod
+    def circle_bindings(mode) -> str:
         ret = ''
         def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
@@ -237,18 +240,20 @@ class i3cfg(extension, cfg):
             rules_circle() + \
             plain_rules()
 
-
-    def mode_start(self, name) -> str:
+    @staticmethod
+    def mode_start(name) -> str:
         return 'mode ' + name + ' {\n'
 
-    def mode_end(self) -> str:
+    @staticmethod
+    def mode_end() -> str:
         ret = ''
         bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
         for keybind in bindings:
             ret += f'bindsym {keybind},$exit\n'
         return ret + '}\n'
 
-    def mode_binding(self, keymap, name) -> str:
+    @staticmethod
+    def mode_binding(keymap, name) -> str:
         return f'bindsym {keymap} mode "{name}"\n'
 
     def bind(self, section_name, post, end, pre='bindsym') -> str:
@@ -272,11 +277,11 @@ class i3cfg(extension, cfg):
         return ret
 
     def mode_resize(self, mode_name, mode_bind) -> str:
-        return self.mode_binding(mode_bind, mode_name) + \
-            self.mode_start(mode_name) + \
+        return i3cfg.mode_binding(mode_bind, mode_name) + \
+            i3cfg.mode_start(mode_name) + \
             self.bind('resize_plus', '$win_action resize', '') + \
             self.bind('resize_minus', '$win_action resize', '') + \
-            self.mode_end()
+            i3cfg.mode_end()
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         def menu_spec() -> str:
@@ -285,13 +290,13 @@ class i3cfg(extension, cfg):
         def misc_spec() -> str:
             return self.bind('misc_spec', '', ',$exit')
 
-        return self.mode_binding(mode_bind, mode_name) + \
-            self.mode_start(mode_name) + \
+        return i3cfg.mode_binding(mode_bind, mode_name) + \
+            i3cfg.mode_start(mode_name) + \
             misc_spec() + \
             menu_spec() + \
-            self.bscratch_bindings(mode_name) + \
-            self.circle_bindings(mode_name) + \
-            self.mode_end()
+            i3cfg.bscratch_bindings(mode_name) + \
+            i3cfg.circle_bindings(mode_name) + \
+            i3cfg.mode_end()
 
     def mode_wm(self, mode_name, mode_bind) -> str:
         def split_tiling() -> str:
@@ -312,17 +317,17 @@ class i3cfg(extension, cfg):
         def win_action_wm() -> str:
             return self.bind('win_action_wm', '$win_action', '')
 
-        return self.mode_binding(mode_bind, mode_name) + \
-            self.mode_start(mode_name) + \
+        return i3cfg.mode_binding(mode_bind, mode_name) + \
+            i3cfg.mode_start(mode_name) + \
             layout_wm() + \
             split_tiling() + \
             move_win() + \
             move_acts() + \
             win_quad() + \
             win_action_wm() + \
-            self.bscratch_bindings(mode_name) + \
-            self.circle_bindings(mode_name) + \
-            self.mode_end()
+            i3cfg.bscratch_bindings(mode_name) + \
+            i3cfg.circle_bindings(mode_name) + \
+            i3cfg.mode_end()
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
@@ -382,5 +387,5 @@ class i3cfg(extension, cfg):
         return misc_def() \
             + focus() \
             + exec_binds() \
-            + self.bscratch_bindings(mode_name) \
-            + self.circle_bindings(mode_name)
+            + i3cfg.bscratch_bindings(mode_name) \
+            + i3cfg.circle_bindings(mode_name)
