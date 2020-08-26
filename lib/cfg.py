@@ -45,12 +45,9 @@ class cfg():
         Args:
             conf_path: path of config from where extract.
         """
-        ret = {}
+        ret = None
         for part in conf_path:
-            if not ret:
-                ret = self.cfg.get(part)
-            else:
-                ret = ret.get(part)
+            ret = self.cfg.get(part)
         return ret
 
     @staticmethod
