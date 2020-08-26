@@ -27,11 +27,9 @@ year :: 2020
 """
 
 import asyncio
-from os import stat
 import sys
 
 from lib.standalone_cfg import modconfig
-from lib.misc import Misc
 
 
 class polybar_vol(modconfig):
@@ -39,16 +37,16 @@ class polybar_vol(modconfig):
         self.loop = asyncio.get_event_loop()
 
         # Initialize modcfg.
-        modconfig.__init__(self)
+        super().__init__()
 
         # default MPD address
-        self.addr = self.conf("mpdaddr")
+        self.addr = str(self.conf("mpdaddr"))
 
         # default MPD port
-        self.port = self.conf("mpdport")
+        self.port = int(str(self.conf("mpdport")))
 
         # buffer size
-        self.buf_size = self.conf("bufsize")
+        self.buf_size = int(str(self.conf("bufsize")))
 
         # output string
         self.volume = ""
@@ -73,7 +71,7 @@ class polybar_vol(modconfig):
         self.right_bracket = ""
 
         # set string for the empty output
-        if self.conf('show_volume').startswith('y'):
+        if str(self.conf('show_volume')).startswith('y'):
             self.empty_str = f"%{{F{self.bracket_color}}}{self.delimiter}" + \
                 f"%{{F{self.bright_color}}}" + \
                 f"{self.vol_prefix}%{{F{self.foreground_color}}}n/a%{{F-}}" + \
@@ -117,14 +115,14 @@ class polybar_vol(modconfig):
                 self.volume = self.print_volume()
                 sys.stdout.write(f"{self.volume}\n")
             else:
-                sys.stdout.write(f" \n")
+                sys.stdout.write("\n")
         else:
             for token in parsed:
                 if token == 'state: stop':
                     mpd_stopped = True
                     break
             if mpd_stopped:
-                print()
+                sys.stdout.write("\n")
             else:
                 print(self.empty_str)
         return data.startswith(b'OK')
@@ -147,7 +145,7 @@ class polybar_vol(modconfig):
                         self.volume = parsed[0][8:]
                         if int(self.volume) >= 0:
                             if not self.check_for_full():
-                                sys.stdout.write(f" \n")
+                                sys.stdout.write("\n")
                             elif prev_volume != self.volume:
                                 self.volume = self.print_volume()
                                 sys.stdout.write(f"{self.volume}\n")
