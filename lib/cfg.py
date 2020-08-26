@@ -12,8 +12,7 @@ import qtoml
 import traceback
 from typing import Set, Callable
 
-from misc import Misc
-
+from . import misc
 
 class cfg():
     def __init__(self, i3) -> None:
@@ -21,7 +20,7 @@ class cfg():
         self.mod = self.__class__.__name__
 
         # extension config path
-        self.i3_cfg_mod_path = Misc.i3path() + '/cfg/' + self.mod + '.cfg'
+        self.i3_cfg_mod_path = misc.Misc.i3path() + '/cfg/' + self.mod + '.cfg'
 
         # load current config
         self.load_config()
@@ -59,7 +58,8 @@ class cfg():
 
     @staticmethod
     def extract_prog_str(conf_part: dict,
-                         prog_field: str = "prog", exe_file: bool = True):
+                         prog_field: str = "prog",
+                         exe_file: bool = True) -> str:
         """ Helper to extract prog(by default) string from config
 
         Args:
