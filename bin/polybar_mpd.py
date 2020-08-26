@@ -27,7 +27,6 @@ year :: 2020
 """
 
 import asyncio
-from functools import update_wrapper
 import sys
 import time
 from lib.standalone_cfg import modconfig
@@ -36,14 +35,14 @@ from lib.standalone_cfg import modconfig
 class polybar_mpd(modconfig):
     def __init__(self):
         self.loop = asyncio.get_event_loop()
-        modconfig.__init__(self)
+        super().__init__()
 
         # default MPD address
-        self.addr = self.conf("mpdaddr")
+        self.addr = str(self.conf("mpdaddr"))
         # default MPD port
-        self.port = self.conf("mpdport")
+        self.port = int(str(self.conf("mpdport")))
         # buffer size
-        self.buf_size = self.conf("bufsize")
+        self.buf_size = int(str(self.conf("bufsize")))
 
         # command to wait for mixer or player events from MPD
         self.idle_player = "idle player\n"
@@ -58,7 +57,8 @@ class polybar_mpd(modconfig):
         """ Mainloop starting here. """
         asyncio.run(self.current_song_loop())
 
-    def pretty_printing(self, song_data):
+    @staticmethod
+    def pretty_printing(song_data):
         artist = song_data.get('Artist', '')
         title = song_data.get('Title', '')
         song_time = song_data.get('time', '')
@@ -68,7 +68,8 @@ class polybar_mpd(modconfig):
             sys.stdout.write(f'{lhs}{artist} ― {title} ' \
                 f'{song_time[0].strip()}{delim}{song_time[1].strip()}\n')
 
-    def time_convert(self, n):
+    @staticmethod
+    def time_convert(n):
         return time.strftime(
             " %M:%S", time.gmtime(n)
         ).replace(' 0', ' ')
@@ -88,8 +89,8 @@ class polybar_mpd(modconfig):
                         current_time = float(t[0].strip())
                         total_time = float(t[1].strip())
                         song_data['time'] = [
-                            self.time_convert(current_time),
-                            self.time_convert(total_time)
+                            polybar_mpd.time_convert(current_time),
+                            polybar_mpd.time_convert(total_time)
                         ]
         return song_data
 
@@ -107,7 +108,7 @@ class polybar_mpd(modconfig):
             while True:
                 song_data = await self.update_mpd_stat(reader, writer)
                 if song_data.get('state', '') == 'play':
-                    self.pretty_printing(song_data)
+                    polybar_mpd.pretty_printing(song_data)
                 else:
                     sys.stdout.write('\n')
                 await asyncio.sleep(0.1)
