@@ -30,18 +30,15 @@ import sys
 import signal
 import functools
 import importlib
+from importlib import util
 import tracemalloc
 from threading import Thread
 from colored import fg
 
 for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
           "qtoml", "Xlib", "yaml", "yamlloader", "ewmh", "colored"]:
-    if sys.version_info >= (3, 5):
-        if not importlib.util.find_spec(m):
-            print(f"Cannot import [{m}], please install")
-    elif not importlib.find_loader(m):
+    if not util.find_spec(m):
         print(f"Cannot import [{m}], please install")
-
 
 import asyncio
 import inotipy
@@ -87,7 +84,7 @@ class negi3wm(modconfig):
                     functools.partial(loop_exit, signame))
             loop.set_exception_handler(None)
 
-        modconfig.__init__(self)
+        super().__init__()
 
         self.loop = loop
         self.mods = {}
@@ -95,7 +92,7 @@ class negi3wm(modconfig):
             self.mods[sys.intern(mod)] = None
 
         self.prepare_notification_text()
-        self.port = int(self.conf('port'))
+        self.port = int(str(self.conf('port')))
 
         self.echo = Misc.echo_on
         self.notify = Misc.notify_off
@@ -120,8 +117,7 @@ class negi3wm(modconfig):
             benchmarks.
         """
         mod_startup_times = []
-        main_color = fg(249)
-        delim_color = fg(25)
+        main_color, delim_color = fg(249), fg(25)
         delim = f'{delim_color}❯{main_color}'
         for mod in self.mods:
             start_time = timeit.default_timer()
@@ -133,7 +129,8 @@ class negi3wm(modconfig):
                 pass
             mod_startup_times.append(timeit.default_timer() - start_time)
             time_elapsed = f'{mod_startup_times[-1]:4f}'
-            mod_loaded_info = f'{main_color}{mod:<14s}{delim} {time_elapsed:>10s}'
+            mod_loaded_info = f'{main_color}{mod:<14s}{delim}' \
+                f'{time_elapsed:>10s}'
             self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
             self.echo(mod_loaded_info, flush=True)
         total_startup_time = str(round(sum(mod_startup_times), 6))
@@ -142,7 +139,8 @@ class negi3wm(modconfig):
         self.notification_text += loading_time_msg
         self.echo(loading_time_msg)
 
-    def cfg_mods_watcher(self):
+    @staticmethod
+    def cfg_mods_watcher():
         """ cfg watcher to update modules config in realtime. """
         watcher = inotipy.Watcher.create()
         watcher.watch(Misc.i3path() + '/cfg/', inotipy.IN.MODIFY)
@@ -180,7 +178,7 @@ class negi3wm(modconfig):
         """ Start all watchers here via ensure_future to run it in
             background.
         """
-        asyncio.ensure_future(self.cfg_mods_worker(self.cfg_mods_watcher()))
+        asyncio.ensure_future(self.cfg_mods_worker(negi3wm.cfg_mods_watcher()))
 
     def run(self, verbose=False):
         """ Run negi3wm here. """
