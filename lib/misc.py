@@ -10,7 +10,6 @@ import functools
 import operator
 from typing import List
 
-
 class Misc():
     """ Implements various helper functions
     """
@@ -33,8 +32,8 @@ class Misc():
         """ Easy way to return i3 config path. """
         return os.environ.get("XDG_CONFIG_HOME") + "/i3/"
 
-    @classmethod
-    def notify_msg(cls, msg: str, prefix: str = " ") -> None:
+    @staticmethod
+    def notify_msg(msg: str, prefix: str = " ") -> None:
         """ Send messages via notify-osd based notifications.
 
             Args:
@@ -61,8 +60,8 @@ class Misc():
             ]
             subprocess.Popen(notify_msg)
 
-    @classmethod
-    def notify_off(cls, _dummy_msg: str, _dummy_prefix: str = " ") -> None:
+    @staticmethod
+    def notify_off(_dummy_msg: str, _dummy_prefix: str = " ") -> None:
         """ Do nothing """
         return
 
