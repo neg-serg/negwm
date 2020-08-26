@@ -24,7 +24,7 @@ class props():
         # negi3wm which allows add / delete property.
         # For example this feature can be used to move / delete window
         # to / from named scratchpad.
-        self.possible_mods = ['bscratch', 'circle']
+        self.possible_mods = ['scratchpad', 'circle']
 
         # Window properties used by i3 to match windows.
         self.i3rules_xprop = set(self.menu.conf("rules_xprop"))

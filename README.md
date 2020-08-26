@@ -10,7 +10,7 @@
 - [What is it?](#what-is-it-)
 - [main](#main)
 - [modules](#modules)
-  * [bscratch](#bscratch)
+  * [scratchpad](#scratchpad)
   * [circle](#circle)
   * [win_history](#win-history)
   * [menu](#menu)
@@ -76,7 +76,7 @@ To recompile `send` client.
 
 # modules
 
-## bscratch
+## scratchpad
 
 Named ion3-like scratchpads with a whistles and fakes.
 
@@ -84,7 +84,7 @@ Named scratchpad is something like tabs for windows. You can create scratchpad
 with several rules like `im`, `player`, etc and attach windows to it. Then it
 make some magic to support some kind of "next tab" for this group, etc.
 
-Config example(`cfg/bscratch.cfg`):
+Config example(`cfg/scratchpad.cfg`):
 
 ```toml
 [im]
@@ -93,7 +93,7 @@ class_r = [ "[Tt]elegram.*", "[Ss]kype.*",]
 geom = "548x1165+1368+3"
 ```
 
-Look at `cfg/bscratch.cfg` for the more info.
+Look at `cfg/scratchpad.cfg` for the more info.
 
 Possible matching rules are:
 "class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
@@ -116,32 +116,32 @@ dialog: toggle dialogs
 i3 config example:
 
 ```cfg
-set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send bscratch
+set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send scratchpad
 
 bindsym Mod1+e mode "SPEC"
 
-bindsym Mod4+f $bscratch toggle ncmpcpp
-bindsym Mod4+e $bscratch toggle im
-bindsym Mod4+d $bscratch toggle teardrop
-bindsym Mod4+v $bscratch toggle discord
-bindsym Mod4+3 $bscratch next
-bindsym Mod4+s $bscratch hide_current
+bindsym Mod4+f $scratchpad toggle ncmpcpp
+bindsym Mod4+e $scratchpad toggle im
+bindsym Mod4+d $scratchpad toggle teardrop
+bindsym Mod4+v $scratchpad toggle discord
+bindsym Mod4+3 $scratchpad next
+bindsym Mod4+s $scratchpad hide_current
 
-bindsym Mod4+Control+Shift+R $bscratch geom_restore
-bindsym Mod4+Control+Shift+D $bscratch geom_dump
-bindsym Mod4+Control+Shift+S $bscratch geom_autosave
+bindsym Mod4+Control+Shift+R $scratchpad geom_restore
+bindsym Mod4+Control+Shift+D $scratchpad geom_dump
+bindsym Mod4+Control+Shift+S $scratchpad geom_autosave
 
 mode "SPEC" {
-    bindsym Mod4+s $bscratch subtag im skype, mode "default"
-    bindsym Mod1+s $bscratch subtag im skype, mode "default"
-    bindsym s $bscratch subtag im skype, mode "default"
-    bindsym Mod4+t $bscratch subtag im tel, mode "default"
-    bindsym Mod1+t $bscratch subtag im tel, mode "default"
-    bindsym t $bscratch subtag im tel, mode "default"
-    bindsym m $bscratch toggle mutt, mode "default"
-    bindsym w $bscratch toggle webcam, mode "default"
-    bindsym Shift+r $bscratch toggle ranger, mode "default"
-    bindsym a mode "default", $bscratch dialog
+    bindsym Mod4+s $scratchpad subtag im skype, mode "default"
+    bindsym Mod1+s $scratchpad subtag im skype, mode "default"
+    bindsym s $scratchpad subtag im skype, mode "default"
+    bindsym Mod4+t $scratchpad subtag im tel, mode "default"
+    bindsym Mod1+t $scratchpad subtag im tel, mode "default"
+    bindsym t $scratchpad subtag im tel, mode "default"
+    bindsym m $scratchpad toggle mutt, mode "default"
+    bindsym w $scratchpad toggle webcam, mode "default"
+    bindsym Shift+r $scratchpad toggle ranger, mode "default"
+    bindsym a mode "default", $scratchpad dialog
 }
 ```
 
@@ -341,7 +341,7 @@ i3 config example: *nothing*
 
 For now I have no any executor bindings in the i3 config, instead I use it as
 helper for another modules. For example you can use spawn argument for `circle`
-or `bscratch`. Let's look at `cfg/circle.cfg`. It contains:
+or `scratchpad`. Let's look at `cfg/circle.cfg`. It contains:
 
 ```toml
 [term]

@@ -68,7 +68,7 @@ class i3cfg(extension, cfg):
         return '\n'.join(self.cfg.get('color_theme', [])) + '\n'
 
     @staticmethod
-    def bscratch_bindings(mode) -> str:
+    def scratchpad_bindings(mode) -> str:
         ret = ''
         def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
@@ -82,12 +82,12 @@ class i3cfg(extension, cfg):
                 if mode_ == mode:
                     for keybind in settings[p]:
                         ret += f'{pref.strip()}bindsym {keybind.strip()}' \
-                            f' $bscratch {cmd.strip()} {tag.strip()} ' \
+                            f' $scratchpad {cmd.strip()} {tag.strip()} ' \
                             f'{subtag.strip()} {postfix.strip()}\n'
             return ret
 
-        bscratch = extension.get_mods()['bscratch']
-        for tag,settings in bscratch.cfg.items():
+        scratchpad = extension.get_mods()['scratchpad']
+        for tag,settings in scratchpad.cfg.items():
             for param in settings:
                 if isinstance(settings[param], dict):
                     for p in settings[param]:
@@ -175,16 +175,16 @@ class i3cfg(extension, cfg):
                     ret += '\n'
             return (ret, cmd_dict, mod)
 
-        def rules_bscratch() -> str:
+        def rules_scratchpad() -> str:
             """ Create i3 match rules for all tags. """
-            (ret, cmd_dict, bscratch) = rules_mod('bscratch')
+            (ret, cmd_dict, scratchpad) = rules_mod('scratchpad')
             ret += '\n'
             for tag in cmd_dict:
                 if tag in {'transients'}:
-                    geom = bscratch.nsgeom.get_geom(tag)
-                    ret += f'for_window $bscratch-{tag} move scratchpad, {geom}\n'
+                    geom = scratchpad.nsgeom.get_geom(tag)
+                    ret += f'for_window $scratchpad-{tag} move scratchpad, {geom}\n'
                 else:
-                    ret += f'for_window $bscratch-{tag} floating enable\n'
+                    ret += f'for_window $scratchpad-{tag} floating enable\n'
             return ret
 
         def rules_circle() -> str:
@@ -236,7 +236,7 @@ class i3cfg(extension, cfg):
             if rules:
                 return ''.join(map(lambda s: 'for_window ' + s + '\n', rules))
             return ''
-        return rules_bscratch() + \
+        return rules_scratchpad() + \
             rules_circle() + \
             plain_rules()
 
@@ -294,7 +294,7 @@ class i3cfg(extension, cfg):
             i3cfg.mode_start(mode_name) + \
             misc_spec() + \
             menu_spec() + \
-            i3cfg.bscratch_bindings(mode_name) + \
+            i3cfg.scratchpad_bindings(mode_name) + \
             i3cfg.circle_bindings(mode_name) + \
             i3cfg.mode_end()
 
@@ -325,7 +325,7 @@ class i3cfg(extension, cfg):
             move_acts() + \
             win_quad() + \
             win_action_wm() + \
-            i3cfg.bscratch_bindings(mode_name) + \
+            i3cfg.scratchpad_bindings(mode_name) + \
             i3cfg.circle_bindings(mode_name) + \
             i3cfg.mode_end()
 
@@ -343,8 +343,8 @@ class i3cfg(extension, cfg):
         def menu_def() -> str:
             return self.bind('menu_def', '$menu', '')
 
-        def bscratch_def() -> str:
-            return self.bind('bscratch_def', '$bscratch', '')
+        def scratchpad_def() -> str:
+            return self.bind('scratchpad_def', '$scratchpad', '')
 
         def focus() -> str:
             return self.bind('focus', 'focus', '')
@@ -364,7 +364,7 @@ class i3cfg(extension, cfg):
                 + '\n' + mpd_normal() \
                 + '\n' + vol_def() \
                 + '\n' + menu_def() \
-                + '\n' + bscratch_def() \
+                + '\n' + scratchpad_def() \
                 + '\n' + win_history_def()
             exec_ret += '\n'
             key_prog_gui = self.cfg.get('exec', [])
@@ -387,5 +387,5 @@ class i3cfg(extension, cfg):
         return misc_def() \
             + focus() \
             + exec_binds() \
-            + i3cfg.bscratch_bindings(mode_name) \
+            + i3cfg.scratchpad_bindings(mode_name) \
             + i3cfg.circle_bindings(mode_name)

@@ -22,7 +22,7 @@ from . misc import Misc
 from . negewmh import NegEWMH
 from . extension import extension
 
-class bscratch(extension, cfg, Matcher):
+class scratchpad(extension, cfg, Matcher):
     """ Named scratchpad class
 
     Parents:
@@ -342,7 +342,7 @@ class bscratch(extension, cfg, Matcher):
             del self.marked[tag][idx]
 
             # then make a new mark and move scratchpad
-            win_cmd = f"{bscratch.mark_uuid_tag(tag)}, \
+            win_cmd = f"{scratchpad.mark_uuid_tag(tag)}, \
                 move scratchpad, {self.nsgeom.get_geom(tag)}"
             win.command(win_cmd)
             self.marked[tag].append(win)
@@ -466,13 +466,13 @@ class bscratch(extension, cfg, Matcher):
                 if self.match(win, tag):
                     # scratch_move
                     win.command(
-                        f"{bscratch.mark_uuid_tag(tag)}, move scratchpad, \
+                        f"{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}")
                     self.marked[tag].append(win)
                     self.show_scratchpad(tag, hide=True)
             elif is_dialog_win and tag == "transients":
                 win.command(
-                    f"{bscratch.mark_uuid_tag('transients')}, \
+                    f"{scratchpad.mark_uuid_tag('transients')}, \
                     move scratchpad")
                 self.marked["transients"].append(win)
 
@@ -529,13 +529,13 @@ class bscratch(extension, cfg, Matcher):
                     if self.match(win, tag):
                         if hide:
                             hide_cmd = '[con_id=__focused__] scratchpad show'
-                        win_cmd = f"{bscratch.mark_uuid_tag(tag)}, \
+                        win_cmd = f"{scratchpad.mark_uuid_tag(tag)}, \
                             move scratchpad, \
                             {self.nsgeom.get_geom(tag)}, {hide_cmd}"
                         win.command(win_cmd)
                         self.marked[tag].append(win)
                 if is_dialog_win:
-                    win_cmd = f"{bscratch.mark_uuid_tag('transients')}, \
+                    win_cmd = f"{scratchpad.mark_uuid_tag('transients')}, \
                         move scratchpad"
                     win.command(win_cmd)
                     self.marked["transients"].append(win)

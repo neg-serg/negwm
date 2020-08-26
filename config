@@ -43,37 +43,37 @@ client.urgent #000000 #2E2457 #4C407C #32275E #32275E
 client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
 client.background #000000
 
-set $bscratch exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send bscratch
 set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send circle
 set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
 set $fs exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send fs
 set $i3cfg exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send i3cfg
 set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
+set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send scratchpad
 set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
-set $bscratch-im [class="^(zoom|KotatogramDesktop|Slack)$"]
-set $bscratch-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
-set $bscratch-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
-set $bscratch-ranger [instance="ranger"]
-set $bscratch-teardrop [instance="teardrop"]
-set $bscratch-volcontrol [class="Pavucontrol"]
-set $bscratch-youtube [instance="youtube-get"]
-set $bscratch-webcam [instance="webcam"]
-set $bscratch-discord [class="discord"]
-set $bscratch-transients [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"]
+set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack)$"]
+set $scratchpad-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
+set $scratchpad-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
+set $scratchpad-ranger [instance="ranger"]
+set $scratchpad-teardrop [instance="teardrop"]
+set $scratchpad-volcontrol [class="Pavucontrol"]
+set $scratchpad-youtube [instance="youtube-get"]
+set $scratchpad-webcam [instance="webcam"]
+set $scratchpad-discord [class="discord"]
+set $scratchpad-transients [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"]
 
-for_window $bscratch-im floating enable
-for_window $bscratch-ncmpcpp floating enable
-for_window $bscratch-neomutt floating enable
-for_window $bscratch-ranger floating enable
-for_window $bscratch-teardrop floating enable
-for_window $bscratch-volcontrol floating enable
-for_window $bscratch-youtube floating enable
-for_window $bscratch-webcam floating enable
-for_window $bscratch-discord floating enable
-for_window $bscratch-transients move scratchpad, move absolute position 4 12, resize set 2824 772
+for_window $scratchpad-im floating enable
+for_window $scratchpad-ncmpcpp floating enable
+for_window $scratchpad-neomutt floating enable
+for_window $scratchpad-ranger floating enable
+for_window $scratchpad-teardrop floating enable
+for_window $scratchpad-volcontrol floating enable
+for_window $scratchpad-youtube floating enable
+for_window $scratchpad-webcam floating enable
+for_window $scratchpad-discord floating enable
+for_window $scratchpad-transients move scratchpad, move absolute position 4 12, resize set 2824 772
 set $circle-web [class="^(firefox|Tor Browser|Chromium)$"]
 set $circle-vid [class="mpv"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
@@ -150,11 +150,11 @@ bindsym Mod4+Shift+s $menu autoprop
 
 
 
-bindsym Mod4+Control+space $bscratch geom_restore
-bindsym Mod4+Control+s $bscratch geom_dump
-bindsym Mod4+Control+a $bscratch dialog
-bindsym Mod4+3 $bscratch next
-bindsym Mod4+s $bscratch hide_current
+bindsym Mod4+Control+space $scratchpad geom_restore
+bindsym Mod4+Control+s $scratchpad geom_dump
+bindsym Mod4+Control+a $scratchpad dialog
+bindsym Mod4+3 $scratchpad next
+bindsym Mod4+s $scratchpad hide_current
 
 
 
@@ -185,13 +185,13 @@ bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -col
 bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
 bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
-bindsym Mod4+e $bscratch toggle im  
-bindsym Mod4+f $bscratch toggle ncmpcpp  
-bindsym Mod4+n $bscratch toggle neomutt  
-bindsym Mod4+d $bscratch toggle teardrop  
-bindsym Mod4+Shift+p $bscratch toggle volcontrol  
-bindsym Mod4+a $bscratch toggle youtube  
-bindsym Mod4+v $bscratch toggle discord  
+bindsym Mod4+e $scratchpad toggle im  
+bindsym Mod4+f $scratchpad toggle ncmpcpp  
+bindsym Mod4+n $scratchpad toggle neomutt  
+bindsym Mod4+d $scratchpad toggle teardrop  
+bindsym Mod4+Shift+p $scratchpad toggle volcontrol  
+bindsym Mod4+a $scratchpad toggle youtube  
+bindsym Mod4+v $scratchpad toggle discord  
 bindsym Mod4+w $circle next web  
 bindsym Mod4+b $circle next vid  
 bindsym Mod4+Control+e $circle next lutris  
@@ -250,9 +250,9 @@ bindsym Shift+t $menu gtk_theme,$exit
 bindsym Shift+i $menu icon_theme,$exit
 bindsym m $menu xprop,$exit
 
-bindsym t $bscratch subtag im tel ,$exit
-bindsym Shift+r $bscratch toggle ranger  ,$exit
-bindsym w $bscratch toggle webcam  ,$exit
+bindsym t $scratchpad subtag im tel ,$exit
+bindsym Shift+r $scratchpad toggle ranger  ,$exit
+bindsym w $scratchpad toggle webcam  ,$exit
 	bindsym f $circle subtag web firefox ,$exit
 	bindsym 5 $circle subtag web tor ,$exit
 bindsym Return,$exit

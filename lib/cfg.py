@@ -12,7 +12,7 @@ import qtoml
 import traceback
 from typing import Set, Callable
 
-from . import misc
+import misc
 
 class cfg():
     def __init__(self, i3) -> None:
