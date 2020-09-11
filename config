@@ -54,7 +54,7 @@ set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
-set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack)$"]
+set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack|TelegramDesktop)$"]
 set $scratchpad-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
 set $scratchpad-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $scratchpad-ranger [instance="ranger"]

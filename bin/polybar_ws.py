@@ -36,7 +36,6 @@ import i3ipc
 from i3ipc.aio import Connection
 
 from lib.standalone_cfg import modconfig
-from lib.misc import Misc
 
 
 class polybar_ws(modconfig):
@@ -116,9 +115,12 @@ class polybar_ws(modconfig):
         """ Print workspace information here. Event-based. """
         workspace = self.ws_name
         if not workspace[0].isalpha():
+            # workspace[2] = '%{F#657491}' + workspace[2] + '%{F-}'
             workspace = polybar_ws.colorize(
                 workspace[0], color=self.ws_color
-            ) + workspace[1:]
+            ) + workspace[1] + '%{F#8BAAC7}' + \
+                workspace[2] + '%{F-}' + \
+                workspace[3:].replace(':', '%{F#657491}·%{F}')
         sys.stdout.write(f"{self.binding_mode + workspace}\n")
         await asyncio.sleep(0)
 
