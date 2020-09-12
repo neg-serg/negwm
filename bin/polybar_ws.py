@@ -67,7 +67,7 @@ class polybar_ws(modconfig):
         await self.update_status()
 
     @staticmethod
-    def colorize(s, color, fontnum=4):
+    def colorize(s, color, fontnum=5):
         polybar_font = 'T' + str(fontnum)
         return f"%{{{polybar_font}}}%{{F{color}}}{s}%{{F-}}%{{T-}}"
 
