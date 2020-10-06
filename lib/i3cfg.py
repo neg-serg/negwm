@@ -113,9 +113,10 @@ class i3cfg(extension, cfg):
             cmd = get_binds[2]
             if len(get_binds) == 3:
                 if mode_ == mode:
+                    subtag += ' '
                     for keybind in settings[p]:
                         ret += f'{pref}bindsym {keybind} $circle' \
-                            f' {cmd} {tag} {subtag} {postfix}\n'
+                            f' {cmd} {tag} {subtag}{postfix}\n'
             return ret
 
         circle = extension.get_mods()['circle']
