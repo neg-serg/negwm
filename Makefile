@@ -1,4 +1,4 @@
-CFLAGS += -static -std=gnu17 -march=native -Os -pedantic
+CFLAGS += -static -std=gnu18 -march=native -Ofast -pedantic
 SRC_DIR := src
 BIN_DIR := bin
 
@@ -6,7 +6,7 @@ BIN_DIR := bin
 
 all: send
 generate: clean
-clean: 
+clean:
 	@rm -rfv \
 		$(BIN_DIR)/send
 
