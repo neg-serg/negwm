@@ -13,9 +13,9 @@
 import importlib
 from typing import List
 
-from cfg import cfg
-from misc import Misc
-from extension import extension
+from .cfg import cfg
+from .misc import Misc
+from .extension import extension
 
 
 class menu(extension, cfg):
@@ -91,30 +91,15 @@ class menu(extension, cfg):
         params['auto_selection'] = \
             params.get('auto_selection', "-no-auto-selection")
 
-        launcher_font = self.conf("font") + " " + \
-            str(self.conf("font_size"))
-        location = self.conf("location")
-        anchor = self.conf("anchor")
         matching = self.conf("matching")
-        gap = self.conf("gap")
-
         return [
             'rofi', '-show', '-dmenu',
             '-columns', str(params['cnum']),
             '-lines', str(params['lnum']),
             '-disable-history',
-            params['auto_selection'],
-            params['markup_rows'],
-            '-p', params['prompt'],
-            '-i',
-            '-matching', f'{matching}',
-            '-theme-str',
-            f'* {{ font: "{launcher_font}"; }}',
-            '-theme-str',
-            f'#window {{ width:{params["width"]}; y-offset: -{gap}; \
-            location: {location}; \
-            anchor: {anchor}; }}',
-        ]
+            params['auto_selection'], params['markup_rows'],
+            '-p', params['prompt'], '-i',
+            '-matching', f'{matching}']
 
     def wrap_str(self, string: str) -> str:
         """ String wrapper to make it beautiful """
