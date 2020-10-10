@@ -88,10 +88,11 @@ class pulse_menu():
             check=False
         ).stdout
 
+        app_ret = None
         if menu_app_sel is not None:
             app_ret = menu_app_sel.decode('UTF-8').strip()
 
-        if not app_ret:
+        if app_ret is None or not app_ret:
             return ""
 
         self.fill_output_list(exclude_current_dev, app_ret)
@@ -125,7 +126,7 @@ class pulse_menu():
 
         return False
 
-    def pulseaudio_select_output(self) -> None:
+    def pulseaudio_select_output(self):
         """ Create params for pulseaudio selector """
         if self.pulse is None:
             return None
@@ -148,11 +149,11 @@ class pulse_menu():
             ),
             check=False
         ).stdout
+        target_idx = '0'
 
         if menu_output_sel is not None:
             out_ret = menu_output_sel.decode('UTF-8').strip()
-
-        target_idx = out_ret.split('--')[0].strip()
+            target_idx = out_ret.split('--')[0].strip()
 
         return target_idx
 
