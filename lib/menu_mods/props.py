@@ -61,7 +61,7 @@ class props():
 
         aprop_str = self.get_autoprop_as_str(with_title=False)
 
-        lst = self.mod_data_list(mod)
+        lst = props.mod_data_list(mod)
         tag_name = self.tag_name(mod, lst)
 
         if tag_name is not None and tag_name:
@@ -132,7 +132,8 @@ class props():
                         ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
-    def mod_data_list(self, mod: str) -> List[str]:
+    @staticmethod
+    def mod_data_list(mod: str) -> List[str]:
         """ Extract list of module tags. Used by add_prop menus.
             Args:
                 mod (str): extension name.
