@@ -1,4 +1,4 @@
-#!/usr/bin/pypy3
+#!/usr/bin/python3
 """ Module to set / unset dpms while fullscreen is toggled on.
 
 I am simply use xset here. There is better solution possible,

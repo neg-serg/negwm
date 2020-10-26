@@ -57,7 +57,6 @@ set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack|TelegramDesktop)$"]
 set $scratchpad-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
 set $scratchpad-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
-set $scratchpad-ranger [instance="ranger"]
 set $scratchpad-teardrop [instance="teardrop"]
 set $scratchpad-volcontrol [class="Pavucontrol"]
 set $scratchpad-youtube [instance="youtube-get"]
@@ -68,7 +67,6 @@ set $scratchpad-transients [window_role="^(GtkFileChooserDialog|Organizer|Manage
 for_window $scratchpad-im floating enable
 for_window $scratchpad-ncmpcpp floating enable
 for_window $scratchpad-neomutt floating enable
-for_window $scratchpad-ranger floating enable
 for_window $scratchpad-teardrop floating enable
 for_window $scratchpad-volcontrol floating enable
 for_window $scratchpad-youtube floating enable
@@ -252,7 +250,6 @@ bindsym Shift+i $menu icon_theme,$exit
 bindsym m $menu xprop,$exit
 
 bindsym t $scratchpad subtag im tel ,$exit
-bindsym Shift+r $scratchpad toggle ranger  ,$exit
 bindsym w $scratchpad toggle webcam  ,$exit
 	bindsym f $circle subtag web firefox ,$exit
 	bindsym 5 $circle subtag web tor ,$exit
