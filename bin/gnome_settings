@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-font='Iosevka Heavy 12'
+font='Iosevka Term 12'
 icons='korla'
 gtk_theme='Flat-Neg'
 
