@@ -1,7 +1,7 @@
-#!/bin/dash
+#!/bin/zsh
 
-default_font='Iosevka Medium 12'
-icon_theme='korla'
+font='RobotoMono Nerd Font 2'
+icons='korla'
 gtk_theme='Flat-Neg'
 
 gtk_settings() {
@@ -12,7 +12,7 @@ gtk_settings() {
     fi
     gsettings set org.gnome.desktop.interface gtk-key-theme Emacs
 
-    gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
+    gsettings set org.gnome.desktop.interface icon-theme "$icons"
     gsettings set org.gnome.desktop.interface cursor-theme 'SpaceKCursors'
     gsettings set org.gnome.desktop.interface cursor-size 128
 }
@@ -27,15 +27,15 @@ gnome_settings() {
 }
 
 font_settings() {
-    gsettings set org.gnome.desktop.interface monospace-font-name "$default_font"
-    gsettings set org.gnome.desktop.interface document-font-name "$default_font"
-    gsettings set org.gnome.desktop.interface font-name "$default_font"
-    gsettings set org.gnome.desktop.wm.preferences titlebar-font "$default_font"
+    gsettings set org.gnome.desktop.interface monospace-font-name "$font"
+    gsettings set org.gnome.desktop.interface document-font-name "$font"
+    gsettings set org.gnome.desktop.interface font-name "$font"
+    gsettings set org.gnome.desktop.wm.preferences titlebar-font "$font"
 }
 
 icon_settings() {
     if [ -z $1 ]; then
-        gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
+        gsettings set org.gnome.desktop.interface icon-theme "$icons"
     else
         gsettings set org.gnome.desktop.interface icon-theme "$1"
     fi
@@ -44,16 +44,12 @@ icon_settings() {
 
 main() {
     case $1 in
-        '-a')
-            shift
-            font_settings &
-            gtk_settings "$1" &
-            gnome_settings &
-        ;;
         '-g')
             shift
-            gtk_settings "$1" &
-            gnome_settings &
+            {
+                gtk_settings "$1"
+                gnome_settings
+            } &
         ;;
         '-f')
             shift
@@ -62,6 +58,14 @@ main() {
         '-i')
             shift
             icon_settings "$1" &
+        ;;
+        *)
+            shift
+            {
+                font_settings
+                gtk_settings "$1"
+                gnome_settings
+            } &
         ;;
     esac
 }
