@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-font='RobotoMono Nerd Font 2'
+font='Iosevka Heavy 12'
 icons='korla'
 gtk_theme='Flat-Neg'
 
@@ -60,7 +60,7 @@ main() {
             icon_settings "$1" &
         ;;
         *)
-            shift
+            shift 2>/dev/null
             {
                 font_settings
                 gtk_settings "$1"
