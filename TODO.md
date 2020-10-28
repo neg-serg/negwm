@@ -5,6 +5,7 @@
 - new module idea: mouse helper, for example get windows size and then click on x,y = 20px, 20px
 - add executor run check via something like dash -c
 - percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
-- scratchpad: add ability to set geometry with mouse
 - create wallpaper setter with rating
 - better config generator(fancy output, etc)
+- scratchpad: add ability to set geometry with mouse
+- scratchpad: set geometry for scratchpad windows
