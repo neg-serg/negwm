@@ -7,3 +7,4 @@
 - percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
 - scratchpad: add ability to set geometry with mouse
 - create wallpaper setter with rating
+- better config generator(fancy output, etc)
