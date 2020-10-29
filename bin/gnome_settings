@@ -3,6 +3,8 @@
 font='Iosevka Term 12'
 icons='korla'
 gtk_theme='Flat-Neg'
+cursor_theme='SpaceKCursors'
+cursor_size='128'
 
 gtk_settings() {
     if [ -z $1 ]; then
@@ -13,8 +15,8 @@ gtk_settings() {
     gsettings set org.gnome.desktop.interface gtk-key-theme Emacs
 
     gsettings set org.gnome.desktop.interface icon-theme "$icons"
-    gsettings set org.gnome.desktop.interface cursor-theme 'SpaceKCursors'
-    gsettings set org.gnome.desktop.interface cursor-size 128
+    gsettings set org.gnome.desktop.interface cursor-theme "$cursor_theme"
+    gsettings set org.gnome.desktop.interface cursor-size "$cursor_size"
 }
 
 gnome_settings() {
