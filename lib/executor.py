@@ -267,7 +267,7 @@ class executor(extension, cfg):
             else:
                 exec_cmd += f'neww -n {token[0]} {token[1]}\\; '
         if not self.env.statusline:
-            exec_cmd += f'set status off\\; '
+            exec_cmd += 'set status off\\; '
         subprocess.Popen(
             self.env.term_opts +
             [f"{self.env.tmux_new_session} {exec_cmd} && \
