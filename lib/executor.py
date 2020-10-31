@@ -73,7 +73,7 @@ class env():
         self.title = cfg_block.get("title", self.wclass)
         self.font = config.get("default_font", "")
         if not self.font:
-            self.font = cfg_block.get("font", "Iosevka Term")
+            self.font = cfg_block.get("font", "Iosevka")
         self.font_size = config.get("default_font_size", "")
         if not self.font_size:
             self.font_size = cfg_block.get("font_size", "14")
