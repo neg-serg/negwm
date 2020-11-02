@@ -9,3 +9,4 @@
 - better config generator(fancy output, etc)
 - scratchpad: add ability to set geometry with mouse
 - scratchpad: set geometry for scratchpad windows
+- add support for i3 open for tiling
