@@ -10,3 +10,4 @@
 - scratchpad: add ability to set geometry with mouse
 - scratchpad: set geometry for scratchpad windows
 - add support for i3 open for tiling
+- rename cfg to toml
