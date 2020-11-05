@@ -64,7 +64,7 @@ class checker():
                 print('Please try to run `make` manually and check the results')
 
     @staticmethod
-    def check_i3_config(verbose, cfg='.config'):
+    def check_i3_config(verbose, cfg='config'):
         if verbose:
             print('Check for i3 config consistency')
         i3_cfg = f'{Misc.i3path()}/{cfg}'
