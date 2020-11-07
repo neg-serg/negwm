@@ -1,10 +1,10 @@
+exec_always --no-startup-id pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main
+exec_always --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/gnome_settings
+exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec_always pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1  ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main
-exec_always ${XDG_CONFIG_HOME}/i3/bin/gnome_settings
-exec_always dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
-exec /usr/sbin/gpaste-client daemon
-exec /usr/bin/caffeine
-exec /usr/bin/xiccd
+exec --no-startup-id /usr/sbin/gpaste-client daemon
+exec --no-startup-id /usr/bin/caffeine
+exec --no-startup-id /usr/bin/xiccd
 
 workspace_layout tabbed
 default_orientation auto
@@ -100,9 +100,9 @@ for_window $circle-sxiv move workspace $gfx,focus
 for_window $circle-looking_glass move workspace $vm,focus
 for_window $circle-bitwig move workspace $sound,focus
 for_window [class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3
-for_window [instance="^(gpartedbin|recoll|gnome-disks)$"] move workspace $sys, floating enable, focus
-for_window [class="^(Lxappearance|Conky|Xmessage|XFontSel|gcolor2|Gcolor3|rdesktop|Arandr)$"] floating enable
-for_window [class="^(draw|inkscape|gimp)$"] move workspace $draw
+for_window [instance="^(gpartedbin|recoll)$"] move workspace $sys, floating enable, focus
+for_window [class="^(Gcolor3|rdesktop)$"] floating enable
+for_window [class="^(inkscape|gimp)$"] move workspace $draw
 
 gaps inner 0
 gaps outer 0
@@ -166,21 +166,19 @@ bindsym Mod4+Shift+grave $win_history focus_prev_visible
 bindsym Mod4+4 exec ~/bin/scripts/screenshot
 bindsym Mod4+Shift+4 exec flameshot gui
 bindsym Mod4+Control+4 exec ~/bin/scripts/screenshot -r
-bindsym Mod4+F4 exec gpick -so --no-newline | xsel -b
+bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -columns 4 -disable-history -theme run
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
 bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
-bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
-bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi_tmux_urls
-bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
-bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
-bindsym Mod4+Shift+t exec --no-startup-id ~/bin/clip translate
-bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
-bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
+bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi_tmux_urls
+bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi_networkmanager
-bindsym Mod4+Shift+M exec --no-startup-id ~/bin/scripts/rofi_mpd
-bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -columns 4 -disable-history -theme run
+bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
+bindsym Mod4+Shift+m exec --no-startup-id ~/bin/scripts/rofi_mpd
+bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
+bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
+bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
 bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
 bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
@@ -238,7 +236,6 @@ bindsym Control+G,$exit
 bindsym Mod1+e mode "spec"
 mode spec {
 
-bindsym c  exec dash -c -i "PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass rofi-pass",$exit
 bindsym e  [urgent=latest] focus,$exit
 bindsym Shift+d  floating toggle,$exit
 
