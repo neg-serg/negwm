@@ -20,7 +20,7 @@ class cfg():
         self.mod = self.__class__.__name__
 
         # extension config path
-        self.i3_cfg_mod_path = misc.Misc.i3path() + '/cfg/' + self.mod + '.cfg'
+        self.i3_cfg_mod_path = misc.Misc.i3path() + '/cfg/' + self.mod + '.toml'
 
         # load current config
         self.load_config()

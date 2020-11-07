@@ -22,7 +22,7 @@ class modconfig():
         self.i3_cfg_path = Misc.i3path() + '/cfg/'
 
         # extension config path
-        self.mod_cfg_path = self.i3_cfg_path + self.mod + '.cfg'
+        self.mod_cfg_path = self.i3_cfg_path + self.mod + '.toml'
 
         # load current config
         self.load_config()
@@ -87,7 +87,7 @@ class modconfig():
         """
         while True:
             event = await watcher.get()
-            if event.name == self.mod + '.cfg':
+            if event.name == self.mod + '.toml':
                 self.reload_config()
                 Misc.notify_msg(f'[Reloaded {self.mod}]')
 
