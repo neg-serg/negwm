@@ -8,6 +8,6 @@
 - create wallpaper setter with rating
 - better config generator(fancy output, etc)
 - scratchpad: add ability to set geometry with mouse
-- scratchpad: set geometry for scratchpad windows
+- scratchpad: set geometry for scratchpad windows(optional)
 - add support for i3 open for tiling
 - move to separated dir
