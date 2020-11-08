@@ -124,12 +124,12 @@ class Misc():
         return ret
 
     @staticmethod
-    def validate_i3_config(i3cfg_path, remove=False) -> bool:
+    def validate_i3_config(conf_gen_path, remove=False) -> bool:
         """ Checks that i3 config is ok. """
         check_config = ""
         try:
             check_config = subprocess.run(
-                ['i3', '-c', i3cfg_path, '-C'],
+                ['i3', '-c', conf_gen_path, '-C'],
                 stdout=subprocess.PIPE,
                 check=True
             ).stdout.decode('utf-8')
@@ -141,7 +141,7 @@ class Misc():
 
             if remove:
                 # remove invalid config
-                os.remove(i3cfg_path)
+                os.remove(conf_gen_path)
 
             return False
         return True

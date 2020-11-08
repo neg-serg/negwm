@@ -45,9 +45,9 @@ client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
 client.background #000000
 
 set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send circle
+set $conf_gen exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send conf_gen
 set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
 set $fs exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send fs
-set $i3cfg exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send i3cfg
 set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
 set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send scratchpad
 set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol

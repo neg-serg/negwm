@@ -8,7 +8,7 @@ from . cfg import cfg
 from . extension import extension
 from . checker import checker
 
-class i3cfg(extension, cfg):
+class conf_gen(extension, cfg):
     def __init__(self, i3) -> None:
         super().__init__()
         cfg.__init__(self, i3)
@@ -278,11 +278,11 @@ class i3cfg(extension, cfg):
         return ret
 
     def mode_resize(self, mode_name, mode_bind) -> str:
-        return i3cfg.mode_binding(mode_bind, mode_name) + \
-            i3cfg.mode_start(mode_name) + \
+        return conf_gen.mode_binding(mode_bind, mode_name) + \
+            conf_gen.mode_start(mode_name) + \
             self.bind('resize_plus', '$win_action resize', '') + \
             self.bind('resize_minus', '$win_action resize', '') + \
-            i3cfg.mode_end()
+            conf_gen.mode_end()
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         def menu_spec() -> str:
@@ -291,13 +291,13 @@ class i3cfg(extension, cfg):
         def misc_spec() -> str:
             return self.bind('misc_spec', '', ',$exit')
 
-        return i3cfg.mode_binding(mode_bind, mode_name) + \
-            i3cfg.mode_start(mode_name) + \
+        return conf_gen.mode_binding(mode_bind, mode_name) + \
+            conf_gen.mode_start(mode_name) + \
             misc_spec() + \
             menu_spec() + \
-            i3cfg.scratchpad_bindings(mode_name) + \
-            i3cfg.circle_bindings(mode_name) + \
-            i3cfg.mode_end()
+            conf_gen.scratchpad_bindings(mode_name) + \
+            conf_gen.circle_bindings(mode_name) + \
+            conf_gen.mode_end()
 
     def mode_wm(self, mode_name, mode_bind) -> str:
         def split_tiling() -> str:
@@ -318,17 +318,17 @@ class i3cfg(extension, cfg):
         def win_action_wm() -> str:
             return self.bind('win_action_wm', '$win_action', '')
 
-        return i3cfg.mode_binding(mode_bind, mode_name) + \
-            i3cfg.mode_start(mode_name) + \
+        return conf_gen.mode_binding(mode_bind, mode_name) + \
+            conf_gen.mode_start(mode_name) + \
             layout_wm() + \
             split_tiling() + \
             move_win() + \
             move_acts() + \
             win_quad() + \
             win_action_wm() + \
-            i3cfg.scratchpad_bindings(mode_name) + \
-            i3cfg.circle_bindings(mode_name) + \
-            i3cfg.mode_end()
+            conf_gen.scratchpad_bindings(mode_name) + \
+            conf_gen.circle_bindings(mode_name) + \
+            conf_gen.mode_end()
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
@@ -388,5 +388,5 @@ class i3cfg(extension, cfg):
         return misc_def() \
             + focus() \
             + exec_binds() \
-            + i3cfg.scratchpad_bindings(mode_name) \
-            + i3cfg.circle_bindings(mode_name)
+            + conf_gen.scratchpad_bindings(mode_name) \
+            + conf_gen.circle_bindings(mode_name)

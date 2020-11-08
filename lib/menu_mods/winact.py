@@ -52,7 +52,7 @@ class winact():
 
     def select_ws(self) -> str:
         """ Apply target function to workspace. """
-        ws_list = extension.get_mods()['i3cfg'].cfg['ws_list']
+        ws_list = extension.get_mods()['conf_gen'].cfg['ws_list']
         menu_params = {
             'cnum': len(ws_list),
             'width': int(self.menu.screen_width * 0.66),
