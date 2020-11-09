@@ -169,6 +169,8 @@ bindsym Mod4+Control+4 exec ~/bin/scripts/screenshot -r
 bindsym Mod1+grave exec --no-startup-id rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
 bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
+bindsym Mod4+Space exec --no-startup-id dunstctl close-all
+bindsym Mod4+Shift+9 exec --no-startup-id dunstctl history-pop
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi_mpd.py
 bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi_tmux_urls

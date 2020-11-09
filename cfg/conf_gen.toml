@@ -99,6 +99,8 @@ exec_no_startup_id = [
     ['Mod1+grave', 'rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run'],
     ['Mod4+8', 'mpc -q volume 0 || amixer -q set Master 0% mute'],
     ['Mod4+Shift+8', 'mpc -q volume 100 || amixer -q set Master 100% unmute'],
+    ['Mod4+Space', 'dunstctl close-all'],
+    ['Mod4+Shift+9', 'dunstctl history-pop'],
     ['Mod4+c', '~/bin/clip'],
     ['Mod4+m', '~/bin/scripts/rofi_mpd.py'],
     ['Mod4+p', '~/bin/scripts/rofi_tmux_urls'],
