@@ -166,7 +166,7 @@ bindsym Mod4+Shift+grave $win_history focus_prev_visible
 bindsym Mod4+4 exec ~/bin/scripts/screenshot
 bindsym Mod4+Shift+4 exec flameshot gui
 bindsym Mod4+Control+4 exec ~/bin/scripts/screenshot -r
-bindsym Mod1+grave exec --no-startup-id rofi -no-plugins -show run -lines 1 -columns 4 -disable-history -theme run
+bindsym Mod1+grave exec --no-startup-id rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
 bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
