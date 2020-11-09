@@ -10,21 +10,21 @@
 - [What is it?](#what-is-it-)
 - [main](#main)
 - [modules](#modules)
-  * [scratchpad](#scratchpad)
-  * [circle](#circle)
-  * [win_history](#win-history)
-  * [menu](#menu)
-  * [vol](#vol)
-  * [win_action](#win-action)
-  * [executor](#executor)
-  * [fs](#fs)
-  * [procs to run by negi3wm as another process](#procs-to-run-by-negi3wm-as-another-process)
+  - [scratchpad](#scratchpad)
+  - [circle](#circle)
+  - [win_history](#win-history)
+  - [menu](#menu)
+  - [vol](#vol)
+  - [win_action](#win-action)
+  - [executor](#executor)
+  - [fs](#fs)
+  - [procs to run by negi3wm as another process](#procs-to-run-by-negi3wm-as-another-process)
 - [Installation](#installation)
 - [Dependencies:](#dependencies-)
-  * [Modern python3 with modules:](#modern-python3-with-modules-)
+  - [Modern python3 with modules:](#modern-python3-with-modules-)
 - [Run](#run)
 - [Performance](#performance)
-  * [Performance profiling](#performance-profiling)
+  - [Performance profiling](#performance-profiling)
 - [Why](#why)
 - [Bugs](#bugs)
 - [Video Demonstration](#video-demonstration)
@@ -35,8 +35,8 @@ For now this collection of modules for i3 includes
 
 # main
 
-*negi3wm* : application that run all modules and handle configuration of
-i3 and modules on python. Also handles TOML-configs updating. 
+_negi3wm_ : application that run all modules and handle configuration of
+i3 and modules on python. Also handles TOML-configs updating.
 
 Some general notes:
 
@@ -64,6 +64,7 @@ Interesting parts here are:
 ```bash
 ${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
 ```
+
 To restart negi3wm after i3 reload, `negi3wm.py` should close file
 descriptor automatically, after i3 reload/restart so you can simply run it
 after restart.
@@ -140,7 +141,6 @@ mode "SPEC" {
     bindsym t $scratchpad subtag im tel, mode "default"
     bindsym m $scratchpad toggle mutt, mode "default"
     bindsym w $scratchpad toggle webcam, mode "default"
-    bindsym Shift+r $scratchpad toggle ranger, mode "default"
     bindsym a mode "default", $scratchpad dialog
 }
 ```
@@ -172,7 +172,7 @@ Run-or-raise is the following:
 If there is no window with such rules then start `prog` Otherwise go to the
 window.
 
-More of simple going to window you can __iterate__ over them. So it's something
+More of simple going to window you can **iterate** over them. So it's something
 like workspaces, where workspace is not about view, but about semantics. This
 works despite of current monitor / workspace and you can iterate over them with
 ease.
@@ -221,6 +221,7 @@ that `tor-browser` is opened, then you can iterate over two of them with
 window of tor-browser.
 
 Some useful commands:
+
 ```cfg
 next: go to the next window
 subtag: go to the next subtag window
@@ -233,6 +234,7 @@ remember from what window alt-tab have been done, this mod fix at by storing
 history of last selected windows.
 
 i3 config example:
+
 ```cfg
 set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_history
 bindsym Mod4+grave $win_history focus_next_visible
@@ -289,6 +291,7 @@ It loads appropriate modules dynamically, to handle it please edit `cfg/menu.cfg
 Too many of options to document it properly.
 
 menu cfg example:
+
 ```toml
 modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr',]
 ```
@@ -318,6 +321,7 @@ bindsym XF86AudioRaiseVolume $volume u
 ```
 
 Command list:
+
 ```cfg
 u: volume up
 d: volume down
@@ -337,7 +341,7 @@ session handling. Supports a lot of terminal emulators, but for now only
 `alacritty` has nice support, because of I think it's the best terminal
 emulator for X11 for now.
 
-i3 config example: *nothing*
+i3 config example: _nothing_
 
 For now I have no any executor bindings in the i3 config, instead I use it as
 helper for another modules. For example you can use spawn argument for `circle`
@@ -444,9 +448,9 @@ very fast volume updating for me. For now I have DAC with extreme-quality
 in-chip physical digital volume regulator, so it's no longer unnecessary but
 I still want to see `Vol: 0` / `Vol: 100` anyway :)
 
-*polybar_ws*: async current i3 workspace printer for polybar.
+_polybar_ws_: async current i3 workspace printer for polybar.
 
-*polybar_vol* : async MPD printer for polybar.
+_polybar_vol_ : async MPD printer for polybar.
 
 # Installation
 
@@ -473,22 +477,22 @@ cd $XDG_CONFIG_HOME/i3
 ```
 
 If everything is ok then you can use new i3 config example, where `Mod4
-+ Shift + '` is i3wm reloading, after reload you should get i3 with `negi3wm`
-plugins on the board.
+
+- Shift + '`is i3wm reloading, after reload you should get i3 with`negi3wm`
+  plugins on the board.
 
 # Dependencies:
 
 ## Modern python3 with modules:
 
-+ i3ipc -- for i3 ipc interaction, installed from master
-+ toml -- to save/load human-readable configuration files.
-+ inotipy -- async inotify bindings
-+ Xlib -- xlib bindings to work with `NET_WM_` parameters, etc.
-+ ewmh -- used to create EWMH helper.
-+ yamlloader -- module for the more fast yaml file loading.
-+ pulsectl -- used for menu to change pulseaudio input / output sinks
-+ docopt -- for cli options in negi3wm script
-
+- i3ipc -- for i3 ipc interaction, installed from master
+- toml -- to save/load human-readable configuration files.
+- inotipy -- async inotify bindings
+- Xlib -- xlib bindings to work with `NET_WM_` parameters, etc.
+- ewmh -- used to create EWMH helper.
+- yamlloader -- module for the more fast yaml file loading.
+- pulsectl -- used for menu to change pulseaudio input / output sinks
+- docopt -- for cli options in negi3wm script
 
 To install it you may use pip:
 
@@ -553,7 +557,7 @@ cd ${XDG_CONFIG_HOME}/i3
 ./negi3wm.py
 ```
 
-but I recommend you to look at my config(_config). It can start / restart
+but I recommend you to look at my config(\_config). It can start / restart
 automatically, because of i3 connection will be closed after i3 restart and
 then started by `exec_always`.
 
@@ -574,7 +578,6 @@ not supported yet.
 
 For now negi3wm using cpython interpreter because of more fast startup.
 
-
 # Why
 
 It is only my attempt to port the best UX parts from ion3/notion and also
@@ -587,6 +590,7 @@ For now here can be dragons, so add bug report to github if you get
 problems.
 
 # Video Demonstration
+
 Youtube (low quality):
 [![i3pluginsdemo](https://img.youtube.com/vi/U7eJMP0zvKc/0.jpg)](https://www.youtube.com/embed/U7eJMP0zvKc)
 
