@@ -80,10 +80,11 @@ class conf_gen(extension, cfg):
             cmd = get_binds[2]
             if len(get_binds) == 3:
                 if mode_ == mode:
+                    if subtag:
+                        subtag = f' {subtag}'
                     for keybind in settings[p]:
                         ret += f'{pref.strip()}bindsym {keybind.strip()}' \
-                            f' $scratchpad {cmd.strip()} {tag.strip()} ' \
-                            f'{subtag.strip()} {postfix.strip()}\n'
+                            f' $scratchpad {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
             return ret
 
         scratchpad = extension.get_mods()['scratchpad']
@@ -113,10 +114,11 @@ class conf_gen(extension, cfg):
             cmd = get_binds[2]
             if len(get_binds) == 3:
                 if mode_ == mode:
-                    subtag += ' '
+                    if subtag:
+                        subtag = f' {subtag}'
                     for keybind in settings[p]:
                         ret += f'{pref}bindsym {keybind} $circle' \
-                            f' {cmd} {tag} {subtag}{postfix}\n'
+                            f' {cmd} {tag}{subtag}{postfix}'.strip() + '\n'
             return ret
 
         circle = extension.get_mods()['circle']
@@ -183,7 +185,8 @@ class conf_gen(extension, cfg):
             for tag in cmd_dict:
                 if tag in {'transients'}:
                     geom = scratchpad.nsgeom.get_geom(tag)
-                    ret += f'for_window $scratchpad-{tag} move scratchpad, {geom}\n'
+                    ret += f'for_window $scratchpad-{tag}' + \
+                        f' move scratchpad, {geom}\n'
                 else:
                     ret += f'for_window $scratchpad-{tag} floating enable\n'
             return ret

@@ -184,27 +184,27 @@ bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
 bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
 bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 
-bindsym Mod4+e $scratchpad toggle im  
-bindsym Mod4+f $scratchpad toggle ncmpcpp  
-bindsym Mod4+n $scratchpad toggle neomutt  
-bindsym Mod4+d $scratchpad toggle teardrop  
-bindsym Mod4+Shift+p $scratchpad toggle volcontrol  
-bindsym Mod4+a $scratchpad toggle youtube  
-bindsym Mod4+v $scratchpad toggle discord  
-bindsym Mod4+w $circle next web  
-bindsym Mod4+b $circle next vid  
-bindsym Mod4+Control+e $circle next lutris  
-bindsym Mod4+Shift+e $circle next steam  
-bindsym Mod4+o $circle next doc  
-bindsym Mod4+Control+v $circle next vm  
-bindsym Mod4+x $circle next term  
-bindsym Mod4+1 $circle next nwim  
-bindsym Mod4+Shift+o $circle toggle obs  
-bindsym Mod4+Control+5 $circle toggle remote  
-bindsym Mod4+Control+c $circle next sxiv  
-bindsym Mod4+Shift+c $circle subtag sxiv wallpaper 
-bindsym Mod4+Control+f $circle next looking_glass  
-bindsym Mod4+Control+b $circle next bitwig  
+bindsym Mod4+e $scratchpad toggle im
+bindsym Mod4+f $scratchpad toggle ncmpcpp
+bindsym Mod4+n $scratchpad toggle neomutt
+bindsym Mod4+d $scratchpad toggle teardrop
+bindsym Mod4+Shift+p $scratchpad toggle volcontrol
+bindsym Mod4+a $scratchpad toggle youtube
+bindsym Mod4+v $scratchpad toggle discord
+bindsym Mod4+w $circle next web
+bindsym Mod4+b $circle next vid
+bindsym Mod4+Control+e $circle next lutris
+bindsym Mod4+Shift+e $circle next steam
+bindsym Mod4+o $circle next doc
+bindsym Mod4+Control+v $circle next vm
+bindsym Mod4+x $circle next term
+bindsym Mod4+1 $circle next nwim
+bindsym Mod4+Shift+o $circle toggle obs
+bindsym Mod4+Control+5 $circle toggle remote
+bindsym Mod4+Control+c $circle next sxiv
+bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
+bindsym Mod4+Control+f $circle next looking_glass
+bindsym Mod4+Control+b $circle next bitwig
 
 bindsym Mod4+r mode "resize"
 mode resize {
@@ -248,10 +248,10 @@ bindsym Shift+t $menu gtk_theme,$exit
 bindsym Shift+i $menu icon_theme,$exit
 bindsym m $menu xprop,$exit
 
-bindsym t $scratchpad subtag im tel ,$exit
-bindsym w $scratchpad toggle webcam  ,$exit
-	bindsym f $circle subtag web firefox ,$exit
-	bindsym 5 $circle subtag web tor ,$exit
+bindsym t $scratchpad subtag im tel,$exit
+bindsym w $scratchpad toggle webcam,$exit
+bindsym f $circle subtag web firefox,$exit
+bindsym 5 $circle subtag web tor,$exit
 bindsym Return,$exit
 bindsym Escape,$exit
 bindsym space,$exit
