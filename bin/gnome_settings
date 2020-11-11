@@ -2,7 +2,7 @@
 
 font='Iosevka Term 12'
 icons='korla'
-gtk_theme='Flat-Neg'
+gtk_theme='oomox-NegDark'
 cursor_theme='SpaceKCursors'
 cursor_size='128'
 
