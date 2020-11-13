@@ -41,12 +41,13 @@ gaps = [
 ]
 
 color_theme = [
-    "client.focused #222233 #000000 #ddddee #112211 #0C0C0D",
-    "client.focused_inactive #000000 #000000 #005fff #000000 #020204",
-    "client.unfocused #000000 #000000 #315c70 #000000 #020204",
-    "client.urgent #000000 #2E2457 #4C407C #32275E #32275E",
-    "client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c",
-    "client.background #000000"
+    #item,                    border,     background,  text,    indicator,  child_border
+    "client.focused           #000011dd   #000000ee    #ddddee  #112211     #0C0C0D",
+    "client.focused_inactive  #000000dd   #000000ee    #005fff  #000000     #020204",
+    "client.unfocused         #000000ee   #000000      #315c70  #000000     #020204",
+    "client.urgent            #000000ee   #2E2457      #4C407C  #32275E     #32275E",
+    "client.placeholder       #000000ee   #000000      #ffffff  #000000     #0c0c0c",
+    "client.background        #000000ee"
 ]
 
 focus_settings = [
@@ -61,6 +62,7 @@ theme = [
     "font pango: Iosevka Heavy 18",
     "show_marks yes",
     "smart_borders on",
+    "smart_gaps on",
     "hide_edge_borders both",
     "title_align left",
 ]
@@ -76,7 +78,7 @@ autostart = [
 ]
 
 plain_rules = [
-    '''[class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 3''',
+    '''[class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 5''',
     '[instance="^(gpartedbin|recoll)$"] move workspace $sys, floating enable, focus',
     '[class="^(Gcolor3|rdesktop)$"] floating enable',
     '[class="^(inkscape|gimp)$"] move workspace $draw',
