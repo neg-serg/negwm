@@ -35,7 +35,7 @@ font="Iosevka"
 font_size=27.5
 font_normal="Medium"
 padding=[8, 8]
-opacity=0.895
+opacity=0.94
 env=['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket']
 exec_tmux=[['nvim', '/usr/bin/nvim']]
 statusline=0
