@@ -15,7 +15,7 @@
   - [win_history](#win-history)
   - [menu](#menu)
   - [vol](#vol)
-  - [win_action](#win-action)
+  - [actions](#win-action)
   - [executor](#executor)
   - [fs](#fs)
   - [procs to run by negi3wm as another process](#procs-to-run-by-negi3wm-as-another-process)
@@ -328,11 +328,11 @@ d: volume down
 reload: reload module.
 ```
 
-## win_action
+## actions
 
 Various stuff to emulate some 2bwm UX. I do not use it actively for now, so too
 lazy to write good documentation for it but if you are interested you are free
-to look at `lib/win_action.py` source code.
+to look at `lib/actions.py` source code.
 
 ## executor
 

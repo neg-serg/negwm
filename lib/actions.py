@@ -19,7 +19,7 @@ from cfg import cfg
 from extension import extension
 
 
-class win_action(extension, cfg):
+class actions(extension, cfg):
     """ Named scratchpad class
 
     Parents:
@@ -145,10 +145,10 @@ class win_action(extension, cfg):
         focused = self.i3ipc.get_tree().find_focused()
         if resize in {"default", "none"}:
             geom = self.center_geom(focused)
-            win_action.set_geom(focused, geom)
+            actions.set_geom(focused, geom)
         elif resize in {"resize", "on", "yes"}:
             geom = self.center_geom(focused, change_geom=True)
-            win_action.set_geom(focused, geom)
+            actions.set_geom(focused, geom)
         else:
             return
 
@@ -181,14 +181,14 @@ class win_action(extension, cfg):
     def grow(self) -> None:
         """ Grow floating window geometry by [self.grow_coeff]. """
         focused = self.i3ipc.get_tree().find_focused()
-        geom = win_action.multiple_geom(focused, self.grow_coeff)
-        win_action.set_geom(focused, geom)
+        geom = actions.multiple_geom(focused, self.grow_coeff)
+        actions.set_geom(focused, geom)
 
     def shrink(self) -> None:
         """ Shrink floating window geometry by [self.shrink_coeff]. """
         focused = self.i3ipc.get_tree().find_focused()
-        geom = win_action.multiple_geom(focused, self.shrink_coeff)
-        win_action.set_geom(focused, geom)
+        geom = actions.multiple_geom(focused, self.shrink_coeff)
+        actions.set_geom(focused, geom)
 
     def x2(self, mode: str) -> None:
         """ Move window to the 1st or 2nd half of the screen space with the
@@ -250,7 +250,7 @@ class win_action(extension, cfg):
                 if prev != self.current_win.id:
                     geom = self.get_prev_geom()
 
-            win_action.set_geom(self.current_win, geom)
+            actions.set_geom(self.current_win, geom)
 
     def quad(self, mode: int) -> None:
         """ Move window to the 1,2,3,4 quad of 2D screen space
@@ -317,7 +317,7 @@ class win_action(extension, cfg):
                 if prev != self.current_win.id:
                     geom = self.get_prev_geom()
 
-            win_action.set_geom(self.current_win, geom)
+            actions.set_geom(self.current_win, geom)
 
     def maximize(self, by: str = 'XY') -> None:
         """ Maximize window by attribute.
@@ -350,14 +350,14 @@ class win_action(extension, cfg):
                 max_geom = self.maximized_geom(
                     geom.copy(), gaps={}, byX=False, byY=True
                 )
-            win_action.set_geom(self.current_win, max_geom)
+            actions.set_geom(self.current_win, max_geom)
 
     def revert_maximize(self) -> None:
         """ Revert changed window state. """
         try:
             focused = self.i3ipc.get_tree().find_focused()
             if self.geom_list[-1].get("geom", {}):
-                win_action.set_geom(focused, self.geom_list[-1]["geom"])
+                actions.set_geom(focused, self.geom_list[-1]["geom"])
             del self.geom_list[-1]
         except (KeyError, TypeError, AttributeError):
             pass
@@ -510,7 +510,7 @@ class win_action(extension, cfg):
         """
         if target_win is None:
             target_win = self.current_win
-        return win_action.create_geom_from_rect(target_win.rect)
+        return actions.create_geom_from_rect(target_win.rect)
 
     @staticmethod
     def focused_order(node):
@@ -523,7 +523,7 @@ class win_action(extension, cfg):
     @staticmethod
     def focused_child(node):
         """Return the most recently focused child of "node"."""
-        return next(win_action.focused_order(node))
+        return next(actions.focused_order(node))
 
     @staticmethod
     def is_in_line(old, new, direction):

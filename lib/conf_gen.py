@@ -283,8 +283,8 @@ class conf_gen(extension, cfg):
     def mode_resize(self, mode_name, mode_bind) -> str:
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('resize_plus', '$win_action resize', '') + \
-            self.bind('resize_minus', '$win_action resize', '') + \
+            self.bind('resize_plus', '$actions resize', '') + \
+            self.bind('resize_minus', '$actions resize', '') + \
             conf_gen.mode_end()
 
     def mode_spec(self, mode_name, mode_bind) -> str:
@@ -310,16 +310,16 @@ class conf_gen(extension, cfg):
             return self.bind('move', 'move', '')
 
         def win_quad() -> str:
-            return self.bind('quad', '$win_action', '')
+            return self.bind('quad', '$actions', '')
 
         def move_acts() -> str:
-            return self.bind('move_acts', '$win_action', '')
+            return self.bind('move_acts', '$actions', '')
 
         def layout_wm() -> str:
             return self.bind('layout_wm', 'layout', ',$exit')
 
-        def win_action_wm() -> str:
-            return self.bind('win_action_wm', '$win_action', '')
+        def actions_wm() -> str:
+            return self.bind('actions_wm', '$actions', '')
 
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
@@ -328,7 +328,7 @@ class conf_gen(extension, cfg):
             move_win() + \
             move_acts() + \
             win_quad() + \
-            win_action_wm() + \
+            actions_wm() + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()

@@ -52,7 +52,7 @@ set $fs exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send fs
 set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
 set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send scratchpad
 set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
-set $win_action exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_action
+set $actions exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send actions
 set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
 
 set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack|TelegramDesktop)$"]
@@ -210,24 +210,24 @@ bindsym Mod4+Control+b $circle next bitwig
 bindsym Mod4+r mode "resize"
 mode resize {
 
-bindsym h $win_action resize left4
-bindsym j $win_action resize bottom4
-bindsym k $win_action resize top4
-bindsym l $win_action resize right4
-bindsym a $win_action resize left4
-bindsym s $win_action resize bottom4
-bindsym w $win_action resize top4
-bindsym d $win_action resize right4
+bindsym h $actions resize left4
+bindsym j $actions resize bottom4
+bindsym k $actions resize top4
+bindsym l $actions resize right4
+bindsym a $actions resize left4
+bindsym s $actions resize bottom4
+bindsym w $actions resize top4
+bindsym d $actions resize right4
 
 
-bindsym Shift+h $win_action resize left-4
-bindsym Shift+j $win_action resize bottom-4
-bindsym Shift+k $win_action resize top-4
-bindsym Shift+l $win_action resize right-4
-bindsym Shift+a $win_action resize left-4
-bindsym Shift+s $win_action resize bottom-4
-bindsym Shift+w $win_action resize top-4
-bindsym Shift+d $win_action resize right-4
+bindsym Shift+h $actions resize left-4
+bindsym Shift+j $actions resize bottom-4
+bindsym Shift+k $actions resize top-4
+bindsym Shift+l $actions resize right-4
+bindsym Shift+a $actions resize left-4
+bindsym Shift+s $actions resize bottom-4
+bindsym Shift+w $actions resize top-4
+bindsym Shift+d $actions resize right-4
 
 bindsym Return,$exit
 bindsym Escape,$exit
@@ -285,28 +285,28 @@ bindsym w move top
 bindsym d move right
 
 
-bindsym Shift+a $win_action hupx2
-bindsym Shift+s $win_action vleftx2
-bindsym Shift+w $win_action hdownx2
-bindsym Shift+d $win_action vrightx2
+bindsym Shift+a $actions hupx2
+bindsym Shift+s $actions vleftx2
+bindsym Shift+w $actions hdownx2
+bindsym Shift+d $actions vrightx2
 
 
-bindsym 1 $win_action 1
-bindsym 2 $win_action 2
-bindsym 3 $win_action 3
-bindsym 4 $win_action 4
+bindsym 1 $actions 1
+bindsym 2 $actions 2
+bindsym 3 $actions 3
+bindsym 4 $actions 4
 
 
-bindsym m $win_action maximize
-bindsym Shift+m $win_action revert_maximize
-bindsym x $win_action maxhor
-bindsym y $win_action maxvert
-bindsym Shift+x $win_action revert_maximize
-bindsym Shift+y $win_action revert_maximize
-bindsym Shift+plus $win_action grow
-bindsym Shift+minus $win_action shrink
-bindsym c $win_action none
-bindsym Shift+c $win_action resize
+bindsym m $actions maximize
+bindsym Shift+m $actions revert_maximize
+bindsym x $actions maxhor
+bindsym y $actions maxvert
+bindsym Shift+x $actions revert_maximize
+bindsym Shift+y $actions revert_maximize
+bindsym Shift+plus $actions grow
+bindsym Shift+minus $actions shrink
+bindsym c $actions none
+bindsym Shift+c $actions resize
 
 bindsym Return,$exit
 bindsym Escape,$exit

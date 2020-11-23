@@ -1,3 +1,3 @@
 prefix="❯>"
-module_list=["fs", "executor", "win_action", "circle", "win_history", "menu", "scratchpad", "vol", "conf_gen"]
+module_list=["fs", "executor", "actions", "circle", "win_history", "menu", "scratchpad", "vol", "conf_gen"]
 port='15555'

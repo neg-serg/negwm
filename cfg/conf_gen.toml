@@ -172,7 +172,7 @@ funcs = ['horizontal', 'vertical', 'vertical', 'horizontal']
 binds = [['grave', 't', 'minus', 'backslash', 'Control+a', 'Control+3', 'Control+s', 'Control+t']]
 funcs = ['default', 'tabbed', 'splith', 'splitv', 'toggle all', 'toggle all', 'toggle split', 'toggle']
 
-[win_action_wm]
+[actions_wm]
 binds = [['m', 'Shift+m', 'x', 'y', 'Shift+x', 'Shift+y', 'Shift+plus', 'Shift+minus', 'c', 'Shift+c']]
 funcs = ['maximize', 'revert_maximize', 'maxhor', 'maxvert', 'revert_maximize', 'revert_maximize', 'grow', 'shrink', 'none', 'resize',]
 
