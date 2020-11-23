@@ -11,7 +11,7 @@ from extension import extension
 from cfg import cfg
 
 
-class fs(extension, cfg):
+class fullscreen(extension, cfg):
     def __init__(self, i3conn):
         # i3ipc connection, bypassed by negi3wm runner
         self.i3ipc = i3conn
