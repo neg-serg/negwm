@@ -14,7 +14,7 @@ from negewmh import NegEWMH
 from extension import extension
 
 
-class win_history(extension, cfg):
+class remember_focused(extension, cfg):
     """ Advanced alt-tab class.
     """
 
@@ -34,7 +34,7 @@ class win_history(extension, cfg):
         self.window_history = []
 
         # depth of history list
-        self.max_win_history = 4
+        self.max_remember_focused = 4
 
         # workspaces with auto alt-tab when close
         self.autoback = self.conf('autoback')
@@ -81,8 +81,8 @@ class win_history(extension, cfg):
             self.window_history.remove(wid)
 
         self.window_history.insert(0, wid)
-        if len(self.window_history) > self.max_win_history:
-            del self.window_history[self.max_win_history:]
+        if len(self.window_history) > self.max_remember_focused:
+            del self.window_history[self.max_remember_focused:]
 
     def get_windows_on_ws(self) -> Iterator:
         """ Get windows on the current workspace.

@@ -12,7 +12,7 @@
 - [modules](#modules)
   - [scratchpad](#scratchpad)
   - [circle](#circle)
-  - [win_history](#win-history)
+  - [remember_focused](#win-history)
   - [menu](#menu)
   - [vol](#vol)
   - [actions](#win-action)
@@ -227,7 +227,7 @@ next: go to the next window
 subtag: go to the next subtag window
 ```
 
-## win_history
+## remember_focused
 
 Goto to the previous window, not the workspace. Default i3 alt-tab cannot to
 remember from what window alt-tab have been done, this mod fix at by storing
@@ -236,14 +236,14 @@ history of last selected windows.
 i3 config example:
 
 ```cfg
-set $win_history exec --no-startup-id $XDG_CONFIG_HOME/i3/send win_history
-bindsym Mod4+grave $win_history focus_next_visible
-bindsym Mod4+Shift+grave $win_history focus_prev_visible
-bindsym Mod1+Tab $win_history switch
-bindsym Mod4+slash $win_history switch
+set $remember_focused exec --no-startup-id $XDG_CONFIG_HOME/i3/send remember_focused
+bindsym Mod4+grave $remember_focused focus_next_visible
+bindsym Mod4+Shift+grave $remember_focused focus_prev_visible
+bindsym Mod1+Tab $remember_focused switch
+bindsym Mod4+slash $remember_focused switch
 ```
 
-win_history commands:
+remember_focused commands:
 
 ```cfg
 switch: go to previous window

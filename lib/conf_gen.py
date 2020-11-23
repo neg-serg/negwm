@@ -341,8 +341,8 @@ class conf_gen(extension, cfg):
         def vol_def() -> str:
             return self.bind('vol_def', '$vol', '')
 
-        def win_history_def() -> str:
-            return self.bind('win_history_def', '$win_history', '')
+        def remember_focused_def() -> str:
+            return self.bind('remember_focused_def', '$remember_focused', '')
 
         def menu_def() -> str:
             return self.bind('menu_def', '$menu', '')
@@ -369,7 +369,7 @@ class conf_gen(extension, cfg):
                 + '\n' + vol_def() \
                 + '\n' + menu_def() \
                 + '\n' + scratchpad_def() \
-                + '\n' + win_history_def()
+                + '\n' + remember_focused_def()
             exec_ret += '\n'
             key_prog_gui = self.cfg.get('exec', [])
             if key_prog_gui:

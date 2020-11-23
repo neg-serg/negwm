@@ -53,7 +53,7 @@ set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
 set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send scratchpad
 set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
 set $actions exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send actions
-set $win_history exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send win_history
+set $remember_focused exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send remember_focused
 
 set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack|TelegramDesktop)$"]
 set $scratchpad-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
@@ -158,10 +158,10 @@ bindsym Mod4+s $scratchpad hide_current
 
 
 
-bindsym Mod1+Tab $win_history switch
-bindsym Mod4+slash $win_history switch
-bindsym Mod4+grave $win_history focus_next_visible
-bindsym Mod4+Shift+grave $win_history focus_prev_visible
+bindsym Mod1+Tab $remember_focused switch
+bindsym Mod4+slash $remember_focused switch
+bindsym Mod4+grave $remember_focused focus_next_visible
+bindsym Mod4+Shift+grave $remember_focused focus_prev_visible
 
 
 bindsym Mod4+4 exec ~/bin/scripts/screenshot
