@@ -45,15 +45,15 @@ client.urgent            #000000ee   #2E2457      #4C407C  #32275E     #32275E
 client.placeholder       #000000ee   #000000      #ffffff  #000000     #0c0c0c
 client.background        #000000ee
 
+set $actions exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send actions
 set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send circle
 set $conf_gen exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send conf_gen
 set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
-set $fs exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send fs
+set $fullscreen exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send fullscreen
 set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
+set $remember_focused exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send remember_focused
 set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send scratchpad
 set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
-set $actions exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send actions
-set $remember_focused exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send remember_focused
 
 set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack|TelegramDesktop)$"]
 set $scratchpad-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
@@ -156,12 +156,6 @@ bindsym Mod4+Control+a $scratchpad dialog
 bindsym Mod4+3 $scratchpad next
 bindsym Mod4+s $scratchpad hide_current
 
-
-
-bindsym Mod1+Tab $remember_focused switch
-bindsym Mod4+slash $remember_focused switch
-bindsym Mod4+grave $remember_focused focus_next_visible
-bindsym Mod4+Shift+grave $remember_focused focus_prev_visible
 
 
 bindsym Mod4+4 exec ~/bin/scripts/screenshot
