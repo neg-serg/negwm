@@ -1,11 +1,9 @@
-""" Terminal manager.
+""" Terminal manager. Give simple and consistent way for user to create tmux
+sessions on dedicated sockets. Also it can run simply run applications without
+Tmux. The main advantage is dynamic config reloading and simplicity of adding
+or modifing of various parameters, also it works is faster then dedicated
+scripts, because there is no parsing / translation phase here in runtime. """
 
-Give simple and consistent way for user to create tmux sessions on dedicated
-sockets. Also it can run simply run applications without Tmux. The main
-advantage is dynamic config reloading and simplicity of adding or modifing of
-various parameters, also it works is faster then dedicated scripts, because
-there is no parsing / translation phase here in runtime.
-"""
 import subprocess
 import os
 from os.path import expanduser
@@ -24,43 +22,34 @@ from matcher import Matcher
 
 class env():
     """ Environment class. It is a helper for tmux manager to store info about
-        currently selected application. This class rules over parameters and
-        settings of application, like used terminal enumator, fonts, all path
-        settings, etc.
-    Parents:
-        config: configuration manager to autosave/autoload
-                TOML-configutation with inotify
-    """
+    currently selected application. This class rules over parameters and
+    settings of application, like used terminal enumator, fonts, all path
+    settings, etc.
+    config: configuration manager to autosave/autoload
+            TOML-configutation with inotify """
 
     def __init__(self, name: str, config) -> None:
         self.name = name
         cache_dir = Misc.i3path() + '/cache'
         Misc.create_dir(cache_dir)
-
         tmux_socket_dir = expanduser(f'{cache_dir}/tmux_sockets')
         dtach_session_dir = expanduser(f'{cache_dir}/dtach_sessions')
         self.alacritty_cfg_dir = expanduser(f'{cache_dir}/alacritty_cfg')
         self.alacritty_cfg = expanduser(os.environ.get("XDG_CONFIG_HOME") + \
             "/alacritty/alacritty.yml")
-
         Misc.create_dir(tmux_socket_dir)
         Misc.create_dir(self.alacritty_cfg_dir)
         Misc.create_dir(dtach_session_dir)
-
         self.sockpath = expanduser(f'{tmux_socket_dir}/{name}.socket')
-
         for sh in ['dash', 'zsh', 'bash', 'sh']:
             if shutil.which(sh):
                 self.default_shell = sh
                 break
-
         cfg_block = config.get(name, {})
         if not cfg_block:
             return
-
-        # get terminal from config, use Alacritty by default
+        # Get terminal from config, use Alacritty by default
         self.term = cfg_block.get("term", "alacritty").lower()
-
         if os.path.exists(self.alacritty_cfg):
             if os.stat(self.alacritty_cfg).st_size == 0:
                 print('Alacritty cfg {self.alacritty_cfg} is empty')
@@ -68,7 +57,6 @@ class env():
         else:
             print('Alacritty cfg {self.alacritty_cfg} not exists, put it here')
             self.term = env.terminal_fallback_detect()
-
         self.wclass = cfg_block.get("class", self.term)
         self.title = cfg_block.get("title", self.wclass)
         self.font = config.get("default_font", "")
@@ -89,7 +77,6 @@ class env():
             self.font_normal = cfg_block.get("font_normal", 'Regular')
             self.font_bold = cfg_block.get("font_bold", 'Bold')
             self.font_italic = cfg_block.get("font_italic", 'Italic')
-
         self.tmux_session_attach = f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = f"tmux -S {self.sockpath} new-session -s {name}"
         self.exec = cfg_block.get("exec", '')
@@ -112,13 +99,11 @@ class env():
         self.padding = cfg_block.get('padding', [2, 2])
         self.opacity = cfg_block.get('opacity', 0.88)
         self.statusline = cfg_block.get('statusline', 1)
-
         self.create_term_params(config, name)
 
         def join_processes():
             for prc in multiprocessing.active_children():
                 prc.join()
-
         threading.Thread(target=join_processes, args=(), daemon=True).start()
 
     @staticmethod
@@ -128,30 +113,23 @@ class env():
         return ''
 
     def create_alacritty_cfg(self, cfg_dir, config: dict, name: str) -> str:
-        """ Config generator for alacritty.
-            We need it because of alacritty cannot bypass most of user
-            parameters with command line now.
-
-            cfg_dir: alacritty config dir
-            config: config dirtionary
-            name(str): name of config to generate
-
-            Return:
-               cfgname(str): configname
-        """
+        """ Config generator for alacritty. We need it because of alacritty
+        cannot bypass most of user parameters with command line now.
+        cfg_dir: alacritty config dir
+        config: config dirtionary
+        name(str): name of config to generate
+        cfgname(str): configname """
         app_name = config.get(name, {}).get('app_name', '')
         if not app_name:
             app_name = config.get(name, {}).get('class')
         app_name += '.yml'
         cfgname = expanduser(f'{cfg_dir}/{app_name}')
         shutil.copyfile(self.alacritty_cfg, cfgname)
-
         return cfgname
 
     def yaml_config_create(self, custom_config: str) -> None:
         """ Create config for alacritty
-            custom_config(str): config name to create
-        """
+        custom_config(str): config name to create """
         conf = None
         with open(custom_config, "r") as cfg_file:
             try:
@@ -188,10 +166,8 @@ class env():
 
     def create_term_params(self, config: dict, name: str) -> None:
         """ This function fill self.term_opts for settings.abs
-
             config(dict): config dictionary which should be adopted to
-            commandline options or settings.
-        """
+            commandline options or settings. """
         if self.term == "alacritty":
             custom_config = self.create_alacritty_cfg(
                 self.alacritty_cfg_dir, config, name
@@ -209,26 +185,20 @@ class env():
 
 class executor(extension, cfg):
     """ Tmux Manager class. Easy and consistent way to create tmux sessions on
-        dedicated sockets. Also it can run simply run applications without
-        Tmux. The main advantage is dynamic config reloading and simplicity of
-        adding or modifing of various parameters.
-
-    Parents:
-        cfg: configuration manager to autosave/autoload
-                  TOML-configutation with inotify
-    """
+    dedicated sockets. Also it can run simply run applications without Tmux.
+    The main advantage is dynamic config reloading and simplicity of adding or
+    modifing of various parameters.
+    cfg: configuration manager to autosave/autoload TOML-configutation with
+    inotify """
     def __init__(self, i3) -> None:
-        """ Init function. """
         cfg.__init__(self, i3)
         self.envs = {}
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)
-
         self.bindings = {
             "run": self.run,
             "reload": self.reload_config,
         }
-
         self.i3 = i3
         self.env = None
 
@@ -277,11 +247,9 @@ class executor(extension, cfg):
 
     def run(self, name: str) -> None:
         """ Entry point, run application with Tmux on dedicated socket(in most
-            cases), or without tmux, if config value with_tmux=0.
-
-            name (str): target application name, with configuration taken from
-            TOML.
-        """
+        cases), or without tmux, if config value with_tmux=0
+        name (str): target application name, with configuration taken from
+        TOML. """
         self.env = self.envs[name]
         if self.env.with_tmux:
             if self.env.name in self.detect_session_bind(
