@@ -15,45 +15,22 @@ from extension import extension
 
 class vol(extension, cfg):
     def __init__(self, i3) -> None:
-        # Initialize cfg.
-        cfg.__init__(self, i3)
-
-        # i3ipc connection, bypassed by negi3wm runner.
-        self.i3ipc = i3
-
-        # Default increment step for mpd.
-        self.inc = self.conf("mpd_inc")
-
-        # Default mpd address.
-        self.mpd_addr = self.conf("mpd_addr")
-
-        # Default mpd port.
-        self.mpd_port = self.conf("mpd_port")
-
-        # Default mpd buffer size.
-        self.mpd_buf_size = self.conf("mpd_buf_size")
-
-        # Default mpv socket.
-        self.mpv_socket = self.conf("mpv_socket")
-
+        cfg.__init__(self, i3) # Initialize cfg.
+        self.i3ipc = i3 # i3ipc connection, bypassed by negi3wm runner.
+        self.inc = self.conf("mpd_inc") # Default increment step for mpd.
+        self.mpd_addr = self.conf("mpd_addr") # Default mpd address.
+        self.mpd_port = self.conf("mpd_port") # Default mpd port.
+        self.mpd_buf_size = self.conf("mpd_buf_size") # Default mpd buffer size.
+        self.mpv_socket = self.conf("mpv_socket") # Default mpv socket.
         # Send 0, 9 keys to the mpv window or not.
         self.use_mpv09 = self.conf("use_mpv09")
-
-        # Define mpd socket
-        self.mpd_socket = None
-
-        # Cache current window on focus.
-        self.i3ipc.on("window::focus", self.set_curr_win)
-
-        # Default mpd status is False
-        self.mpd_playing = False
+        self.mpd_socket = None # Define mpd socket
+        self.mpd_playing = False # Default mpd status is False
 
         # MPD idle command listens to the player events by default.
         self.idle_cmd_str = "idle player\n"
-
-        # MPD status string, which we need send to extract most of information.
+        # MPD status string, which we need #send to extract most of information.
         self.status_cmd_str = "status\n"
-
         self.bindings = {
             "u": self.volume_up,
             "d": self.volume_down,
@@ -61,7 +38,8 @@ class vol(extension, cfg):
             "max": self.volume_max,
             "reload": self.reload_config,
         }
-
+        # Cache current window on focus.
+        self.i3ipc.on("window::focus", self.set_curr_win)
         # Initial state for the current_win
         self.current_win = self.i3ipc.get_tree().find_focused()
 
@@ -105,13 +83,10 @@ class vol(extension, cfg):
 
     def change_volume(self, val: int) -> None:
         """ Change volume here.
-
             This function using MPD state information, information about
             currently focused window from i3, etc to perform contextual volume
             changing.
-
-            Args:
-                val (int): volume step.
+            val (int): volume step.
         """
         val_str = str(val)
         mpv_key = '9'
