@@ -158,6 +158,12 @@ bindsym Mod4+s $scratchpad hide_current
 
 
 
+bindsym Mod1+Tab $remember_focused switch
+bindsym Mod4+slash $remember_focused switch
+bindsym Mod4+grave $remember_focused focus_next_visible
+bindsym Mod4+Shift+grave $remember_focused focus_prev_visible
+
+
 bindsym Mod4+4 exec ~/bin/scripts/screenshot
 bindsym Mod4+Shift+4 exec flameshot gui
 bindsym Mod4+Control+4 exec ~/bin/scripts/screenshot -r

@@ -1,44 +1,28 @@
 """ Advanced alt-tab module.
 
 This module allows you to focus previous window a-la "alt-tab" not by workspace
-but by window itself. To achieve that I am using self.window_history to store
+but by window itself. To achieve that I am using self.focus_history to store
 information about previous windows. We need this because previously selected
 window may be closed, and then you cannot focus it.
 """
 
 from typing import Iterator
 from itertools import cycle
-
 from cfg import cfg
 from negewmh import NegEWMH
 from extension import extension
 
-
 class remember_focused(extension, cfg):
-    """ Advanced alt-tab class.
-    """
-
-    def __init__(self, i3) -> None:
+    """ Advanced alt-tab class. """
+    def __init__(self, i3ipc) -> None:
         """ Init function
-
-        Args:
-            i3: i3ipc connection
-        """
-        # Initialize cfg.
-        cfg.__init__(self, i3)
-
-        # i3ipc connection, bypassed by negi3wm runner
-        self.i3ipc = i3
-
+            i3ipc: i3ipc connection """
+        cfg.__init__(self, i3ipc) # Initialize cfg.
+        self.i3ipc = i3ipc # i3ipc connection, bypassed by negi3wm runner
         # previous / current window list
-        self.window_history = []
-
-        # depth of history list
-        self.max_remember_focused = 4
-
-        # workspaces with auto alt-tab when close
+        self.focus_history = [] # depth of history list
+        self.max_remember_focused = 4 # workspaces with auto alt-tab when close
         self.autoback = self.conf('autoback')
-
         self.bindings = {
             "switch": self.alt_tab,
             "reload": self.reload_config,
@@ -47,46 +31,39 @@ class remember_focused(extension, cfg):
             "focus_next_visible": self.focus_next_visible,
             "focus_prev_visible": self.focus_prev_visible,
         }
-
         self.i3ipc.on('window::focus', self.on_window_focus)
         self.i3ipc.on('window::close', self.goto_nonempty_ws_on_close)
 
     def reload_config(self) -> None:
-        """ Reloads config. Dummy.
-        """
+        """ Reloads config. Dummy. """
         self.__init__(self.i3ipc)
 
     def alt_tab(self) -> None:
-        """ Focus previous window.
-        """
+        """ Focus previous window. """
         wids = set(w.id for w in self.i3ipc.get_tree().leaves())
-        for wid in self.window_history[1:]:
+        for wid in self.focus_history[1:]:
             if wid not in wids:
-                self.window_history.remove(wid)
+                self.focus_history.remove(wid)
             else:
                 self.i3ipc.command(f'[con_id={wid}] focus')
                 return
 
     def on_window_focus(self, _, event) -> None:
         """ Store information about current / previous windows.
-
-            Args:
-                i3: i3ipc connection.
-                event: i3ipc event. We can extract window from it using
-                event.container.
-        """
+            i3: i3ipc connection.
+            event: i3ipc event. We can extract window from it using
+            event.container. """
         wid = event.container.id
 
-        if wid in self.window_history:
-            self.window_history.remove(wid)
+        if wid in self.focus_history:
+            self.focus_history.remove(wid)
 
-        self.window_history.insert(0, wid)
-        if len(self.window_history) > self.max_remember_focused:
-            del self.window_history[self.max_remember_focused:]
+        self.focus_history.insert(0, wid)
+        if len(self.focus_history) > self.max_remember_focused:
+            del self.focus_history[self.max_remember_focused:]
 
     def get_windows_on_ws(self) -> Iterator:
-        """ Get windows on the current workspace.
-        """
+        """ Return iterator for windows on the current workspace. """
         return filter(
             lambda x: x.window,
             self.i3ipc.get_tree().find_focused().workspace().leaves()
@@ -94,15 +71,12 @@ class remember_focused(extension, cfg):
 
     def goto_visible(self, reversed_order=False):
         """ Focus next visible window.
-
-        Args:
-            reversed_order(bool) : [optional] predicate to change order.
-
-        """
+            reversed_order(bool) : [optional] predicate to change order. """
         wins = NegEWMH.find_visible_windows(self.get_windows_on_ws())
         self.goto_win(wins, reversed_order)
 
     def goto_win(self, wins, reversed_order=False):
+        """ Goto target window """
         if reversed_order:
             cycle_windows = cycle(reversed(wins))
         else:
@@ -115,38 +89,36 @@ class remember_focused(extension, cfg):
 
     def goto_any(self, reversed_order: bool = False) -> None:
         """ Focus any next window.
-
-        Args:
-            reversed_order(bool) : [optional] predicate to change order.
-        """
+            reversed_order(bool) : [optional] predicate to change order. """
         wins = self.i3ipc.get_tree().leaves()
         self.goto_win(wins, reversed_order)
 
     def focus_next(self) -> None:
+        """ Focus any next window """
         self.goto_any(reversed_order=False)
 
     def focus_prev(self) -> None:
+        """ Focus any previous window """
         self.goto_any(reversed_order=True)
 
     def focus_next_visible(self) -> None:
+        """ Focus next visible window """
         self.goto_visible(reversed_order=False)
 
     def focus_prev_visible(self) -> None:
+        """ Focus previous visible window """
         self.goto_visible(reversed_order=True)
 
-    def goto_nonempty_ws_on_close(self, i3, _) -> None:
-        """ Go back for temporary tags like pictures or media.
+    def goto_nonempty_ws_on_close(self, i3ipc, _) -> None:
+        """ Go back for temporary tags like pictures or media. This function
+        make auto alt-tab for workspaces which should by temporary. This is
+        good if you do not want to see empty workspace after switching to the
+        media content workspace.
 
-            This function make auto alt-tab for workspaces which should by
-            temporary. This is good if you do not want to see empty workspace
-            after switching to the media content workspace.
-
-            Args:
-                i3: i3ipc connection.
-                event: i3ipc event. We can extract window from it using
-                event.container.
-        """
-        workspace = i3.get_tree().find_focused().workspace()
+        i3ipc: i3ipc connection.
+        event: i3ipc event. We can extract window from it using
+        event.container. """
+        workspace = i3ipc.get_tree().find_focused().workspace()
         focused_ws_name = workspace.name
         if not workspace.leaves():
             for ws_substr in self.autoback:

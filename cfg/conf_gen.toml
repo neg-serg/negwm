@@ -145,7 +145,7 @@ modkey = 'Mod4'
 binds = [['Mod1+g', 'Mod4+g', 'Mod4+Shift+a', 'Mod4+Control+g', 'Mod4+Control+grave', 'Mod4+Shift+s']]
 funcs = ['goto_win', 'ws', 'attach', 'movews', 'cmd_menu', 'autoprop']
 
-[win_history_def]
+[remember_focused_def]
 binds = [['Mod1+Tab', 'Mod4+slash', 'Mod4+grave', 'Mod4+Shift+grave']]
 funcs = ['switch', 'switch', 'focus_next_visible', 'focus_prev_visible']
 
