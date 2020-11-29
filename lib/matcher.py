@@ -1,31 +1,22 @@
-""" Matcher module
-
-In this class to check that window can be tagged with given tag by
-WM_CLASS, WM_INSTANCE, regexes, etc. It can be used by named scrachpad,
-circle run-or-raise, etc.
-"""
+""" Matcher checking that window can be tagged with given tag by WM_CLASS,
+WM_INSTANCE, regexes, etc. It can be used by named scrachpad, circle
+run-or-raise, etc. """
 
 import sys
 import re
 from typing import List, Iterator
 
-
 class Matcher():
     """ Generic matcher class
-
     Used by several classes. It can match windows by several criteria, which
     I am calling "factor", including:
         - by class, by class regex
         - by instance, by instance regex
         - by role, by role regex
         - by name regex
-
     Of course this list can by expanded. It uses sys.intern hack for better
     performance and simple caching. One of the most resource intensive part of
-    negi3wm.
-
-    """
-
+    negi3wm. """
     factors = [
         sys.intern("class"),
         sys.intern("instance"),
@@ -39,6 +30,7 @@ class Matcher():
 
     def __init__(self):
         self.matched_list = []
+        self.win = None
 
         self.match_dict = {
             sys.intern("class"): lambda: self.win.window_class in self.matched_list,
@@ -122,7 +114,6 @@ class Matcher():
     def match(self, win, tag: str) -> bool:
         """ Check that window matches to the config rules """
         self.win = win
-
         for f in Matcher.factors:
             self.matched_list = self.cfg.get(tag, {}).get(f, {})
             if self.matched_list and self.match_dict[f]():
