@@ -1,14 +1,9 @@
 """ 2bwm-like features module.
-
 There are a lot of various actions over the floating windows in this module,
-which may reminds you 2bwm, subtle, or another similar window managers.
-
-You can change window geometry, move it to the half or quad size of the screen
-space, etc.
-
-Partially code is taken from https://github.com/miseran/i3-tools, thanks to
-you, miseran(https://github.com/miseran)
-
+which may reminds you 2bwm, subtle, or another similar window managers. You can
+change window geometry, move it to the half or quad size of the screen space,
+etc. Partially code is taken from https://github.com/miseran/i3-tools, thanks
+to you, miseran(https://github.com/miseran)
 """
 
 import collections
@@ -20,55 +15,36 @@ from extension import extension
 
 
 class actions(extension, cfg):
-    """ Named scratchpad class
-
-    Parents:
-        cfg: configuration manager to autosave/autoload
-                  TOML-configutation with inotify
-
-    """
-
+    """ Named scratchpad class cfg: configuration manager to autosave/autoload
+    TOML-configutation with inotify """
     def __init__(self, i3) -> None:
-        """ Init function
-
-        Main part is in self.initialize, which performs initialization itself.
-
-        Attributes:
-            i3: i3ipc connection
-        """
+        """ Main part is in self.initialize,
+        which performs initialization itself.
+        i3: i3ipc connection """
         # Initialize cfg.
         cfg.__init__(self, i3)
         # i3ipc connection, bypassed by negi3wm runner.
         self.i3ipc = i3
         self.i3ipc.on("window::focus", self.auto_tiling)
-
-        # cache list length
-        maxlength = self.conf("cache_list_size")
-
+        maxlength = self.conf("cache_list_size") # cache list length
         # create list with the finite number of elements by the [None] * N hack
         self.geom_list = collections.deque(
             [None] * maxlength,
             maxlen=maxlength
         )
-
-        # we need to know current resolution for almost all operations here.
+        self.current_win = None
+        # We need to know current resolution for almost all operations here.
         self.current_resolution = Display.get_screen_resolution()
-
-        # here we load information about useless gaps
+        # Here we load information about useless gaps
         self.load_useless_gaps()
-
-        # config about useless gaps for quad splitting, True by default
+        # Config about useless gaps for quad splitting, True by default
         self.quad_use_gaps = self.conf("quad_use_gaps")
-
-        # config about useless gaps for half splitting, True by default
+        # Config about useless gaps for half splitting, True by default
         self.x2_use_gaps = self.conf("x2_use_gaps")
-
-        # coeff to grow window in all dimensions
+        # Coeff to grow window in all dimensions
         self.grow_coeff = self.conf("grow_coeff")
-
-        # coeff to shrink window in all dimensions
+        # Coeff to shrink window in all dimensions
         self.shrink_coeff = self.conf("shrink_coeff")
-
         self.bindings = {
             "reload": self.reload_config,
             "maximize": self.maximize,
@@ -102,23 +78,16 @@ class actions(extension, cfg):
     def center_geom(self, win,
                     change_geom: bool = False, degrade_coeff: float = 0.82):
         """ Move window to the center with geometry optional changing.
-
-        Args:
-            win: target window.
-            change_geom (bool): predicate to change geom to the [degrade_coeff]
-                                of the screen space in both dimenhions.
-            degrade_coeff (int): coefficient which denotes change geom of the
-                                 target window.
-        """
-        geom = {}
-        center = {}
-
+        win: target window.
+        change_geom (bool): predicate to change geom to the [degrade_coeff]
+        of the screen space in both dimenhions.
+        degrade_coeff (int): coefficient which denotes change geom of the
+        target window. """
+        geom, center = {}, {}
         if degrade_coeff > 1.0:
             degrade_coeff = 1.0
-
         center['x'] = int(self.current_resolution['width'] / 2)
         center['y'] = int(self.current_resolution['height'] / 2)
-
         if not change_geom:
             geom['width'] = int(win.rect.width)
             geom['height'] = int(win.rect.height)
@@ -129,19 +98,13 @@ class actions(extension, cfg):
             geom['height'] = int(
                 self.current_resolution['height'] * degrade_coeff
             )
-
         geom['x'] = center['x'] - int(geom['width'] / 2)
         geom['y'] = center['y'] - int(geom['height'] / 2)
-
         return geom
 
     def move_center(self, resize: str) -> None:
-        """ Move window to center.
-
-        Args:
-            resize (str): predicate which shows resize target window or not.
-
-        """
+        """ Move window to center
+        resize (str): predicate which shows resize target window or not. """
         focused = self.i3ipc.get_tree().find_focused()
         if resize in {"default", "none"}:
             geom = self.center_geom(focused)
@@ -165,11 +128,9 @@ class actions(extension, cfg):
     @staticmethod
     def multiple_geom(win, coeff: float) -> Mapping[str, int]:
         """ Generic function to shrink/grow floating window geometry.
-
-            Args:
-                win: target window.
-                coeff (float): generic coefficient which denotes grow/shrink
-                               geom of the target window.
+                win: target window
+                coeff (float): generic coefficient which
+                denotes grow/shrink geom of the target window.
         """
         return {
             'x': int(win.rect.x),
@@ -193,24 +154,19 @@ class actions(extension, cfg):
     def x2(self, mode: str) -> None:
         """ Move window to the 1st or 2nd half of the screen space with the
             given orientation.
-
-        Args:
             mode (h1,h2,v1,v2): defines h1,h2,v1 or v2 half of
                                 screen space to move.
         """
         curr_scr = self.current_resolution
+        half_width = int(curr_scr['width'] / 2)
+        half_height = int(curr_scr['height'] / 2)
         self.current_win = self.i3ipc.get_tree().find_focused()
-
         if self.x2_use_gaps:
             gaps = self.useless_gaps
         else:
             gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
-
-        half_width = int(curr_scr['width'] / 2)
-        half_height = int(curr_scr['height'] / 2)
         double_dgaps = int(gaps['d'] * 2)
         double_sgaps = int(gaps['s'] * 2)
-
         if mode in {'h1', 'hup'}:
             geom = {
                 'x': gaps['a'],
@@ -241,7 +197,6 @@ class actions(extension, cfg):
             }
         else:
             return
-
         if self.current_win is not None:
             if not self.geom_list[-1]:
                 self.get_prev_geom()
@@ -249,13 +204,10 @@ class actions(extension, cfg):
                 prev = self.geom_list[-1].get('id', {})
                 if prev != self.current_win.id:
                     geom = self.get_prev_geom()
-
             actions.set_geom(self.current_win, geom)
 
     def quad(self, mode: int) -> None:
         """ Move window to the 1,2,3,4 quad of 2D screen space
-
-        Args:
             mode (1,2,3,4): defines 1,2,3 or 4 quad of
                             screen space to move.
         """
@@ -264,20 +216,16 @@ class actions(extension, cfg):
         except TypeError:
             print("cannot convert mode={mode} to int")
             return
-
         curr_scr = self.current_resolution
         self.current_win = self.i3ipc.get_tree().find_focused()
-
         if self.quad_use_gaps:
             gaps = self.useless_gaps
         else:
             gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
-
         half_width = int(curr_scr['width'] / 2)
         half_height = int(curr_scr['height'] / 2)
         double_dgaps = int(gaps['d'] * 2)
         double_sgaps = int(gaps['s'] * 2)
-
         if mode == 1:
             geom = {
                 'x': gaps['a'],
@@ -308,7 +256,6 @@ class actions(extension, cfg):
             }
         else:
             return
-
         if self.current_win is not None:
             if not self.geom_list[-1]:
                 self.get_prev_geom()
@@ -321,10 +268,7 @@ class actions(extension, cfg):
 
     def maximize(self, by: str = 'XY') -> None:
         """ Maximize window by attribute.
-
-        Args:
-            by (str): maximize by X, Y or XY.
-        """
+        by (str): maximize by X, Y or XY. """
         geom = {}
 
         self.current_win = self.i3ipc.get_tree().find_focused()
@@ -365,13 +309,10 @@ class actions(extension, cfg):
     def maximized_geom(self, geom: dict, gaps: dict,
                        byX: bool = False, byY: bool = False) -> dict:
         """ Return maximized geom.
-
-        Args:
-            geom (dict): var to return maximized geometry.
-            gaps (dict): dict to define useless gaps.
-            byX (bool): maximize by X.
-            byY (bool): maximize by Y.
-        """
+        geom (dict): var to return maximized geometry.
+        gaps (dict): dict to define useless gaps.
+        byX (bool): maximize by X.
+        byY (bool): maximize by Y. """
         if gaps == {}:
             gaps = self.useless_gaps
         if byX:
@@ -384,12 +325,9 @@ class actions(extension, cfg):
 
     @staticmethod
     def set_geom(win, geom: dict) -> dict:
-        """ Generic function to set geometry.
-
-        Args:
-            win: target window to change windows.
-            geom (dict): geometry.
-        """
+        """ Generic function to set geometry
+        win: target window to change windows
+        geom (dict): geometry. """
         win.command(f"move absolute position {geom['x']} {geom['y']}")
         win.command(f"resize set {geom['width']} {geom['height']} px")
 
@@ -400,20 +338,17 @@ class actions(extension, cfg):
             direction = "horizontal"
         elif direction == "orthogonal":
             direction = "vertical"
-
         if int(amount) < 0:
             mode = "plus"
             amount = -amount
         else:
             mode = "minus"
-
         return direction, mode, int(amount)
 
     @staticmethod
     def set_resize_params_multiple(direction, amount, vertical):
         """ Set resize parameters for the block of windows """
         mode = ""
-
         if direction == "horizontal":
             direction = "width"
         elif direction == "vertical":
@@ -426,21 +361,18 @@ class actions(extension, cfg):
             direction = "up"
         elif direction == "bottom":
             direction = "down"
-
         if int(amount) < 0:
             mode = "shrink"
             amount = -int(amount)
         else:
             mode = "grow"
-
         return direction, mode, int(amount)
 
     def resize(self, direction, amount):
         """ Resize the current container along to the given direction. If there
-            is only a single container, resize by adjusting gaps. If the
-            direction is "natural", resize vertically in a splitv container,
-            else horizontally. If it is "orhtogonal", do the opposite.
-        """
+        is only a single container, resize by adjusting gaps. If the direction
+        is "natural", resize vertically in a splitv container, else
+        horizontally. If it is "orhtogonal", do the opposite. """
         if direction not in [
                 "natural", "orthogonal", "horizontal", "vertical",
                 "top", "bottom", "left", "right",
@@ -450,10 +382,8 @@ class actions(extension, cfg):
             except ValueError:
                 print("Bad resize amount given.")
                 return
-
         node = self.i3ipc.get_tree().find_focused()
         single, vertical = True, False
-
         # Check if there is only a single leaf.
         # If not, check if the curent container is in a vertical split.
         while True:
@@ -488,11 +418,7 @@ class actions(extension, cfg):
     @staticmethod
     def create_geom_from_rect(rect) -> dict:
         """ Create geometry from the given rectangle.
-
-        Args:
-            rect: rect to extract geometry from.
-
-        """
+            rect: rect to extract geometry from. """
         geom = {}
         geom['x'] = rect.x
         geom['y'] = rect.y
@@ -503,20 +429,15 @@ class actions(extension, cfg):
 
     def save_geom(self, target_win=None) -> dict:
         """ Save geometry.
-
-        Args:
-            target_win: [optional] denotes target window.
-
-        """
+        target_win: [optional] denotes target window. """
         if target_win is None:
             target_win = self.current_win
         return actions.create_geom_from_rect(target_win.rect)
 
     @staticmethod
     def focused_order(node):
-        """Iterate through the children of "node"
-           in most recently focused order.
-        """
+        """ Iterate through the children of "node" in most recently focused
+        order. """
         for focus_id in node.focus:
             return next(n for n in node.nodes if n.id == focus_id)
 
@@ -527,10 +448,8 @@ class actions(extension, cfg):
 
     @staticmethod
     def is_in_line(old, new, direction):
-        """
-        Return true if container "new" can reasonably be considered to be in
-        direction "direction" of container "old".
-        """
+        """ Return true if container "new" can reasonably be considered to be
+        in direction of container "old" """
         if direction in {"up", "down"}:
             return new.rect.x <= old.rect.x + old.rect.width*0.9 \
                 and new.rect.x + new.rect.width >= \
@@ -544,10 +463,8 @@ class actions(extension, cfg):
         return None
 
     def output_in_direction(self, output, window, direction):
-        """
-            Return the output in direction "direction" of window "window" on
-            output "output".
-        """
+        """ Return the output in direction "direction" of window "window" on
+        output """
         tree = self.i3ipc.get_tree().find_focused()
         for new in self.focused_order(tree):
             if new.name == "__i3":
@@ -561,24 +478,19 @@ class actions(extension, cfg):
                 or (direction == "up" and nrct.y + nrct.height == orct.y) \
                 or (direction == "down" and nrct.y == orct.y + orct.height):
                 return new
-
         return None
 
     def focus_tab(self, direction) -> None:
-        """
-            Cycle through the innermost stacked or tabbed ancestor container,
-            or through floating containers.
-        """
+        """ Cycle through the innermost stacked or tabbed ancestor container,
+        or through floating containers. """
         if direction == "next":
             delta = 1
         elif direction == "prev":
             delta = -1
         else:
             return
-
         tree = self.i3ipc.get_tree()
         node = tree.find_focused()
-
         # Find innermost tabbed or stacked container, or detect floating.
         while True:
             parent = node.parent
@@ -588,7 +500,6 @@ class actions(extension, cfg):
                     or parent.type == "floating_con":
                 break
             node = parent
-
         if parent.type == "floating_con":
             node = parent
             parent = node.parent
@@ -596,14 +507,11 @@ class actions(extension, cfg):
             parent_nodes = sorted(parent.floating_nodes, key=lambda n: n.id)
         else:
             parent_nodes = parent.nodes
-
         index = parent_nodes.index(node)
         node = parent_nodes[(index + delta) % len(parent_nodes)]
-
         # Find most recently focused leaf in new tab.
         while node.nodes:
             node = self.focused_child(node)
-
         self.i3ipc.command(f'[con_id="{node.id}"] focus')
 
     def visible_ws(self):
@@ -617,12 +525,10 @@ class actions(extension, cfg):
         focused = None
         ws_list = self.visible_ws()
         ws_numbers = []
-
         for ws in ws_list:
             if ws.focused == True:
                 focused = ws
                 break
-
         ws_index = None
         if focused is not None:
             for index, ws in enumerate(ws_list):
@@ -651,9 +557,7 @@ class actions(extension, cfg):
             delta = -1
         else:
             return
-
         node = self.i3ipc.get_tree().find_focused()
-
         # Find innermost tabbed or stacked container.
         while True:
             parent = node.parent
@@ -662,9 +566,7 @@ class actions(extension, cfg):
             if parent.layout in ["tabbed", "stacked"]:
                 break
             node = parent
-
         index = parent.nodes.index(node)
-
         if 0 <= index + delta < len(parent.nodes):
             other = parent.nodes[index + delta]
             self.i3ipc.command(
