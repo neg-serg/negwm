@@ -1,8 +1,5 @@
-#!/usr/bin/python3
-
 import os
 from typing import List
-
 from . misc import Misc
 from . cfg import cfg
 from . extension import extension
@@ -206,12 +203,10 @@ class conf_gen(extension, cfg):
 
         def info(config: dict, tag: str, attr: str, fill: str) -> str:
             """ Create rule in i3 commands format
-                Args:
-                    config (dict): extension config.
-                    tag (str): target tag.
-                    attr (str): tag attrubutes.
-                    fill (str): attribute to fill.
-            """
+                config (dict): extension config.
+                tag (str): target tag.
+                attr (str): tag attrubutes.
+                fill (str): attribute to fill. """
             conv_dict_attr = {
                 'class': 'class',
                 'instance': 'instance',
