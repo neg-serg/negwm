@@ -1,7 +1,6 @@
 import os
 import shutil
 import subprocess
-
 from lib.misc import Misc
 
 class checker():
