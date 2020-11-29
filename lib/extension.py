@@ -11,13 +11,8 @@ class extension():
 
     def send_msg(self, args: List) -> None:
         """ Creates bindings from socket IPC to current module public function
-            calls.
-
-            This function defines bindings to the module methods that
-            can be used by external users as i3-bindings, etc. Need the
-            [send] binary which can send commands to the appropriate socket.
-
-            Args:
-                args (List): argument list for the selected function.
-        """
+        calls. This function defines bindings to the module methods that can be
+        used by external users as i3-bindings, etc. Need the [send] binary
+        which can send commands to the appropriate socket.
+        args (List): argument list for the selected function. """
         self.bindings[args[0]](*args[1:])
