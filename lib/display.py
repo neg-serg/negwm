@@ -1,10 +1,8 @@
-""" Handle X11 screen tasks with randr extension
-"""
+""" Handle X11 screen tasks with randr extension """
 
 import subprocess
 from Xlib import display
 from Xlib.ext import randr
-
 from misc import Misc
 
 
@@ -41,7 +39,6 @@ class Display():
                         delimiter +
                         str(res['height_in_pixels'])
                     )
-
         return cls.resolution_list
 
     @classmethod
