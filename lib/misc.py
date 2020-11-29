@@ -1,8 +1,5 @@
-""" Various helper functions
-
-    Class for this is created for the more well defined namespacing and more
-    simple import.
-"""
+""" Various helper functions Class for this is created for the more well
+defined namespacing and more simple import. """
 import os
 import subprocess
 import errno
@@ -11,16 +8,11 @@ import operator
 from typing import List
 
 class Misc():
-    """ Implements various helper functions
-    """
-
+    """ Implements various helper functions """
     @staticmethod
     def create_dir(dirname) -> None:
         """ Helper function to create directory
-
-            Args:
-                dirname(str): directory name to create
-        """
+            dirname(str): directory name to create """
         try:
             os.makedirs(dirname)
         except OSError as oserr:
@@ -35,11 +27,8 @@ class Misc():
     @staticmethod
     def notify_msg(msg: str, prefix: str = " ") -> None:
         """ Send messages via notify-osd based notifications.
-
-            Args:
-                msg: message string.
-                prefix: optional prefix for message string.
-        """
+            msg: message string.
+            prefix: optional prefix for message string. """
 
         def get_pids(process) -> bool:
             try:
@@ -98,10 +87,8 @@ class Misc():
     @staticmethod
     def parse_attr(attrib_list: List, end='"] ') -> str:
         """ Create attribute matching string.
-            Args:
-                tag (str): target tag.
-                attr (str): target attrubute.
-        """
+            tag (str): target tag.
+            attr (str): target attrubute. """
         ret = ''
         if len(attrib_list) > 1:
             ret += '('
@@ -138,10 +125,7 @@ class Misc():
         if check_config:
             error_data = check_config.encode('utf-8')
             print(error_data)
-
             if remove:
-                # remove invalid config
-                os.remove(conf_gen_path)
-
+                os.remove(conf_gen_path) # remove invalid config
             return False
         return True
