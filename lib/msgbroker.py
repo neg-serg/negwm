@@ -1,19 +1,13 @@
 """ Module contains routines used by several another modules.
-
-Daemon manager and mod daemon:
-    Mod daemon creates appropriate files in the /dev/shm directory.
-
-    Daemon manager handles all requests to this named pipe based API with help
-    of asyncio.
-"""
+Daemon manager and mod daemon: Mod daemon creates appropriate files in the
+/dev/shm directory. Daemon manager handles all requests to this named pipe
+based API with help of asyncio. """
 
 import asyncio
 
-
 class MsgBroker():
-    """ This is asyncio message broker for negi3wm.
-        Every module has indivisual main loop with indivisual neg-ipc-file.
-    """
+    """ This is asyncio message broker for negi3wm. Every module has indivisual
+    main loop with indivisual neg-ipc-file. """
     lock = asyncio.Lock()
 
     @classmethod
