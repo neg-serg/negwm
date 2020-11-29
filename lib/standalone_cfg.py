@@ -1,8 +1,6 @@
 """ Dynamic TOML-based config for basic negi3wm.
-
-It is the simplified version of cfg for modules like polybar_vol, etc.
-There are no external dependecies like i3 or asyncio.
-
+It is the simplified version of cfg for modules like polybar_vol, etc. There
+are no external dependecies like i3 or asyncio.
 """
 
 import sys
@@ -12,33 +10,23 @@ import asyncio
 import inotipy
 from lib.misc import Misc
 
-
 class modconfig():
     def __init__(self):
-        # detect current extension
-        self.mod = self.__class__.__name__
-
-        # config dir path
-        self.i3_cfg_path = Misc.i3path() + '/cfg/'
-
+        self.mod = self.__class__.__name__ # detect current extension
+        self.i3_cfg_path = Misc.i3path() + '/cfg/' # config dir path
+        self.cfg = None
         # extension config path
         self.mod_cfg_path = self.i3_cfg_path + self.mod + '.toml'
-
-        # load current config
-        self.load_config()
-
+        self.load_config() # load current config
         # run inotify watcher to update config on change.
         self.run_inotify_watchers()
 
     def reload_config(self):
-        """ Reload config.
-            Call load_config and reinit all stuff.
-        """
+        """ Reload config. Call load_config and reinit all stuff. """
         prev_conf = self.cfg
         try:
             self.load_config()
             self.__init__()
-            self.special_reload()
         except Exception:
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
@@ -46,10 +34,7 @@ class modconfig():
 
     def conf(self, *conf_path):
         """ Helper to extract config for current tag.
-
-        Args:
-            conf_path: path of config from where extract.
-        """
+            conf_path: path of config from where extract. """
         ret = {}
         for part in conf_path:
             if not ret:
@@ -60,31 +45,25 @@ class modconfig():
 
     def load_config(self):
         """ Reload config itself and convert lists in it to sets for the better
-            performance.
-        """
+            performance. """
         with open(self.mod_cfg_path, "r") as fp:
             self.cfg = qtoml.load(fp)
 
     def dump_config(self):
-        """ Dump current config, can be used for debugging.
-        """
+        """ Dump current config, can be used for debugging. """
         with open(self.mod_cfg_path, "r+") as fp:
             qtoml.dump(self.cfg, fp)
             self.cfg = qtoml.load(fp)
 
     def cfg_watcher(self):
-        """ cfg watcher to update modules config in realtime.
-        """
+        """ cfg watcher to update modules config in realtime. """
         watcher = inotipy.Watcher.create()
         watcher.watch(self.i3_cfg_path, inotipy.IN.MODIFY)
         return watcher
 
     async def cfg_worker(self, watcher):
         """ Reload target config
-
-            Args:
-                watcher: watcher for cfg.
-        """
+            watcher: watcher for cfg. """
         while True:
             event = await watcher.get()
             if event.name == self.mod + '.toml':
@@ -92,7 +71,5 @@ class modconfig():
                 Misc.notify_msg(f'[Reloaded {self.mod}]')
 
     def run_inotify_watchers(self):
-        """ Start all watchers here via ensure_future to run it in background.
-        """
+        """ Start all watchers here via ensure_future in background. """
         asyncio.ensure_future(self.cfg_worker(self.cfg_watcher()))
-
