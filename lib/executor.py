@@ -168,19 +168,18 @@ class env():
         """ This function fill self.term_opts for settings.abs
             config(dict): config dictionary which should be adopted to
             commandline options or settings. """
-        if self.term == "alacritty":
-            custom_config = self.create_alacritty_cfg(
-                self.alacritty_cfg_dir, config, name
-            )
-            multiprocessing.Process(
-                target=self.yaml_config_create, args=(custom_config,),
-                daemon=True
-            ).start()
-            self.term_opts = [
-                "alacritty", "--live-config-reload", "--config-file",
-                expanduser(custom_config), "--class", self.wclass,
-                "-t", self.title, "-e", self.default_shell, "-i", "-c"
-            ]
+        custom_config = self.create_alacritty_cfg(
+            self.alacritty_cfg_dir, config, name
+        )
+        multiprocessing.Process(
+            target=self.yaml_config_create, args=(custom_config,),
+            daemon=True
+        ).start()
+        self.term_opts = [
+            "alacritty", "--live-config-reload", "--config-file",
+            expanduser(custom_config), "--class", self.wclass,
+            "-t", self.title, "-e", self.default_shell, "-i", "-c"
+        ]
 
 
 class executor(extension, cfg):
