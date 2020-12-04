@@ -176,7 +176,7 @@ class env():
             daemon=True
         ).start()
         self.term_opts = [
-            "alacritty", "--live-config-reload", "--config-file",
+            "alacritty", "--config-file",
             expanduser(custom_config), "--class", self.wclass,
             "-t", self.title, "-e", self.default_shell, "-i", "-c"
         ]
