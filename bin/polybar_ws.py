@@ -42,22 +42,16 @@ class polybar_ws(modconfig):
     def __init__(self):
         # initialize asyncio loop
         self.loop = asyncio.get_event_loop()
-
         # Initialize modcfg.
         modconfig.__init__(self)
-
         self.conn = None
-
         self.ws_name = ""
         self.binding_mode = ""
-
         # regexes used to extract current binding mode.
         self.mode_regex = re.compile('.*mode ')
         self.split_by = re.compile('[;,]')
-
         self.ws_color = '#8FA8C7'
         self.binding_color = '#005fd7'
-
         self.ws_name = ""
 
     async def on_ws_focus(self, _, event):
@@ -67,7 +61,7 @@ class polybar_ws(modconfig):
         await self.update_status()
 
     @staticmethod
-    def colorize(s, color, fontnum=5):
+    def colorize(s, color, fontnum=4):
         polybar_font = 'T' + str(fontnum)
         return f"%{{{polybar_font}}}%{{F{color}}}{s}%{{F-}}%{{T-}}"
 
@@ -96,18 +90,15 @@ class polybar_ws(modconfig):
     async def main(self):
         """ Mainloop starting here. """
         asyncio.set_event_loop(self.loop)
-
         self.conn = await Connection(auto_reconnect=True).connect()
         self.conn.on(i3ipc.Event.WORKSPACE_FOCUS, self.on_ws_focus)
         self.conn.on(i3ipc.Event.BINDING, self.on_event)
-
         workspaces = await self.conn.get_workspaces()
         for ws in workspaces:
             if ws.focused:
                 ws_name = ws.name
                 self.ws_name = ws_name.split(' :: ')[1:][0]
                 break
-
         await self.update_status()
         await self.conn.main()
 
@@ -115,7 +106,6 @@ class polybar_ws(modconfig):
         """ Print workspace information here. Event-based. """
         workspace = self.ws_name
         if not workspace[0].isalpha():
-            # workspace[2] = '%{F#657491}' + workspace[2] + '%{F-}'
             workspace = polybar_ws.colorize(
                 workspace[0], color=self.ws_color
             ) + workspace[1] + '%{F#8BAAC7}' + \
