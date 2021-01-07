@@ -18,10 +18,10 @@ focus_on_window_activation smart
 focus_wrapping yes
 mouse_warping none
 
-set $term "1 ::  α:term"
-set $web "2 ::  β:web"
+set $term "1 ::  α:term"
+set $web "2 ::  β:web"
 set $doc "3 ::  γ:doc"
-set $dev "4 ::  δ:dev"
+set $dev "4 ::  δ:dev"
 set $gfx "5 ::  ε:gfx"
 set $draw "6 ::  ζ:draw"
 set $sys "7 ::  η:sys"

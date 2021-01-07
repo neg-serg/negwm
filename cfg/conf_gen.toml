@@ -11,10 +11,10 @@ sections = [
 ]
 
 ws_list = [
-    " α:term",
-    " β:web",
+    " α:term",
+    " β:web",
     " γ:doc",
-    " δ:dev",
+    " δ:dev",
     " ε:gfx",
     " ζ:draw",
     " η:sys",
