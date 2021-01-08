@@ -62,7 +62,7 @@ class polybar_mpd(modconfig):
         artist = song_data.get('Artist', '')
         title = song_data.get('Title', '')
         song_time = song_data.get('time', '')
-        lhs = "%{F#005f87}〉%{F#005fd7}〉%{F#395573} %{F-}"
+        lhs = " %{F#005f87}〉%{F#005fd7}〉%{F#395573} %{F-}"
         delim = '%{F#395573}/%{F-}'
         if artist and title and song_time:
             sys.stdout.write(f'{lhs}{artist} ― {title} ' \
