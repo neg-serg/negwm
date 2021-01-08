@@ -1,7 +1,7 @@
 #!/bin/dash
 gset="gsettings set"
 
-font='Iosevka Heavy 11.5'
+font='Iosevka Heavy 12'
 icons='korla'
 gtk_theme='oomox-NegDark'
 cursor_theme='SpaceKCursors'
