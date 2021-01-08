@@ -1,75 +1,24 @@
-#!/bin/zsh
+#!/bin/dash
+gset="gsettings set"
 
-font='Iosevka Term 12'
+font='Iosevka Heavy 11.5'
 icons='korla'
 gtk_theme='oomox-NegDark'
 cursor_theme='SpaceKCursors'
-cursor_size='128'
+cursor_size='64'
 
-gtk_settings() {
-    if [ -z $1 ]; then
-        gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme"
-    else
-        gsettings set org.gnome.desktop.interface gtk-theme "$1"
-    fi
-    gsettings set org.gnome.desktop.interface gtk-key-theme Emacs
-
-    gsettings set org.gnome.desktop.interface icon-theme "$icons"
-    gsettings set org.gnome.desktop.interface cursor-theme "$cursor_theme"
-    gsettings set org.gnome.desktop.interface cursor-size "$cursor_size"
-}
-
-gnome_settings() {
-    gsettings set org.gnome.desktop.background show-desktop-icons true
-    gsettings set org.gnome.desktop.interface clock-show-date true
-    gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
-    gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
-    gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "[{'Gdk/WindowScalingFactor', <2>}]"
-    gsettings set org.gnome.desktop.interface text-scaling-factor '1'
-}
-
-font_settings() {
-    gsettings set org.gnome.desktop.interface monospace-font-name "$font"
-    gsettings set org.gnome.desktop.interface document-font-name "$font"
-    gsettings set org.gnome.desktop.interface font-name "$font"
-    gsettings set org.gnome.desktop.wm.preferences titlebar-font "$font"
-}
-
-icon_settings() {
-    if [ -z $1 ]; then
-        gsettings set org.gnome.desktop.interface icon-theme "$icons"
-    else
-        gsettings set org.gnome.desktop.interface icon-theme "$1"
-    fi
-    gsettings set org.gnome.desktop.background show-desktop-icons true
-}
-
-main() {
-    case $1 in
-        '-g')
-            shift
-            {
-                gtk_settings "$1"
-                gnome_settings
-            } &
-        ;;
-        '-f')
-            shift
-            font_settings &
-        ;;
-        '-i')
-            shift
-            icon_settings "$1" &
-        ;;
-        *)
-            shift 2>/dev/null
-            {
-                font_settings
-                gtk_settings "$1"
-                gnome_settings
-            } &
-        ;;
-    esac
-}
-
-main "$@"
+$gset org.gnome.desktop.background show-desktop-icons false
+$gset org.gnome.desktop.interface clock-show-date false
+$gset org.gnome.desktop.interface cursor-size "$cursor_size"
+$gset org.gnome.desktop.interface cursor-theme "$cursor_theme"
+$gset org.gnome.desktop.interface document-font-name "$font"
+$gset org.gnome.desktop.interface font-name "$font"
+$gset org.gnome.desktop.interface gtk-key-theme Emacs
+$gset org.gnome.desktop.interface gtk-theme "$gtk_theme"
+$gset org.gnome.desktop.interface icon-theme "$icons"
+$gset org.gnome.desktop.interface monospace-font-name "$font"
+$gset org.gnome.desktop.interface text-scaling-factor '1'
+$gset org.gnome.desktop.wm.preferences titlebar-font "$font"
+$gset org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
+$gset org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
+$gset org.gnome.settings-daemon.plugins.xsettings overrides "[{'Gdk/WindowScalingFactor', <2>}]"
