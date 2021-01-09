@@ -1,24 +1,24 @@
 #!/bin/dash
 gset="gsettings set"
 
-font='Iosevka Heavy 12'
-icons='korla'
-gtk_theme='oomox-NegDark'
-cursor_theme='SpaceKCursors'
-cursor_size='64'
+[ -z $GUI_FONT ] && GUI_FONT='Iosevka Heavy 12'
+[ -z $GUI_ICONS ] && GUI_ICONS='korla'
+[ -z $GUI_GTK_THEME ] && GUI_GTK_THEME='oomox-NegDark'
+[ -z $GUI_CURSOR_THEME ] && GUI_CURSOR_THEME='SpaceKCursors'
+[ -z $GUI_CURSOR_SIZE ] && GUI_CURSOR_SIZE='64'
 
 $gset org.gnome.desktop.background show-desktop-icons false
 $gset org.gnome.desktop.interface clock-show-date false
-$gset org.gnome.desktop.interface cursor-size "$cursor_size"
-$gset org.gnome.desktop.interface cursor-theme "$cursor_theme"
-$gset org.gnome.desktop.interface document-font-name "$font"
-$gset org.gnome.desktop.interface font-name "$font"
+$gset org.gnome.desktop.interface cursor-theme "$GUI_CURSOR_THEME"
+$gset org.gnome.desktop.interface cursor-size "$GUI_CURSOR_SIZE"
 $gset org.gnome.desktop.interface gtk-key-theme Emacs
-$gset org.gnome.desktop.interface gtk-theme "$gtk_theme"
-$gset org.gnome.desktop.interface icon-theme "$icons"
-$gset org.gnome.desktop.interface monospace-font-name "$font"
+$gset org.gnome.desktop.interface gtk-theme "$GUI_GTK_THEME"
+$gset org.gnome.desktop.interface icon-theme "$GUI_ICONS"
+$gset org.gnome.desktop.interface document-font-name "$GUI_FONT"
+$gset org.gnome.desktop.interface font-name "$GUI_FONT"
+$gset org.gnome.desktop.interface monospace-font-name "$GUI_FONT"
 $gset org.gnome.desktop.interface text-scaling-factor '1'
-$gset org.gnome.desktop.wm.preferences titlebar-font "$font"
+$gset org.gnome.desktop.wm.preferences titlebar-font "$GUI_FONT"
 $gset org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
 $gset org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
 $gset org.gnome.settings-daemon.plugins.xsettings overrides "[{'Gdk/WindowScalingFactor', <2>}]"
