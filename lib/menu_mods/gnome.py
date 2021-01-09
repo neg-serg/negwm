@@ -30,17 +30,12 @@ class gnome():
                 f'{self.menu.wrap_str(prompt)} {self.menu.conf("prompt")}'
         }
 
-    def apply_settings(self, selection, *cmd_opts):
+    def apply_settings(self):
         """ Apply selected gnome settings """
-        ret = ""
-        if selection is not None:
-            ret = selection.decode('UTF-8').strip()
-
-            if ret is not None and ret != '':
-                try:
-                    subprocess.call([self.gsettings_script, *cmd_opts, ret])
-                except subprocess.CalledProcessError as proc_err:
-                    Misc.print_run_exception_info(proc_err)
+        try:
+            subprocess.Popen([self.gsettings_script])
+        except subprocess.CalledProcessError as proc_err:
+            Misc.print_run_exception_info(proc_err)
 
     def change_icon_theme(self):
         """ Changes icon theme with help of gsd-xsettings """
@@ -69,7 +64,8 @@ class gnome():
                 Misc.print_run_exception_info(proc_err)
 
         if selection:
-            self.apply_settings(selection, '-i')
+            os.environ.update({'GUI_ICONS': selection.decode('UTF-8').strip()})
+            self.apply_settings()
 
     def change_gtk_theme(self):
         """ Changes gtk theme with help of gsd-xsettings """
@@ -97,5 +93,5 @@ class gnome():
                 Misc.print_run_exception_info(proc_err)
 
         if selection:
-            self.apply_settings(selection, '-a')
-
+            os.environ.update({'GUI_GTK_THEME': selection.decode('UTF-8').strip()})
+            self.apply_settings()
