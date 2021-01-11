@@ -103,7 +103,7 @@ exec_no_startup_id = [
     ['Mod4+Shift+8', 'mpc -q volume 100 || amixer -q set Master 100% unmute'],
     ['Mod4+c', '~/bin/clip'],
     ['Mod4+m', '~/bin/scripts/rofi-mpd.py'],
-    ['Mod4+p', '~/bin/scripts/rofi_tmux_urls'],
+    ['Mod4+p', '~/bin/scripts/rofi-tmux-urls'],
     ['Mod4+Shift+6', '~/bin/wl'],
     ['Mod4+Shift+i', '~/bin/scripts/rofi_networkmanager'],
     ['Mod4+Shift+l', '~/bin/scripts/rofi_lutris'],
