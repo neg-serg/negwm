@@ -175,13 +175,12 @@ bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi-mpd.py
 bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi-tmux-urls
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi-nm
-bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi_lutris
+bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi-lutris
 bindsym Mod4+Shift+m exec --no-startup-id ~/bin/scripts/rofi-mpd
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
-bindsym Print exec --no-startup-id ~/bin/scripts/screenshot
 bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
-bindsym Mod4+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-bindsym Mod4+Shift+apostrophe exec --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/i3_restart
+bindsym Mod4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_reload
+bindsym Mod4+Shift+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_restart
 bindsym Mod4+space exec --no-startup-id dunstctl close-all
 bindsym Mod4+Shift+9 exec --no-startup-id dunstctl history-pop
 
