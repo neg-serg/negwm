@@ -45,4 +45,4 @@ class="youtube-get"
 font="Iosevka"
 font_size=27.5
 font_normal="Medium"
-exec_dtach='~/bin/scripts/straw_viewer_wrapper'
+exec_dtach='~/bin/scripts/straw'
