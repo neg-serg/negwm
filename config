@@ -123,16 +123,13 @@ bindsym Mod4+l focus right
 
 
 
-bindsym XF86AudioPrev exec --no-startup-id mpc -q prev
-bindsym XF86AudioNext exec --no-startup-id mpc -q next
-bindsym XF86AudioPlay exec --no-startup-id mpc -q play
-bindsym XF86AudioStop exec --no-startup-id mpc -q stop
-
-
-
-bindsym Mod4+comma exec --no-startup-id mpc -q prev
-bindsym Mod4+period exec --no-startup-id mpc -q next
-bindsym Mod4+Shift+2 exec --no-startup-id mpc -q toggle
+bindsym Mod4+XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym Mod4+XF86AudioNext exec --no-startup-id playerctl next
+bindsym Mod4+XF86AudioPlay exec --no-startup-id playerctl play
+bindsym Mod4+XF86AudioStop exec --no-startup-id playerctl stop
+bindsym Mod4+comma exec --no-startup-id playerctl previous
+bindsym Mod4+period exec --no-startup-id playerctl next
+bindsym Mod4+Shift+2 exec --no-startup-id playerctl play-pause
 
 
 
@@ -168,8 +165,8 @@ bindsym Mod4+4 exec ~/bin/scripts/screenshot
 bindsym Mod4+Shift+4 exec flameshot gui
 bindsym Mod4+Control+4 exec ~/bin/scripts/screenshot -r
 bindsym Mod1+grave exec --no-startup-id rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run
-bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
-bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
+bindsym Mod4+8 exec --no-startup-id playerctl volume 0.0 || amixer -q set Master 0 mute
+bindsym Mod4+Shift+8 exec --no-startup-id playerctl volume 1.0 || amixer -q set Master 65536 unmute
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
 bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi-tmux-urls
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl

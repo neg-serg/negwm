@@ -348,19 +348,14 @@ class conf_gen(extension, cfg):
         def focus() -> str:
             return self.bind('focus', 'focus', '')
 
-        def mpd_media() -> str:
-            cmd = 'exec --no-startup-id mpc -q'
-            return self.bind('mpd_media', cmd, '')
-
-        def mpd_normal() -> str:
-            cmd = 'exec --no-startup-id mpc -q'
-            return self.bind('mpd_normal', cmd, '')
+        def media() -> str:
+            cmd = 'exec --no-startup-id playerctl'
+            return self.bind('media', cmd, '')
 
         def exec_binds() -> str:
             exec_ret = ''
             exec_ret += '\n' \
-                + '\n' + mpd_media() \
-                + '\n' + mpd_normal() \
+                + '\n' + media() \
                 + '\n' + vol_def() \
                 + '\n' + menu_def() \
                 + '\n' + scratchpad_def() \

@@ -99,8 +99,8 @@ exec = [
 
 exec_no_startup_id = [
     ['Mod1+grave', 'rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run'],
-    ['Mod4+8', 'mpc -q volume 0 || amixer -q set Master 0% mute'],
-    ['Mod4+Shift+8', 'mpc -q volume 100 || amixer -q set Master 100% unmute'],
+    ['Mod4+8', 'playerctl volume 0.0 || amixer -q set Master 0 mute'],
+    ['Mod4+Shift+8', 'playerctl volume 1.0 || amixer -q set Master 65536 unmute'],
     ['Mod4+c', '~/bin/clip'],
     ['Mod4+p', '~/bin/scripts/rofi-tmux-urls'],
     ['Mod4+Shift+6', '~/bin/wl'],
@@ -115,13 +115,9 @@ exec_no_startup_id = [
     ['Mod4+Shift+9', 'dunstctl history-pop'],
 ]
 
-[mpd_media]
-binds = [['XF86AudioPrev', 'XF86AudioNext', 'XF86AudioPlay', 'XF86AudioStop']]
-funcs = ['prev', 'next', 'play', 'stop']
-
-[mpd_normal]
-binds = [['comma', 'period', 'Shift+2']]
-funcs = ['prev', 'next', 'toggle']
+[media]
+binds = [['XF86AudioPrev', 'XF86AudioNext', 'XF86AudioPlay', 'XF86AudioStop', 'comma', 'period', 'Shift+2']]
+funcs = ['previous', 'next', 'play', 'stop', 'previous', 'next', 'play-pause']
 modkey = 'Mod4'
 
 [focus]
