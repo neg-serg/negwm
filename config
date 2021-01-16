@@ -171,12 +171,11 @@ bindsym Mod1+grave exec --no-startup-id rofi -display-drun "❯>" -drun-display-
 bindsym Mod4+8 exec --no-startup-id mpc -q volume 0 || amixer -q set Master 0% mute
 bindsym Mod4+Shift+8 exec --no-startup-id mpc -q volume 100 || amixer -q set Master 100% unmute
 bindsym Mod4+c exec --no-startup-id ~/bin/clip
-bindsym Mod4+m exec --no-startup-id ~/bin/scripts/rofi-mpd.py
 bindsym Mod4+p exec --no-startup-id ~/bin/scripts/rofi-tmux-urls
 bindsym Mod4+Shift+6 exec --no-startup-id ~/bin/wl
 bindsym Mod4+Shift+i exec --no-startup-id ~/bin/scripts/rofi-nm
 bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi-lutris
-bindsym Mod4+Shift+m exec --no-startup-id ~/bin/scripts/rofi-mpd
+bindsym Mod4+Shift+m exec --no-startup-id ~/bin/scripts/rofi-audio
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
 bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
 bindsym Mod4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_reload
