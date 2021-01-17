@@ -23,6 +23,17 @@ exec='ncmpcpp'
 opacity=0.8
 padding=[12, 12]
 
+[pamix]
+class="pamix"
+font="Iosevka"
+font_size=24
+font_normal="Medium"
+exec='pamix'
+exec_tmux=[['mixer', 'pamix']]
+opacity=0.8
+padding=[12, 12]
+statusline=0
+
 [neomutt]
 class="neomutt"
 font="Iosevka"

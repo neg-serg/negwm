@@ -28,9 +28,9 @@ spawn = 'teardrop'
 keybind_default_toggle = ['Mod4+d']
 
 [volcontrol]
-class = ['Pavucontrol']
+instance = ['pamix']
 geom = '895x314+1023+824'
-prog = 'pavucontrol'
+spawn = 'pamix'
 keybind_default_toggle = ['Mod4+Shift+p']
 
 [youtube]
