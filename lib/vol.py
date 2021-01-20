@@ -26,7 +26,6 @@ class vol(extension, cfg):
         self.use_mpv09 = self.conf("use_mpv09")
         self.mpd_socket = None # Define mpd socket
         self.mpd_playing = False # Default mpd status is False
-
         # MPD idle command listens to the player events by default.
         self.idle_cmd_str = "idle player\n"
         # MPD status string, which we need #send to extract most of information.
@@ -38,14 +37,6 @@ class vol(extension, cfg):
             "max": self.volume_max,
             "reload": self.reload_config,
         }
-        # Cache current window on focus.
-        self.i3ipc.on("window::focus", self.set_curr_win)
-        # Initial state for the current_win
-        self.current_win = self.i3ipc.get_tree().find_focused()
-
-    def set_curr_win(self, _, event) -> None:
-        """ Cache the current window. """
-        self.current_win = event.container
 
     def asyncio_init(self, loop) -> None:
         # Setup asyncio, because of it is used in another thread.
@@ -105,15 +96,6 @@ class vol(extension, cfg):
                 self.mpd_socket.recv(self.mpd_buf_size)
             finally:
                 self.mpd_socket.close()
-        elif self.use_mpv09 and self.current_win.window_class == "mpv":
-            subprocess.run([
-                    'xdotool', 'type', '--clearmodifiers',
-                    '--delay', '0', str(mpv_key) * abs(val)
-                ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=False
-            )
         elif self.use_mpv09:
             subprocess.run(['mpvc', 'set', 'volume', mpv_cmd, str(abs(val))],
                 stdout=subprocess.DEVNULL,
