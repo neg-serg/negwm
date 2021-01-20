@@ -69,7 +69,7 @@ theme = [
 
 autostart = [
     "exec_always --no-startup-id pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main",
-    "exec_always --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/gnome_settings",
+    "exec_always --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/gnome-conf",
     "exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run",
     "exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
     "exec --no-startup-id /usr/sbin/gpaste-client daemon",
@@ -109,8 +109,8 @@ exec_no_startup_id = [
     ['Mod4+Shift+m', '~/bin/scripts/rofi-audio'],
     ['Mod4+Shift+y', '~/bin/clip youtube-dw-list'],
     ['XF86Sleep', 'sudo systemctl suspend'],
-    ['Mod4+apostrophe', '${XDG_CONFIG_HOME}/i3/bin/i3_reload'],
-    ['Mod4+Shift+apostrophe', '${XDG_CONFIG_HOME}/i3/bin/i3_restart'],
+    ['Mod4+apostrophe', '${XDG_CONFIG_HOME}/i3/bin/i3-reload'],
+    ['Mod4+Shift+apostrophe', '${XDG_CONFIG_HOME}/i3/bin/i3-restart'],
     ['Mod4+space', 'dunstctl close-all'],
     ['Mod4+Shift+9', 'dunstctl history-pop'],
 ]

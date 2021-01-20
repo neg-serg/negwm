@@ -1,5 +1,5 @@
 exec_always --no-startup-id pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main
-exec_always --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/gnome_settings
+exec_always --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/gnome-conf
 exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id /usr/sbin/gpaste-client daemon
@@ -175,8 +175,8 @@ bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi-lutris
 bindsym Mod4+Shift+m exec --no-startup-id ~/bin/scripts/rofi-audio
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
 bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
-bindsym Mod4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_reload
-bindsym Mod4+Shift+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3_restart
+bindsym Mod4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3-reload
+bindsym Mod4+Shift+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3-restart
 bindsym Mod4+space exec --no-startup-id dunstctl close-all
 bindsym Mod4+Shift+9 exec --no-startup-id dunstctl history-pop
 

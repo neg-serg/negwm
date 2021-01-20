@@ -17,7 +17,7 @@ class gnome():
         self.menu = menu
         self.gtk_config = configparser.ConfigParser()
         self.gsettings_script = os.path.expanduser(
-            Misc.i3path() + 'bin/gnome_settings'
+            Misc.i3path() + 'bin/gnome-conf'
         )
 
     def menu_params(self, length, prompt):
