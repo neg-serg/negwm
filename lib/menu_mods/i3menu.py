@@ -29,11 +29,9 @@ class i3menu():
                 out.decode('UTF-8')
             )[0]['error'])[2:]
         ]
-
         lst.remove('nop')
         lst.extend(['splitv', 'splith'])
         lst.sort()
-
         return lst
 
     def i3_cmd_args(self, cmd: str) -> List[str]:
@@ -56,11 +54,9 @@ class i3menu():
             return [""]
 
     def cmd_menu(self) -> int:
-        """ Menu for i3 commands with hackish autocompletion.
-        """
+        """ Menu for i3 commands with hackish autocompletion. """
         # set default menu args for supported menus
         cmd = ''
-
         try:
             menu = subprocess.run(
                 self.menu.args({}),
@@ -116,4 +112,3 @@ class i3menu():
 
         if not ok:
             subprocess.run(notify_msg, check=False)
-

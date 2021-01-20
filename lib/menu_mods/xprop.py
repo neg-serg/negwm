@@ -8,8 +8,7 @@ class xprop():
         self.menu = menu
 
     def xprop(self) -> None:
-        """ Menu to show X11 atom attributes for current window.
-        """
+        """ Menu to show X11 atom attributes for current window. """
         xprops = []
         target_win = self.menu.i3ipc.get_tree().find_focused()
         try:
@@ -26,7 +25,6 @@ class xprop():
                         xprops.append(line)
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
-
         menu_params = {
             'cnum': 1,
             'lnum': len(xprops),
@@ -34,9 +32,7 @@ class xprop():
             'prompt':
                 f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'
         }
-
         ret = ""
-
         try:
             xprop_sel = subprocess.run(
                 self.menu.args(menu_params),
@@ -49,14 +45,9 @@ class xprop():
                 ret = xprop_sel.decode('UTF-8').strip()
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
-
-        # Copy to the clipboard
         if ret is not None and ret != '':
             try:
-                subprocess.run(
-                    ['xsel', '-i'],
-                    input=bytes(ret.strip(), 'UTF-8'),
-                    check=True
-                )
+                # Copy to the clipboard
+                subprocess.run(['xsel', '-i'], input=bytes(ret.strip(), 'UTF-8'), check=True)
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)

@@ -13,7 +13,6 @@ class checker():
         else:
             print(f'{exe}: {exe} not found [{kind}] [FAIL]\n'
                     f'You need it for {description}')
-
             if kind == 'mandatory':
                 print('You cannot run without mandatory dependencies')
                 os._exit(1)

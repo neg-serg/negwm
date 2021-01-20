@@ -73,12 +73,9 @@ class vol(extension, cfg):
                     break
 
     def change_volume(self, val: int) -> None:
-        """ Change volume here.
-            This function using MPD state information, information about
-            currently focused window from i3, etc to perform contextual volume
-            changing.
-            val (int): volume step.
-        """
+        """ Change volume here. This function using MPD state information,
+        information about currently focused window from i3, etc to perform
+        contextual volume changing. val (int): volume step. """
         val_str = str(val)
         mpv_key = '9'
         mpv_cmd = '--decrease'

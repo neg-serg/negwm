@@ -54,10 +54,8 @@ class remember_focused(extension, cfg):
             event: i3ipc event. We can extract window from it using
             event.container. """
         wid = event.container.id
-
         if wid in self.focus_history:
             self.focus_history.remove(wid)
-
         self.focus_history.insert(0, wid)
         if len(self.focus_history) > self.max_remember_focused:
             del self.focus_history[self.max_remember_focused:]

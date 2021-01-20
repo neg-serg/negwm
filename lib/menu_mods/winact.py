@@ -22,7 +22,6 @@ class winact():
             'width': int(self.menu.screen_width * 0.75),
             'prompt': f"{prompt} {self.menu.conf('prompt')}"
         }
-
         win_name = None
         if winlist and winlist_len > 1:
             win_name = subprocess.run(
@@ -33,7 +32,6 @@ class winact():
             ).stdout
         elif winlist_len:
             win_name = winlist[0].encode()
-
         if win_name is not None and win_name:
             win_name = win_name.decode('UTF-8').strip()
             for win in leaves:
@@ -103,4 +101,3 @@ class winact():
                             f'[con_id=__focused__] \
                             move to workspace number {ws_num}')
                 )
-

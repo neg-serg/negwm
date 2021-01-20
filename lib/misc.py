@@ -99,7 +99,6 @@ class Misc():
         if len(attrib_list) > 1:
             ret += ')$'
         ret += end
-
         return ret
 
     @staticmethod

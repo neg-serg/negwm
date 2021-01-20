@@ -29,7 +29,6 @@ class scratchpad(extension, cfg, Matcher):
         Matcher: class to check that window can be tagged with given tag by
                  WM_CLASS, WM_INSTANCE, regexes, etc
     """
-
     def __init__(self, i3) -> None:
         """ Init function
             i3: i3ipc connection """

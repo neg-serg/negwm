@@ -8,11 +8,8 @@ from misc import Misc
 
 
 class gnome():
-    """
-    Change gtk / icons themes and another gnome settings using
-    gsd-xsettings.
-    """
-
+    """ Change gtk / icons themes and another gnome settings using
+    gsd-xsettings. """
     def __init__(self, menu):
         self.menu = menu
         self.gtk_config = configparser.ConfigParser()
@@ -44,9 +41,7 @@ class gnome():
         for icon in icons_path.glob('*'):
             if icon:
                 icon_dirs += [pathlib.Path(icon).name]
-
         menu_params = self.menu_params(len(icon_dirs), 'icon theme')
-
         selection = ''
         if not icon_dirs:
             return
@@ -62,7 +57,6 @@ class gnome():
                 ).stdout
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
-
         if selection:
             os.environ.update({'GUI_ICONS': selection.decode('UTF-8').strip()})
             self.apply_settings()
@@ -75,10 +69,10 @@ class gnome():
             if theme:
                 theme_dirs += [pathlib.PurePath(theme).parent.parent.name]
         menu_params = self.menu_params(len(theme_dirs), 'gtk theme')
-
         selection = ''
         if not theme_dirs:
             return
+
         if len(theme_dirs) == 1:
             selection = theme_dirs[0]
         else:
@@ -91,7 +85,6 @@ class gnome():
                 ).stdout
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
-
         if selection:
             os.environ.update({'GUI_GTK_THEME': selection.decode('UTF-8').strip()})
             self.apply_settings()

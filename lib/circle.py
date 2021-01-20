@@ -206,7 +206,6 @@ class circle(extension, cfg, Matcher):
             subtag (str): denotes the target [subtag]. """
         self.subtag_info = self.conf(tag, subtag)
         self.tag_windows()
-
         if self.subtag_info:
             subtagged_class_set = set(self.subtag_info.get("class", {}))
             tagged_win_classes = {

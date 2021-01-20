@@ -11,4 +11,3 @@
 - scratchpad: set geometry for scratchpad windows(optional)
 - add support for i3 open for tiling
 - move to separated dir
-- remove useless vertical spaces

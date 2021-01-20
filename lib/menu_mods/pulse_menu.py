@@ -7,7 +7,6 @@ class pulse_menu():
     def __init__(self, menu):
         self.menu = menu
         self.pulse_data = {}
-
         if shutil.which('pulseaudio') is None:
             self.pulse = None
             return
@@ -43,13 +42,11 @@ class pulse_menu():
             return
 
         self.pulse_data_init()
-
         for app in self.pulse_data["pulse_app_list"]:
             app_name = app.proplist["media.name"] + ' -- ' + \
                 app.proplist["application.name"]
             self.pulse_data["app_list"] += [app_name]
             self.pulse_data["app_props"][app_name] = app
-
         if self.pulse_data["app_list"]:
             app_ret = self.pulseaudio_select_app()
             if self.pulse_data["sink_output_list"]:
@@ -80,18 +77,15 @@ class pulse_menu():
             'prompt': f'{self.menu.wrap_str("pulse app")} \
             {self.menu.conf("prompt")}',
         }
-
         menu_app_sel = subprocess.run(
             self.menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.pulse_data["app_list"]), 'UTF-8'),
             check=False
         ).stdout
-
         app_ret = None
         if menu_app_sel is not None:
             app_ret = menu_app_sel.decode('UTF-8').strip()
-
         if app_ret is None or not app_ret:
             return ""
 
@@ -101,7 +95,6 @@ class pulse_menu():
     def get_exclude_device_name(self, app_ret):
         sel_app_props = \
             self.pulse_data["app_props"][app_ret].proplist
-
         for stream in self.pulse.stream_restore_list():
             if stream is not None:
                 if stream.device is not None:
@@ -112,7 +105,6 @@ class pulse_menu():
 
     def current_device_name(self, sink, app_ret):
         exclude_device_name = self.get_exclude_device_name(app_ret)
-
         if exclude_device_name is not None and exclude_device_name:
             if sink.proplist.get('udev.id', ''):
                 if sink.proplist['udev.id'].split('.')[0] == \
@@ -150,11 +142,9 @@ class pulse_menu():
             check=False
         ).stdout
         target_idx = '0'
-
         if menu_output_sel is not None:
             out_ret = menu_output_sel.decode('UTF-8').strip()
             target_idx = out_ret.split('--')[0].strip()
-
         return target_idx
 
     def pulseaudio_move_output(self, app_ret, target_idx):

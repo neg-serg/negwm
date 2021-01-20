@@ -28,10 +28,7 @@ class actions(extension, cfg):
         self.i3ipc.on("window::focus", self.auto_tiling)
         maxlength = self.conf("cache_list_size") # cache list length
         # create list with the finite number of elements by the [None] * N hack
-        self.geom_list = collections.deque(
-            [None] * maxlength,
-            maxlen=maxlength
-        )
+        self.geom_list = collections.deque([None] * maxlength, maxlen=maxlength)
         self.current_win = None
         # We need to know current resolution for almost all operations here.
         self.current_resolution = Display.get_screen_resolution()
@@ -401,7 +398,6 @@ class actions(extension, cfg):
                 vertical = True
                 break
             node = parent
-
         if single:
             direction, mode, amount = self.set_resize_params_single(
                 direction, amount
@@ -424,7 +420,6 @@ class actions(extension, cfg):
         geom['y'] = rect.y
         geom['height'] = rect.height
         geom['width'] = rect.width
-
         return geom
 
     def save_geom(self, target_win=None) -> dict:
@@ -591,7 +586,6 @@ class actions(extension, cfg):
                         con.parent.fullscreen_mode == 1
                 is_stacked = con.parent.layout == 'stacked'
                 is_tabbed = con.parent.layout == 'tabbed'
-
                 # Let's exclude floating containers, stacked layouts, tabbed
                 # layouts and full screen mode
                 if not is_floating and not is_stacked and \

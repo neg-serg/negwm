@@ -27,7 +27,6 @@ class env():
     settings, etc.
     config: configuration manager to autosave/autoload
             TOML-configutation with inotify """
-
     def __init__(self, name: str, config) -> None:
         self.name = name
         cache_dir = Misc.i3path() + '/cache'
@@ -95,7 +94,6 @@ class env():
             else:
                 self.prog = f'dtach -A {dtach_session_dir}' \
                             f'/{name}.session {exec_dtach}'
-
         self.padding = cfg_block.get('padding', [2, 2])
         self.opacity = cfg_block.get('opacity', 0.88)
         self.statusline = cfg_block.get('statusline', 1)

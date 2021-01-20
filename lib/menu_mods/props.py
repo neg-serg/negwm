@@ -8,34 +8,22 @@ from extension import extension
 class props():
     def __init__(self, menu):
         self.menu = menu
-
-        # Magic delimiter used by add_prop / del_prop routines.
-        self.delim = "@"
-
-        # default echo server host
-        self.host = self.menu.conf("host")
-
-        # default echo server port
-        self.port = int(self.menu.conf("port"))
-
+        self.delim = "@" # Magic delimiter used by add_prop / del_prop routines.
+        self.host = self.menu.conf("host") # default echo server host
+        self.port = int(self.menu.conf("port")) # default echo server port
         # create echo server socket
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-
         # negi3wm which allows add / delete property.
         # For example this feature can be used to move / delete window
         # to / from named scratchpad.
         self.possible_mods = ['scratchpad', 'circle']
-
         # Window properties used by i3 to match windows.
         self.i3rules_xprop = set(self.menu.conf("rules_xprop"))
 
     def tag_name(self, mod: str, lst: List[str]) -> str:
         """ Returns tag name, selected by menu.
-
-        Args:
             mod (str): module name string.
-            lst (List[str]): list of menu input.
-        """
+            lst (List[str]): list of menu input. """
         menu_params = {
             'cnum': len(lst),
             'width': int(self.menu.screen_width * 0.75),
@@ -47,7 +35,6 @@ class props():
             input=bytes('\n'.join(lst), 'UTF-8'),
             check=False
         ).stdout
-
         if menu_tag is not None and menu_tag:
             return menu_tag.decode('UTF-8').strip()
 
@@ -60,10 +47,8 @@ class props():
             return
 
         aprop_str = self.get_autoprop_as_str(with_title=False)
-
         lst = props.mod_data_list(mod)
         tag_name = self.tag_name(mod, lst)
-
         if tag_name is not None and tag_name:
             extension.get_mods()[mod].add_prop(tag_name, aprop_str)
         else:
@@ -84,7 +69,6 @@ class props():
             input=bytes('\n'.join(self.possible_mods), 'UTF-8'),
             check=False
         ).stdout
-
         if mod is not None and mod:
             return mod.decode('UTF-8').strip()
 
@@ -99,12 +83,9 @@ class props():
     def get_autoprop_as_str(self, with_title: bool = False,
                             with_role: bool = False) -> str:
         """ Convert xprops list to i3 commands format.
-
-        Args:
             with_title (bool): add WM_NAME attribute, to the list, optional.
             with_role (bool): add WM_WINDOW_ROLE attribute to the list,
-            optional.
-        """
+            optional. """
         xprops = []
         win = self.menu.i3ipc.get_tree().find_focused()
         xprop = subprocess.run(
@@ -135,8 +116,6 @@ class props():
     @staticmethod
     def mod_data_list(mod: str) -> List[str]:
         """ Extract list of module tags. Used by add_prop menus.
-            Args:
-                mod (str): extension name.
-        """
+            mod (str): extension name. """
         return extension.get_mods()[mod].cfg.keys()
 

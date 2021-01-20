@@ -20,10 +20,8 @@ class xrandr():
             input=bytes('\n'.join(xrandr_data), 'UTF-8'),
             check=False
         ).stdout
-
         if resolution_sel is not None:
             ret = resolution_sel.decode('UTF-8').strip()
-
         ret_list = []
         if ret and 'x' in ret:
             size_pair = ret.split(':')
@@ -32,6 +30,5 @@ class xrandr():
             ret_list = res_str.split('x')
 
         width, height = ret_list[0].strip(), ret_list[1].strip()
-
         print(f'Set size to {width}x{height}')
         Display.set_screen_size(size_id)
