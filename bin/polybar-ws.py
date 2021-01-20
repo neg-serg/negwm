@@ -9,7 +9,7 @@ leading to i3 wm dead-lock.
 Also it print current keybinding mode.
 
 Usage:
-    ./polybar-ws.py
+    ./polybar_ws.py
 
 Suppoused to be used inside polybar.
 
@@ -17,7 +17,7 @@ Config example:
 
 [module/ws]
 type = custom/script
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar-ws 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_ws 2> /dev/null
 exec-if = sleep 1
 format = <label>
 tail = true
@@ -38,7 +38,7 @@ from i3ipc.aio import Connection
 from lib.standalone_cfg import modconfig
 
 
-class polybar-ws(modconfig):
+class polybar_ws(modconfig):
     def __init__(self):
         # initialize asyncio loop
         self.loop = asyncio.get_event_loop()
@@ -76,7 +76,7 @@ class polybar-ws(modconfig):
                         self.binding_mode = ''
                     else:
                         self.binding_mode = \
-                            polybar-ws.colorize(
+                            polybar_ws.colorize(
                                 ret, color=self.binding_color, fontnum=7
                             ) + ' '
                     await self.update_status()
@@ -106,7 +106,7 @@ class polybar-ws(modconfig):
         """ Print workspace information here. Event-based. """
         workspace = self.ws_name
         if not workspace[0].isalpha():
-            workspace = polybar-ws.colorize(
+            workspace = polybar_ws.colorize(
                 workspace[0], color=self.ws_color
             ) + workspace[1] + '%{F#8BAAC7}' + \
                 workspace[2] + '%{F-}' + \
@@ -116,8 +116,8 @@ class polybar-ws(modconfig):
 
 
 async def main():
-    """ Start polybar-ws from here """
-    await polybar-ws().main()
+    """ Start polybar_ws from here """
+    await polybar_ws().main()
 
 
 if __name__ == '__main__':

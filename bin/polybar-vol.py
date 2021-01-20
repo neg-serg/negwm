@@ -6,7 +6,7 @@ This daemon prints current MPD volume like `tail -f` echo server, so there is
 no need to use busy waiting to extract information from it.
 
 Usage:
-    ./polybar-vol.py
+    ./polybar_vol.py
 
 Suppoused to be used inside polybar.
 
@@ -15,7 +15,7 @@ Config example:
 [module/volume]
 type = custom/script
 interval = 0
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar-vol 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_vol 2> /dev/null
 exec-if = sleep 1
 tail = true
 
@@ -32,7 +32,7 @@ import sys
 from lib.standalone_cfg import modconfig
 
 
-class polybar-vol(modconfig):
+class polybar_vol(modconfig):
     def __init__(self):
         self.loop = asyncio.get_event_loop()
 
@@ -163,4 +163,4 @@ class polybar-vol(modconfig):
 
 
 if __name__ == '__main__':
-    polybar-vol()
+    polybar_vol()

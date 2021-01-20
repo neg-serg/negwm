@@ -6,7 +6,7 @@ This daemon prints current MPD volume like `tail -f` echo server, so there is
 no need to use busy waiting to extract information from it.
 
 Usage:
-    ./polybar-mpd.py
+    ./polybar_mpd.py
 
 Suppoused to be used inside polybar.
 
@@ -15,7 +15,7 @@ Config example:
 [module/mpd]
 type = custom/script
 interval = 0
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar-mpd 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_mpd 2> /dev/null
 exec-if = sleep 1
 tail = true
 
@@ -32,7 +32,7 @@ import time
 from lib.standalone_cfg import modconfig
 
 
-class polybar-mpd(modconfig):
+class polybar_mpd(modconfig):
     def __init__(self):
         self.loop = asyncio.get_event_loop()
         super().__init__()
@@ -89,8 +89,8 @@ class polybar-mpd(modconfig):
                         current_time = float(t[0].strip())
                         total_time = float(t[1].strip())
                         song_data['time'] = [
-                            polybar-mpd.time_convert(current_time),
-                            polybar-mpd.time_convert(total_time)
+                            polybar_mpd.time_convert(current_time),
+                            polybar_mpd.time_convert(total_time)
                         ]
         return song_data
 
@@ -108,11 +108,11 @@ class polybar-mpd(modconfig):
             while True:
                 song_data = await self.update_mpd_stat(reader, writer)
                 if song_data.get('state', '') == 'play':
-                    polybar-mpd.pretty_printing(song_data)
+                    polybar_mpd.pretty_printing(song_data)
                 else:
                     sys.stdout.write('\n')
                 await asyncio.sleep(0.1)
 
 
 if __name__ == '__main__':
-    polybar-mpd()
+    polybar_mpd()

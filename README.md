@@ -418,7 +418,7 @@ To use ws please add to polybar config something like this:
 ```config
 [module/ws]
 type = custom/script
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar-ws 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_ws 2> /dev/null
 exec-if = sleep 1
 format-background = ${color.mgf}
 format = <label>
@@ -438,7 +438,7 @@ To use fast mpd volume notification module use this:
 type = custom/script
 interval = 0
 format-background = ${color.mgf}
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar-vol 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_vol 2> /dev/null
 exec-if = sleep 1
 tail = true
 ```
@@ -448,9 +448,9 @@ very fast volume updating for me. For now I have DAC with extreme-quality
 in-chip physical digital volume regulator, so it's no longer unnecessary but
 I still want to see `Vol: 0` / `Vol: 100` anyway :)
 
-_polybar-ws_: async current i3 workspace printer for polybar.
+_polybar_ws_: async current i3 workspace printer for polybar.
 
-_polybar-vol_ : async MPD printer for polybar.
+_polybar_vol_ : async MPD printer for polybar.
 
 # Installation
 
