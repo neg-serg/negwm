@@ -3,7 +3,7 @@ gset="gsettings set"
 
 [ -z $GUI_FONT ] && GUI_FONT='Iosevka Heavy 12'
 [ -z $GUI_ICONS ] && GUI_ICONS='korla'
-[ -z $GUI_GTK_THEME ] && GUI_GTK_THEME='oomox-NegDark'
+[ -z $GUI_GTK_THEME ] && GUI_GTK_THEME='oomox-NegDarkArc'
 [ -z $GUI_CURSOR_THEME ] && GUI_CURSOR_THEME='SpaceKCursors'
 [ -z $GUI_CURSOR_SIZE ] && GUI_CURSOR_SIZE='64'
 
