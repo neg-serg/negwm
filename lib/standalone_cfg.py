@@ -1,5 +1,5 @@
 """ Dynamic TOML-based config for basic negi3wm.
-It is the simplified version of cfg for modules like polybar_vol, etc. There
+It is the simplified version of cfg for modules like polybar-vol, etc. There
 are no external dependecies like i3 or asyncio.
 """
 
