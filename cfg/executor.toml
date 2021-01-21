@@ -8,7 +8,7 @@ statusline=1
 
 [teardrop]
 class="teardrop"
-font="Iosevka Term"
+font="Iosevka"
 font_size=27
 exec_tmux=[['top', '/usr/bin/bpytop']]
 padding=[8, 8]
