@@ -370,7 +370,7 @@ with Iosevka:18 font. Another examples:
 ```toml
 [teardrop]
 class="teardrop"
-font="Iosevka Term"
+font="Iosevka"
 font_size=18
 postfix='-n mixer ncpamixer \; neww -n atop atop \; neww -n stig stig \; neww -n tasksh tasksh \; select-window -t 2'
 ```
