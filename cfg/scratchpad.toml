@@ -27,18 +27,6 @@ geom = '1920x803+0+0'
 spawn = 'teardrop'
 keybind_default_toggle = ['Mod4+d']
 
-[volcontrol]
-instance = ['pamix']
-geom = '895x314+1023+824'
-spawn = 'pamix'
-keybind_default_toggle = ['Mod4+Shift+p']
-
-[youtube]
-instance = ['youtube-get']
-geom = '1339x866+247+13'
-spawn = 'youtube-get'
-keybind_default_toggle = ['Mod4+a']
-
 [webcam]
 instance = ['webcam']
 geom = '1234x771+667+363'
