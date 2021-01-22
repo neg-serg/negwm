@@ -31,26 +31,17 @@ import sys
 import time
 from lib.standalone_cfg import modconfig
 
-
 class polybar_mpd(modconfig):
     def __init__(self):
         self.loop = asyncio.get_event_loop()
         super().__init__()
-
-        # default MPD address
         self.addr = str(self.conf("mpdaddr"))
-        # default MPD port
-        self.port = int(str(self.conf("mpdport")))
-        # buffer size
-        self.buf_size = int(str(self.conf("bufsize")))
-
+        self.port = int(self.conf("mpdport"))
+        self.buf_size = int(self.conf("bufsize"))
         # command to wait for mixer or player events from MPD
         self.idle_player = "idle player\n"
-
         # command to get song status from MPD
         self.get_song_data_cmd = "currentsong\nstatus\n"
-
-        # run mainloop
         self.main()
 
     def main(self):
@@ -70,9 +61,7 @@ class polybar_mpd(modconfig):
 
     @staticmethod
     def time_convert(n):
-        return time.strftime(
-            " %M:%S", time.gmtime(n)
-        ).replace(' 0', ' ')
+        return time.strftime(" %M:%S", time.gmtime(n)).replace(' 0', ' ')
 
     async def update_mpd_stat(self, reader, writer):
         writer.write(self.get_song_data_cmd.encode(encoding='utf-8'))
@@ -112,7 +101,6 @@ class polybar_mpd(modconfig):
                 else:
                     sys.stdout.write('\n')
                 await asyncio.sleep(0.1)
-
 
 if __name__ == '__main__':
     polybar_mpd()
