@@ -23,17 +23,6 @@ exec='ncmpcpp'
 opacity=0.8
 padding=[12, 12]
 
-[pamix]
-class="pamix"
-font="Iosevka"
-font_size=24
-font_normal="Medium"
-exec='pamix'
-exec_tmux=[['mixer', '/usr/bin/pamix']]
-opacity=0.8
-padding=[12, 12]
-statusline=0
-
 [neomutt]
 class="neomutt"
 font="Iosevka"
@@ -50,10 +39,3 @@ opacity=0.95
 env=['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket']
 exec_tmux=[['nvim', '/usr/bin/nvim']]
 statusline=0
-
-[youtube-get]
-class="youtube-get"
-font="Iosevka"
-font_size=27.5
-font_normal="Medium"
-exec_dtach='~/bin/scripts/straw'
