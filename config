@@ -59,8 +59,6 @@ set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack|TelegramDesktop)$"]
 set $scratchpad-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
 set $scratchpad-neomutt [class="mutterfox" instance="^(mutterfox|neomutt)$"]
 set $scratchpad-teardrop [instance="teardrop"]
-set $scratchpad-volcontrol [instance="pamix"]
-set $scratchpad-youtube [instance="youtube-get"]
 set $scratchpad-webcam [instance="webcam"]
 set $scratchpad-discord [class="discord"]
 set $scratchpad-transients [window_role="^(GtkFileChooserDialog|Organizer|Manager)$"]
@@ -69,7 +67,6 @@ for_window $scratchpad-im floating enable
 for_window $scratchpad-ncmpcpp floating enable
 for_window $scratchpad-neomutt floating enable
 for_window $scratchpad-teardrop floating enable
-for_window $scratchpad-volcontrol floating enable
 for_window $scratchpad-youtube floating enable
 for_window $scratchpad-webcam floating enable
 for_window $scratchpad-discord floating enable
@@ -184,7 +181,6 @@ bindsym Mod4+e $scratchpad toggle im
 bindsym Mod4+f $scratchpad toggle ncmpcpp
 bindsym Mod4+n $scratchpad toggle neomutt
 bindsym Mod4+d $scratchpad toggle teardrop
-bindsym Mod4+Shift+p $scratchpad toggle volcontrol
 bindsym Mod4+a $scratchpad toggle youtube
 bindsym Mod4+v $scratchpad toggle discord
 bindsym Mod4+w $circle next web
