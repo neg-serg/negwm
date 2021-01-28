@@ -52,12 +52,13 @@ class polybar_mpd(modconfig):
     def pretty_printing(song_data):
         artist = song_data.get('Artist', '')
         title = song_data.get('Title', '')
-        song_time = song_data.get('time', '')
+        t = song_data.get('time', '')
         lhs = " %{F#395573}%{T4} %{T-}%{F-}"
         delim = '%{F#395573}/%{F-}'
-        if artist and title and song_time:
-            sys.stdout.write(f'{lhs}{artist} %{{F#657491}}―%{{F}} {title} ' \
-                f'{song_time[0].strip()}{delim}{song_time[1].strip()}\n')
+        if artist and title and t:
+            t_color = '#8BAAC7'
+            time = f'%{{T5}}%{{F{t_color}}}{t[0].strip()}{delim}%{{F{t_color}}}{t[1].strip()}%{{T-}}\n'
+            sys.stdout.write(f'{lhs}{artist} %{{F#657491}}―%{{F}} {title} {time}')
 
     @staticmethod
     def time_convert(n):
