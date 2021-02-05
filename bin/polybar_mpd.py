@@ -50,13 +50,13 @@ class polybar_mpd(modconfig):
 
     @staticmethod
     def pretty_printing(song_data):
-        artist = '%{F#A9C3F5}' + song_data.get('Artist', '')
-        title = '%{F#A9C3F5}' + song_data.get('Title', '')
+        artist = '%{F#ffCFCFDB}' + song_data.get('Artist', '')
+        title = '%{F#ffCFCFDB}' + song_data.get('Title', '')
         t = song_data.get('time', '')
         lhs = " %{F#395573}%{T4} %{T-}%{F-}"
         delim = '%{F#395573}/%{F-}'
         if artist and title and t:
-            t_color = '#8BAAC7'
+            t_color = '#ffCFCFDB'
             time = f'%{{T5}}%{{F{t_color}}}{t[0].strip()}{delim}%{{F{t_color}}}{t[1].strip()}%{{T-}}\n'
             sys.stdout.write(f'{lhs}{artist} %{{F#657491}}―%{{F}} {title} {time}')
 
