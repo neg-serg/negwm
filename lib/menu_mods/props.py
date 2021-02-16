@@ -26,7 +26,6 @@ class props():
             lst (List[str]): list of menu input. """
         menu_params = {
             'cnum': len(lst),
-            'width': int(self.menu.screen_width * 0.75),
             'prompt': f'{self.menu.wrap_str(mod)} {self.menu.conf("prompt")}',
         }
         menu_tag = subprocess.run(
@@ -59,7 +58,6 @@ class props():
         menu_params = {
             'cnum': len(self.possible_mods),
             'lnum': 1,
-            'width': int(self.menu.screen_width * 0.75),
             'prompt': f'{self.menu.wrap_str("selmod")}' \
             f'{self.menu.conf("prompt")}'
         }

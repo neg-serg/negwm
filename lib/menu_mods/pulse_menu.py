@@ -73,7 +73,6 @@ class pulse_menu():
             'cnum': 1,
             'lnum': len(self.pulse_data["app_list"]),
             'auto_selection': '-auto-select',
-            'width': int(self.menu.screen_width * 0.55),
             'prompt': f'{self.menu.wrap_str("pulse app")} \
             {self.menu.conf("prompt")}',
         }
@@ -127,7 +126,6 @@ class pulse_menu():
             'cnum': 1,
             'lnum': len(self.pulse_data["sink_output_list"]),
             'auto_selection': '-auto-select',
-            'width': int(self.menu.screen_width * 0.55),
             'prompt':
                 f'{self.menu.wrap_str("pulse output")} \
                 {self.menu.conf("prompt")}'

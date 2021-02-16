@@ -28,7 +28,6 @@ class xprop():
         menu_params = {
             'cnum': 1,
             'lnum': len(xprops),
-            'width': int(self.menu.screen_width * 0.75),
             'prompt':
                 f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'
         }

@@ -22,7 +22,6 @@ class gnome():
         return {
             'cnum': length / 2,
             'lnum': 2,
-            'width': int(self.menu.screen_width * 0.55),
             'prompt':
                 f'{self.menu.wrap_str(prompt)} {self.menu.conf("prompt")}'
         }

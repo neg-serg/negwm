@@ -19,7 +19,6 @@ class winact():
         winlist_len = len(winlist)
         menu_params = {
             'cnum': winlist_len,
-            'width': int(self.menu.screen_width * 0.75),
             'prompt': f"{prompt} {self.menu.conf('prompt')}"
         }
         win_name = None
@@ -53,7 +52,6 @@ class winact():
         ws_list = extension.get_mods()['conf_gen'].cfg['ws_list']
         menu_params = {
             'cnum': len(ws_list),
-            'width': int(self.menu.screen_width * 0.66),
             'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}',
         }
         try:

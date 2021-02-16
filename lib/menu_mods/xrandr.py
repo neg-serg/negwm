@@ -10,7 +10,6 @@ class xrandr():
         xrandr_data = Display.xrandr_resolution_list()
         menu_params = {
             'cnum': 8,
-            'width': int(Display.get_screen_resolution()["width"] * 0.55),
             'prompt': f'{self.menu.wrap_str("gtk_theme")} \
             {self.menu.conf("prompt")}',
         }
@@ -28,7 +27,6 @@ class xrandr():
             size_id = size_pair[0]
             res_str = size_pair[1:][0].strip()
             ret_list = res_str.split('x')
-
         width, height = ret_list[0].strip(), ret_list[1].strip()
         print(f'Set size to {width}x{height}')
         Display.set_screen_size(size_id)

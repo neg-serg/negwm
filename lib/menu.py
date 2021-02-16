@@ -23,12 +23,6 @@ class menu(extension, cfg):
         self.i3cmd = self.conf("i3cmd") # i3-msg application name
         # Window properties shown by xprop menu.
         self.xprops_list = self.conf("xprops_list")
-        # Cache screen width
-        if not self.conf("use_default_width"):
-            from display import Display
-            self.screen_width = Display.get_screen_resolution()["width"]
-        else:
-            self.screen_width = int(self.conf('use_default_width'))
         for mod in self.cfg['modules']:
             module = importlib.import_module('menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
@@ -55,7 +49,6 @@ class menu(extension, cfg):
             params(dict): parameters for rofi
             List(str) to do rofi subprocessing """
         prompt = self.conf("prompt")
-        params['width'] = params.get('width', int(self.screen_width * 0.85))
         params['prompt'] = params.get('prompt', prompt)
         params['cnum'] = params.get('cnum', 16)
         params['lnum'] = params.get('lnum', 2)
