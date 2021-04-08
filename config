@@ -69,7 +69,7 @@ for_window $scratchpad-neomutt floating enable
 for_window $scratchpad-teardrop floating enable
 for_window $scratchpad-webcam floating enable
 for_window $scratchpad-discord floating enable
-for_window $scratchpad-transients move scratchpad, move absolute position 4 12, resize set 2824 772
+for_window $scratchpad-transients move scratchpad, move absolute position 2 8, resize set 1882 514
 set $circle-web [class="^(firefox|Tor Browser|Chromium)$"]
 set $circle-vid [class="mpv"]
 set $circle-lutris [class="^(Wine|Lutris)$"]
