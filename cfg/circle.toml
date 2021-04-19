@@ -1,7 +1,7 @@
 [web]
 class = ['firefox', 'Tor Browser', 'Chromium']
 priority = 'firefox'
-prog = 'firefox'
+prog = 'MOZ_WEBRENDER=1 firefox'
 keybind_default_next = ['Mod4+w']
 ws = 'web'
 
