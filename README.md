@@ -49,7 +49,7 @@ reload negi3wm manually:
 At first you need to add something in negi3wm_run and add it to config:
 
 ```cfg
-exec_always ~/.config/i3/negi3wm_run &
+exec_always ~/.config/negi3wm/negi3wm_run &
 ```
 
 Current negi3wm_run is:

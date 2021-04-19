@@ -9,5 +9,4 @@
 - Scratchpad: add ability to set geometry with mouse
 - Scratchpad: set geometry for scratchpad windows(optional)
 - Add support for i3 open for tiling
-- Move to separated dir
 - Use Poetry

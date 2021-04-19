@@ -23,12 +23,12 @@ class conf_gen(extension, cfg):
     def dump_cfg(self) -> None:
         i3_cfg, test_cfg = 'config', '.config_test'
         generated_cfg = '\n'.join(self.generate())
-        with open(Misc.i3path() + test_cfg, 'w', encoding='utf8') as fp:
+        with open('/home/neg/.config/i3/' + test_cfg, 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
         if checker.check_i3_config(verbose=False, cfg=test_cfg):
-            with open(Misc.i3path() + i3_cfg, 'w', encoding='utf8') as fp:
+            with open('/home/neg/.config/i3/' + i3_cfg, 'w', encoding='utf8') as fp:
                 fp.write(generated_cfg)
-            os.remove(Misc.i3path() + test_cfg)
+            os.remove('/home/neg/.config/i3/' + test_cfg)
 
     def generate(self):
         ret = []
