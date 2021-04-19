@@ -1,6 +1,6 @@
 exec_always --no-startup-id pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main
-exec_always --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/gnome-conf
-exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run
+exec_always --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf
+exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id /usr/sbin/gpaste-client daemon
 exec --no-startup-id /usr/bin/caffeine
@@ -9,7 +9,7 @@ exec --no-startup-id /usr/bin/xiccd
 workspace_layout tabbed
 default_orientation auto
 floating_modifier Mod4
-set $i3 ${XDG_CONFIG_HOME}/i3
+set $i3 ${XDG_CONFIG_HOME}/negi3wm
 set $exit mode "default"
 
 focus_follows_mouse no
@@ -45,15 +45,15 @@ client.urgent            #000000ee   #2E2457      #4C407C  #32275E     #32275E
 client.placeholder       #000000ee   #000000      #ffffff  #000000     #0c0c0c
 client.background        #000000ee
 
-set $actions exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send actions
-set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send circle
-set $conf_gen exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send conf_gen
-set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send executor
-set $fullscreen exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send fullscreen
-set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send menu
-set $remember_focused exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send remember_focused
-set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send scratchpad
-set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/send vol
+set $actions exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send actions
+set $circle exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send circle
+set $conf_gen exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send conf_gen
+set $executor exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send executor
+set $fullscreen exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send fullscreen
+set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send menu
+set $remember_focused exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send remember_focused
+set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send scratchpad
+set $vol exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/send vol
 
 set $scratchpad-im [class="^(zoom|KotatogramDesktop|Slack|TelegramDesktop)$"]
 set $scratchpad-ncmpcpp [instance="^(ncmpcpp|cool-retro-term)$"]
@@ -169,8 +169,8 @@ bindsym Mod4+Shift+l exec --no-startup-id ~/bin/scripts/rofi-lutris
 bindsym Mod4+Shift+m exec --no-startup-id ~/bin/scripts/rofi-audio
 bindsym Mod4+Shift+y exec --no-startup-id ~/bin/clip youtube-dw-list
 bindsym XF86Sleep exec --no-startup-id sudo systemctl suspend
-bindsym Mod4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3-reload
-bindsym Mod4+Shift+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/i3-restart
+bindsym Mod4+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload
+bindsym Mod4+Shift+apostrophe exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/i3-restart
 bindsym Mod4+space exec --no-startup-id dunstctl close-all
 bindsym Mod4+Shift+9 exec --no-startup-id dunstctl history-pop
 

@@ -15,7 +15,7 @@ class conf_gen(extension, cfg):
             "dump": self.dump_cfg,
             "reload": self.reload_config,
         }
-        self.send_path = '${XDG_CONFIG_HOME}/i3/bin/send'
+        self.send_path = '${XDG_CONFIG_HOME}/negi3wm/bin/send'
 
     def print(self) -> None:
         print(''.join(self.generate()))

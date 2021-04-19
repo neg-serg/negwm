@@ -6,15 +6,15 @@ xdg_config_home_check() {
         exit 1
     fi
 
-    if [ -d "$XDG_CONFIG_HOME/i3" ]; then
+    if [ -d "$XDG_CONFIG_HOME/negi3wm" ]; then
         echo "create backup of current i3 config directory..."
-        mv -v "$XDG_CONFIG_HOME/i3" "$XDG_CONFIG_HOME/i3_backup_$(date --rfc-3339=seconds|tr ' ' '-')"
+        mv -v "$XDG_CONFIG_HOME/negi3wm" "$XDG_CONFIG_HOME/negi3wm_backup_$(date --rfc-3339=seconds|tr ' ' '-')"
     fi
 }
 
 pip_deps_install() {
     echo "install python dependencies..."
-    sudo pip install -r "$XDG_CONFIG_HOME/i3/requirements.txt" --upgrade
+    sudo pip install -r "$XDG_CONFIG_HOME/negi3wm/requirements.txt" --upgrade
 }
 
 git_clone() {
@@ -22,7 +22,7 @@ git_clone() {
         echo "Install git"
         sudo pacman -S git --noconfirm
     fi
-    git clone https://github.com/neg-serg/negi3wm "$XDG_CONFIG_HOME/i3"
+    git clone https://github.com/neg-serg/negi3wm "$XDG_CONFIG_HOME/negi3wm"
 }
 
 install_yay() {

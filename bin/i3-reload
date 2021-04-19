@@ -1,7 +1,7 @@
-make -C ~/.config/i3/
+make -C ~/.config/negi3wm/
 ENV=$HOME/.profile; export ENV
 i3-msg reload
 pkill negi3wm.py
-$XDG_CONFIG_HOME/i3/negi3wm.py >> $HOME/tmp/negi3wm.log 2>&1 &
+$XDG_CONFIG_HOME/negi3wm/negi3wm.py >> $HOME/tmp/negi3wm.log 2>&1 &
 sleep 1s
-$XDG_CONFIG_HOME/i3/bin/send conf_gen dump
+$XDG_CONFIG_HOME/negi3wm/bin/send conf_gen dump

@@ -15,7 +15,7 @@ Config example:
 [module/mpd]
 type = custom/script
 interval = 0
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_mpd 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/negi3wm python -u -m bin.polybar_mpd 2> /dev/null
 exec-if = sleep 1
 tail = true
 

@@ -22,7 +22,7 @@ class Misc():
     @staticmethod
     def i3path() -> str:
         """ Easy way to return i3 config path. """
-        return os.environ.get("XDG_CONFIG_HOME") + "/i3/"
+        return os.environ.get("XDG_CONFIG_HOME") + "/negi3wm/"
 
     @staticmethod
     def notify_msg(msg: str, prefix: str = " ") -> None:

@@ -55,14 +55,14 @@ exec_always ~/.config/i3/negi3wm_run &
 Current negi3wm_run is:
 
 ```bash
-${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
-make -C ${XDG_CONFIG_HOME}/i3/ &
+${XDG_CONFIG_HOME}/negi3wm/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
+make -C ${XDG_CONFIG_HOME}/negi3wm/ &
 ```
 
 Interesting parts here are:
 
 ```bash
-${XDG_CONFIG_HOME}/i3/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
+${XDG_CONFIG_HOME}/negi3wm/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
 ```
 
 To restart negi3wm after i3 reload, `negi3wm.py` should close file
@@ -70,7 +70,7 @@ descriptor automatically, after i3 reload/restart so you can simply run it
 after restart.
 
 ```bash
-make -C ${XDG_CONFIG_HOME}/i3/ &
+make -C ${XDG_CONFIG_HOME}/negi3wm/ &
 ```
 
 To recompile `send` client.
@@ -117,7 +117,7 @@ dialog: toggle dialogs
 i3 config example:
 
 ```cfg
-set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send scratchpad
+set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/send scratchpad
 
 bindsym Mod1+e mode "SPEC"
 
@@ -198,7 +198,7 @@ Possible matching rules are:
 i3 config example:
 
 ```cfg
-set $circle exec --no-startup-id $XDG_CONFIG_HOME/i3/send circle
+set $circle exec --no-startup-id $XDG_CONFIG_HOME/negi3wm/send circle
 
 bindsym Mod4+Control+c $circle next sxiv
 bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
@@ -236,7 +236,7 @@ history of last selected windows.
 i3 config example:
 
 ```cfg
-set $remember_focused exec --no-startup-id $XDG_CONFIG_HOME/i3/send remember_focused
+set $remember_focused exec --no-startup-id $XDG_CONFIG_HOME/negi3wm/send remember_focused
 bindsym Mod4+grave $remember_focused focus_next_visible
 bindsym Mod4+Shift+grave $remember_focused focus_prev_visible
 bindsym Mod1+Tab $remember_focused switch
@@ -301,7 +301,7 @@ Also it contains some settings for menus.
 i3 config example:
 
 ```cfg
-set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send menu
+set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/send menu
 bindsym Mod1+g $menu goto_win
 bindsym Mod4+g $menu ws
 bindsym Mod4+Control+g $menu movews
@@ -315,7 +315,7 @@ handles mpv with mpvc if the current window is mpv, or with sending 0, 9 keys
 to the mpv window if not. To use it add to i3 config something like this:
 
 ```cfg
-set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/i3/send vol
+set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/send vol
 bindsym XF86AudioLowerVolume $volume d
 bindsym XF86AudioRaiseVolume $volume u
 ```
@@ -418,7 +418,7 @@ To use ws please add to polybar config something like this:
 ```config
 [module/ws]
 type = custom/script
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m bin.polybar_ws 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/negi3wm python -u -m bin.polybar_ws 2> /dev/null
 exec-if = sleep 1
 format-background = ${color.mgf}
 format = <label>
@@ -438,7 +438,7 @@ To use fast mpd volume notification module use this:
 type = custom/script
 interval = 0
 format-background = ${color.mgf}
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/i3 python -u -m proc.polybar_vol 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/negi3wm python -u -m proc.polybar_vol 2> /dev/null
 exec-if = sleep 1
 tail = true
 ```
@@ -454,7 +454,7 @@ _polybar_vol_ : async MPD printer for polybar.
 
 # Installation
 
-Negi3wm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`,
+Negi3wm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/negi3wm`,
 so you need to set up your `$XDG_CONFIG_HOME` variable before install, via
 `/etc/profile`, some kind of `.zshenv` or smth else depending or your
 environment, it is mandatory to install.
@@ -472,7 +472,7 @@ curl https://raw.githubusercontent.com/neg-serg/negi3wm/master/bin/install.sh | 
 After install check it via smth like:
 
 ```
-cd $XDG_CONFIG_HOME/i3
+cd $XDG_CONFIG_HOME/negi3wm
 ./negi3wm.py
 ```
 
@@ -553,7 +553,7 @@ Options:
 To start daemon you need:
 
 ```bash
-cd ${XDG_CONFIG_HOME}/i3
+cd ${XDG_CONFIG_HOME}/negi3wm
 ./negi3wm.py
 ```
 

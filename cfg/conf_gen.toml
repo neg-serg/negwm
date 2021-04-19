@@ -29,7 +29,7 @@ general = [
     "workspace_layout tabbed",
     "default_orientation auto",
     "floating_modifier Mod4",
-    "set $i3 ${XDG_CONFIG_HOME}/i3",
+    "set $i3 ${XDG_CONFIG_HOME}/negi3wm",
     "set $exit mode \"default\"",
 ]
 
@@ -69,8 +69,8 @@ theme = [
 
 autostart = [
     "exec_always --no-startup-id pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main",
-    "exec_always --no-startup-id ${XDG_CONFIG_HOME}/i3/bin/gnome-conf",
-    "exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/i3/bin/negi3wm_run",
+    "exec_always --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf",
+    "exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run",
     "exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
     "exec --no-startup-id /usr/sbin/gpaste-client daemon",
     "exec --no-startup-id /usr/bin/caffeine",
@@ -109,8 +109,8 @@ exec_no_startup_id = [
     ['Mod4+Shift+m', '~/bin/scripts/rofi-audio'],
     ['Mod4+Shift+y', '~/bin/clip youtube-dw-list'],
     ['XF86Sleep', 'sudo systemctl suspend'],
-    ['Mod4+apostrophe', '${XDG_CONFIG_HOME}/i3/bin/i3-reload'],
-    ['Mod4+Shift+apostrophe', '${XDG_CONFIG_HOME}/i3/bin/i3-restart'],
+    ['Mod4+apostrophe', '${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload'],
+    ['Mod4+Shift+apostrophe', '${XDG_CONFIG_HOME}/negi3wm/bin/i3-restart'],
     ['Mod4+space', 'dunstctl close-all'],
     ['Mod4+Shift+9', 'dunstctl history-pop'],
 ]
