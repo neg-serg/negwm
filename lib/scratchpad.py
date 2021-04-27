@@ -36,6 +36,9 @@ class scratchpad(extension, cfg, Matcher):
         super().__init__()
         cfg.__init__(self, i3)
         Matcher.__init__(self)
+        self.initialize(i3)
+
+    def initialize(self, i3):
         self.win = None # reducing  calling i3.get_tree() too many times.
         self.fullscreen_list = [] # performing fullscreen hacks
         # nsgeom used to respect current screen resolution in the geometry
@@ -346,7 +349,7 @@ class scratchpad(extension, cfg, Matcher):
                 if self.marked[tag] != []:
                     for win in self.marked[tag]:
                         win.command('unmark')
-        self.__init__(self.i3ipc)
+        self.initialize(self.i3ipc)
 
     def del_prop(self, tag: str, prop_str: str) -> None:
         """ Delete property via [prop_str] to the target [tag].

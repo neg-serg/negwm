@@ -166,8 +166,11 @@ class cfg():
                     if tok in self.cfg[tag]:
                         if isinstance(self.cfg[tag][tok], str):
                             self.cfg[tag][tok] = {self.win_attrs[tok]}
-                        elif isinstance(self.cfg[tag][tok], set):
-                            self.cfg[tag][tok].add(self.win_attrs[tok])
+                        elif isinstance(self.cfg[tag][tok], list):
+                            self.cfg[tag][tok].append(self.win_attrs[tok])
+                            self.cfg[tag][tok] = list(
+                                dict.fromkeys(self.cfg[tag][tok])
+                            )
                     else:
                         self.cfg[tag].update({tok: self.win_attrs[tok]})
                     # fix for the case where attr is just attr not {attr}

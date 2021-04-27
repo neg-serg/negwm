@@ -46,12 +46,11 @@ class props():
             return
 
         aprop_str = self.get_autoprop_as_str(with_title=False)
-        lst = props.mod_data_list(mod)
-        tag_name = self.tag_name(mod, lst)
+        tag_name = self.tag_name(mod, props.mod_data_list(mod))
         if tag_name is not None and tag_name:
             extension.get_mods()[mod].add_prop(tag_name, aprop_str)
         else:
-            print(f'No tag name specified for props [{aprop_str}]')
+            print(f'No tag name specified for props {aprop_str}')
 
     def get_mod(self) -> str:
         """ Select extension for add_prop by menu. """
