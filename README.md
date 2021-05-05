@@ -40,7 +40,7 @@ i3 and modules on python. Also handles TOML-configs updating.
 
 Some general notes:
 
-`negi3wm.py` works as a server and `send` is a client. To look at the last
+`negi3wm` works as a server and `send` is a client. To look at the last
 actual list of command for modules you can look at `self.bindings` of some
 module. Most of them supports dynamic reloading of TOML-based configs as you
 save the file, so there is no need to manually reload them. Anyway you can
@@ -85,7 +85,7 @@ Named scratchpad is something like tabs for windows. You can create scratchpad
 with several rules like `im`, `player`, etc and attach windows to it. Then it
 make some magic to support some kind of "next tab" for this group, etc.
 
-Config example(`cfg/scratchpad.cfg`):
+Config example(`cfg/scratchpad.toml`):
 
 ```toml
 [im]
@@ -94,7 +94,7 @@ class_r = [ "[Tt]elegram.*", "[Ss]kype.*",]
 geom = "548x1165+1368+3"
 ```
 
-Look at `cfg/scratchpad.cfg` for the more info.
+Look at `cfg/scratchpad.toml` for the more info.
 
 Possible matching rules are:
 "class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
@@ -177,7 +177,7 @@ like workspaces, where workspace is not about view, but about semantics. This
 works despite of current monitor / workspace and you can iterate over them with
 ease.
 
-Config example (`cfg/circle.cfg`):
+Config example (`cfg/circle.toml`):
 
 ```toml
 [web]
@@ -287,13 +287,13 @@ self.bindings = {
 }
 ```
 
-It loads appropriate modules dynamically, to handle it please edit `cfg/menu.cfg`.
+It loads appropriate modules dynamically, to handle it please edit `cfg/menu.toml`
 Too many of options to document it properly.
 
 menu cfg example:
 
 ```toml
-modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr',]
+modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr']
 ```
 
 Also it contains some settings for menus.
@@ -345,7 +345,7 @@ i3 config example: _nothing_
 
 For now I have no any executor bindings in the i3 config, instead I use it as
 helper for another modules. For example you can use spawn argument for `circle`
-or `scratchpad`. Let's look at `cfg/circle.cfg`. It contains:
+or `scratchpad`. Let's look at `cfg/circle.toml` It contains:
 
 ```toml
 [term]
@@ -355,7 +355,7 @@ spawn = "term"
 ```
 
 Where spawn is special way to create terminal window with help of executor.
-Then look at `cfg/executor.cfg`. It contains:
+Then look at `cfg/executor.toml` It contains:
 
 ```toml
 [term]
@@ -454,7 +454,7 @@ _polybar_vol_ : async MPD printer for polybar.
 
 # Installation
 
-Negi3wm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/negi3wm`,
+Negi3wm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`,
 so you need to set up your `$XDG_CONFIG_HOME` variable before install, via
 `/etc/profile`, some kind of `.zshenv` or smth else depending or your
 environment, it is mandatory to install.
@@ -481,53 +481,12 @@ If everything is ok then you can use new i3 config example, where `Mod4
 - Shift + '`is i3wm reloading, after reload you should get i3 with`negi3wm`
   plugins on the board.
 
-# Dependencies:
-
-## Modern python3 with modules:
-
-- i3ipc -- for i3 ipc interaction, installed from master
-- toml -- to save/load human-readable configuration files.
-- inotipy -- async inotify bindings
-- Xlib -- xlib bindings to work with `NET_WM_` parameters, etc.
-- ewmh -- used to create EWMH helper.
-- yamlloader -- module for the more fast yaml file loading.
-- pulsectl -- used for menu to change pulseaudio input / output sinks
-- docopt -- for cli options in negi3wm script
-
-To install it you may use pip:
-
-```bash
-sudo pip install -r requirements.txt --upgrade
-```
-
-or
-
-```bash
-sudo pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
-    toml inotipy Xlib ewmh yamlloader pulsectl docopt
-```
-
-In case of pypy it may be something like
-
-```bash
-sudo pypy3 -m pip install --upgrade --force-reinstall git+git://github.com/acrisci/i3ipc-python@master \
-    toml inotipy Xlib ewmh yamlloader pulsectl docopt
-```
-
-or
-
-```bash
-sudo pypy3 -m pip install -r requirements.txt --upgrade
-```
-
-etc. Of course you are also need pip or conda, or smth to install dependencies.
-
 # Run
 
 Install it to i3 config directory:
 
-```bash
-git clone https://github.com/neg-serg/negi3wm ~/.config/i3
+```sh
+git clone https://github.com/neg-serg/negi3wm ~/.config/negi3wm
 ```
 
 negi3wm help:
@@ -556,27 +515,6 @@ To start daemon you need:
 cd ${XDG_CONFIG_HOME}/negi3wm
 ./negi3wm.py
 ```
-
-but I recommend you to look at my config(\_config). It can start / restart
-automatically, because of i3 connection will be closed after i3 restart and
-then started by `exec_always`.
-
-# Performance
-
-## Performance profiling
-
-You can check measure startup performance with tools like pycallgraph.
-
-Also you can try
-
-```bash
-kernprof -l -v ./negi3wm.py
-```
-
-for the more detail function/line-based profiling. As far as I know PyPy3 is
-not supported yet.
-
-For now negi3wm using cpython interpreter because of more fast startup.
 
 # Why
 
