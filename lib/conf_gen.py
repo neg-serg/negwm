@@ -27,9 +27,9 @@ class conf_gen(extension, cfg):
         with open(f'{i3_path}/{test_cfg}', 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
         if checker.check_i3_config(verbose=False, cfg=test_cfg):
-            with open(f'{i3_path}' + i3_cfg, 'w', encoding='utf8') as fp:
+            with open(f'{i3_path}/' + i3_cfg, 'w', encoding='utf8') as fp:
                 fp.write(generated_cfg)
-            os.remove(f'{i3_path}' + test_cfg)
+            os.remove(f'{i3_path}/' + test_cfg)
 
     def generate(self):
         ret = []
