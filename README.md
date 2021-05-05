@@ -52,19 +52,6 @@ At first you need to add something in negi3wm_run and add it to config:
 exec_always ~/.config/negi3wm/negi3wm_run &
 ```
 
-Current negi3wm_run is:
-
-```bash
-${XDG_CONFIG_HOME}/negi3wm/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
-make -C ${XDG_CONFIG_HOME}/negi3wm/ &
-```
-
-Interesting parts here are:
-
-```bash
-${XDG_CONFIG_HOME}/negi3wm/negi3wm.py --start >> ${HOME}/tmp/negi3wm.log 2>&1 &
-```
-
 To restart negi3wm after i3 reload, `negi3wm.py` should close file
 descriptor automatically, after i3 reload/restart so you can simply run it
 after restart.
@@ -473,7 +460,7 @@ After install check it via smth like:
 
 ```
 cd $XDG_CONFIG_HOME/negi3wm
-./negi3wm.py
+./bin/negi3wm_run
 ```
 
 If everything is ok then you can use new i3 config example, where `Mod4
@@ -513,7 +500,7 @@ To start daemon you need:
 
 ```bash
 cd ${XDG_CONFIG_HOME}/negi3wm
-./negi3wm.py
+./bin/negi3wm_run
 ```
 
 # Why
