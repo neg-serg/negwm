@@ -65,7 +65,7 @@ class checker():
     def check_i3_config(verbose, cfg='config'):
         if verbose:
             print('Check for i3 config consistency')
-        i3_cfg = f'/home/neg/.config/i3/{cfg}'
+        i3_cfg = f'{os.environ["XDG_CONFIG_HOME"]}/i3/{cfg}'
         if not (os.path.isfile(i3_cfg) and \
                 os.path.getsize(i3_cfg) > 0):
             print(f'There is no target i3 config file in {i3_cfg}, fail')
