@@ -69,7 +69,7 @@ install_deps() {
             echo "Install $dep..."
             yay -S "$dep" --noconfirm || yay -S "$dep-git" --noconfirm
         else
-            echo -n " $dep is already installed [OK]"
+            echo " $dep is already installed [OK]"
         fi
     done
 }
