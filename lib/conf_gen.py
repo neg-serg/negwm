@@ -33,11 +33,9 @@ class conf_gen(extension, cfg):
 
     def generate(self):
         ret = []
-        cfg_sections = self.cfg.get('sections', [])
-        if cfg_sections:
-            for section in cfg_sections:
-                section_data = getattr(self, section)()
-                ret.append(section_data)
+        for section in ["general", "workspaces", "mods_commands", "rules"]:
+            section_data = getattr(self, section)()
+            ret.append(section_data)
         bind_modes = self.cfg.get('bind_modes', [])
         for keybind in bind_modes:
             bind_name, mode_bind = keybind[0], keybind[1]
@@ -47,23 +45,8 @@ class conf_gen(extension, cfg):
             ret.append(keybind_data)
         return ret
 
-    def autostart(self) -> str:
-        return '\n'.join(self.cfg.get('autostart', [])) + '\n'
-
-    def gaps(self) -> str:
-        return '\n'.join(self.cfg.get('gaps', [])) + '\n'
-
     def general(self) -> str:
         return '\n'.join(self.cfg.get('general', [])) + '\n'
-
-    def focus_settings(self) -> str:
-        return '\n'.join(self.cfg.get('focus_settings', [])) + '\n'
-
-    def theme(self) -> str:
-        return '\n'.join(self.cfg.get('theme', [])) + '\n'
-
-    def color_theme(self) -> str:
-        return '\n'.join(self.cfg.get('color_theme', [])) + '\n'
 
     @staticmethod
     def scratchpad_bindings(mode) -> str:
