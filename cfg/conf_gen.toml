@@ -31,6 +31,9 @@ general = [
     "exec --no-startup-id /usr/sbin/gpaste-client daemon",
     "exec --no-startup-id /usr/bin/caffeine",
     "exec --no-startup-id /usr/bin/xiccd",
+
+    '''exec hash dbus-update-activation-environment 2>/dev/null && \
+    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK'''
 ]
 
 ws_list = [
