@@ -1,7 +1,6 @@
 [web]
-class = ['firefox', 'Tor Browser', 'Chromium']
-priority = 'firefox'
-prog = 'MOZ_WEBRENDER=1 firefox'
+class = ['firefox', 'firefoxdeveloperedition', 'Tor Browser', 'Chromium']
+prog = 'firefox-developer-edition'
 keybind_default_next = ['Mod4+w']
 ws = 'web'
 
