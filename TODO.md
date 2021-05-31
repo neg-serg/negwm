@@ -10,3 +10,4 @@
 - Scratchpad: set geometry for scratchpad windows(optional)
 - Add support for i3 open for tiling
 - Use Poetry
+- Add xrootgif support
