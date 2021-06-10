@@ -28,12 +28,12 @@ general = [
     "exec_always --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf",
     "exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run",
     "exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
+    '''exec hash dbus-update-activation-environment 2>/dev/null && \
+    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK''',
     "exec --no-startup-id /usr/sbin/gpaste-client daemon",
     "exec --no-startup-id /usr/bin/caffeine",
     "exec --no-startup-id /usr/bin/xiccd",
-
-    '''exec hash dbus-update-activation-environment 2>/dev/null && \
-    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK'''
+    "exec --no-startup-id /usr/lib/gsd-xsettings",
 ]
 
 ws_list = [
