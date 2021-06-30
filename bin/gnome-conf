@@ -1,7 +1,7 @@
 #!/bin/dash
 gset="gsettings set"
 
-[ -z $GUI_FONT ] && GUI_FONT='Iosevka Heavy 12'
+[ -z $GUI_FONT ] && GUI_FONT='Iosevka 10'
 [ -z $GUI_ICONS ] && GUI_ICONS='korla'
 [ -z $GUI_GTK_THEME ] && GUI_GTK_THEME='oomox-NegDarkArc'
 [ -z $GUI_CURSOR_THEME ] && GUI_CURSOR_THEME='SpaceKCursors'
@@ -19,6 +19,4 @@ $gset org.gnome.desktop.interface font-name "$GUI_FONT"
 $gset org.gnome.desktop.interface monospace-font-name "$GUI_FONT"
 $gset org.gnome.desktop.interface text-scaling-factor '1'
 $gset org.gnome.desktop.wm.preferences titlebar-font "$GUI_FONT"
-$gset org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
-$gset org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
 $gset org.gnome.settings-daemon.plugins.xsettings overrides "[{'Gdk/WindowScalingFactor', <2>}]"
