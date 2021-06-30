@@ -37,5 +37,5 @@ font_normal="Medium"
 padding=[8, 8]
 opacity=0.95
 env=['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket']
-exec_tmux=[['nvim', '/usr/bin/nvim']]
+exec_tmux=[['nvim', '/usr/local/bin/nvim']]
 statusline=0
