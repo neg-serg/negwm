@@ -136,9 +136,7 @@ class negi3wm(modconfig):
         """ Reloading configs on change. Reload only appropriate config by
             default.
 
-            Args:
-                watcher: watcher for cfg.
-        """
+            watcher: watcher for cfg. """
         while True:
             event = await watcher.get()
             changed_mod = event.pathname[:-4]
@@ -150,9 +148,7 @@ class negi3wm(modconfig):
                         self.mods[mod].bindings['reload']()
 
     def run_config_watchers(self):
-        """ Start all watchers here via ensure_future to run it in
-            background.
-        """
+        """ Start all watchers in background via ensure_future """
         asyncio.ensure_future(self.cfg_mods_worker(negi3wm.cfg_mods_watcher()))
 
     def run(self, verbose=False):
@@ -160,19 +156,16 @@ class negi3wm(modconfig):
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
 
-                Args:
-                    func (callable): callable routine to run.
-                    name: routine name.
-                    args: routine args, optional.
+                func (callable): callable routine to run.
+                name: routine name.
+                args: routine args, optional.
             """
             if args is None:
                 func()
             elif args is not None:
                 func(*args)
-
         start(self.load_modules)
         start(self.run_config_watchers)
-
         # Start modules mainloop.
         mainloop = Thread(
             target=MsgBroker.mainloop,
@@ -193,19 +186,14 @@ class negi3wm(modconfig):
 def main():
     """ Run negi3wm from here """
     get_lock(os.path.basename(__file__))
-
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(lambda: os._exit(0))
-
     cmd_args = docopt(__doc__, version='0.8')
-
     negi3wm_instance = negi3wm(cmd_args)
     negi3wm_instance.run()
-
     if negi3wm_instance.tracemalloc_enabled:
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('lineno')
-
         for stat in top_stats[:10]:
             print(stat)
 
