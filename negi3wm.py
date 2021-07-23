@@ -33,10 +33,9 @@ import importlib
 from importlib import util
 import tracemalloc
 from threading import Thread
-from colored import fg
 
 for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
-          "qtoml", "Xlib", "yaml", "yamlloader", "ewmh", "colored"]:
+          "qtoml", "Xlib", "yaml", "yamlloader", "ewmh"]:
     if not util.find_spec(m):
         print(f"Cannot import [{m}], please install")
 
@@ -62,6 +61,7 @@ class negi3wm(modconfig):
         """
         loop = asyncio.new_event_loop()
         self.tracemalloc_enabled = False
+        self.show_load_time = False
         if cmd_args["--tracemalloc"]:
             self.tracemalloc_enabled = True
 
@@ -90,24 +90,11 @@ class negi3wm(modconfig):
         self.mods = {}
         for mod in self.conf("module_list"):
             self.mods[sys.intern(mod)] = None
-
-        self.prepare_notification_text()
         self.port = int(str(self.conf('port')))
-
         self.echo = Misc.echo_on
-        self.notify = Misc.notify_off
-
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
         self.i3 = i3ipc.Connection()
-
-    def prepare_notification_text(self):
-        """ stuff for startup notifications """
-        self.notification_text = "Starting negi3wm\n\n"
-        notification_color = '#395573'
-        prefix = self.conf("prefix")
-        self.msg_prefix = f"<span weight='normal' \
-            color='{notification_color}'> {prefix} </span>"
 
     def load_modules(self):
         """ Load modules.
@@ -117,8 +104,6 @@ class negi3wm(modconfig):
             benchmarks.
         """
         mod_startup_times = []
-        main_color, delim_color = fg(249), fg(25)
-        delim = f'{delim_color}❯{main_color}'
         for mod in self.mods:
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('lib.' + mod)
@@ -128,16 +113,10 @@ class negi3wm(modconfig):
             except Exception:
                 pass
             mod_startup_times.append(timeit.default_timer() - start_time)
-            time_elapsed = f'{mod_startup_times[-1]:4f}'
-            mod_loaded_info = f'{main_color}{mod:<14s}{delim}' \
-                f'{time_elapsed:>10s}'
-            self.notification_text += self.msg_prefix + mod_loaded_info + '\n'
-            self.echo(mod_loaded_info, flush=True)
         total_startup_time = str(round(sum(mod_startup_times), 6))
-        loading_time_msg = f'{"total":<14s}{delim}' \
-            f'{main_color}{total_startup_time:>11s}{fg(240)}'
-        self.notification_text += loading_time_msg
-        self.echo(loading_time_msg)
+        loading_time_msg = f'[ok], load time {total_startup_time}'
+        if self.show_load_time:
+            self.echo(loading_time_msg)
 
     @staticmethod
     def cfg_mods_watcher():
@@ -166,13 +145,9 @@ class negi3wm(modconfig):
             if changed_mod in self.mods:
                 if reload_one:
                     self.mods[changed_mod].bindings['reload']()
-                    self.notify(f'[Reloaded {changed_mod}]')
                 else:
                     for mod in self.mods:
                         self.mods[mod].bindings['reload']()
-                    self.notify(
-                        '[Reloaded {' + ','.join(self.mods.keys()) + '}]'
-                    )
 
     def run_config_watchers(self):
         """ Start all watchers here via ensure_future to run it in
@@ -208,7 +183,6 @@ class negi3wm(modconfig):
 
         if verbose:
             self.echo('... everything loaded ...')
-            self.notify(self.notification_text)
         try:
             self.autostart()
             self.i3.main()
