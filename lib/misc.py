@@ -7,6 +7,7 @@ import functools
 import operator
 from typing import List
 
+
 class Misc():
     """ Implements various helper functions """
     @staticmethod
@@ -22,37 +23,13 @@ class Misc():
     @staticmethod
     def i3path() -> str:
         """ Easy way to return i3 config path. """
-        return os.environ.get("XDG_CONFIG_HOME") + "/negi3wm/"
-
-    @staticmethod
-    def notify_msg(msg: str, prefix: str = " ") -> None:
-        """ Send messages via notify-osd based notifications.
-            msg: message string.
-            prefix: optional prefix for message string. """
-
-        def get_pids(process) -> bool:
-            try:
-                pidlist = map(
-                    int, subprocess.check_output(["pidof", process]).split()
-                )
-            except subprocess.CalledProcessError:
-                pidlist = []
-            return bool(pidlist)
-
-        if get_pids('dunst'):
-            fg = '#617287'
-            notify_msg = [
-                'dunstify', '',
-                f"<span weight='normal' color='{fg}'>" +
-                prefix + msg +
-                "</span>"
-            ]
-            subprocess.Popen(notify_msg)
-
-    @staticmethod
-    def notify_off(_dummy_msg: str, _dummy_prefix: str = " ") -> None:
-        """ Do nothing """
-        return
+        cfg_home = os.environ.get("XDG_CONFIG_HOME")
+        homedir = os.environ.get("HOME")
+        if cfg_home is not None:
+            return cfg_home + "/negi3wm/"
+        if homedir is not None:
+            return homedir + "/.config/negi3wm/"
+        return ''
 
     @staticmethod
     def echo_on(*args, **kwargs) -> None:
@@ -125,6 +102,6 @@ class Misc():
             error_data = check_config.encode('utf-8')
             print(error_data)
             if remove:
-                os.remove(conf_gen_path) # remove invalid config
+                os.remove(conf_gen_path)  # remove invalid config
             return False
         return True
