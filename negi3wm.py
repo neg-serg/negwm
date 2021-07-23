@@ -235,6 +235,7 @@ def main():
         for stat in top_stats[:10]:
             print(stat)
 
+
 if __name__ == '__main__':
     checker().check(verbose=False)
     main()
