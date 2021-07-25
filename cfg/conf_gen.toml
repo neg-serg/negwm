@@ -47,7 +47,7 @@ plain_rules = [
     '[instance="^(gpartedbin|recoll)$"] move workspace $sys, floating enable, focus',
     '[class="^(Gcolor3|rdesktop|openssh-askpass)$"] floating enable',
     '[class="^(inkscape|gimp)$"] move workspace $draw',
-    '[class="Steam"] floating enable',
+    '[class="^(steam|Steam)$"] floating enable',
     '[class="steam_app_.*"] floating enable',
 ]
 

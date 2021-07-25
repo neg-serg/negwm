@@ -28,7 +28,7 @@ keybind_default_next = ['Mod4+Control+e']
 ws = 'steam'
 
 [steam]
-class = ['Steam']
+class = ['Steam', 'steam']
 prog = 'steam'
 keybind_default_next = ['Mod4+Shift+e']
 ws = 'steam'
