@@ -1,6 +1,6 @@
 [im]
-class = ['zoom', 'KotatogramDesktop', 'Slack', 'TelegramDesktop', 'Skype']
-geom = '547x1173+1373+0'
+class = ['zoom', 'KotatogramDesktop', 'Slack', 'TelegramDesktop', 'Skype', 'myteam']
+geom = '1296x2094+2539+10'
 keybind_default_toggle = ['Mod4+e']
 
 [im.tel]
@@ -11,41 +11,41 @@ keybind_spec_subtag = ['t']
 [1password]
 prog = '1password'
 instance = '1password'
-geom = '845x419+1070+725'
+geom = '1690x838+2140+1450'
 keybind_default_toggle = ['Mod4+Control+p']
 
 [ncmpcpp]
 instance = ['ncmpcpp', 'cool-retro-term']
-geom = '1133x466+395+443'
+geom = '2266x932+846+748'
 spawn = 'ncmpcpp'
 keybind_default_toggle = ['Mod4+f']
 
 [neomutt]
 class = ['mutterfox']
 instance = ['mutterfox', 'neomutt']
-geom = '1835x1114+52+0'
+geom = '3670x2228+104+0'
 spawn = 'neomutt'
 keybind_default_toggle = ['Mod4+n']
 
 [teardrop]
 instance = ['teardrop']
-geom = '1920x803+0+0'
+geom = '3840x1300+0+0'
 spawn = 'teardrop'
 keybind_default_toggle = ['Mod4+d']
 
 [webcam]
 instance = ['webcam']
-geom = '1234x771+667+363'
+geom = '2463x1880+1368+268'
 prog = '~/bin/webcam'
 keybind_spec_toggle = ['w']
 
 [discord]
 prog = 'discord'
 class = ['discord']
-geom = '944x1036+974+127'
+geom = '1888x2072+1948+254'
 keybind_default_toggle = ['Mod4+v']
 
 [transients]
 match_all = ['True']
 role = ['GtkFileChooserDialog', 'Organizer', 'Manager']
-geom = '1412x429+2+7'
+geom = '2824x858+4+14'
