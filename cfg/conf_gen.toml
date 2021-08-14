@@ -83,25 +83,8 @@ exec_no_startup_id = [
 ]
 
 [media]
-binds = [
-    ['XF86AudioPrev',
-     'XF86AudioNext',
-     'XF86AudioPlay',
-     'XF86AudioStop',
-     'comma',
-     'period',
-     'Shift+2'
-    ]
-]
-funcs = [
-    'previous',
-    'next',
-    'play',
-    'stop',
-    'previous',
-    'next',
-    'play-pause'
-]
+binds = [['XF86AudioPrev', 'XF86AudioNext', 'XF86AudioPlay', 'XF86AudioStop', 'comma', 'period', 'Shift+2' ]]
+funcs = ['previous', 'next', 'play', 'stop', 'previous', 'next', 'play-pause']
 modkey = 'Mod4'
 
 [focus]
@@ -120,22 +103,8 @@ funcs = ['geom_restore', 'geom_dump', 'dialog', 'next', 'hide_current']
 modkey = 'Mod4'
 
 [menu_def]
-binds = [
-    ['Mod1+g',
-     'Mod4+g',
-     'Mod4+Shift+a',
-     'Mod4+Control+g',
-     'Mod4+Control+grave',
-     'Mod4+Shift+s']
-]
-funcs = [
-    'goto_win',
-    'ws',
-    'attach',
-    'movews',
-    'cmd_menu',
-    'autoprop'
-]
+binds = [['Mod1+g', 'Mod4+g', 'Mod4+Shift+a', 'Mod4+Control+g', 'Mod4+Control+grave', 'Mod4+Shift+s']]
+funcs = ['goto_win', 'ws', 'attach', 'movews', 'cmd_menu', 'autoprop']
 
 [remember_focused_def]
 binds = [['Mod1+Tab', 'Mod4+slash', 'Mod4+grave', 'Mod4+Shift+grave']]
