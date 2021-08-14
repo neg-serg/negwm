@@ -18,7 +18,6 @@ from typing import List, Callable, Set
 from . import geom
 from . cfg import cfg
 from . matcher import Matcher
-from . misc import Misc
 from . negewmh import NegEWMH
 from . extension import extension
 
@@ -143,17 +142,22 @@ class scratchpad(extension, cfg, Matcher):
         """ Toggle scratchpad with given [tag].
             tag (str): denotes the target tag. """
         if not self.marked.get(tag, []):
-            prog_str = self.extract_prog_str(self.conf(tag))
+            target_tag = self.conf(tag)
+            if not target_tag:
+                return
+            prog_str = self.extract_prog_str(target_tag)
             if prog_str:
                 self.i3ipc.command(f'exec {prog_str}')
             else:
                 spawn_str = self.extract_prog_str(
-                    self.conf(tag), "spawn", exe_file=False
+                    target_tag, "spawn", exe_file=False
                 )
                 if spawn_str:
-                    executor = extension.get_mods().get('executor')
-                    if executor is not None:
-                        executor.bindings['run'](spawn_str)
+                    mods = extension.get_mods()
+                    if mods:
+                        executor = mods.get('executor')
+                        if executor is not None:
+                            executor.bindings['run'](spawn_str)
         if self.visible_window_with_tag(tag):
             self.hide_scratchpad(tag)
             return
@@ -167,7 +171,7 @@ class scratchpad(extension, cfg, Matcher):
     def focus_sub_tag(self, tag: str, subtag_classes_set: Set) -> None:
         """ Cycle over the subtag windows.
             tag (str): denotes the target tag.
-            subtag_classes_set (set): subset of classes of target [tag] which
+            subtag_classes_set (Set): subset of classes of target [tag] which
             distinguish one subtag from another. """
         focused = self.i3ipc.get_tree().find_focused()
         self.toggle_fs(focused)
@@ -183,14 +187,20 @@ class scratchpad(extension, cfg, Matcher):
         """ Run-or-focus the application for subtag
             tag (str): denotes the target tag.
             subtag (str): denotes the target subtag. """
-        if subtag in self.conf(tag):
+        target_tag = self.conf(tag)
+        if not target_tag:
+            return
+        if subtag in target_tag:
             class_list = [win.window_class for win in self.marked[tag]]
             subtag_classes_set = self.conf(tag, subtag, "class")
             subtag_classes_matched = [
                 w for w in class_list if w in subtag_classes_set
             ]
             if not subtag_classes_matched:
-                prog_str = self.extract_prog_str(self.conf(tag, subtag))
+                target_subtag = self.conf(tag, subtag)
+                if not target_subtag:
+                    return
+                prog_str = self.extract_prog_str(target_subtag)
                 self.i3ipc.command(f'exec {prog_str}')
                 self.focus_win_flag = [True, tag]
             else:
@@ -310,23 +320,17 @@ class scratchpad(extension, cfg, Matcher):
                     win.rect.height = focused.rect.height
                 break
 
-    def auto_save_geom(self, save: bool = True,
-                       with_notification: bool = False) -> None:
+    def auto_save_geom(self, save: bool = True) -> None:
         """ Set geometry autosave option with optional notification.
             save(bool): predicate that shows that want to enable/disable
             autosave mode.
             with_notification(bool): to create notify-osd-based notification or
             not. """
         self.geom_auto_save = save
-        if with_notification:
-            Misc.notify_msg(f"geometry autosave={save}")
 
     def autosave_toggle(self) -> None:
         """ Toggle autosave mode. """
-        if self.geom_auto_save:
-            self.auto_save_geom(False, with_notification=True)
-        else:
-            self.auto_save_geom(True, with_notification=True)
+        self.auto_save_geom(not self.geom_auto_save)
 
     def geom_dump_current(self) -> None:
         """ Dump geometry for the current selected tag. """
