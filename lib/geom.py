@@ -4,7 +4,6 @@ in this module geometry is parsed from config X11 internal format to the i3
 commands. """
 
 import re
-from typing import List
 from display import Display
 from misc import Misc
 
@@ -29,7 +28,7 @@ class geom():
     def parse_geom(self, tag: str) -> str:
         """ Convert geometry from self.cfg format to i3 commands.
             tag (str): target self.cfg tag """
-        rd = {'width': 1920, 'height': 1200} # resolution_default
+        rd = {'width': 3840, 'height': 2160} # resolution_default
         cr = self.current_resolution # current resolution
         g = re.split(r'[x+]', self.cfg[tag]["geom"])
         cg = [] # converted_geom
