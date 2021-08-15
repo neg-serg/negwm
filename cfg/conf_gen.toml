@@ -75,77 +75,132 @@ bind_modes = [["default", ''], ["resize", 'Mod4+r'], ["spec", 'Mod1+e'], ["wm", 
     'Mod4+Shift+9' = 'dunstctl history-pop'
 
 [media]
-modkey = 'Mod4'
-binds = [['XF86AudioPrev', 'XF86AudioNext', 'XF86AudioPlay', 'XF86AudioStop', 'comma', 'period', 'Shift+2' ]]
-funcs = ['previous', 'next', 'play', 'stop', 'previous', 'next', 'play-pause']
+    modkey = 'Mod4'
+    [media.keymap]
+    previous = ['XF86AudioPrev', 'comma']
+    next = ['XF86AudioNext', 'period']
+    play = ['XF86AudioPlay']
+    stop = ['XF86AudioStop']
+    play-pause = ['Shift+2']
 
 [focus]
-modkey = 'Mod4'
-binds = ['hjkl']
-funcs = ['left', 'down', 'up', 'right']
+    modkey = 'Mod4'
+    [focus.keymap]
+    left = ['h']
+    down = ['j']
+    up = ['k']
+    right = ['l']
 
 [misc]
-modkey = 'Mod4'
-binds = [['q', 'Control+q']]
-funcs = ['fullscreen toggle', 'kill']
+    modkey = 'Mod4'
+    [misc.keymap]
+    'fullscreen toggle' = ['q']
+    kill = ['Control+q']
 
 [scratchpad]
-modkey = 'Mod4'
-binds = [['Control+space', 'Control+s', 'Control+a', '3', 's']]
-funcs = ['geom_restore', 'geom_dump', 'dialog', 'next', 'hide_current']
+    modkey = 'Mod4'
+    [scratchpad.keymap]
+    geom_restore = ['Control+space']
+    geom_dump = ['Control+s']
+    dialog = ['Control+a']
+    next = ['3']
+    hide_current = ['s']
 
 [menu]
-binds = [['Mod1+g', 'Mod4+g', 'Mod4+Shift+a', 'Mod4+Control+g', 'Mod4+Control+grave', 'Mod4+Shift+s']]
-funcs = ['goto_win', 'ws', 'attach', 'movews', 'cmd_menu', 'autoprop']
+    [menu.keymap]
+    goto_win = ['Mod1+g']
+    ws = ['Mod4+g']
+    attach = ['Mod4+Shift+a']
+    movews = ['Mod4+Control+g']
+    cmd_menu = ['Mod4+Control+grave']
+    autoprop = ['Mod4+Shift+s']
 
 [remember_focused]
-binds = [['Mod1+Tab', 'Mod4+slash', 'Mod4+grave', 'Mod4+Shift+grave']]
-funcs = ['switch', 'switch', 'focus_next_visible', 'focus_prev_visible']
+    [remember_focused.keymap]
+    switch = ['Mod1+Tab', 'Mod4+slash']
+    focus_next_visible = ['Mod4+grave']
+    focus_prev_visible = ['Mod4+Shift+grave']
 
 [vol]
-binds = [['XF86AudioLowerVolume', 'XF86AudioRaiseVolume']]
-funcs = ['d', 'u']
+    [vol.keymap]
+    d = ['XF86AudioLowerVolume']
+    u = ['XF86AudioRaiseVolume']
 
 [resize_plus]
-binds = ['hjkl', 'aswd']
-funcs = ['left', 'bottom', 'top', 'right', 'left', 'bottom', 'top', 'right']
-params = ['4']
+    param = '4'
+    [resize_plus.keymap]
+    left = ['h', 'a']
+    bottom = ['j', 's']
+    top = ['k', 'w']
+    right = ['l', 'd']
 
 [resize_minus]
-binds = ['hjkl', 'aswd']
-funcs = ['left', 'bottom', 'top', 'right', 'left', 'bottom', 'top', 'right']
-params = ['-4']
-modkey = 'Shift'
+    modkey = 'Shift'
+    param = '-4'
+    [resize_minus.keymap]
+    left = ['h', 'a']
+    bottom = ['j', 's']
+    top = ['k', 'w']
+    right = ['l', 'd']
 
 [split]
-binds = ['hjkl']
-funcs = ['horizontal', 'vertical', 'vertical', 'horizontal']
+    [split.keymap]
+    horizontal = ['h', 'l']
+    vertical = ['j', 'k']
 
 [layout_wm]
-binds = [['grave', 't', 'minus', 'backslash', 'Control+a', 'Control+3', 'Control+s', 'Control+t']]
-funcs = ['default', 'tabbed', 'splith', 'splitv', 'toggle all', 'toggle all', 'toggle split', 'toggle']
+    [layout_wm.keymap]
+    default = ['grave']
+    tabbed = ['t']
+    splith = ['minus']
+    splitv = ['backslash']
+    'toggle all' = ['Control+a', 'Control+3']
+    'toggle split' = ['Control+s']
+    toggle = ['Control+t']
 
 [actions_wm]
-binds = [['m', 'Shift+m', 'x', 'y', 'Shift+x', 'Shift+y', 'Shift+plus', 'Shift+minus', 'c', 'Shift+c']]
-funcs = ['maximize', 'revert_maximize', 'maxhor', 'maxvert', 'revert_maximize', 'revert_maximize', 'grow', 'shrink', 'none', 'resize',]
+    [actions_wm.keymap]
+    maximize = ['m']
+    maxhor = ['x']
+    maxvert = ['y']
+    revert_maximize = ['Shift+m', 'Shift+x', 'Shift+y']
+    grow = ['Shift+plus']
+    shrink = ['Shift+minus']
+    none = ['c']
+    resize = ['Shift+c']
 
 [misc_spec]
-binds = [['e', 'Shift+d']]
-funcs = ['[urgent=latest] focus', 'floating toggle']
+    [misc_spec.keymap]
+    '[urgent=latest] focus' = ['e']
+    'floating toggle' = ['Shift+d']
 
 [menu_spec]
-binds = [['o', 'i', 'Shift+t', 'Shift+i', 'm']]
-funcs = ['pulse_output', 'pulse_input', 'gtk_theme', 'icon_theme', 'xprop']
+    [menu_spec.keymap]
+    pulse_output = ['o']
+    pulse_input = ['i']
+    gtk_theme = ['Shift+t']
+    icon_theme = ['Shift+i']
+    xprop = ['m']
 
 [move]
-binds = ['aswd']
-funcs = ['left', 'bottom', 'top', 'right']
+    [move.keymap]
+    top = ['w']
+    left = ['a']
+    bottom = ['s']
+    right = ['d']
 
 [move_acts]
-binds = [['Shift+a', 'Shift+s', 'Shift+w', 'Shift+d']]
-funcs = ['hup', 'vleft', 'hdown', 'vright']
-params = ['x2']
+    param = 'x2'
+    [move_acts.keymap]
+    hup = ['Shift+a']
+    vleft = ['Shift+s']
+    hdown = ['Shift+w']
+    vright = ['Shift+d']
+
 
 [quad]
-binds = ['1234']
-funcs = ['1', '2', '3', '4']
+    [quad.keymap]
+    '1' = '1'
+    '2' = '2'
+    '3' = '3'
+    '4' = '4'

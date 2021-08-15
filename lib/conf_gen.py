@@ -254,21 +254,18 @@ class conf_gen(extension, cfg):
         ret = ''
         section = self.cfg.get(section_name, {})
         if section:
-            binds = section.get('binds', [])
-            funcs = section.get('funcs')
             modkey = section.get('modkey', '')
-            params = section.get('params', [])
+            param = section.get('param', '')
             if modkey:
                 modkey += '+'
-            if binds and funcs:
-                ret += '\n'
-                param_str = ' '.join(params).strip()
-                if len(params):
-                    param_str = ' ' + param_str
-                for bind in binds:
-                    for i, key in enumerate(bind):
-                        ret += f'{pre} {modkey}{key} {post} ' + \
-                            f'{funcs[i]}{param_str}{end}\n'
+            if param:
+                param = ' ' + param
+            ret += '\n'
+            keymaps = section.get('keymap', {})
+            if keymaps:
+                for action, maps in keymaps.items():
+                    for keymap in maps:
+                        ret += f'{pre} {modkey}{keymap} {post} {action}{param}{end}\n'
         return ret
 
 
