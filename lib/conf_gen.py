@@ -68,7 +68,10 @@ class conf_gen(extension, cfg):
                             f' $scratchpad {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
             return ret
 
-        scratchpad = extension.get_mods()['scratchpad']
+        mods = extension.get_mods()
+        if mods is None or not mods:
+            return ret
+        scratchpad = mods['scratchpad']
         for tag,settings in scratchpad.cfg.items():
             for param in settings:
                 if isinstance(settings[param], dict):
@@ -102,7 +105,10 @@ class conf_gen(extension, cfg):
                             f' {cmd} {tag}{subtag}{postfix}'.strip() + '\n'
             return ret
 
-        circle = extension.get_mods()['circle']
+        mods = extension.get_mods()
+        if mods is None or not mods:
+            return ret
+        circle = mods['circle']
         for tag, settings in circle.cfg.items():
             for param in settings:
                 if isinstance(settings[param], dict):
@@ -118,7 +124,10 @@ class conf_gen(extension, cfg):
 
     def mods_commands(self) -> str:
         ret = ''
-        for mod in sorted(extension.get_mods()):
+        mods = extension.get_mods()
+        if mods is None or not mods:
+            return ret
+        for mod in sorted(mods):
             ret += (f'set ${mod} exec --no-startup-id {self.send_path} {mod}\n')
         return ret
 
@@ -148,7 +157,10 @@ class conf_gen(extension, cfg):
         def rules_mod(modname):
             """ Create i3 match rules for all tags. """
             ret = ''
-            mod = extension.get_mods().get(modname, None)
+            mods = extension.get_mods()
+            if mods is None or not mods:
+                return ret
+            mod = mods.get(modname, None)
             if mod is None:
                 return ''
             cmd_dict = fill_rules_dict(mod, {})
@@ -165,7 +177,7 @@ class conf_gen(extension, cfg):
             ret += '\n'
             for tag in cmd_dict:
                 if tag in {'transients'}:
-                    geom = scratchpad.nsgeom.get_geom(tag)
+                    geom = getattr(scratchpad, 'nsgeom').get_geom(tag)
                     ret += f'for_window $scratchpad-{tag}' + \
                         f' move scratchpad, {geom}\n'
                 else:
@@ -174,10 +186,11 @@ class conf_gen(extension, cfg):
 
         def rules_circle() -> str:
             (ret, _, circle) = rules_mod('circle')
-            for tag in circle.cfg:
+            conf = getattr(circle, 'cfg')
+            for tag in conf:
                 focus_cmd = ''
-                ws = circle.cfg[tag].get('ws', '')
-                focus = bool(circle.cfg[tag].get('focus', True))
+                ws = conf[tag].get('ws', '')
+                focus = bool(conf[tag].get('focus', True))
                 if focus:
                     focus_cmd = ',focus'
                 if ws:
