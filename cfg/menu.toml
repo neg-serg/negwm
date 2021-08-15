@@ -1,4 +1,4 @@
-modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr',]
+modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr']
 
 i3cmd = "i3-msg"
 host = "::"
