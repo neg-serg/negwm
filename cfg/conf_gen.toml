@@ -1,22 +1,22 @@
 general = [
     "workspace_layout tabbed",
     "default_orientation auto",
+    "default_border normal",
+    "default_floating_border normal",
     "floating_modifier Mod4",
     "set $i3 ${XDG_CONFIG_HOME}/negi3wm",
     "set $exit mode \"default\"",
-
-    "font pango: Iosevka Heavy 18",
+    "font pango: Iosevka 12",
     "show_marks yes",
     "hide_edge_borders both",
-    "title_align left",
-
+    "title_align center",
     "focus_follows_mouse no",
-    "force_display_urgency_hint 500 ms",
+    "force_display_urgency_hint 2000 ms",
     "focus_on_window_activation smart",
-    "focus_wrapping yes",
+    "focus_wrapping workspace",
     "mouse_warping none",
 
-    #item,                    border,     background,  text,    indicator,  child_border
+    #                         border      background   text     indicator   child_border
     "client.focused           #000011dd   #000000ee    #ddddee  #112211     #0C0C0D",
     "client.focused_inactive  #000000dd   #000000ee    #005fff  #000000     #020204",
     "client.unfocused         #000000ee   #000000      #315c70  #000000     #020204",
@@ -36,7 +36,7 @@ general = [
 ]
 
 ws_list = [
-    " α:term", " β:web", " γ:doc", " δ:dev",
+    "︁ α:term", " β:web", " γ:doc", " δ:dev",
     " ε:gfx", " ζ:draw", " η:sys", " ι:steam",
     " λ:vm", " μ:wine", " ξ:pic", "@ ρ:obs"
 ]
