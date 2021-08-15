@@ -75,34 +75,34 @@ bind_modes = [["default", ''], ["resize", 'Mod4+r'], ["spec", 'Mod1+e'], ["wm", 
     'Mod4+Shift+9' = 'dunstctl history-pop'
 
 [media]
+modkey = 'Mod4'
 binds = [['XF86AudioPrev', 'XF86AudioNext', 'XF86AudioPlay', 'XF86AudioStop', 'comma', 'period', 'Shift+2' ]]
 funcs = ['previous', 'next', 'play', 'stop', 'previous', 'next', 'play-pause']
-modkey = 'Mod4'
 
 [focus]
+modkey = 'Mod4'
 binds = ['hjkl']
 funcs = ['left', 'down', 'up', 'right']
-modkey = 'Mod4'
 
-[misc_def]
+[misc]
+modkey = 'Mod4'
 binds = [['q', 'Control+q']]
 funcs = ['fullscreen toggle', 'kill']
-modkey = 'Mod4'
 
-[scratchpad_def]
+[scratchpad]
+modkey = 'Mod4'
 binds = [['Control+space', 'Control+s', 'Control+a', '3', 's']]
 funcs = ['geom_restore', 'geom_dump', 'dialog', 'next', 'hide_current']
-modkey = 'Mod4'
 
-[menu_def]
+[menu]
 binds = [['Mod1+g', 'Mod4+g', 'Mod4+Shift+a', 'Mod4+Control+g', 'Mod4+Control+grave', 'Mod4+Shift+s']]
 funcs = ['goto_win', 'ws', 'attach', 'movews', 'cmd_menu', 'autoprop']
 
-[remember_focused_def]
+[remember_focused]
 binds = [['Mod1+Tab', 'Mod4+slash', 'Mod4+grave', 'Mod4+Shift+grave']]
 funcs = ['switch', 'switch', 'focus_next_visible', 'focus_prev_visible']
 
-[vol_def]
+[vol]
 binds = [['XF86AudioLowerVolume', 'XF86AudioRaiseVolume']]
 funcs = ['d', 'u']
 

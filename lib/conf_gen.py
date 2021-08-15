@@ -279,10 +279,10 @@ class conf_gen(extension, cfg):
             exec_ret = ''
             exec_ret += \
             self.bind('media', 'exec --no-startup-id playerctl', '') + \
-                self.bind('vol_def', '$vol', '') + \
-                self.bind('menu_def', '$menu', '') + \
-                self.bind('scratchpad_def', '$scratchpad', '') + \
-                self.bind('remember_focused_def', '$remember_focused', '')
+                self.bind('vol', '$vol', '') + \
+                self.bind('menu', '$menu', '') + \
+                self.bind('scratchpad', '$scratchpad', '') + \
+                self.bind('remember_focused', '$remember_focused', '')
             execs = self.cfg.get('exec', {})
             if execs:
                 plain = execs.get('plain', {})
@@ -295,7 +295,7 @@ class conf_gen(extension, cfg):
             return exec_ret
 
         return \
-            self.bind('misc_def', '', '') + \
+            self.bind('misc', '', '') + \
             self.bind('focus', 'focus', '') + \
             exec_bindings() + \
             conf_gen.scratchpad_bindings(mode_name) + \
