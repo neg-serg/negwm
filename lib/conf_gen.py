@@ -57,14 +57,13 @@ class conf_gen(extension, cfg):
             if mode != 'default':
                 pref, postfix = '\t', ',$exit'
             get_binds = p.split('_')
-            mode_ = get_binds[1]
-            cmd = get_binds[2]
+            mode_, cmd = get_binds[1], get_binds[2]
             if len(get_binds) == 3:
                 if mode_ == mode:
                     if subtag:
                         subtag = f' {subtag}'
                     for keybind in settings[p]:
-                        ret += f'{pref.strip()}bindsym {keybind.strip()}' \
+                        ret += f'{pref}bindsym {keybind.strip()}' + ' ' + \
                             f' $scratchpad {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
             return ret
 
@@ -94,14 +93,13 @@ class conf_gen(extension, cfg):
             if mode != 'default':
                 pref, postfix = '\t', ',$exit'
             get_binds = p.split('_')
-            mode_ = get_binds[1]
-            cmd = get_binds[2]
+            mode_, cmd = get_binds[1], get_binds[2]
             if len(get_binds) == 3:
                 if mode_ == mode:
                     if subtag:
                         subtag = f' {subtag}'
                     for keybind in settings[p]:
-                        ret += f'{pref}bindsym {keybind} $circle' \
+                        ret += f'{pref}bindsym {keybind} $circle' + ' ' + \
                             f' {cmd} {tag}{subtag}{postfix}'.strip() + '\n'
             return ret
 
@@ -232,20 +230,20 @@ class conf_gen(extension, cfg):
             if rules:
                 return ''.join(map(lambda s: 'for_window ' + s + '\n', rules))
             return ''
-        return rules_scratchpad() + \
-            rules_circle() + \
-            plain_rules()
+
+        return rules_scratchpad() + rules_circle() + plain_rules()
 
     @staticmethod
     def mode_start(name) -> str:
-        return 'mode ' + name + ' {\n'
+        return 'mode ' + name + ' {'
 
     @staticmethod
     def mode_end() -> str:
         ret = ''
+        pref = '\t'
         bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
         for keybind in bindings:
-            ret += f'bindsym {keybind},$exit\n'
+            ret += f'{pref}bindsym {keybind},$exit\n'
         return ret + '}\n'
 
     @staticmethod
@@ -265,118 +263,69 @@ class conf_gen(extension, cfg):
             if binds and funcs:
                 ret += '\n'
                 param_str = ' '.join(params).strip()
+                if len(params):
+                    param_str = ' ' + param_str
                 for bind in binds:
                     for i, key in enumerate(bind):
-                        ret += f'{pre} {modkey}{key} {post} ' \
+                        ret += f'{pre} {modkey}{key} {post} ' + \
                             f'{funcs[i]}{param_str}{end}\n'
-                ret += '\n'
         return ret
 
     def mode_resize(self, mode_name, mode_bind) -> str:
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('resize_plus', '$actions resize', '') + \
-            self.bind('resize_minus', '$actions resize', '') + \
+            self.bind('resize_plus', '$actions resize', '', pre='\tbindsym') + \
+            self.bind('resize_minus', '$actions resize', '', pre='\tbindsym') + \
             conf_gen.mode_end()
 
     def mode_spec(self, mode_name, mode_bind) -> str:
-        def menu_spec() -> str:
-            return self.bind('menu_spec', '$menu', ',$exit')
-
-        def misc_spec() -> str:
-            return self.bind('misc_spec', '', ',$exit')
-
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            misc_spec() + \
-            menu_spec() + \
+            self.bind('misc_spec', '', ',$exit', pre='\tbindsym') + \
+            self.bind('menu_spec', '$menu', ',$exit', pre='\tbindsym') + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()
 
     def mode_wm(self, mode_name, mode_bind) -> str:
-        def split_tiling() -> str:
-            return self.bind('split', 'split', ',$exit')
-
-        def move_win() -> str:
-            return self.bind('move', 'move', '')
-
-        def win_quad() -> str:
-            return self.bind('quad', '$actions', '')
-
-        def move_acts() -> str:
-            return self.bind('move_acts', '$actions', '')
-
-        def layout_wm() -> str:
-            return self.bind('layout_wm', 'layout', ',$exit')
-
-        def actions_wm() -> str:
-            return self.bind('actions_wm', '$actions', '')
-
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            layout_wm() + \
-            split_tiling() + \
-            move_win() + \
-            move_acts() + \
-            win_quad() + \
-            actions_wm() + \
+            self.bind('layout_wm', 'layout', ',$exit', pre='\tbindsym') + \
+            self.bind('split', 'split', ',$exit', pre='\tbindsym') + \
+            self.bind('move', 'move', '', pre='\tbindsym') + \
+            self.bind('move_acts', '$actions', '', pre='\tbindsym') + \
+            self.bind('quad', '$actions', '', pre='\tbindsym') + \
+            self.bind('actions_wm', '$actions', '', pre='\tbindsym') + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
-        def misc_def() -> str:
-            return self.bind('misc_def', '', '')
-
-        def vol_def() -> str:
-            return self.bind('vol_def', '$vol', '')
-
-        def remember_focused_def() -> str:
-            return self.bind('remember_focused_def', '$remember_focused', '')
-
-        def menu_def() -> str:
-            return self.bind('menu_def', '$menu', '')
-
-        def scratchpad_def() -> str:
-            return self.bind('scratchpad_def', '$scratchpad', '')
-
-        def focus() -> str:
-            return self.bind('focus', 'focus', '')
-
-        def media() -> str:
-            cmd = 'exec --no-startup-id playerctl'
-            return self.bind('media', cmd, '')
-
         def exec_binds() -> str:
             exec_ret = ''
-            exec_ret += '\n' \
-                + '\n' + media() \
-                + '\n' + vol_def() \
-                + '\n' + menu_def() \
-                + '\n' + scratchpad_def() \
-                + '\n' + remember_focused_def()
-            exec_ret += '\n'
+            exec_ret += \
+                self.bind('media', 'exec --no-startup-id playerctl', '') + \
+                self.bind('vol_def', '$vol', '') + \
+                self.bind('menu_def', '$menu', '') + \
+                self.bind('scratchpad_def', '$scratchpad', '') + \
+                self.bind('remember_focused_def', '$remember_focused', '')
             key_prog_gui = self.cfg.get('exec', [])
             if key_prog_gui:
                 exec_ret += ''.join(map(
-                    lambda p:
-                    f'bindsym {str(p[0])} exec {str(p[1])}\n',
-                    key_prog_gui
-                ))
+                    lambda p: f'bindsym {str(p[0])} exec {str(p[1])}\n',
+                    key_prog_gui))
             key_prog = self.cfg.get('exec_no_startup_id', [])
             if key_prog:
                 exec_ret += ''.join(map(
                     lambda p:
                     f'bindsym {str(p[0])} exec --no-startup-id {str(p[1])}\n',
-                    key_prog
-                ))
-            exec_ret += '\n'
+                    key_prog))
             return exec_ret
 
-        return misc_def() \
-            + focus() \
-            + exec_binds() \
-            + conf_gen.scratchpad_bindings(mode_name) \
-            + conf_gen.circle_bindings(mode_name)
+        return \
+            self.bind('misc_def', '', '') + \
+            self.bind('focus', 'focus', '') + \
+            exec_binds() + \
+            conf_gen.scratchpad_bindings(mode_name) + \
+            conf_gen.circle_bindings(mode_name)
