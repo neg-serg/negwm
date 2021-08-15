@@ -8,9 +8,9 @@ prog = 'kotatogram-desktop'
 class = ['KotatogramDesktop']
 keybind_spec_subtag = ['t']
 
-[1password]
+[pass]
 prog = '1password'
-instance = '1password'
+instance = ['1password']
 geom = '1690x838+2140+1450'
 keybind_default_toggle = ['Mod4+Control+p']
 
