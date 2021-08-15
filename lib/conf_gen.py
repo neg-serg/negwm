@@ -271,6 +271,36 @@ class conf_gen(extension, cfg):
                             f'{funcs[i]}{param_str}{end}\n'
         return ret
 
+
+    def mode_default(self, mode_name, mode_bind) -> str:
+        _ = mode_bind
+
+        def exec_bindings() -> str:
+            exec_ret = ''
+            exec_ret += \
+            self.bind('media', 'exec --no-startup-id playerctl', '') + \
+                self.bind('vol_def', '$vol', '') + \
+                self.bind('menu_def', '$menu', '') + \
+                self.bind('scratchpad_def', '$scratchpad', '') + \
+                self.bind('remember_focused_def', '$remember_focused', '')
+            execs = self.cfg.get('exec', {})
+            if execs:
+                plain = execs.get('plain', {})
+                if plain:
+                    for bind, prog in plain.items():
+                        exec_ret += f'bindsym {bind} exec {prog}\n'
+                no_startup_id = execs.get('no_startup_id', {})
+                for bind, prog in no_startup_id.items():
+                    exec_ret += f'bindsym {bind} exec {prog}\n'
+            return exec_ret
+
+        return \
+            self.bind('misc_def', '', '') + \
+            self.bind('focus', 'focus', '') + \
+            exec_bindings() + \
+            conf_gen.scratchpad_bindings(mode_name) + \
+            conf_gen.circle_bindings(mode_name)
+
     def mode_resize(self, mode_name, mode_bind) -> str:
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
@@ -299,33 +329,3 @@ class conf_gen(extension, cfg):
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()
-
-    def mode_default(self, mode_name, mode_bind) -> str:
-        _ = mode_bind
-        def exec_binds() -> str:
-            exec_ret = ''
-            exec_ret += \
-                self.bind('media', 'exec --no-startup-id playerctl', '') + \
-                self.bind('vol_def', '$vol', '') + \
-                self.bind('menu_def', '$menu', '') + \
-                self.bind('scratchpad_def', '$scratchpad', '') + \
-                self.bind('remember_focused_def', '$remember_focused', '')
-            key_prog_gui = self.cfg.get('exec', [])
-            if key_prog_gui:
-                exec_ret += ''.join(map(
-                    lambda p: f'bindsym {str(p[0])} exec {str(p[1])}\n',
-                    key_prog_gui))
-            key_prog = self.cfg.get('exec_no_startup_id', [])
-            if key_prog:
-                exec_ret += ''.join(map(
-                    lambda p:
-                    f'bindsym {str(p[0])} exec --no-startup-id {str(p[1])}\n',
-                    key_prog))
-            return exec_ret
-
-        return \
-            self.bind('misc_def', '', '') + \
-            self.bind('focus', 'focus', '') + \
-            exec_binds() + \
-            conf_gen.scratchpad_bindings(mode_name) + \
-            conf_gen.circle_bindings(mode_name)

@@ -31,7 +31,6 @@ general = [
     '''exec hash dbus-update-activation-environment 2>/dev/null && \
     dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK''',
     "exec --no-startup-id /usr/sbin/gpaste-client daemon",
-    "exec --no-startup-id /usr/bin/caffeine",
     "exec --no-startup-id /usr/bin/xiccd",
     "exec --no-startup-id /usr/lib/gsd-xsettings",
 ]
@@ -51,36 +50,29 @@ plain_rules = [
     '[class="steam_app_.*"] floating enable',
 ]
 
-bind_modes = [
-    ["default", ''],
-    ["resize", 'Mod4+r'],
-    ["spec", 'Mod1+e'],
-    ["wm", 'Mod4+minus'],
-]
+bind_modes = [["default", ''], ["resize", 'Mod4+r'], ["spec", 'Mod1+e'], ["wm", 'Mod4+minus']]
 
-exec = [
-    ['Mod4+4', '~/bin/scripts/screenshot'],
-    ['Mod4+Shift+4', 'flameshot gui'],
-    ['Mod4+Control+4', '~/bin/scripts/screenshot -r'],
-]
-
-exec_no_startup_id = [
-    ['Mod1+grave', 'rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run'],
-    ['Mod4+8', 'playerctl volume 0.0 || amixer -q set Master 0 mute'],
-    ['Mod4+Shift+8', 'playerctl volume 1.0 || amixer -q set Master 65536 unmute'],
-    ['Mod4+c', '~/bin/clip'],
-    ['Mod4+p', '~/bin/scripts/rofi-tmux-urls'],
-    ['Mod4+Shift+6', '~/bin/wl'],
-    ['Mod4+Shift+i', '~/bin/scripts/rofi-nm'],
-    ['Mod4+Shift+l', '~/bin/scripts/rofi-lutris'],
-    ['Mod4+Shift+m', '~/bin/scripts/rofi-audio'],
-    ['Mod4+Shift+y', '~/bin/clip youtube-dw-list'],
-    ['XF86Sleep', 'sudo systemctl suspend'],
-    ['Mod4+apostrophe', '${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload'],
-    ['Mod4+Shift+apostrophe', '${XDG_CONFIG_HOME}/negi3wm/bin/i3-restart'],
-    ['Mod4+space', 'dunstctl close-all'],
-    ['Mod4+Shift+9', 'dunstctl history-pop'],
-]
+[exec]
+    [exec.plain]
+    'Mod4+4' = '~/bin/scripts/screenshot'
+    'Mod4+Shift+4' = 'flameshot gui'
+    'Mod4+Control+4' = '~/bin/scripts/screenshot -r'
+    [exec.no_startup_id]
+    'Mod1+grave' = 'rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run'
+    'Mod4+8' = 'playerctl volume 0.0 || amixer -q set Master 0 mute'
+    'Mod4+Shift+8' = 'playerctl volume 1.0 || amixer -q set Master 65536 unmute'
+    'Mod4+c' = '~/bin/clip'
+    'Mod4+p' = '~/bin/scripts/rofi-tmux-urls'
+    'Mod4+Shift+6' = '~/bin/wl'
+    'Mod4+Shift+i' = '~/bin/scripts/rofi-nm'
+    'Mod4+Shift+l' = '~/bin/scripts/rofi-lutris'
+    'Mod4+Shift+m' = '~/bin/scripts/rofi-audio'
+    'Mod4+Shift+y' = '~/bin/clip youtube-dw-list'
+    'XF86Sleep' = 'sudo systemctl suspend'
+    'Mod4+apostrophe' = '${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload'
+    'Mod4+Shift+apostrophe' = '${XDG_CONFIG_HOME}/negi3wm/bin/i3-restart'
+    'Mod4+space' = 'dunstctl close-all'
+    'Mod4+Shift+9' = 'dunstctl history-pop'
 
 [media]
 binds = [['XF86AudioPrev', 'XF86AudioNext', 'XF86AudioPlay', 'XF86AudioStop', 'comma', 'period', 'Shift+2' ]]
