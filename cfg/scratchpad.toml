@@ -1,6 +1,6 @@
 [im]
 class = ['zoom', 'KotatogramDesktop', 'Slack', 'TelegramDesktop', 'Skype', 'myteam']
-geom = '1296x2094+2539+10'
+geom = '1304x2109+2536+2'
 keybind_default_toggle = ['Mod4+e']
 
 [im.tel]
