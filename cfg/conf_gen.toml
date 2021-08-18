@@ -23,14 +23,13 @@ workspaces = [
     " λ:vm", " μ:wine", " ξ:pic", "@ ρ:obs"
 ]
 
-plain_rules = [
-    '''[class=".*"] title_format "<span foreground='#395573'> >_ </span> %title", border pixel 5''',
-    '[instance="^(gpartedbin|recoll)$"] move workspace $sys, floating enable, focus',
-    '[class="^(Gcolor3|rdesktop|openssh-askpass)$"] floating enable',
-    '[class="^(inkscape|gimp)$"] move workspace $draw',
-    '[class="^(steam|Steam)$"] floating enable',
-    '[class="steam_app_.*"] floating enable',
-]
+[win_rules]
+    '[class=".*"]' = 'title_format "<span foreground=#395573> >_ </span> %title", border pixel 5'
+    '[instance="^(gpartedbin|recoll)$"]' = 'move workspace $sys, floating enable, focus'
+    '[class="^(Gcolor3|rdesktop|openssh-askpass)$"]' = 'floating enable'
+    '[class="^(inkscape|gimp)$"]' = 'move workspace $draw'
+    '[class="^(steam|Steam)$"]' = 'floating enable'
+    '[class="steam_app_.*"]' = 'floating enable'
 
 [startup]
     [startup.once]
