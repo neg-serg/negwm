@@ -49,7 +49,7 @@ plain_rules = [
     wm = 'Mod4+minus'
 
 [colors]
-# [border, background, text, indicator, child_border]
+    # [border, background, text, indicator, child_border]
     focused = ["#000011dd", "#000000ee", "#ddddee", "#112211", "#0C0C0D"]
     focused_inactive = ["#000000dd", "#000000ee", "#005fff", "#000000", "#020204"]
     unfocused = ["#000000ee", "#000000", "#315c70", "#000000", "#020204"]
