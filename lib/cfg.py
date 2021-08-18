@@ -46,9 +46,10 @@ class cfg():
         """ Props with regexes """
         return {"class_r", "instance_r", "name_r", "role_r"}
 
-    def win_all_props(self):
+    @staticmethod
+    def win_all_props():
         """ Basic + regex props """
-        return self.cfg_props() | self.cfg_regex_props()
+        return cfg.cfg_props() | cfg.cfg_regex_props()
 
     @staticmethod
     def possible_props() -> Set[str]:
