@@ -9,8 +9,8 @@ window is not focused or via sending 0, 9 keyboard commands if it is.
 import subprocess
 import socket
 import asyncio
-from cfg import cfg
-from extension import extension
+from . cfg import cfg
+from . extension import extension
 
 
 class vol(extension, cfg):
