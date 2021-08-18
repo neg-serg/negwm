@@ -33,7 +33,7 @@ class conf_gen(extension, cfg):
 
     def generate(self):
         ret = []
-        for section in ["general", "workspaces", "mods_commands", "rules", "colors"]:
+        for section in ["general", "workspaces", "colors", "mods_commands", "rules", "startup"]:
             section_data = getattr(self, section)()
             ret.append(section_data)
         bind_modes = self.cfg.get('bind_modes', {})
@@ -46,6 +46,18 @@ class conf_gen(extension, cfg):
 
     def general(self) -> str:
         return '\n'.join(self.cfg.get('general', [])) + '\n'
+
+    def startup(self) -> str:
+        ret = ''
+        startup = self.cfg.get('startup', {})
+        once, always = startup.get('once', {}), startup.get('always', {})
+        if once:
+            for exe in once.values():
+                ret += f'exec {exe}\n'
+        if always:
+            for exe in always.values():
+                ret += f'exec_always {exe}\n'
+        return ret.rstrip('\n')
 
     def colors(self) -> str:
         ret = ''
@@ -136,7 +148,7 @@ class conf_gen(extension, cfg):
 
     def workspaces(self) -> str:
         ret = ''
-        for index, ws in enumerate(self.cfg['ws_list']):
+        for index, ws in enumerate(self.cfg['workspaces']):
             ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
         return ret
 

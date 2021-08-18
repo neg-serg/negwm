@@ -15,19 +15,9 @@ general = [
     "focus_on_window_activation smart",
     "focus_wrapping workspace",
     "mouse_warping none",
-
-    "exec_always --no-startup-id pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main",
-    "exec_always --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf",
-    "exec_always --no-startup-id dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run",
-    "exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
-    '''exec hash dbus-update-activation-environment 2>/dev/null && \
-    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK''',
-    "exec --no-startup-id /usr/sbin/gpaste-client daemon",
-    "exec --no-startup-id /usr/bin/xiccd",
-    "exec --no-startup-id /usr/lib/gsd-xsettings",
 ]
 
-ws_list = [
+workspaces = [
     "︁ α:term", " β:web", " γ:doc", " δ:dev",
     " ε:gfx", " ζ:draw", " η:sys", " ι:steam",
     " λ:vm", " μ:wine", " ξ:pic", "@ ρ:obs"
@@ -41,6 +31,18 @@ plain_rules = [
     '[class="^(steam|Steam)$"] floating enable',
     '[class="steam_app_.*"] floating enable',
 ]
+
+[startup]
+    [startup.once]
+    polkit-gnome = "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+    dbus-env = "hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK"
+    gpaste = "/usr/sbin/gpaste-client daemon"
+    xiccd = "/usr/bin/xiccd"
+    gsd-xsettings = "/usr/lib/gsd-xsettings"
+    [startup.always]
+    polybar = "pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main"
+    gnome_configs = "${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf"
+    negi3wm = "dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run"
 
 [bind_modes]
     default = ''
