@@ -82,7 +82,8 @@ class conf_gen(extension, cfg):
     def colors(self) -> str:
         ret = ''
         for key, values in self.cfg.get('colors', {}).items():
-            ret += 'client.' + key + ' ' + ' '.join(str(val) for val in values) + '\n'
+            colors = ' '.join(str(val) for val in values)
+            ret += f'client.{key} {colors}\n'
         return ret.rstrip("\n")
 
     @staticmethod
