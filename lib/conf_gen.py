@@ -33,7 +33,7 @@ class conf_gen(extension, cfg):
 
     def generate(self):
         ret = []
-        for section in ["general", "workspaces", "mods_commands", "rules"]:
+        for section in ["general", "workspaces", "mods_commands", "rules", "colors"]:
             section_data = getattr(self, section)()
             ret.append(section_data)
         bind_modes = self.cfg.get('bind_modes', [])
@@ -47,6 +47,12 @@ class conf_gen(extension, cfg):
 
     def general(self) -> str:
         return '\n'.join(self.cfg.get('general', [])) + '\n'
+
+    def colors(self) -> str:
+        ret = ''
+        for key, values in self.cfg.get('colors', {}).items():
+            ret += 'client.' + key + ' ' + ' '.join(str(val) for val in values) + '\n'
+        return ret.rstrip("\n")
 
     @staticmethod
     def scratchpad_bindings(mode) -> str:
