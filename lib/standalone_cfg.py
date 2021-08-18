@@ -13,10 +13,10 @@ from lib.misc import Misc
 class modconfig():
     def __init__(self):
         self.mod = self.__class__.__name__ # detect current extension
-        self.i3_cfg_path = Misc.i3path() + '/cfg/' # config dir path
-        self.cfg = None
+        self.cfg = {}
+        self.i3_cfg_path = f'{Misc.i3path()}/cfg/' # config dir path
         # extension config path
-        self.mod_cfg_path = self.i3_cfg_path + self.mod + '.toml'
+        self.mod_cfg_path = f'{self.i3_cfg_path}{self.mod}.toml'
         self.load_config() # load current config
         # run inotify watcher to update config on change.
         self.run_inotify_watchers()
@@ -46,8 +46,11 @@ class modconfig():
     def load_config(self):
         """ Reload config itself and convert lists in it to sets for the better
             performance. """
-        with open(self.mod_cfg_path, "r") as fp:
-            self.cfg = qtoml.load(fp)
+        try:
+            with open(self.mod_cfg_path, "r") as fp:
+                self.cfg = qtoml.load(fp)
+        except Exception:
+            self.cfg = {}
 
     def dump_config(self):
         """ Dump current config, can be used for debugging. """
@@ -68,7 +71,6 @@ class modconfig():
             event = await watcher.get()
             if event.name == self.mod + '.toml':
                 self.reload_config()
-                Misc.notify_msg(f'[Reloaded {self.mod}]')
 
     def run_inotify_watchers(self):
         """ Start all watchers here via ensure_future in background. """
