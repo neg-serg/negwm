@@ -1,51 +1,50 @@
 [im]
-class = ['zoom', 'KotatogramDesktop', 'Slack', 'TelegramDesktop', 'Skype', 'myteam']
-geom = '1304x2109+2536+2'
-keybind_default_toggle = ['Mod4+e']
-
-[im.tel]
-prog = 'kotatogram-desktop'
-class = ['KotatogramDesktop']
-keybind_spec_subtag = ['t']
+    class = ['zoom', 'KotatogramDesktop', 'Slack', 'TelegramDesktop', 'Skype', 'myteam']
+    geom = '1304x2109+2536+2'
+    keybind_default_toggle = ['Mod4+e']
+    [im.tel]
+    prog = 'kotatogram-desktop'
+    class = ['KotatogramDesktop']
+    keybind_spec_subtag = ['t']
 
 [pass]
-prog = '1password'
-instance = ['1password']
-geom = '1690x838+2150+1272'
-keybind_default_toggle = ['Mod4+Control+p']
+    prog = '1password'
+    instance = ['1password']
+    geom = '1690x838+2150+1272'
+    keybind_default_toggle = ['Mod4+Control+p']
 
 [ncmpcpp]
-instance = ['ncmpcpp']
-geom = '2266x932+846+748'
-spawn = 'ncmpcpp'
-keybind_default_toggle = ['Mod4+f']
+    instance = ['ncmpcpp']
+    geom = '2266x932+846+748'
+    spawn = 'ncmpcpp'
+    keybind_default_toggle = ['Mod4+f']
 
 [neomutt]
-class = ['mutterfox']
-instance = ['mutterfox', 'neomutt']
-geom = '3670x2228+104+0'
-spawn = 'neomutt'
-keybind_default_toggle = ['Mod4+n']
+    class = ['mutterfox']
+    instance = ['mutterfox', 'neomutt']
+    geom = '3670x2228+104+0'
+    spawn = 'neomutt'
+    keybind_default_toggle = ['Mod4+n']
 
 [teardrop]
-instance = ['teardrop']
-geom = '3840x1300+0+0'
-spawn = 'teardrop'
-keybind_default_toggle = ['Mod4+d']
+    instance = ['teardrop']
+    geom = '3840x1300+0+0'
+    spawn = 'teardrop'
+    keybind_default_toggle = ['Mod4+d']
 
 [webcam]
-instance = ['webcam']
-geom = '2463x1880+1368+268'
-prog = '~/bin/webcam'
-keybind_spec_toggle = ['w']
+    instance = ['webcam']
+    geom = '2463x1880+1368+268'
+    prog = '~/bin/webcam'
+    keybind_spec_toggle = ['w']
 
 [discord]
-prog = 'discord'
-class = ['discord']
-geom = '1888x2072+1948+254'
-keybind_default_toggle = ['Mod4+v']
+    prog = 'discord'
+    class = ['discord']
+    geom = '1888x2072+1948+254'
+    keybind_default_toggle = ['Mod4+v']
 
 [transients]
-match_all = ['True']
-role = ['GtkFileChooserDialog', 'Organizer', 'Manager']
-geom = '2824x858+4+14'
+    match_all = ['True']
+    role = ['GtkFileChooserDialog', 'Organizer', 'Manager']
+    geom = '2824x858+4+14'
