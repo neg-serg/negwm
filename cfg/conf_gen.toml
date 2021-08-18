@@ -1,27 +1,51 @@
-general = [
-    "workspace_layout tabbed",
-    "default_orientation auto",
-    "default_border normal",
-    "default_floating_border normal",
-    "floating_modifier Mod4",
-    "set $i3 ${XDG_CONFIG_HOME}/negi3wm",
-    "set $exit mode \"default\"",
-    "font pango: Iosevka 12",
-    "show_marks yes",
-    "hide_edge_borders both",
-    "title_align center",
-    "focus_follows_mouse no",
-    "force_display_urgency_hint 2000 ms",
-    "focus_on_window_activation smart",
-    "focus_wrapping workspace",
-    "mouse_warping none",
-]
+[general]
+    default_border = "normal"
+    default_floating_border = "normal"
+    default_orientation = "auto"
+    floating_modifier = "Mod4"
+    focus_follows_mouse = "no"
+    focus_on_window_activation = "smart"
+    focus_wrapping = "workspace"
+    "font pango:" = "Iosevka 12"
+    force_display_urgency_hint = "2000 ms"
+    hide_edge_borders = "both"
+    mouse_warping = "none"
+    show_marks = "yes"
+    title_align = "center"
+    workspace_layout = "tabbed"
 
-workspaces = [
-    "︁ α:term", " β:web", " γ:doc", " δ:dev",
-    " ε:gfx", " ζ:draw", " η:sys", " ι:steam",
-    " λ:vm", " μ:wine", " ξ:pic", "@ ρ:obs"
-]
+[workspaces]
+    term = "︁ α:term"
+    web = " β:web"
+    doc =  " γ:doc"
+    dev = " δ:dev"
+    gfx = " ε:gfx"
+    draw = " ζ:draw"
+    sys = " η:sys"
+    steam = " ι:steam"
+    vm = " λ:vm"
+    wine = " μ:wine"
+    pic = " ξ:pic"
+    obs = "@ ρ:obs"
+
+[vars]
+    i3 = '${XDG_CONFIG_HOME}/negi3wm'
+    exit = 'mode \"default\"'
+
+[colors]
+    # [border, background, text, indicator, child_border]
+    focused = ["#000011dd", "#000000ee", "#ddddee", "#112211", "#0C0C0D"]
+    focused_inactive = ["#000000dd", "#000000ee", "#005fff", "#000000", "#020204"]
+    unfocused = ["#000000ee", "#000000", "#315c70", "#000000", "#020204"]
+    urgent = ["#000000ee", "#2E2457", "#4C407C", "#32275E", "#32275E"]
+    placeholder = ["#000000ee", "#000000", "#ffffff", "#000000", "#0c0c0c"]
+    background = ["#000000ee"]
+
+[bind_modes]
+    default = ''
+    resize = 'Mod4+r'
+    spec = 'Mod1+e'
+    wm = 'Mod4+minus'
 
 [rules]
     '[class=".*"]' = 'title_format "<span foreground=#395573> >_ </span> %title", border pixel 5'
@@ -42,21 +66,6 @@ workspaces = [
     polybar = "pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main"
     gnome_configs = "${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf"
     negi3wm = "dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run"
-
-[bind_modes]
-    default = ''
-    resize = 'Mod4+r'
-    spec = 'Mod1+e'
-    wm = 'Mod4+minus'
-
-[colors]
-    # [border, background, text, indicator, child_border]
-    focused = ["#000011dd", "#000000ee", "#ddddee", "#112211", "#0C0C0D"]
-    focused_inactive = ["#000000dd", "#000000ee", "#005fff", "#000000", "#020204"]
-    unfocused = ["#000000ee", "#000000", "#315c70", "#000000", "#020204"]
-    urgent = ["#000000ee", "#2E2457", "#4C407C", "#32275E", "#32275E"]
-    placeholder = ["#000000ee", "#000000", "#ffffff", "#000000", "#0c0c0c"]
-    background = ["#000000ee"]
 
 [exec]
     [exec.plain]

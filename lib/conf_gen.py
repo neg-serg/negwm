@@ -33,7 +33,7 @@ class conf_gen(extension, cfg):
 
     def generate(self):
         ret = []
-        for section in ["general", "workspaces", "colors", "mods_commands", "rules", "startup"]:
+        for section in ["vars", "general", "workspaces", "colors", "mods_commands", "rules", "startup"]:
             section_data = getattr(self, section)()
             ret.append(section_data)
         bind_modes = self.cfg.get('bind_modes', {})
@@ -44,8 +44,19 @@ class conf_gen(extension, cfg):
             ret.append(keybind_data)
         return ret
 
+    def vars(self) -> str:
+        ret = ''
+        vars = self.cfg.get('vars', {})
+        if vars:
+            for name, value in vars.items():
+                ret += f'set ${name} {value}\n'
+        return ret
+
     def general(self) -> str:
-        return '\n'.join(self.cfg.get('general', [])) + '\n'
+        ret = ''
+        for key, val in self.cfg.get('general', {}).items():
+            ret += f'{key} {val}\n'
+        return ret.rstrip('\n')
 
     def startup(self) -> str:
         ret = ''
@@ -148,8 +159,10 @@ class conf_gen(extension, cfg):
 
     def workspaces(self) -> str:
         ret = ''
-        for index, ws in enumerate(self.cfg['workspaces']):
-            ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
+        workspaces = self.cfg.get('workspaces', {})
+        if workspaces:
+            for index, ws in enumerate(workspaces.values()):
+                ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
         return ret
 
     @staticmethod
