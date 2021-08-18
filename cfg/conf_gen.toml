@@ -23,7 +23,7 @@ workspaces = [
     " λ:vm", " μ:wine", " ξ:pic", "@ ρ:obs"
 ]
 
-[win_rules]
+[rules]
     '[class=".*"]' = 'title_format "<span foreground=#395573> >_ </span> %title", border pixel 5'
     '[instance="^(gpartedbin|recoll)$"]' = 'move workspace $sys, floating enable, focus'
     '[class="^(Gcolor3|rdesktop|openssh-askpass)$"]' = 'floating enable'

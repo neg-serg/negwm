@@ -242,15 +242,15 @@ class conf_gen(extension, cfg):
                     cmd += '"'
             return cmd
 
-        def win_rules() -> str:
+        def rules() -> str:
             ret = ''
-            rules = self.cfg.get('win_rules', {})
+            rules = self.cfg.get('rules', {})
             if rules:
                 for rule, action in rules.items():
                     ret += f'for_window {rule} {action}\n'
             return ret
 
-        return rules_scratchpad() + rules_circle() + win_rules()
+        return rules_scratchpad() + rules_circle() + rules()
 
     @staticmethod
     def mode_start(name) -> str:
