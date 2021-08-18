@@ -36,11 +36,10 @@ class conf_gen(extension, cfg):
         for section in ["general", "workspaces", "mods_commands", "rules", "colors"]:
             section_data = getattr(self, section)()
             ret.append(section_data)
-        bind_modes = self.cfg.get('bind_modes', [])
-        for keybind in bind_modes:
-            bind_name, mode_bind = keybind[0], keybind[1]
-            keybind_data = getattr(self, 'mode_' + bind_name)(
-                mode_name=bind_name, mode_bind=mode_bind
+        bind_modes = self.cfg.get('bind_modes', {})
+        for name, keybind in bind_modes.items():
+            keybind_data = getattr(self, 'mode_' + name)(
+                mode_name=name, mode_bind=keybind
             )
             ret.append(keybind_data)
         return ret

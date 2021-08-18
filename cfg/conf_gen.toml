@@ -42,7 +42,11 @@ plain_rules = [
     '[class="steam_app_.*"] floating enable',
 ]
 
-bind_modes = [["default", ''], ["resize", 'Mod4+r'], ["spec", 'Mod1+e'], ["wm", 'Mod4+minus']]
+[bind_modes]
+    default = ''
+    resize = 'Mod4+r'
+    spec = 'Mod1+e'
+    wm = 'Mod4+minus'
 
 [colors]
 # [border, background, text, indicator, child_border]
