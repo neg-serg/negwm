@@ -11,7 +11,7 @@ keybind_spec_subtag = ['t']
 [pass]
 prog = '1password'
 instance = ['1password']
-geom = '1690x838+2140+1450'
+geom = '1690x838+2150+1272'
 keybind_default_toggle = ['Mod4+Control+p']
 
 [ncmpcpp]
