@@ -1,41 +1,41 @@
 [term]
-class="term"
-font="Iosevka"
-font_size=33
-exec_tmux=[['zsh', 'zsh']]
-padding=[8, 8]
-statusline=1
+    class="term"
+    font="Iosevka"
+    font_size=33
+    exec_tmux=[['zsh', 'zsh']]
+    padding=[8, 8]
+    statusline=1
 
 [teardrop]
-class="teardrop"
-font="Iosevka"
-font_size=20
-exec_tmux=[['top', '/usr/bin/bpytop']]
-padding=[8, 8]
-statusline=0
+    class="teardrop"
+    font="Iosevka"
+    font_size=20
+    exec_tmux=[['top', '/usr/bin/bpytop']]
+    padding=[8, 8]
+    statusline=0
 
 [ncmpcpp]
-class="ncmpcpp"
-font="Iosevka"
-font_size=27
-font_normal="Medium"
-exec='ncmpcpp'
-opacity=0.8
-padding=[12, 12]
+    class="ncmpcpp"
+    font="Iosevka"
+    font_size=27
+    font_normal="Medium"
+    exec='ncmpcpp'
+    opacity=0.8
+    padding=[12, 12]
 
 [neomutt]
-class="neomutt"
-font="Iosevka"
-font_size=27
-exec_dtach='neomutt'
+    class="neomutt"
+    font="Iosevka"
+    font_size=27
+    exec_dtach='neomutt'
 
 [nwim]
-class="nwim"
-font="Iosevka"
-font_size=27.5
-font_normal="Medium"
-padding=[8, 8]
-opacity=0.95
-env=['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket']
-exec_tmux=[['nvim', '/usr/bin/nvim']]
-statusline=0
+    class="nwim"
+    font="Iosevka"
+    font_size=27.5
+    font_normal="Medium"
+    padding=[8, 8]
+    opacity=0.95
+    env=['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket']
+    exec_tmux=[['nvim', '/usr/bin/nvim']]
+    statusline=0
