@@ -1,18 +1,24 @@
-[general]
-    default_border = "normal"
-    default_floating_border = "normal"
+[vars]
+    i3 = '${XDG_CONFIG_HOME}/negi3wm'
+    exit = 'mode \"default\"'
+
+[main]
     default_orientation = "auto"
     floating_modifier = "Mod4"
     focus_follows_mouse = "no"
     focus_on_window_activation = "smart"
     focus_wrapping = "workspace"
-    "font pango:" = "Iosevka 12"
     force_display_urgency_hint = "2000 ms"
-    hide_edge_borders = "both"
     mouse_warping = "none"
+    workspace_layout = "tabbed"
+
+[theme]
+    default_border = "normal"
+    default_floating_border = "normal"
+    font = "Iosevka 12"
+    hide_edge_borders = "both"
     show_marks = "yes"
     title_align = "center"
-    workspace_layout = "tabbed"
 
 [workspaces]
     term = "︁ α:term"
@@ -27,10 +33,6 @@
     wine = " μ:wine"
     pic = " ξ:pic"
     obs = "@ ρ:obs"
-
-[vars]
-    i3 = '${XDG_CONFIG_HOME}/negi3wm'
-    exit = 'mode \"default\"'
 
 [colors]
     # [border, background, text, indicator, child_border]

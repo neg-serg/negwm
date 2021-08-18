@@ -33,7 +33,7 @@ class conf_gen(extension, cfg):
 
     def generate(self):
         ret = []
-        for section in ["vars", "general", "workspaces", "colors", "mods_commands", "rules", "startup"]:
+        for section in ["vars", "main", "theme", "workspaces", "colors", "mods_commands", "rules", "startup"]:
             section_data = getattr(self, section)()
             ret.append(section_data)
         bind_modes = self.cfg.get('bind_modes', {})
@@ -50,12 +50,21 @@ class conf_gen(extension, cfg):
         if vars:
             for name, value in vars.items():
                 ret += f'set ${name} {value}\n'
-        return ret
+        return ret.rstrip('\n')
 
-    def general(self) -> str:
+    def main(self) -> str:
         ret = ''
         for key, val in self.cfg.get('general', {}).items():
             ret += f'{key} {val}\n'
+        return ret.rstrip('\n')
+
+    def theme(self) -> str:
+        ret = ''
+        for key, val in self.cfg.get('general', {}).items():
+            if key != 'font':
+                ret += f'{key} {val}\n'
+            else:
+                ret += f'font pango: {val}\n'
         return ret.rstrip('\n')
 
     def startup(self) -> str:
