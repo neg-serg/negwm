@@ -20,6 +20,7 @@ from . cfg import cfg
 from . matcher import Matcher
 from . negewmh import NegEWMH
 from . extension import extension
+from . misc import Misc
 
 class scratchpad(extension, cfg, Matcher):
     """ Named scratchpad class
@@ -145,11 +146,11 @@ class scratchpad(extension, cfg, Matcher):
             target_tag = self.conf(tag)
             if not target_tag:
                 return
-            prog_str = self.extract_prog_str(target_tag)
+            prog_str = Misc.extract_prog_str(target_tag)
             if prog_str:
                 self.i3ipc.command(f'exec {prog_str}')
             else:
-                spawn_str = self.extract_prog_str(
+                spawn_str = Misc.extract_prog_str(
                     target_tag, "spawn", exe_file=False
                 )
                 if spawn_str:
@@ -200,7 +201,7 @@ class scratchpad(extension, cfg, Matcher):
                 target_subtag = self.conf(tag, subtag)
                 if not target_subtag:
                     return
-                prog_str = self.extract_prog_str(target_subtag)
+                prog_str = Misc.extract_prog_str(target_subtag)
                 self.i3ipc.command(f'exec {prog_str}')
                 self.focus_win_flag = [True, tag]
             else:

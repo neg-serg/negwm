@@ -17,6 +17,7 @@ of issues here in detection of existing/visible windows, etc.
 from . extension import extension
 from . matcher import Matcher
 from . cfg import cfg
+from . misc import Misc
 
 
 class circle(extension, cfg, Matcher):
@@ -73,15 +74,15 @@ class circle(extension, cfg, Matcher):
             subtag (str): denotes the target [subtag], optional. """
         if tag is not None and self.cfg.get(tag) is not None:
             if not subtag:
-                prog_str = self.extract_prog_str(self.conf(tag))
+                prog_str = Misc.extract_prog_str(self.conf(tag))
             else:
-                prog_str = self.extract_prog_str(
+                prog_str = Misc.extract_prog_str(
                     self.conf(tag, subtag)
                 )
             if prog_str:
                 self.i3ipc.command(f'exec {prog_str}')
             else:
-                spawn_str = self.extract_prog_str(
+                spawn_str = Misc.extract_prog_str(
                     self.conf(tag), "spawn", exe_file=False
                 )
                 if spawn_str:

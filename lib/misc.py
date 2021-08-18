@@ -5,6 +5,7 @@ import subprocess
 import errno
 import functools
 import operator
+import re
 from typing import List
 
 
@@ -105,3 +106,21 @@ class Misc():
                 os.remove(conf_gen_path)  # remove invalid config
             return False
         return True
+
+    @staticmethod
+    def extract_prog_str(conf_part: dict,
+                         prog_field: str = "prog",
+                         exe_file: bool = True) -> str:
+        """ Helper to extract prog(by default) string from config
+            conf_part (dict): part of config from where you want to extract it.
+            prog_field (str): string name to extract.
+        """
+        if conf_part is None:
+            return ""
+        if exe_file:
+            return re.sub(
+                "~",
+                os.path.realpath(os.path.expandvars("$HOME")),
+                conf_part.get(prog_field, "")
+            )
+        return conf_part.get(prog_field, "")

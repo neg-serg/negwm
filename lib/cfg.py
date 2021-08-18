@@ -44,24 +44,6 @@ class cfg():
         return ret
 
     @staticmethod
-    def extract_prog_str(conf_part: dict,
-                         prog_field: str = "prog",
-                         exe_file: bool = True) -> str:
-        """ Helper to extract prog(by default) string from config
-            conf_part (dict): part of config from where you want to extract it.
-            prog_field (str): string name to extract.
-        """
-        if conf_part is None:
-            return ""
-        if exe_file:
-            return re.sub(
-                "~",
-                os.path.realpath(os.path.expandvars("$HOME")),
-                conf_part.get(prog_field, "")
-            )
-        return conf_part.get(prog_field, "")
-
-    @staticmethod
     def cfg_regex_props() -> Set[str]:
         """ Props with regexes """
         return {"class_r", "instance_r", "name_r", "role_r"}
