@@ -5,8 +5,6 @@ files. It supports inotify-based updating of self.cfg dynamically and has
 pretty simple API. I've considered that inheritance here is good idea.
 """
 
-import re
-import os
 import sys
 import qtoml
 import traceback
@@ -18,7 +16,7 @@ class cfg():
     def __init__(self, i3) -> None:
         self.mod = self.__class__.__name__ # detect current extension
         # extension config path
-        self.i3_cfg_mod_path = Misc.i3path() + '/cfg/' + self.mod + '.toml'
+        self.i3_cfg_mod_path = f'{Misc.i3path()}/cfg/{self.mod}.toml'
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
         self.conv_props = {
@@ -176,12 +174,9 @@ class cfg():
         """ Remove regex properties of window from target tag.
             target_tag (str): target tag """
         def check_for_win_attrs(win, prop):
-            class_r_check = \
-                (prop == "class_r" and winattr == win.window_class)
-            instance_r_check = \
-                (prop == "instance_r" and winattr == win.window_instance)
-            role_r_check = \
-                (prop == "role_r" and winattr == win.window_role)
+            class_r_check = (prop == "class_r" and winattr == win.window_class)
+            instance_r_check = (prop == "instance_r" and winattr == win.window_instance)
+            role_r_check = (prop == "role_r" and winattr == win.window_role)
             if class_r_check or instance_r_check or role_r_check:
                 # self.cfg[target_tag][prop].remove(target_tag)
                 pass
@@ -189,7 +184,7 @@ class cfg():
         lst_by_reg = []
         # Delete appropriate regexes
         for prop in self.cfg[target_tag].copy():
-            if prop in self.cfg_regex_props():
+            if prop in cfg.cfg_regex_props():
                 for reg in self.cfg[target_tag][prop].copy():
                     if prop == "class_r":
                         lst_by_reg = self.i3ipc.get_tree().find_classed(reg)
