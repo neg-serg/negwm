@@ -15,7 +15,7 @@ geom = '1690x838+2150+1272'
 keybind_default_toggle = ['Mod4+Control+p']
 
 [ncmpcpp]
-instance = ['ncmpcpp', 'cool-retro-term']
+instance = ['ncmpcpp']
 geom = '2266x932+846+748'
 spawn = 'ncmpcpp'
 keybind_default_toggle = ['Mod4+f']
