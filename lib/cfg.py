@@ -8,7 +8,7 @@ pretty simple API. I've considered that inheritance here is good idea.
 import sys
 import qtoml
 import traceback
-from typing import Set, Callable
+from typing import Set, Callable, Any
 from lib.misc import Misc
 
 
@@ -29,7 +29,7 @@ class cfg():
             self.cfg = {}
         self.i3ipc = i3
 
-    def conf(self, *conf_path):
+    def conf(self, *conf_path) -> Any:
         """ Helper to extract config for current tag. conf_path: path of config
         from where extract. """
         ret = {}
