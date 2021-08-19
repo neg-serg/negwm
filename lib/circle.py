@@ -26,7 +26,6 @@ class circle(extension, cfg, Matcher):
         """ Init function
         Main part is in self.initialize, which performs initialization itself.
         i3: i3ipc connection """
-        # Initialize superclasses.
         cfg.__init__(self, i3)
         Matcher.__init__(self)
         self.initialize(i3)
