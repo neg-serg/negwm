@@ -9,9 +9,10 @@ to you, miseran(https://github.com/miseran)
 import collections
 import sys
 from typing import Mapping
-from display import Display
-from cfg import cfg
-from extension import extension
+
+from . display import Display
+from . cfg import cfg
+from . extension import extension
 
 
 class actions(extension, cfg):
