@@ -33,9 +33,11 @@ class conf_gen(extension, cfg):
 
     def generate(self):
         ret = []
-        for section in ["vars", "main", "theme", "workspaces", "colors", "mods_commands", "rules", "startup"]:
-            section_data = getattr(self, section)()
-            ret.append(section_data)
+        for section in self.cfg.keys():
+            if hasattr(self, section):
+                section_handler = getattr(self, section)
+                ret.append(section_handler())
+        ret.append(self.mods_commands())
         bind_modes = self.cfg.get('bind_modes', {})
         for name, keybind in bind_modes.items():
             keybind_data = getattr(self, 'mode_' + name)(
