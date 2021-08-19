@@ -4,6 +4,7 @@ Daemon manager and mod daemon: Mod daemon creates appropriate files in the
 based API with help of asyncio. """
 
 import asyncio
+from typing import Dict
 
 class MsgBroker():
     """ This is asyncio message broker for negi3wm. Every module has indivisual
@@ -11,7 +12,7 @@ class MsgBroker():
     lock = asyncio.Lock()
 
     @classmethod
-    def get_mods(cls) -> None:
+    def get_mods(cls) -> Dict:
         return cls.mods
 
     @classmethod

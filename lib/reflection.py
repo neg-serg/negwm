@@ -1,8 +1,9 @@
 """ Static functions for negi3wm reflection """
+from typing import Dict
 from lib.msgbroker import MsgBroker
 
 class Reflection():
     """ Implements various reflection functions """
     @staticmethod
-    def get_mods():
+    def get_mods() -> Dict:
         return MsgBroker.get_mods()
