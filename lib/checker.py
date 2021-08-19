@@ -51,15 +51,17 @@ class checker():
             if verbose:
                 print(f'send binary {send_path} [OK]')
         else:
-            i3_path = os.getenv('XDG_CONFIG_HOME') + '/negi3wm/'
-            make_result = subprocess.run(['make', '-C', i3_path],
-                check=False,
-                capture_output=True
-            )
-            if make_result.returncode == 0:
-                print('send build is successful')
-            else:
-                print('Please try to run `make` manually and check the results')
+            xdg_config_home = os.getenv('XDG_CONFIG_HOME')
+            if xdg_config_home:
+                i3_path = xdg_config_home + '/negi3wm/'
+                make_result = subprocess.run(['make', '-C', i3_path],
+                    check=False,
+                    capture_output=True
+                )
+                if make_result.returncode == 0:
+                    print('send build is successful')
+                else:
+                    print('Please try to run `make` manually and check the results')
 
     @staticmethod
     def check_i3_config(verbose, cfg='config'):
