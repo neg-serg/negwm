@@ -32,7 +32,6 @@ class scratchpad(extension, cfg, Matcher):
     def __init__(self, i3) -> None:
         """ Init function
             i3: i3ipc connection """
-        # Initialize superclasses.
         super().__init__()
         cfg.__init__(self, i3)
         Matcher.__init__(self)
