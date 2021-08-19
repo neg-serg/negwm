@@ -56,13 +56,13 @@ class conf_gen(extension, cfg):
 
     def main(self) -> str:
         ret = ''
-        for key, val in self.cfg.get('general', {}).items():
+        for key, val in self.cfg.get('main', {}).items():
             ret += f'{key} {val}\n'
         return ret.rstrip('\n')
 
     def theme(self) -> str:
         ret = ''
-        for key, val in self.cfg.get('general', {}).items():
+        for key, val in self.cfg.get('theme', {}).items():
             if key != 'font':
                 ret += f'{key} {val}\n'
             else:
