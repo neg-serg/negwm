@@ -71,12 +71,12 @@
     keybind_default_next = ['Mod4+Control+c']
     ws = 'gfx'
     [sxiv.wallpaper]
-    class = ["Sxiv"]
-    prog = "~/bin/wl --show"
+    class = ['Sxiv']
+    prog = '~/bin/wl --show'
     keybind_default_subtag = ['Mod4+Shift+c']
 
 [bitwig]
-    class = [ "Bitwig Studio",]
-    prog = "bitwig-studio"
+    class = [ 'Bitwig Studio']
+    prog = 'bitwig-studio'
     keybind_default_next = ['Mod4+Control+b']
     ws = 'sound'
