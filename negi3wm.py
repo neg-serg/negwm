@@ -2,10 +2,9 @@
 
 """ i3 negi3wm daemon script.
 
-This module loads all negi3wm an start it via main's manager mailoop.
-Inotify-based watchers for all negi3wm TOML-based configuration spawned here,
-to use it just start it from any place without parameters. Moreover it contains
-pid-lock which prevents running several times.
+This module loads all negi3wm an start it via main's manager mailoop. Inotify-based watchers for all negi3wm S-expression-based
+configuration spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running
+several times.
 
 Usage:
     ./negi3wm.py [--debug|--tracemalloc|--start]
@@ -35,7 +34,7 @@ import tracemalloc
 from threading import Thread
 
 for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
-          "qtoml", "Xlib", "yaml", "yamlloader", "ewmh"]:
+          "Xlib", "yaml", "yamlloader", "ewmh"]:
     if not util.find_spec(m):
         print(f"Cannot import [{m}], please install")
 

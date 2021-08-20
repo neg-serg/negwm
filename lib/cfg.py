@@ -1,12 +1,12 @@
-""" Dynamic TOML-based config for negi3wm.
+""" Dynamic S-expressions based config for negi3wm.
 
-This is a superclass for negi3wm which want to store configuration via TOML
+This is a superclass for negi3wm which want to store configuration via hy
 files. It supports inotify-based updating of self.cfg dynamically and has
 pretty simple API. I've considered that inheritance here is good idea.
 """
 
 import sys
-import qtoml
+import pickle
 import traceback
 from typing import Set, Callable, Any
 from lib.misc import Misc
@@ -16,7 +16,7 @@ class cfg():
     def __init__(self, i3) -> None:
         self.mod = self.__class__.__name__ # detect current extension
         # extension config path
-        self.i3_cfg_mod_path = f'{Misc.i3path()}/cfg/{self.mod}.toml'
+        self.i3_cfg_mod_path = f'{Misc.i3path()}/cfg/{self.mod}.pickle'
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
         self.conv_props = {
@@ -107,17 +107,15 @@ class cfg():
         """ Reload config itself and convert lists in it to sets for the better
         performance. """
         try:
-            with open(self.i3_cfg_mod_path, "r") as mod_cfg:
-                self.cfg = qtoml.load(mod_cfg)
+            with open(self.i3_cfg_mod_path, "rb") as mod_cfg:
+                self.cfg = pickle.load(mod_cfg)
         except FileNotFoundError:
             print(f'file {self.i3_cfg_mod_path} not exists')
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
-        with open(self.i3_cfg_mod_path, "r+") as mod_cfg:
-            print(self.cfg)
-            qtoml.dump(self.cfg, mod_cfg)
-            self.cfg = qtoml.load(mod_cfg)
+        with open(self.i3_cfg_mod_path, "wb") as mod_cfg:
+            pickle.dump(self.cfg, mod_cfg)
 
     def property_to_winattrib(self, prop_str: str) -> None:
         """ Parse property string to create win_attrs dict.

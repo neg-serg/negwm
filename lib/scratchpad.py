@@ -25,7 +25,6 @@ from . misc import Misc
 class scratchpad(extension, cfg, Matcher):
     """ Named scratchpad class
         cfg: configuration manager to autosave/autoload
-             TOML-configutation with inotify
         Matcher: class to check that window can be tagged with given tag by
                  WM_CLASS, WM_INSTANCE, regexes, etc
     """

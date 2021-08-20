@@ -16,8 +16,6 @@ from . extension import extension
 
 
 class actions(extension, cfg):
-    """ Named scratchpad class cfg: configuration manager to autosave/autoload
-    TOML-configutation with inotify """
     def __init__(self, i3) -> None:
         """ Main part is in self.initialize,
         which performs initialization itself.

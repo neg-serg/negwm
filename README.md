@@ -36,13 +36,13 @@ For now this collection of modules for i3 includes
 # main
 
 _negi3wm_ : application that run all modules and handle configuration of
-i3 and modules on python. Also handles TOML-configs updating.
+i3 and modules on python. Also handles config updating.
 
 Some general notes:
 
 `negi3wm` works as a server and `send` is a client. To look at the last
 actual list of command for modules you can look at `self.bindings` of some
-module. Most of them supports dynamic reloading of TOML-based configs as you
+module. Most of them supports dynamic reloading of configs as you
 save the file, so there is no need to manually reload them. Anyway you can
 reload negi3wm manually:
 
@@ -71,15 +71,6 @@ Named ion3-like scratchpads with a whistles and fakes.
 Named scratchpad is something like tabs for windows. You can create scratchpad
 with several rules like `im`, `player`, etc and attach windows to it. Then it
 make some magic to support some kind of "next tab" for this group, etc.
-
-Config example(`cfg/scratchpad.toml`):
-
-```toml
-[im]
-class = [ "ViberPC", "VK", "zoom", "IGdm"]
-class_r = [ "[Tt]elegram.*", "[Ss]kype.*",]
-geom = "548x1165+1368+3"
-```
 
 Look at `cfg/scratchpad.toml` for the more info.
 

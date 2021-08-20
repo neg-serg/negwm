@@ -1,10 +1,10 @@
-""" Dynamic TOML-based config for basic negi3wm.
+""" Dynamic S-expression based config for basic negi3wm.
 It is the simplified version of cfg for modules like polybar_vol, etc. There
 are no external dependecies like i3 or asyncio.
 """
 
 import sys
-import qtoml
+import pickle
 import traceback
 import asyncio
 import inotipy
@@ -15,8 +15,7 @@ class modconfig():
         self.mod = self.__class__.__name__ # detect current extension
         self.cfg = {}
         self.i3_cfg_path = f'{Misc.i3path()}/cfg/' # config dir path
-        # extension config path
-        self.mod_cfg_path = f'{self.i3_cfg_path}{self.mod}.toml'
+        self.mod_cfg_path = f'{self.i3_cfg_path}{self.mod}.pickle'
         self.load_config() # load current config
         # run inotify watcher to update config on change.
         self.run_inotify_watchers()
@@ -47,16 +46,15 @@ class modconfig():
         """ Reload config itself and convert lists in it to sets for the better
             performance. """
         try:
-            with open(self.mod_cfg_path, "r") as fp:
-                self.cfg = qtoml.load(fp)
+            with open(self.mod_cfg_path, "rb") as conf:
+                self.cfg = pickle.load(conf)
         except Exception:
             self.cfg = {}
 
     def dump_config(self):
         """ Dump current config, can be used for debugging. """
-        with open(self.mod_cfg_path, "r+") as fp:
-            qtoml.dump(self.cfg, fp)
-            self.cfg = qtoml.load(fp)
+        with open(self.mod_cfg_path, "wb") as conf:
+            pickle.dump(self.cfg, conf)
 
     def cfg_watcher(self):
         """ cfg watcher to update modules config in realtime. """
@@ -69,7 +67,7 @@ class modconfig():
             watcher: watcher for cfg. """
         while True:
             event = await watcher.get()
-            if event.name == self.mod + '.toml':
+            if event.name == self.mod + '.pickle':
                 self.reload_config()
 
     def run_inotify_watchers(self):

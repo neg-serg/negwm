@@ -21,12 +21,9 @@ from matcher import Matcher
 
 
 class env():
-    """ Environment class. It is a helper for tmux manager to store info about
-    currently selected application. This class rules over parameters and
-    settings of application, like used terminal enumator, fonts, all path
-    settings, etc.
-    config: configuration manager to autosave/autoload
-            TOML-configutation with inotify """
+    """ Environment class. It is a helper for tmux manager to store info about currently selected application. This class rules over
+    parameters and settings of application, like used terminal enumator, fonts, all path settings, etc.
+    config: manager to autosave/autoload configutation with inotify """
     def __init__(self, name: str, config) -> None:
         self.name = name
         cache_dir = Misc.i3path() + '/cache'
@@ -185,7 +182,7 @@ class executor(extension, cfg):
     dedicated sockets. Also it can run simply run applications without Tmux.
     The main advantage is dynamic config reloading and simplicity of adding or
     modifing of various parameters.
-    cfg: configuration manager to autosave/autoload TOML-configutation with
+    cfg: configuration manager to autosave/autoload configutation with
     inotify """
     def __init__(self, i3) -> None:
         cfg.__init__(self, i3)
@@ -245,8 +242,7 @@ class executor(extension, cfg):
     def run(self, name: str) -> None:
         """ Entry point, run application with Tmux on dedicated socket(in most
         cases), or without tmux, if config value with_tmux=0
-        name (str): target application name, with configuration taken from
-        TOML. """
+        name (str): target application name, taken from config file """
         self.env = self.envs[name]
         if self.env.with_tmux:
             if self.env.name in self.detect_session_bind(

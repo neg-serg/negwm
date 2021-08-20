@@ -1,3 +1,0 @@
-prefix="❯>"
-module_list=["fullscreen", "executor", "actions", "circle", "remember_focused", "menu", "scratchpad", "vol", "conf_gen"]
-port='15555'
