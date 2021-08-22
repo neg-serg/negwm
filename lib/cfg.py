@@ -16,7 +16,7 @@ class cfg():
     def __init__(self, i3) -> None:
         self.mod = self.__class__.__name__ # detect current extension
         # extension config path
-        self.i3_cfg_mod_path = f'{Misc.i3path()}/cfg/{self.mod}.pickle'
+        self.i3_cfg_mod_path = f'{Misc.i3path()}/cache/cfg/{self.mod}.pickle'
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
         self.conv_props = {

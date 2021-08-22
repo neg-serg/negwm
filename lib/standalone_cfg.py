@@ -14,7 +14,7 @@ class modconfig():
     def __init__(self):
         self.mod = self.__class__.__name__ # detect current extension
         self.cfg = {}
-        self.i3_cfg_path = f'{Misc.i3path()}/cfg/' # config dir path
+        self.i3_cfg_path = f'{Misc.i3path()}/cache/cfg/' # config dir path
         self.mod_cfg_path = f'{self.i3_cfg_path}{self.mod}.pickle'
         self.load_config() # load current config
         # run inotify watcher to update config on change.
