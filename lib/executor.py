@@ -14,10 +14,9 @@ import multiprocessing
 import yaml
 import yamlloader
 
-from extension import extension
-from cfg import cfg
-from misc import Misc
-from matcher import Matcher
+from . extension import extension
+from . cfg import cfg
+from . misc import Misc
 
 
 class env():
