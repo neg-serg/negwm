@@ -1,13 +1,13 @@
-- Add labels support: print scratchpad names
-- Dynamic workspaces with circle integration
-- Better attach circle/scratchpad menu
-- New module idea: mouse helper, for example get windows size and then click on x,y = 20px, 20px
 - Add executor run check via something like dash -c
-- Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
-- Create wallpaper setter with rating
+- Add labels support: print scratchpad names
+- Add support for i3 open for tiling
+- Add xrootgif support
+- Better attach circle/scratchpad menu
 - Better config generator(fancy output, etc)
+- Create wallpaper setter with rating
+- Dynamic workspaces with circle integration
+- New module idea: mouse helper, for example get windows size and then click on x,y = 20px, 20px
+- Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
 - Scratchpad: add ability to set geometry with mouse
 - Scratchpad: set geometry for scratchpad windows(optional)
-- Add support for i3 open for tiling
 - Use Poetry
-- Add xrootgif support
