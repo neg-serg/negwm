@@ -72,7 +72,7 @@ Named scratchpad is something like tabs for windows. You can create scratchpad
 with several rules like `im`, `player`, etc and attach windows to it. Then it
 make some magic to support some kind of "next tab" for this group, etc.
 
-Look at `cfg/scratchpad.toml` for the more info.
+Look at `cfg/scratchpad.py` for the more info.
 
 Possible matching rules are:
 "class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
@@ -90,37 +90,6 @@ toggle: show/hide this named scratchpad, very useful
 hide_current: hide current scratchpad despite of type
 subtag: you can create groups inside groups.
 dialog: toggle dialogs
-```
-
-i3 config example:
-
-```cfg
-set $scratchpad exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/send scratchpad
-
-bindsym Mod1+e mode "SPEC"
-
-bindsym Mod4+f $scratchpad toggle ncmpcpp
-bindsym Mod4+e $scratchpad toggle im
-bindsym Mod4+d $scratchpad toggle teardrop
-bindsym Mod4+v $scratchpad toggle discord
-bindsym Mod4+3 $scratchpad next
-bindsym Mod4+s $scratchpad hide_current
-
-bindsym Mod4+Control+Shift+R $scratchpad geom_restore
-bindsym Mod4+Control+Shift+D $scratchpad geom_dump
-bindsym Mod4+Control+Shift+S $scratchpad geom_autosave
-
-mode "SPEC" {
-    bindsym Mod4+s $scratchpad subtag im skype, mode "default"
-    bindsym Mod1+s $scratchpad subtag im skype, mode "default"
-    bindsym s $scratchpad subtag im skype, mode "default"
-    bindsym Mod4+t $scratchpad subtag im tel, mode "default"
-    bindsym Mod1+t $scratchpad subtag im tel, mode "default"
-    bindsym t $scratchpad subtag im tel, mode "default"
-    bindsym m $scratchpad toggle mutt, mode "default"
-    bindsym w $scratchpad toggle webcam, mode "default"
-    bindsym a mode "default", $scratchpad dialog
-}
 ```
 
 Interesting parts here:
@@ -155,41 +124,26 @@ like workspaces, where workspace is not about view, but about semantics. This
 works despite of current monitor / workspace and you can iterate over them with
 ease.
 
-Config example (`cfg/circle.toml`):
-
-```toml
-[web]
-class = [ "firefox", "Waterfox", "Tor Browser", "Chromium"]
-priority = "firefox"
-prog = "firefox"
-
-[web.firefox]
-class = [ "Firefox", "Nightly", "Navigator"]
-prog = "firefox"
-```
-
-Where `web` is a tag and `web firefox` is subtag.
-
 Possible matching rules are:
 "class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
 
-i3 config example:
-
-```cfg
-set $circle exec --no-startup-id $XDG_CONFIG_HOME/negi3wm/send circle
-
-bindsym Mod4+Control+c $circle next sxiv
-bindsym Mod4+Shift+c $circle subtag sxiv wallpaper
-bindsym Mod4+x $circle next term
-bindsym Mod4+1 $circle next nwim
-
-bindsym Mod1+e mode "SPEC"
-
-mode "SPEC" {
-bindsym 5 mode "default", Controlircle subtag web tor
-bindsym y mode "default", Controlircle subtag web yandex
-bindsym f mode "default", Controlircle subtag web firefox
-}
+circle config example:
+```python3
+web = {
+        'class': ['firefox', 'firefoxdeveloperedition', 'Tor Browser', 'Chromium'],
+        'keybind_default_next': ['Mod4+w'],
+        'prog': 'MOZ_X11_EGL=1 MOZ_ACCELERATED=1 MOZ_WEBRENDER=1 firefox-developer-edition',
+        'firefox': {
+            'class': ['firefox'],
+            'keybind_spec_subtag': ['f'],
+            'prog': 'MOZ_X11_EGL=1 MOZ_ACCELERATED=1 MOZ_WEBRENDER=1 firefox'
+        },
+        'tor': {
+            'class': ['Tor Browser'],
+            'keybind_spec_subtag': ['5'],
+            'prog': 'tor-browser rutracker.org'
+        },
+        'ws': 'web'
 ```
 
 For this example if you press `mod4+w` then `firefox` starts if it's not
@@ -211,14 +165,11 @@ Goto to the previous window, not the workspace. Default i3 alt-tab cannot to
 remember from what window alt-tab have been done, this mod fix at by storing
 history of last selected windows.
 
-i3 config example:
+config_example:
 
 ```cfg
-set $remember_focused exec --no-startup-id $XDG_CONFIG_HOME/negi3wm/send remember_focused
-bindsym Mod4+grave $remember_focused focus_next_visible
-bindsym Mod4+Shift+grave $remember_focused focus_prev_visible
-bindsym Mod1+Tab $remember_focused switch
-bindsym Mod4+slash $remember_focused switch
+class RememberFocused(Enum):
+    autoback = ['pic', 'gfx', 'vm']
 ```
 
 remember_focused commands:
@@ -265,38 +216,42 @@ self.bindings = {
 }
 ```
 
-It loads appropriate modules dynamically, to handle it please edit `cfg/menu.toml`
+It loads appropriate modules dynamically, to handle it please edit `cfg/menu.py`
 Too many of options to document it properly.
 
 menu cfg example:
 
-```toml
-modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr']
+```python3
+class Menu(Enum):
+    gap = '38',
+    host = '::',
+    i3cmd = 'i3-msg'
+    left_bracket = '⟬'
+    matching = 'fuzzy'
+    modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'gnome', 'xrandr']
+    port = 31888
+    prompt = '❯>'
+    right_bracket = '⟭'
+    rules_xprop = ['WM_CLASS', 'WM_WINDOW_ROLE', 'WM_NAME', '_NET_WM_NAME']
+    use_default_width = '3840'
+    xprops_list = [
+        'WM_CLASS',
+        'WM_NAME',
+        'WM_WINDOW_ROLE',
+        'WM_TRANSIENT_FOR',
+        '_NET_WM_WINDOW_TYPE',
+        '_NET_WM_STATE',
+        '_NET_WM_PID'
+    ]
 ```
 
 Also it contains some settings for menus.
-
-i3 config example:
-
-```cfg
-set $menu exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/send menu
-bindsym Mod1+g $menu goto_win
-bindsym Mod4+g $menu ws
-bindsym Mod4+Control+g $menu movews
-bindsym Mod4+Control+grave $menu cmd_menu
-```
 
 ## vol
 
 Contextual volume manager. Handles mpd by default. If mpd is stopped then
 handles mpv with mpvc if the current window is mpv, or with sending 0, 9 keys
 to the mpv window if not. To use it add to i3 config something like this:
-
-```cfg
-set $volume exec --no-startup-id ${XDG_CONFIG_HOME}/negi3wm/send vol
-bindsym XF86AudioLowerVolume $volume d
-bindsym XF86AudioRaiseVolume $volume u
-```
 
 Command list:
 
@@ -323,48 +278,59 @@ i3 config example: _nothing_
 
 For now I have no any executor bindings in the i3 config, instead I use it as
 helper for another modules. For example you can use spawn argument for `circle`
-or `scratchpad`. Let's look at `cfg/circle.toml` It contains:
+or `scratchpad`. Let's look at `cfg/circle.py` It contains:
 
-```toml
-[term]
-class = [ "term",]
-instance = [ "term",]
-spawn = "term"
+```python3
+term = {
+  'instance': ['term'],
+  'keybind_default_next': ['Mod4+x'],
+  'spawn': 'term',
+  'ws': 'term'
+}
 ```
 
 Where spawn is special way to create terminal window with help of executor.
-Then look at `cfg/executor.toml` It contains:
+Then look at `cfg/executor.python3` It contains:
 
-```toml
-[term]
-class="term"
-font="Iosevka"
-font_size=18
+```python3
+term = {
+  'class': 'term',
+  'exec_tmux': [['zsh', 'zsh']],
+  'font': 'Iosevka',
+  'font_size': 33,
+  'padding': [8, 8],
+  'statusline': 1
+}
 ```
 
 So it create tmuxed(default behaviour) window with alacritty(default) config
 with Iosevka:18 font. Another examples:
 
-```toml
-[teardrop]
-class="teardrop"
-font="Iosevka"
-font_size=18
-postfix='-n mixer ncpamixer \; neww -n atop atop \; neww -n stig stig \; neww -n tasksh tasksh \; select-window -t 2'
+```python3
+teardrop = {
+  'class': '[[teardrop]]',
+  'exec_tmux': [['top', '/usr/bin/bpytop']],
+  'font': 'Iosevka',
+  'font_size': 20,
+  'padding': [8, 8],
+  'statusline': 0
+}
 ```
 
 Creates tmuxed window with several panes with ncpamixer, atop, stig and tasksh.
 
-```toml
-[nwim]
-class="nwim"
-font="Iosevka"
-font_size=15.5
-font_style_normal="Medium"
-with_tmux=0
-x_padding=0
-y_padding=0
-prog='NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim'
+```python3
+nwim = {
+  'class': 'nwim',
+  'env': ['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket'],
+  'exec_tmux': [['nvim', '/usr/bin/nvim']],
+  'font': 'Iosevka',
+  'font_normal': 'Medium',
+  'font_size': 27.5,
+  'opacity': 0.95,
+  'padding': [8, 8],
+  'statusline': 0
+}
 ```
 
 Creates neovim window without tmux, without padding, with Iosevka 15.5 sized
@@ -373,8 +339,7 @@ font.
 
 Look at the `lib/executor.py` to learn more.
 
-Please look for config examples at [my
-dotfiles](https://github.com/neg-serg/dotfiles/blob/master/term-colorschemes/.config/colorschemes/neg-dark3.sh).
+Please look for config examples at [my dotfiles](https://github.com/neg-serg/dotfiles/blob/master/term-colorschemes/.config/colorschemes/neg-dark3.sh).
 
 ## fs
 
@@ -472,10 +437,9 @@ negi3wm help:
 ```man
 i3 negi3wm daemon script.
 
-This module loads all negi3wm an start it via main's manager mailoop.
-Inotify-based watchers for all negi3wm TOML-based configuration spawned here,
-to use it just start it from any place without parameters.  Moreover it
-contains pid-lock which prevents running several times.
+This module loads all negi3wm an start it via main's manager mailoop. Inotify-based watchers for all negi3wm S-expression-based
+configuration spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running
+several times.
 
 Usage:
     ./negi3wm.py [--debug|--tracemalloc|--start]
@@ -504,11 +468,3 @@ scratchpad or navigation very useful.
 
 For now here can be dragons, so add bug report to github if you get
 problems.
-
-# Video Demonstration
-
-Youtube (low quality):
-[![i3pluginsdemo](https://img.youtube.com/vi/U7eJMP0zvKc/0.jpg)](https://www.youtube.com/embed/U7eJMP0zvKc)
-
-Vimeo (good quality):
-[![i3pluginsdemovimeo](https://i.imgur.com/QIuWrkX.png)](https://vimeo.com/255452812)
