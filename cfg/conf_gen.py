@@ -44,6 +44,7 @@ class ConfGen(Enum):
             'Mod4+Shift+y': '~/bin/clip youtube-dw-list',
             'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload',
             'Mod4+c': '~/bin/clip',
+            'Mod4+g': '~/bin/g',
             'Mod4+p': '~/bin/scripts/rofi-tmux-urls',
             'Mod4+space': 'dunstctl close-all',
             'XF86Sleep': 'sudo systemctl suspend'
@@ -105,7 +106,7 @@ class ConfGen(Enum):
             'cmd_menu': ['Mod4+Control+grave'],
             'goto_win': ['Mod1+g'],
             'movews': ['Mod4+Control+g'],
-            'ws': ['Mod4+g']
+            'ws': ['Mod1+Control+g']
         }
     }
 
