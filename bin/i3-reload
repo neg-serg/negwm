@@ -3,10 +3,9 @@ ENV=$HOME/.profile; export ENV
 i3-msg reload
 pkill negi3wm.py
 if hash systemd-cat 2>/dev/null; then
-    systemd-cat --identifier=negi3wm $XDG_CONFIG_HOME/negi3wm/negi3wm.py
+    systemd-cat --identifier=negi3wm $XDG_CONFIG_HOME/negi3wm/negi3wm.py --start
 else
     $XDG_CONFIG_HOME/negi3wm/negi3wm.py >> $HOME/tmp/negi3wm.log 2>&1 &
 fi
-
 sleep 1s
 $XDG_CONFIG_HOME/negi3wm/bin/send conf_gen dump
