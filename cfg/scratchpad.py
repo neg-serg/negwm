@@ -49,7 +49,7 @@ class Scratchpad(Enum):
     }
 
     transients = {
-        'geom': '2824x858+4+14',
+        'geom': '1812x797+693+1310',
         'match_all': ['True'],
         'role': ['GtkFileChooserDialog', 'Organizer', 'Manager']
     }
