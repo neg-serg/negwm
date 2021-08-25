@@ -49,5 +49,4 @@ class Configs():
             with open(i3_cfg_mod_path, "wb") as mod_cfg:
                 pickle.dump(mod_config, mod_cfg)
 
-Configs().print()
 Configs().dump()
