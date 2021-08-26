@@ -68,20 +68,15 @@ class vol(extension, cfg):
                         self.mpd_playing = False
                 else:
                     self.mpd_playing = False
-                if writer.transport._conn_lost:
-                    # TODO: add function to wait for MPD port here.
-                    break
 
     def change_volume(self, val: int) -> None:
         """ Change volume here. This function using MPD state information,
         information about currently focused window from i3, etc to perform
         contextual volume changing. val (int): volume step. """
         val_str = str(val)
-        mpv_key = '9'
         mpv_cmd = '--decrease'
         if val > 0:
             val_str = "+" + str(val)
-            mpv_key = '0'
             mpv_cmd = '--increase'
         if self.mpd_playing:
             self.mpd_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
