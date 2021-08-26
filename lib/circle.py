@@ -99,7 +99,7 @@ class circle(extension, cfg, Matcher):
     def prefullscreen(self, tag: str) -> None:
         """ Prepare to go fullscreen. """
         for win in self.fullscreened:
-            if self.current_win.window_class in set(self.conf(tag, "class")) \
+            if self.current_win.window_class in set(self.conf(tag, "classw")) \
                     and self.current_win.id == win.id:
                 self.need_handle_fullscreen = False
                 win.command('fullscreen disable')
@@ -151,7 +151,7 @@ class circle(extension, cfg, Matcher):
         with_subtag (bool): contains subtag, special behaviour then. """
         if not with_subtag:
             return self.tagged[tag][idx]
-        subtag_win_classes = self.subtag_info.get("class", {})
+        subtag_win_classes = self.subtag_info.get("classw", {})
         for subidx, win in enumerate(self.tagged[tag]):
             if win.window_class in subtag_win_classes:
                 return self.tagged[tag][subidx]
@@ -162,13 +162,13 @@ class circle(extension, cfg, Matcher):
         window not in class set.
         tag(str): target tag name """
         return "priority" in self.conf(tag) and \
-            self.current_win.window_class not in set(self.conf(tag, "class"))
+            self.current_win.window_class not in set(self.conf(tag, "classw"))
 
     def not_priority_win_class(self, tag, win):
         """ Window class is not priority class for the given tag
             tag(str): target tag name
             win: window """
-        return win.window_class in self.conf(tag, "class") and \
+        return win.window_class in self.conf(tag, "classw") and \
             win.window_class != self.conf(tag, "priority")
 
     def no_prioritized_wins(self, tag):
@@ -210,7 +210,7 @@ class circle(extension, cfg, Matcher):
         self.subtag_info = self.conf(tag, subtag)
         self.tag_windows()
         if self.subtag_info:
-            subtagged_class_set = set(self.subtag_info.get("class", {}))
+            subtagged_class_set = set(self.subtag_info.get("classw", {}))
             tagged_win_classes = {
                 w.window_class for w in self.tagged.get(tag, {})
             }

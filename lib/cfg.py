@@ -20,7 +20,7 @@ class cfg():
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
         self.conv_props = {
-            'class': 'class',
+            'classw': 'class',
             'instance': 'instance',
             'window_role': 'window_role',
             'title': 'name',
@@ -59,7 +59,7 @@ class cfg():
     @staticmethod
     def cfg_props() -> Set[str]:
         """ Basic cfg properties, without regexes """
-        return {'class', 'instance', 'name', 'role'}
+        return {'classw', 'instance', 'name', 'role'}
 
     @staticmethod
     def subtag_attr_list() -> Set[str]:

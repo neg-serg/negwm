@@ -52,7 +52,7 @@ class env():
         else:
             print('Alacritty cfg {self.alacritty_cfg} not exists, put it here')
             self.term = env.terminal_fallback_detect()
-        self.wclass = cfg_block.get("class", self.term)
+        self.wclass = cfg_block.get("classw", self.term)
         self.title = cfg_block.get("title", self.wclass)
         self.font = config.get("default_font", "")
         if not self.font:
@@ -115,7 +115,7 @@ class env():
         cfgname(str): configname """
         app_name = config.get(name, {}).get('app_name', '')
         if not app_name:
-            app_name = config.get(name, {}).get('class')
+            app_name = config.get(name, {}).get('classw')
         app_name += '.yml'
         cfgname = expanduser(f'{cfg_dir}/{app_name}')
         shutil.copyfile(self.alacritty_cfg, cfgname)

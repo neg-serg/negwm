@@ -191,7 +191,7 @@ class scratchpad(extension, cfg, Matcher):
             return
         if subtag in target_tag:
             class_list = [win.window_class for win in self.marked[tag]]
-            subtag_classes_set = self.conf(tag, subtag, "class")
+            subtag_classes_set = self.conf(tag, subtag, "classw")
             subtag_classes_matched = [
                 w for w in class_list if w in subtag_classes_set
             ]

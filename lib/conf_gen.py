@@ -190,7 +190,7 @@ class conf_gen(extension, cfg):
             for tag in config:
                 cmd_dict[tag] = []
                 for attr in config[tag]:
-                    for fill in ['class', 'instance', 'name', 'role']:
+                    for fill in ['classw', 'instance', 'name', 'role']:
                         cmd_dict[tag].append(info(config, tag, attr, fill))
             return cmd_dict
 
@@ -245,7 +245,7 @@ class conf_gen(extension, cfg):
                 attr (str): tag attrubutes.
                 fill (str): attribute to fill. """
             conv_dict_attr = {
-                'class': 'class',
+                'classw': 'class',
                 'instance': 'instance',
                 'name': 'window_name',
                 'role': 'window_role'

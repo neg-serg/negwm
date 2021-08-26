@@ -18,7 +18,7 @@ class Matcher():
     performance and simple caching. One of the most resource intensive part of
     negi3wm. """
     factors = [
-        sys.intern("class"),
+        sys.intern("classw"),
         sys.intern("instance"),
         sys.intern("role"),
         sys.intern("class_r"),
@@ -33,7 +33,7 @@ class Matcher():
         self.win = None
 
         self.match_dict = {
-            sys.intern("class"): lambda: self.win.window_class in self.matched_list,
+            sys.intern("classw"): lambda: self.win.window_class in self.matched_list,
             sys.intern("instance"): lambda: self.win.window_instance in self.matched_list,
             sys.intern("role"): lambda: self.win.window_role in self.matched_list,
             sys.intern("class_r"): self.class_r,
