@@ -151,7 +151,7 @@ class cfg():
                                 dict.fromkeys(self.cfg[tag][tok])
                             )
                     else:
-                        self.cfg[tag].update({tok: self.win_attrs[tok]})
+                        self.cfg[tag] |= {tok: self.win_attrs[tok]}
                     # fix for the case where attr is just attr not {attr}
                     if isinstance(self.conf(tag, tok), str):
                         self.cfg[tag][tok] = {self.win_attrs[tok]}

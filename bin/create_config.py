@@ -36,7 +36,7 @@ class Configs():
             print(f'{mod_name} :: ')
             mod_config = {}
             for elem in config:
-                mod_config.update({elem.name: elem.value})
+                mod_config |= {elem.name: elem.value}
             print(mod_config)
             print()
 
@@ -44,7 +44,7 @@ class Configs():
         for mod_name, raw_config in self.config.items():
             mod_config = {}
             for elem in raw_config:
-                mod_config.update({elem.name: elem.value})
+                mod_config |= {elem.name: elem.value}
             i3_cfg_mod_path = f'{Misc.i3path()}/cache/cfg/{mod_name}.pickle'
             with open(i3_cfg_mod_path, "wb") as mod_cfg:
                 pickle.dump(mod_config, mod_cfg)
