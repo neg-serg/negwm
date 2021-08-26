@@ -132,14 +132,15 @@ class negi3wm(modconfig):
                 circle.bindings['next']('term')
 
     async def cfg_mods_worker(self, watcher, reload_one=True):
-        """ Reloading configs on change. Reload only appropriate config by
-            default.
-
+        """ Reloading configs on change. Reload only appropriate config by default.
             watcher: watcher for cfg. """
         while True:
             event = await watcher.get()
             changed_mod = event.pathname[:-4]
             if changed_mod in self.mods:
+                conf_gen = self.mods.get('conf_gen')
+                if conf_gen is not None:
+                    conf_gen.bindings['dump']()
                 if reload_one:
                     self.mods[changed_mod].bindings['reload']()
                 else:
@@ -148,7 +149,9 @@ class negi3wm(modconfig):
 
     def run_config_watchers(self):
         """ Start all watchers in background via ensure_future """
-        asyncio.ensure_future(self.cfg_mods_worker(negi3wm.cfg_mods_watcher()))
+        asyncio.ensure_future(self.cfg_mods_worker(
+            negi3wm.cfg_mods_watcher()
+        ))
 
     def run(self, verbose=False):
         """ Run negi3wm here. """
