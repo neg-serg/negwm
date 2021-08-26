@@ -3,7 +3,7 @@ from enum import Enum
 class Scratchpad(Enum):
     discord = dict(
         classw = ['discord'],
-        geom = '1888x2072+1948+254',
+        geom = '1898x1273+1930+876',
         keybind_default_toggle = ['Mod4+v'],
         prog = 'discord'
     )
