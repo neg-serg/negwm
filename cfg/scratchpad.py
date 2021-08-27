@@ -3,13 +3,13 @@ from enum import Enum
 class Scratchpad(Enum):
     discord = dict(
         classw = ['discord'],
-        geom = '1898x1273+1930+876',
+        geom = '1898x1273+1936+825',
         keybind_default_toggle = ['Mod4+v'],
         prog = 'discord'
     )
 
     im = dict(
-        classw = ['zoom', 'KotatogramDesktop', 'Slack', 'TelegramDesktop', 'Skype', 'myteam'],
+        classw = ['KotatogramDesktop', 'myteam', 'Skype', 'Slack', 'TelegramDesktop', 'zoom'],
         geom = '1304x2109+2536+2',
         keybind_default_toggle = ['Mod4+e'],
         tel = dict(
