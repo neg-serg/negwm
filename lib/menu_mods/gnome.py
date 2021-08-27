@@ -57,7 +57,7 @@ class gnome():
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
         if selection:
-            os.environ |= {'GUI_ICONS': selection.decode('UTF-8').strip()}
+            os.environ.update({'GUI_ICONS': selection.decode('UTF-8').strip()})
             self.apply_settings()
 
     def change_gtk_theme(self):
@@ -85,5 +85,5 @@ class gnome():
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
         if selection:
-            os.environ |= {'GUI_GTK_THEME': selection.decode('UTF-8').strip()}
+            os.environ.update({'GUI_GTK_THEME': selection.decode('UTF-8').strip()})
             self.apply_settings()

@@ -80,7 +80,7 @@ class env():
         for env_str in env_list:
             env_data = env_str.split('=')
             if len(env_data) > 1:
-                self.env_dict |= {env_data[0]: ' '.join(env_data[1:])}
+                self.env_dict.update({env_data[0]: ' '.join(env_data[1:])})
         self.exec_tmux = cfg_block.get("exec_tmux", [])
         self.with_tmux = bool(self.exec_tmux)
         if not self.with_tmux:
