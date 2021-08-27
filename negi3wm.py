@@ -27,6 +27,7 @@ import timeit
 import atexit
 import sys
 import signal
+import subprocess
 import functools
 import importlib
 from importlib import util
@@ -121,7 +122,7 @@ class negi3wm(modconfig):
     def cfg_mods_watcher():
         """ cfg watcher to update modules config in realtime. """
         watcher = inotipy.Watcher.create()
-        watcher.watch(Misc.i3path() + '/cfg/', inotipy.IN.MODIFY)
+        watcher.watch(f'{Misc.i3path()}/cfg/', inotipy.IN.MODIFY)
         return watcher
 
     def autostart(self):
@@ -136,11 +137,14 @@ class negi3wm(modconfig):
             watcher: watcher for cfg. """
         while True:
             event = await watcher.get()
-            changed_mod = event.pathname[:-4]
+            changed_mod = event.pathname[:-3]
             if changed_mod in self.mods:
-                conf_gen = self.mods.get('conf_gen')
-                if conf_gen is not None:
-                    conf_gen.bindings['dump']()
+                binpath = f'{Misc.i3path()}/bin/'
+                subprocess.run(
+                    [f'{binpath}/create_config.py'],
+                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                    cwd=binpath, check=False
+                ).stdout
                 if reload_one:
                     self.mods[changed_mod].bindings['reload']()
                 else:
