@@ -32,7 +32,7 @@ class ConfGen(Enum):
 
     exec = {
         'no_startup_id': {
-            'Mod1+grave': 'rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme run',
+            'Mod1+grave': 'rofi -display-drun "❯>" -drun-display-format "{name}" -modi drun -show drun -show-icons -disable-history -theme neg',
             'Mod4+8': 'playerctl volume 0.0 || amixer -q set Master 0 mute',
             'Mod4+Shift+6': '~/bin/wl',
             'Mod4+Shift+8': 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
