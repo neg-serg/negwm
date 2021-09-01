@@ -30,8 +30,11 @@ class env():
         tmux_socket_dir = expanduser(f'{cache_dir}/tmux_sockets')
         dtach_session_dir = expanduser(f'{cache_dir}/dtach_sessions')
         self.alacritty_cfg_dir = expanduser(f'{cache_dir}/alacritty_cfg')
-        self.alacritty_cfg = expanduser(os.environ.get("XDG_CONFIG_HOME") + \
-            "/alacritty/alacritty.yml")
+        xdg_config_home = os.environ.get("XDG_CONFIG_HOME")
+        if xdg_config_home:
+            self.alacritty_cfg = expanduser(f'{xdg_config_home}/alacritty/alacritty.yml')
+        else:
+            self.alacritty_cfg = expanduser('~/.config/alacritty/alacritty.yml')
         Misc.create_dir(tmux_socket_dir)
         Misc.create_dir(self.alacritty_cfg_dir)
         Misc.create_dir(dtach_session_dir)
@@ -116,7 +119,7 @@ class env():
         app_name = config.get(name, {}).get('app_name', '')
         if not app_name:
             app_name = config.get(name, {}).get('classw')
-        app_name += '.yml'
+        app_name = f'{app_name}.yml'
         cfgname = expanduser(f'{cfg_dir}/{app_name}')
         shutil.copyfile(self.alacritty_cfg, cfgname)
         return cfgname
@@ -125,7 +128,7 @@ class env():
         """ Create config for alacritty
         custom_config(str): config name to create """
         conf = None
-        with open(custom_config, "r") as cfg_file:
+        with open(custom_config, "r", encoding="utf-8") as cfg_file:
             try:
                 conf = yaml.load(
                     cfg_file, Loader=yamlloader.ordereddict.CSafeLoader)
@@ -184,6 +187,7 @@ class executor(extension, cfg):
     cfg: configuration manager to autosave/autoload configutation with
     inotify """
     def __init__(self, i3) -> None:
+        extension.__init__(self)
         cfg.__init__(self, i3)
         self.envs = {}
         for app in self.cfg:
