@@ -46,11 +46,11 @@ class conf_gen(extension, cfg):
             ret.append(keybind_data)
         return ret
 
-    def vars(self) -> str:
+    def set_vars(self) -> str:
         ret = ''
-        vars = self.cfg.get('vars', {})
-        if vars:
-            for name, value in vars.items():
+        set_vars = self.cfg.get('set_vars', {})
+        if set_vars:
+            for name, value in set_vars.items():
                 ret += f'set ${name} {value}\n'
         return ret.rstrip('\n')
 
@@ -204,7 +204,7 @@ class conf_gen(extension, cfg):
             if mod is None:
                 return ''
             cmd_dict = fill_rules_dict(mod, {})
-            for tag in cmd_dict:
+            for tag in cmd_dict.items():
                 rules = list(filter(lambda str: str != '', cmd_dict[tag]))
                 if rules:
                     ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']'

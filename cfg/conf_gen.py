@@ -242,7 +242,7 @@ class conf_gen(Enum):
         'title_align' : 'center'
     }
 
-    vars = dict(
+    set_vars = dict(
         exit = 'mode \\"default\\"',
         i3 = '${XDG_CONFIG_HOME}/negi3wm'
     )
