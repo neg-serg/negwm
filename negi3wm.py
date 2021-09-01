@@ -36,13 +36,13 @@ from importlib import util
 import tracemalloc
 from threading import Thread
 
-for m in ["inotipy", "i3ipc", "docopt", "pulsectl",
+for m in ["inotify", "i3ipc", "docopt", "pulsectl", "asyncinotify",
           "Xlib", "yaml", "yamlloader", "ewmh"]:
     if not util.find_spec(m):
         print(f"Cannot import [{m}], please install")
 
 import asyncio
-import inotipy
+from asyncinotify import Inotify, Mask
 
 import i3ipc
 from docopt import docopt
@@ -87,15 +87,18 @@ class negi3wm():
 
         super().__init__()
 
-        self.loop = loop
-        self.mods = {}
+        self.loop, self.mods = loop, {}
         extension = 'py'
         blacklist = {
             'cfg', 'checker', 'display', 'extension', 'geom', 'locker', 'misc',
             'msgbroker', 'matcher', 'negewmh', 'reflection', 'standalone_cfg',
             '__init__'
         }
-        for mod in map(pathlib.Path, glob.glob(f"{os.path.dirname(sys.argv[0])}/lib/*.{extension}")):
+        mods = map(
+            pathlib.Path,
+            glob.glob(f"{os.path.dirname(sys.argv[0])}/lib/*.{extension}")
+        )
+        for mod in mods:
             if mod.is_file():
                 name = str(mod.name).removesuffix(f'.{extension}')
                 if name not in blacklist:
@@ -131,13 +134,6 @@ class negi3wm():
         if self.show_load_time:
             self.echo(loading_time_msg)
 
-    @staticmethod
-    def cfg_mods_watcher():
-        """ cfg watcher to update modules config in realtime. """
-        watcher = inotipy.Watcher.create()
-        watcher.watch(f'{Misc.i3path()}/cfg/', inotipy.IN.MODIFY)
-        return watcher
-
     def autostart(self):
         """ Autostart auto negi3wm initialization """
         if self.first_run:
@@ -145,31 +141,32 @@ class negi3wm():
             if circle is not None:
                 circle.bindings['next']('term')
 
-    async def cfg_mods_worker(self, watcher, reload_one=True):
+    async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
             watcher: watcher for cfg. """
         config_extension = '.py'
         while True:
-            event = await watcher.get()
-            changed_mod = event.pathname.removesuffix(config_extension)
-            if changed_mod in self.mods:
-                binpath = f'{Misc.i3path()}/bin/'
-                subprocess.run(
-                    [f'{binpath}/create_config.py'],
-                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                    cwd=binpath, check=False
-                )
-                if reload_one:
-                    self.mods[changed_mod].bindings['reload']()
-                else:
-                    for mod in self.mods:
-                        self.mods[mod].bindings['reload']()
+            with Inotify() as inotify:
+                inotify.add_watch(
+                    f'{Misc.i3path()}/cfg/', Mask.MODIFY)
+                async for event in inotify:
+                    changed_mod = str(event.name).removesuffix(config_extension)
+                    if changed_mod in self.mods:
+                        binpath = f'{Misc.i3path()}/bin/'
+                        subprocess.run(
+                            [f'{binpath}/create_config.py'],
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                            cwd=binpath, check=False
+                        )
+                        if reload_one:
+                            self.mods[changed_mod].bindings['reload']()
+                        else:
+                            for mod in self.mods:
+                                self.mods[mod].bindings['reload']()
 
     def run_config_watchers(self):
         """ Start all watchers in background via ensure_future """
-        asyncio.ensure_future(self.cfg_mods_worker(
-            negi3wm.cfg_mods_watcher()
-        ))
+        self.loop.create_task(self.cfg_mods_worker())
 
     def run(self):
         """ Run negi3wm here. """
