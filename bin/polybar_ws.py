@@ -35,15 +35,11 @@ import asyncio
 import i3ipc
 from i3ipc.aio import Connection
 
-from lib.standalone_cfg import modconfig
 
-
-class polybar_ws(modconfig):
+class polybar_ws():
     def __init__(self):
         # initialize asyncio loop
         self.loop = asyncio.get_event_loop()
-        # Initialize modcfg.
-        modconfig.__init__(self)
         self.conn = None
         self.ws_name = ""
         self.binding_mode = ""

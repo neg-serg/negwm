@@ -29,15 +29,15 @@ year :: 2021
 import asyncio
 import sys
 import time
-from lib.standalone_cfg import modconfig
 
-class polybar_mpd(modconfig):
+class polybar_mpd():
+    addr = '::1'
+    port = '6600'
+    buf_size = 2048
+
     def __init__(self):
         self.loop = asyncio.get_event_loop()
         super().__init__()
-        self.addr = str(self.conf("mpdaddr"))
-        self.port = int(self.conf("mpdport"))
-        self.buf_size = int(self.conf("bufsize"))
         # command to wait for mixer or player events from MPD
         self.idle_player = "idle player\n"
         # command to get song status from MPD
@@ -57,8 +57,8 @@ class polybar_mpd(modconfig):
         delim = '%{F#395573}/%{F-}'
         if artist and title and t:
             t_color = '#ffCFCFDB'
-            time = f'%{{T5}}%{{F{t_color}}}{t[0].strip()}{delim}%{{F{t_color}}}{t[1].strip()}%{{T-}}\n'
-            sys.stdout.write(f'{lhs}{artist} %{{F#657491}}―%{{F}} {title} {time}')
+            duration = f'%{{T5}}%{{F{t_color}}}{t[0].strip()}{delim}%{{F{t_color}}}{t[1].strip()}%{{T-}}\n'
+            sys.stdout.write(f'{lhs}{artist} %{{F#657491}}―%{{F}} {title} {duration}')
 
     @staticmethod
     def time_convert(n):
@@ -66,12 +66,12 @@ class polybar_mpd(modconfig):
 
     async def update_mpd_stat(self, reader, writer):
         writer.write(self.get_song_data_cmd.encode(encoding='utf-8'))
-        raw_song_data = await reader.read(self.buf_size)
+        raw_song_data = await reader.read(polybar_mpd.buf_size)
         ret = raw_song_data.decode('utf-8').split('\n')
         song_data = {}
         for tok in ret:
             tok = tok.split(':', maxsplit=1)
-            for t in {'Artist', 'Title', 'time', 'state'}:
+            for t in ['Artist', 'Title', 'time', 'state']:
                 if tok[0] == t:
                     song_data[t] = tok[1].strip()
                     if tok[0] == 'time':
@@ -92,7 +92,7 @@ class polybar_mpd(modconfig):
     async def current_song_loop(self):
         """ Update MPD volume here and print it. """
         reader, writer = await asyncio.open_connection(
-            host=self.addr, port=self.port
+            host=polybar_mpd.addr, port=polybar_mpd.port
         )
         if await self.mpd_stat_at_start(reader, writer):
             while True:
