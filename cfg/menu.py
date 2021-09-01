@@ -1,8 +1,8 @@
 from enum import Enum
 
-class Menu(Enum):
-    gap = '38',
-    host = '::',
+class menu(Enum):
+    gap = '38'
+    host = '::'
     i3cmd = 'i3-msg'
     left_bracket = '⟬'
     matching = 'fuzzy'
