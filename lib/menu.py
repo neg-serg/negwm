@@ -17,6 +17,7 @@ from .extension import extension
 class menu(extension, cfg):
     """ Base class for menu module """
     def __init__(self, i3ipc) -> None:
+        extension.__init__(self)
         cfg.__init__(self, i3ipc)
         self.i3ipc = i3ipc
         self.i3_path = Misc.i3path()
