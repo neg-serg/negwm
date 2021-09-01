@@ -5,6 +5,7 @@ from contextlib import contextmanager
 
 import Xlib
 import Xlib.display
+import Xlib.error
 from ewmh import EWMH
 
 
