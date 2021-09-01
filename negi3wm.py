@@ -50,11 +50,10 @@ from docopt import docopt
 from lib.locker import get_lock
 from lib.msgbroker import MsgBroker
 from lib.misc import Misc
-from lib.standalone_cfg import modconfig
 from lib.checker import checker
 
 
-class negi3wm(modconfig):
+class negi3wm():
     def __init__(self, cmd_args):
         """ Init function
 
