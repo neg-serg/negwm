@@ -106,8 +106,11 @@ class negi3wm(modconfig):
         mod_startup_times = []
         for mod in self.mods:
             start_time = timeit.default_timer()
-            i3mod = importlib.import_module('lib.' + mod)
-            self.mods[mod] = getattr(i3mod, mod)(self.i3)
+            try:
+                i3mod = importlib.import_module('lib.' + mod)
+                self.mods[mod] = getattr(i3mod, mod)(self.i3)
+            except ModuleNotFoundError:
+                print(f'No such module as {mod}')
             try:
                 self.mods[mod].asyncio_init(self.loop)
             except Exception:
