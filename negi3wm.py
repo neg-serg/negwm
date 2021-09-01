@@ -144,7 +144,7 @@ class negi3wm(modconfig):
                     [f'{binpath}/create_config.py'],
                     stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                     cwd=binpath, check=False
-                ).stdout
+                )
                 if reload_one:
                     self.mods[changed_mod].bindings['reload']()
                 else:
