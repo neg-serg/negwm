@@ -3,7 +3,7 @@
 import subprocess
 from Xlib import display
 from Xlib.ext import randr
-from misc import Misc
+from . misc import Misc
 
 
 class Display():
@@ -15,8 +15,8 @@ class Display():
 
     @classmethod
     def get_screen_resolution(cls) -> dict:
-        size_id = cls.xrandr_cache['size_id']
-        resolution = cls.xrandr_cache['sizes'][size_id]
+        size_id = Display.xrandr_cache['size_id']
+        resolution = Display.xrandr_cache['sizes'][size_id]
         return {
             'width': int(resolution['width_in_pixels']),
             'height': int(resolution['height_in_pixels'])
@@ -24,22 +24,22 @@ class Display():
 
     @classmethod
     def get_screen_resolution_data(cls) -> dict:
-        return cls.xrandr_cache['sizes']
+        return Display.xrandr_cache['sizes']
 
     @classmethod
     def xrandr_resolution_list(cls) -> dict:
-        if not cls.resolution_list:
+        if not Display.resolution_list:
             delimiter = 'x'
-            resolution_data = cls.get_screen_resolution_data()
+            resolution_data = Display.get_screen_resolution_data()
             for size_id, res in enumerate(resolution_data):
                 if res is not None and res:
-                    cls.resolution_list.append(
+                    Display.resolution_list.append(
                         str(size_id) + ': ' +
                         str(res['width_in_pixels']) +
                         delimiter +
                         str(res['height_in_pixels'])
                     )
-        return cls.resolution_list
+        return Display.resolution_list
 
     @classmethod
     def set_screen_size(cls, size_id=0) -> None:
