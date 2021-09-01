@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Circle(Enum):
+class circle(Enum):
     bitwig = dict(
         classw = ['Bitwig Studio'],
         keybind_default_next = ['Mod4+Control+b'],

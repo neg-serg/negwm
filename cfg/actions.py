@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Actions(Enum):
+class actions(Enum):
     cache_list_size = 10
     grow_coeff = 1.01
     quad_use_gaps = 1

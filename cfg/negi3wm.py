@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Negi3wm(Enum):
+class negi3wm(Enum):
     prefix = '❯>'
     module_list = [
         'fullscreen',

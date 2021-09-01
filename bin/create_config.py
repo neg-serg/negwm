@@ -1,34 +1,26 @@
 #!/usr/bin/python3
 import sys
+import importlib
+import pickle
+import glob
+import pathlib
 sys.path.append("../cfg")
 sys.path.append("../lib")
-import pickle
 from misc import Misc
 
-from fullscreen import Fullscreen
-from executor import Executor
-from actions import Actions
-from circle import Circle
-from remember_focused import RememberFocused
-from menu import Menu
-from scratchpad import Scratchpad
-from conf_gen import ConfGen
-from negi3wm import Negi3wm
 
 class Configs():
     def __init__(self):
         self.config = {}
-        self.config = {
-            'fullscreen': Fullscreen,
-            'executor': Executor,
-            'actions': Actions,
-            'circle': Circle,
-            'remember_focused': RememberFocused,
-            'menu': Menu,
-            'scratchpad': Scratchpad,
-            'conf_gen': ConfGen,
-            'negi3wm': Negi3wm,
-        }
+        extension = 'py'
+        config_list = map(pathlib.Path, glob.glob(f"../cfg/*.{extension}"))
+        for conf in config_list:
+            if conf.is_file():
+                conf_name = conf.name.removesuffix(f'.{extension}')
+                self.config[conf_name] = getattr(
+                    importlib.import_module(conf_name),
+                    conf_name
+                )
 
     def print(self):
         for mod_name, config in self.config.items():

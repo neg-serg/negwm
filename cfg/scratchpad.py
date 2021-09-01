@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Scratchpad(Enum):
+class scratchpad(Enum):
     discord = dict(
         classw = ['discord'],
         geom = '1898x1273+1936+825',

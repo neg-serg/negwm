@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Executor(Enum):
+class executor(Enum):
     ncmpcpp = dict(
         classw = 'ncmpcpp',
         exec = 'ncmpcpp',

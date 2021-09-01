@@ -1,6 +1,6 @@
 from enum import Enum
 
-class ConfGen(Enum):
+class conf_gen(Enum):
     actions_wm = dict(
         keymap = dict(
             grow = ['Shift+plus'],
