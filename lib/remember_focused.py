@@ -8,15 +8,16 @@ window may be closed, and then you cannot focus it.
 
 from typing import Iterator
 from itertools import cycle
-from cfg import cfg
-from negewmh import NegEWMH
-from extension import extension
+from . cfg import cfg
+from . negewmh import NegEWMH
+from . extension import extension
 
 class remember_focused(extension, cfg):
     """ Advanced alt-tab class. """
     def __init__(self, i3ipc) -> None:
         """ Init function
             i3ipc: i3ipc connection """
+        extension.__init__(self)
         cfg.__init__(self, i3ipc) # Initialize cfg.
         self.i3ipc = i3ipc # i3ipc connection, bypassed by negi3wm runner
         # previous / current window list
