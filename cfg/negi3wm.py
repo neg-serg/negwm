@@ -1,7 +1,6 @@
 from enum import Enum
 
 class negi3wm(Enum):
-    prefix = '❯>'
     module_list = [
         'fullscreen',
         'executor',

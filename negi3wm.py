@@ -30,6 +30,8 @@ import signal
 import subprocess
 import functools
 import importlib
+import pathlib
+import glob
 from importlib import util
 import tracemalloc
 from threading import Thread
@@ -78,7 +80,7 @@ class negi3wm(modconfig):
                 loop.stop()
                 os._exit(0)
 
-            for signame in {'SIGINT', 'SIGTERM'}:
+            for signame in ['SIGINT', 'SIGTERM']:
                 loop.add_signal_handler(
                     getattr(signal, signame),
                     functools.partial(loop_exit, signame))
@@ -88,9 +90,18 @@ class negi3wm(modconfig):
 
         self.loop = loop
         self.mods = {}
-        for mod in self.conf("module_list"):
-            self.mods[sys.intern(mod)] = None
-        self.port = int(str(self.conf('port')))
+        extension = 'py'
+        blacklist = {
+            'cfg', 'checker', 'display', 'extension', 'geom', 'locker', 'misc',
+            'msgbroker', 'matcher', 'negewmh', 'reflection', 'standalone_cfg',
+            '__init__'
+        }
+        for mod in map(pathlib.Path, glob.glob(f"{os.path.dirname(sys.argv[0])}/lib/*.{extension}")):
+            if mod.is_file():
+                name = str(mod.name).removesuffix(f'.{extension}')
+                if name not in blacklist:
+                    self.mods[sys.intern(name)] = None
+        self.port = 15555
         self.echo = Misc.echo_on
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
@@ -138,9 +149,10 @@ class negi3wm(modconfig):
     async def cfg_mods_worker(self, watcher, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
             watcher: watcher for cfg. """
+        config_extension = '.py'
         while True:
             event = await watcher.get()
-            changed_mod = event.pathname[:-3]
+            changed_mod = event.pathname.removesuffix(config_extension)
             if changed_mod in self.mods:
                 binpath = f'{Misc.i3path()}/bin/'
                 subprocess.run(
@@ -160,7 +172,7 @@ class negi3wm(modconfig):
             negi3wm.cfg_mods_watcher()
         ))
 
-    def run(self, verbose=False):
+    def run(self):
         """ Run negi3wm here. """
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
@@ -183,8 +195,6 @@ class negi3wm(modconfig):
         )
         start((mainloop).start)
 
-        if verbose:
-            self.echo('... everything loaded ...')
         try:
             self.autostart()
             self.i3.main()
