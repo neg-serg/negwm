@@ -12,8 +12,8 @@ from circle import Circle
 from remember_focused import RememberFocused
 from menu import Menu
 from scratchpad import Scratchpad
-from vol import Vol
 from conf_gen import ConfGen
+from negi3wm import Negi3wm
 
 class Configs():
     def __init__(self):
@@ -26,8 +26,8 @@ class Configs():
             'remember_focused': RememberFocused,
             'menu': Menu,
             'scratchpad': Scratchpad,
-            'vol': Vol,
             'conf_gen': ConfGen,
+            'negi3wm': Negi3wm,
         }
 
     def print(self):
