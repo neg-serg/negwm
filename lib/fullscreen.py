@@ -3,13 +3,12 @@ xset here. There is better solution possible, for example wayland-friendly. """
 
 import subprocess
 import shutil
-from . extension import extension
-from . cfg import cfg
+from extension import extension
+from cfg import cfg
 
 class fullscreen(extension, cfg):
     def __init__(self, i3conn):
         # i3ipc connection, bypassed by negi3wm runner
-        extension.__init__(self)
         self.i3ipc = i3conn
         self.panel_should_be_restored = False
         cfg.__init__(self, i3conn) # Initialize modcfg.
@@ -41,18 +40,19 @@ class fullscreen(extension, cfg):
         """ Helper to do show/hide with panel or another action
             action (str): action to do.
             restore(bool): shows should the panel state be restored or not. """
-        ret = False
-        with subprocess.Popen(['xdo', action, '-N', 'Polybar'], stdout=subprocess.PIPE) as proc:
-            try:
-                ret = proc.communicate()[0]
-            except Exception:
-                xdo_path = shutil.which('xdo')
-                if xdo_path:
-                    print('xdo exists in {xdo_path}, but not working')
-                else:
-                    print('There is no xdo, please install')
-            if not ret and restore is not None:
-                self.panel_should_be_restored = restore
+        ret = None
+        try:
+            ret = subprocess.Popen(
+                ['xdo', action, '-N', 'Polybar'], stdout=subprocess.PIPE
+            ).communicate()[0]
+        except Exception:
+            xdo_path = shutil.which('xdo')
+            if xdo_path:
+                print('xdo exists in {xdo_path}, but not working')
+            else:
+                print('There is no xdo, please install')
+        if not ret and restore is not None:
+            self.panel_should_be_restored = restore
 
     def on_fullscreen_mode(self, _, event):
         """ Disable panel if it was in fullscreen mode and then goes to
