@@ -49,7 +49,7 @@ class winact():
 
     def select_ws(self) -> str:
         """ Apply target function to workspace. """
-        ws_list = extension.get_mods()['conf_gen'].cfg['ws_list']
+        ws_list = extension.get_mods()['conf_gen'].cfg['workspaces']
         menu_params = {
             'cnum': len(ws_list),
             'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}',
