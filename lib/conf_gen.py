@@ -204,7 +204,7 @@ class conf_gen(extension, cfg):
             if mod is None:
                 return ''
             cmd_dict = fill_rules_dict(mod, {})
-            for tag in cmd_dict.items():
+            for tag in cmd_dict:
                 rules = list(filter(lambda str: str != '', cmd_dict[tag]))
                 if rules:
                     ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']'
