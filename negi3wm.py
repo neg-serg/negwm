@@ -161,7 +161,7 @@ class negi3wm():
                         if reload_one:
                             self.mods[changed_mod].bindings['reload']()
                         else:
-                            for mod in self.mods.items():
+                            for mod in self.mods:
                                 self.mods[mod].bindings['reload']()
 
     def run_config_watchers(self):
