@@ -192,7 +192,7 @@ class conf_gen(Enum):
     )
 
     rules = {
-        '[class=".*"]': 'title_format "<span foreground=#395573> >_ </span> %title", border pixel 5',
+        '[class=".*"]': 'title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 5',
         '[class="^(Gcolor3|rdesktop|openssh-askpass)$"]': 'floating enable',
         '[class="^(inkscape|gimp)$"]': 'move workspace $draw',
         '[class="^(steam|Steam)$"]': 'floating enable',
