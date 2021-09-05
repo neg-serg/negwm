@@ -255,6 +255,8 @@ class conf_gen(Enum):
     )
 
     workspaces = dict(
+        term = '\ue236︁ α:term',
+        web = '\uf269 β:web',
         dev = '\ue267 δ:dev',
         doc = '\uf15c γ:doc',
         draw = '\uf03e ζ:draw',
@@ -263,8 +265,6 @@ class conf_gen(Enum):
         pic = '\uf03e ξ:pic',
         steam = '\uf1b7 ι:steam',
         sys = '\uf0ad η:sys',
-        term = '\ue236︁ α:term',
         vm = '\uf1cd λ:vm',
-        web = '\uf269 β:web',
         wine = '\uf1cb μ:wine'
     )
