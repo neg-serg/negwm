@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-
-""" i3 negi3wm daemon script.
-
+""" negi3wm daemon script.
 This module loads all negi3wm an start it via main's manager mailoop. Inotify-based watchers for all negi3wm S-expression-based
 configuration spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running
 several times.
@@ -11,46 +9,38 @@ Usage:
 
 Options:
     --debug         disables signal handlers for debug.
-    --tracemalloc   calculates and shows memory tracing with help of
-                    tracemalloc.
+    --tracemalloc   calculates and shows memory tracing with help of tracemalloc.
     --start         make actions for the start, not reloading
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
 github :: https://github.com/neg-serg?tab=repositories
 year :: 2021
-
 """
 
-import os
-import timeit
+import asyncio
 import atexit
-import sys
+import functools
+import glob
+import importlib
+import os
+import pathlib
 import signal
 import subprocess
-import functools
-import importlib
-import pathlib
-import glob
-from importlib import util
-import tracemalloc
+import sys
 from threading import Thread
+import timeit
+import tracemalloc
 
-for m in ["inotify", "i3ipc", "docopt", "pulsectl", "asyncinotify",
-          "Xlib", "yaml", "yamlloader", "ewmh"]:
-    if not util.find_spec(m):
-        print(f"Cannot import [{m}], please install")
-
-import asyncio
 from asyncinotify import Inotify, Mask
-
-import i3ipc
 from docopt import docopt
+import i3ipc
+import psutil
 
-from lib.locker import get_lock
-from lib.msgbroker import MsgBroker
-from lib.misc import Misc
 from lib.checker import checker
+from lib.locker import get_lock
+from lib.misc import Misc
+from lib.msgbroker import MsgBroker
 
 
 class negi3wm():
@@ -77,7 +67,7 @@ class negi3wm():
             def loop_exit(signame):
                 print(f"Got signal {signame}: exit")
                 loop.stop()
-                os._exit(0)
+                cleanup()
 
             for signame in ['SIGINT', 'SIGTERM']:
                 loop.add_signal_handler(
@@ -92,7 +82,7 @@ class negi3wm():
         blacklist = {
             'cfg', 'checker', 'display', 'extension', 'geom', 'locker', 'misc',
             'msgbroker', 'matcher', 'negewmh', 'reflection', 'standalone_cfg',
-            '__init__'
+            'sub', 'pub', '__init__'
         }
         mods = map(
             pathlib.Path,
@@ -108,6 +98,16 @@ class negi3wm():
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
         self.i3 = i3ipc.Connection()
+
+    @staticmethod
+    def kill_proctree(pid, including_parent=True):
+        parent = psutil.Process(pid)
+        for child in parent.children(recursive=True):
+            if child.name() == 'negi3wm.py':
+                child.kill()
+                print(f'killed {child}')
+        if including_parent:
+            parent.kill()
 
     def load_modules(self):
         """ Load modules.
@@ -172,9 +172,7 @@ class negi3wm():
         """ Run negi3wm here. """
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
-
                 func (callable): callable routine to run.
-                name: routine name.
                 args: routine args, optional.
             """
             if args is None:
@@ -198,20 +196,22 @@ class negi3wm():
             self.i3.main_quit()
 
 
+def cleanup():
+    negi3wm.kill_proctree(os.getpid())
+
 def main():
     """ Run negi3wm from here """
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
-    atexit.register(lambda: os._exit(0))
-    cmd_args = docopt(__doc__, version='0.8')
-    negi3wm_instance = negi3wm(cmd_args)
-    negi3wm_instance.run()
-    if negi3wm_instance.tracemalloc_enabled:
+    atexit.register(cleanup)
+    cmd_args = docopt(__doc__, version='0.9')
+    wm = negi3wm(cmd_args)
+    wm.run()
+    if wm.tracemalloc_enabled:
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('lineno')
         for stat in top_stats[:10]:
             print(stat)
-
 
 if __name__ == '__main__':
     checker().check(verbose=False)
