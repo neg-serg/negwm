@@ -222,10 +222,12 @@ class conf_gen(Enum):
         always = dict(
             gnome_configs = '${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf',
             negi3wm = 'dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run',
-            polybar = 'pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && polybar -c ${XDG_CONFIG_HOME}/polybar/main main'
+            polybar = 'pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && '
+                'polybar -c ${XDG_CONFIG_HOME}/polybar/main main'
         ),
         once = {
-            'dbus-env' : 'hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
+            'dbus-env' : 'hash dbus-update-activation-environment 2>/dev/null && '
+                'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
             'gpaste' : '/usr/sbin/gpaste-client daemon',
             'gsd-xsettings' : '/usr/lib/gsd-xsettings',
             'polkit-gnome' : '/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1',
@@ -236,7 +238,7 @@ class conf_gen(Enum):
     theme = {
         'default_border' : 'normal',
         'default_floating_border' : 'normal',
-        'font' : 'Iosevka 12',
+        'font' : 'Iosevka Bold 24',
         'hide_edge_borders' : 'both',
         'show_marks' : 'yes',
         'title_align' : 'center'
@@ -255,16 +257,16 @@ class conf_gen(Enum):
     )
 
     workspaces = dict(
-        term = '\ue236︁ α:term',
-        web = '\uf269 β:web',
-        dev = '\ue267 δ:dev',
-        doc = '\uf15c γ:doc',
-        draw = '\uf03e ζ:draw',
-        gfx = '\uf34c ε:gfx',
+        term = '︁ α:term',
+        web = ' β:web',
+        dev = ' δ:dev',
+        doc = ' γ:doc',
+        draw = ' ζ:draw',
+        gfx = ' ε:gfx',
         obs = '@ ρ:obs',
-        pic = '\uf03e ξ:pic',
-        steam = '\uf1b7 ι:steam',
-        sys = '\uf0ad η:sys',
-        vm = '\uf1cd λ:vm',
-        wine = '\uf1cb μ:wine'
+        pic = ' ξ:pic',
+        steam = ' ι:steam',
+        sys = ' η:sys',
+        vm = ' λ:vm',
+        wine = ' μ:wine'
     )
