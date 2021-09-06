@@ -111,7 +111,6 @@ class negi3wm():
 
     def load_modules(self):
         """ Load modules.
-
             This function init MsgBroker, use importlib to load all the
             stuff, then add_ipc and update notification with startup
             benchmarks.
