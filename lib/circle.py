@@ -17,15 +17,17 @@ of issues here in detection of existing/visible windows, etc.
 from . extension import extension
 from . matcher import Matcher
 from . cfg import cfg
+from . sub import sub
 from . misc import Misc
 
 
-class circle(extension, cfg, Matcher):
+class circle(sub, extension, cfg, Matcher):
     """ Circle over windows class """
     def __init__(self, i3) -> None:
         """ Init function
         Main part is in self.initialize, which performs initialization itself.
         i3: i3ipc connection """
+        sub.__init__(self)
         extension.__init__(self)
         cfg.__init__(self, i3)
         Matcher.__init__(self)

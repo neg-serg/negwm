@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import zmq
 import itertools
 import time
@@ -27,3 +29,6 @@ class publisher():
                 time.sleep(0.1)
         except KeyboardInterrupt:
             pass
+
+if __name__ == '__main__':
+    pp = publisher()
