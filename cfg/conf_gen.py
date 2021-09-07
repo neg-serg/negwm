@@ -1,8 +1,10 @@
 from enum import Enum
+Δ = dict
 
 class conf_gen(Enum):
-    actions_wm = dict(
-        keymap = dict(
+
+    actions_wm = Δ(
+        keymap = Δ(
             grow = ['Shift+plus'],
             maxhor = ['x'],
             maximize = ['m'],
@@ -14,14 +16,14 @@ class conf_gen(Enum):
         )
     )
 
-    bind_modes = dict(
+    bind_modes = Δ(
         default = '',
         resize = 'Mod4+r',
         spec = 'Mod1+e',
         wm = 'Mod4+minus'
     )
 
-    colors = dict(
+    colors = Δ(
         background = ['#000000ee'],
         focused = ['#000011dd', '#000000ee', '#ddddee', '#112211', '#0C0C0D'],
         focused_inactive = ['#000000dd', '#000000ee', '#005fff', '#000000', '#020204'],
@@ -56,8 +58,8 @@ class conf_gen(Enum):
         }
     }
 
-    focus = dict(
-        keymap = dict(
+    focus = Δ(
+        keymap = Δ(
             down = ['j'],
             left = ['h'],
             right = ['l'],
@@ -66,8 +68,8 @@ class conf_gen(Enum):
         modkey = 'Mod4'
     )
 
-    layout_wm = dict(
-        keymap = dict(
+    layout_wm = Δ(
+        keymap = Δ(
            default = ['grave'],
            splith = ['minus'],
            splitv = ['backslash'],
@@ -76,7 +78,7 @@ class conf_gen(Enum):
         )
     )
 
-    main = dict(
+    main = Δ(
         default_orientation = 'auto',
         floating_modifier = 'Mod4',
         focus_follows_mouse = 'no',
@@ -87,7 +89,7 @@ class conf_gen(Enum):
         workspace_layout = 'tabbed'
     )
 
-    media = dict(
+    media = Δ(
         keymap = {
             'next': ['XF86AudioNext', 'period'],
             'play': ['XF86AudioPlay'],
@@ -98,8 +100,8 @@ class conf_gen(Enum):
         modkey = 'Mod4'
     )
 
-    menu = dict(
-        keymap = dict(
+    menu = Δ(
+        keymap = Δ(
             attach = ['Mod4+Shift+a'],
             autoprop = ['Mod4+Shift+s'],
             cmd_menu = ['Mod4+Control+grave'],
@@ -109,8 +111,8 @@ class conf_gen(Enum):
         )
     )
 
-    menu_spec = dict(
-        keymap = dict(
+    menu_spec = Δ(
+        keymap = Δ(
             gtk_theme = ['Shift+t'],
             icon_theme = ['Shift+i'],
             pulse_input = ['i'],
@@ -119,7 +121,7 @@ class conf_gen(Enum):
         )
     )
 
-    misc = dict(
+    misc = Δ(
         keymap = {
             'fullscreen toggle': ['q'],
             'kill': ['Control+q']
@@ -127,15 +129,15 @@ class conf_gen(Enum):
         modkey = 'Mod4'
     )
 
-    misc_spec = dict(
+    misc_spec = Δ(
         keymap = {
             '[urgent=latest] focus': ['e'],
             'floating toggle': ['Shift+d']
         }
     )
 
-    move = dict(
-        keymap = dict(
+    move = Δ(
+        keymap = Δ(
             bottom = ['s'],
             left = ['a'],
             right = ['d'],
@@ -143,8 +145,8 @@ class conf_gen(Enum):
         )
     )
 
-    move_acts = dict(
-        keymap = dict(
+    move_acts = Δ(
+        keymap = Δ(
             hdown = ['Shift+w'],
             hup = ['Shift+a'],
             vleft = ['Shift+s'],
@@ -153,7 +155,7 @@ class conf_gen(Enum):
         param = 'x2'
     )
 
-    quad = dict(
+    quad = Δ(
         keymap = {
             '1' : '1',
             '2' : '2',
@@ -162,16 +164,16 @@ class conf_gen(Enum):
         }
     )
 
-    remember_focused = dict(
-        keymap = dict(
+    remember_focused = Δ(
+        keymap = Δ(
             focus_next_visible = ['Mod4+grave'],
             focus_prev_visible = ['Mod4+Shift+grave'],
             switch = ['Mod1+Tab', 'Mod4+slash']
         )
     )
 
-    resize_minus = dict(
-        keymap = dict(
+    resize_minus = Δ(
+        keymap = Δ(
             bottom = ['j', 's'],
             left = ['h', 'a'],
             right = ['l', 'd'],
@@ -181,8 +183,8 @@ class conf_gen(Enum):
         param = '-4'
     )
 
-    resize_plus = dict(
-        keymap = dict(
+    resize_plus = Δ(
+        keymap = Δ(
             bottom = ['j', 's'],
             left = ['h', 'a'],
             right = ['l', 'd'],
@@ -200,8 +202,8 @@ class conf_gen(Enum):
         '[instance="^(gpartedbin|recoll)$"]': 'move workspace $sys, floating enable, focus'
     }
 
-    scratchpad = dict(
-        keymap = dict(
+    scratchpad = Δ(
+        keymap = Δ(
             dialog = ['Control+a'],
             geom_dump = ['Control+s'],
             geom_restore = ['Control+space'],
@@ -211,15 +213,15 @@ class conf_gen(Enum):
         modkey = 'Mod4'
     )
 
-    split = dict(
-        keymap = dict(
+    split = Δ(
+        keymap = Δ(
             horizontal = ['h', 'l'],
             vertical = ['j', 'k']
         )
     )
 
-    startup = dict(
-        always = dict(
+    startup = Δ(
+        always = Δ(
             gnome_configs = '${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf',
             negi3wm = 'dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run',
             polybar = 'pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && '
@@ -244,19 +246,19 @@ class conf_gen(Enum):
         'title_align' : 'center'
     }
 
-    set_vars = dict(
+    set_vars = Δ(
         exit = 'mode \\"default\\"',
         i3 = '${XDG_CONFIG_HOME}/negi3wm'
     )
 
-    vol = dict(
-        keymap = dict(
+    vol = Δ(
+        keymap = Δ(
             d = ['XF86AudioLowerVolume'],
             u = ['XF86AudioRaiseVolume']
         )
     )
 
-    workspaces = dict(
+    workspaces = Δ(
         term = '︁ α:term',
         web = ' β:web',
         dev = ' δ:dev',

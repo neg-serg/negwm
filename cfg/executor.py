@@ -1,7 +1,9 @@
 from enum import Enum
+Δ = dict
+
 
 class executor(Enum):
-    ncmpcpp = dict(
+    ncmpcpp = Δ(
         classw = 'ncmpcpp',
         exec = 'ncmpcpp',
         font = 'Iosevka',
@@ -11,14 +13,14 @@ class executor(Enum):
         padding = [12, 12]
     )
 
-    neomutt = dict(
+    neomutt = Δ(
         classw = 'neomutt',
         exec_dtach = 'neomutt',
         font = 'Iosevka',
         font_size = 27
     )
 
-    nwim = dict(
+    nwim = Δ(
         classw = 'nwim',
         env = ['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket'],
         exec_tmux = [['nvim', '/usr/bin/nvim']],
@@ -30,7 +32,7 @@ class executor(Enum):
         statusline = 0
     )
 
-    teardrop = dict(
+    teardrop = Δ(
         classw = 'teardrop',
         exec_tmux = [['top', '/usr/bin/bpytop']],
         font = 'Iosevka',
@@ -39,7 +41,7 @@ class executor(Enum):
         statusline = 0
     )
 
-    term = dict(
+    term = Δ(
         classw = 'term',
         exec_tmux = [['zsh', 'zsh']],
         font = 'Iosevka',
