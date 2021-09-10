@@ -36,24 +36,24 @@ class conf_gen(Enum):
         'no_startup_id': {
             'Mod1+grave': 'rofi -show run -show-icons -disable-history -theme neg',
             'Mod4+8': 'playerctl volume 0.0 || amixer -q set Master 0 mute',
+            'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload',
+            'Mod4+c': '~/bin/clip',
+            'Mod4+g': '~/bin/g',
+            'Mod4+p': '~/bin/rofi-tmux-urls',
             'Mod4+Shift+6': '~/bin/wl',
             'Mod4+Shift+8': 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
             'Mod4+Shift+9': 'dunstctl history-pop',
             'Mod4+Shift+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-restart',
-            'Mod4+Shift+i': '~/bin/scripts/rofi-nm',
-            'Mod4+Shift+l': '~/bin/scripts/rofi-lutris',
-            'Mod4+Shift+m': '~/bin/scripts/rofi-audio',
+            'Mod4+Shift+i': '~/bin/rofi-nm',
+            'Mod4+Shift+l': '~/bin/rofi-lutris',
+            'Mod4+Shift+m': '~/bin/rofi-audio',
             'Mod4+Shift+y': '~/bin/clip youtube-dw-list',
-            'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload',
-            'Mod4+c': '~/bin/clip',
-            'Mod4+g': '~/bin/g',
-            'Mod4+p': '~/bin/scripts/rofi-tmux-urls',
             'Mod4+space': 'dunstctl close-all',
             'XF86Sleep': 'sudo systemctl suspend'
         },
         'plain': {
-            'Mod4+4': '~/bin/scripts/screenshot',
-            'Mod4+Control+4': '~/bin/scripts/screenshot -r',
+            'Mod4+4': '~/bin/screenshot',
+            'Mod4+Control+4': '~/bin/screenshot -r',
             'Mod4+Shift+4': 'flameshot gui'
         }
     }
