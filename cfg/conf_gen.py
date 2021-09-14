@@ -2,7 +2,6 @@ from enum import Enum
 Δ = dict
 
 class conf_gen(Enum):
-
     actions_wm = Δ(
         keymap = Δ(
             grow = ['Shift+plus'],
@@ -243,7 +242,7 @@ class conf_gen(Enum):
         'font' : 'Iosevka Bold 24',
         'hide_edge_borders' : 'both',
         'show_marks' : 'yes',
-        'title_align' : 'center'
+        'title_align' : 'left'
     }
 
     set_vars = Δ(
