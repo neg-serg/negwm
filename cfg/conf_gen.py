@@ -196,7 +196,8 @@ class conf_gen(Enum):
         '[class=".*"]': 'title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 5',
         '[class="^(Gcolor3|rdesktop|openssh-askpass)$"]': 'floating enable',
         '[class="^(inkscape|gimp)$"]': 'move workspace $draw',
-        '[class="^(steam|Steam)$"]': 'floating enable',
+        '[class="(?i)(?:steam)"]': 'floating enable',
+        '[title="(?i)(?:copying|deleting|moving)"]': 'floating enable',
         '[class="steam_app_.*"]': 'floating enable',
         '[instance="^(gpartedbin|recoll)$"]': 'move workspace $sys, floating enable, focus'
     }
