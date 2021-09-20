@@ -83,11 +83,11 @@ class circle(Enum):
     web = Δ(
         classw = ['firefox', 'firefoxdeveloperedition', 'Tor Browser', 'Chromium'],
         keybind_default_next = ['Mod4+w'],
-        prog = 'MOZ_X11_EGL=1 MOZ_ACCELERATED=1 MOZ_WEBRENDER=1 firefox-developer-edition',
+        prog = 'firefox',
         firefox = Δ(
             classw = ['firefox'],
             keybind_spec_subtag = ['f'],
-            prog = 'MOZ_X11_EGL=1 MOZ_ACCELERATED=1 MOZ_WEBRENDER=1 firefox'
+            prog = 'firefox'
         ),
         tor = Δ(
             classw = ['Tor Browser'],
