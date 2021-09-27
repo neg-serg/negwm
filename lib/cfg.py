@@ -140,8 +140,7 @@ class cfg():
         ftors = self.cfg_props() & set(self.win_attrs.keys())
         if tag in self.cfg:
             for tok in ftors:
-                if self.win_attrs[tok] not in \
-                        self.cfg.get(tag, {}).get(tok, {}):
+                if self.win_attrs[tok] not in self.cfg.get(tag, {}).get(tok, {}):
                     if tok in self.cfg[tag]:
                         if isinstance(self.cfg[tag][tok], str):
                             self.cfg[tag][tok] = {self.win_attrs[tok]}
