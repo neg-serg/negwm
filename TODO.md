@@ -9,6 +9,7 @@
 - github.com/bakkeby/patches/wiki/riodraw
 - New module idea: mouse helper, for example get windows size and then click on x,y = 20px, 20px
 - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
+- python logging
 - Replace alacritty config generators with options
 - Scratchpad: add ability to set geometry with mouse
 - Scratchpad: set geometry for scratchpad windows(optional)
