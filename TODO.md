@@ -13,4 +13,3 @@
 - Replace alacritty config generators with options
 - Scratchpad: add ability to set geometry with mouse
 - Scratchpad: set geometry for scratchpad windows(optional)
-- Use Poetry
