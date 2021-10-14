@@ -226,7 +226,7 @@ class conf_gen(Enum):
             negi3wm = 'dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run',
             polybar = 'pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && '
                 'ACTIVE_NETWORK_IFACE=$(ip route | grep \'^default\' | awk \'{print $5}\' | head -n1) '
-                'polybar -q -c ${XDG_CONFIG_HOME}/polybar/main main'
+                'polybar -q main'
         ),
         once = {
             'dbus-env' : 'hash dbus-update-activation-environment 2>/dev/null && '
