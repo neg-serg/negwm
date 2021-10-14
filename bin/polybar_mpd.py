@@ -34,6 +34,12 @@ class polybar_mpd():
     addr = '::1'
     port = '6600'
     buf_size = 2048
+    fg = '%{F#ffCFCFDB}'
+    hi_color = '%{F#395573}'
+    wave = '%{T4} %{T-}'
+    fg_end = "%{F-}"
+    time_color = '%{F#ffCFCFDB}'
+    delim = '%{F#657491}―%{F}'
 
     def __init__(self):
         self.loop = asyncio.get_event_loop()
@@ -50,15 +56,14 @@ class polybar_mpd():
 
     @staticmethod
     def pretty_printing(song_data):
-        artist = '%{F#ffCFCFDB}' + song_data.get('Artist', '')
-        title = '%{F#ffCFCFDB}' + song_data.get('Title', '')
+        artist = f"{polybar_mpd.fg}{song_data.get('Artist', '')}"
+        title = f"{polybar_mpd.fg}{song_data.get('Title', '')}"
         t = song_data.get('time', '')
-        lhs = " %{F#395573}%{T4} %{T-}%{F-}"
-        delim = '%{F#395573}/%{F-}'
+        lhs = f"{polybar_mpd.hi_color} {polybar_mpd.wave}{polybar_mpd.fg_end}"
+        delim = f"{polybar_mpd.hi_color}/{polybar_mpd.fg_end}"
         if artist and title and t:
-            t_color = '#ffCFCFDB'
-            duration = f'%{{T5}}%{{F{t_color}}}{t[0].strip()}{delim}%{{F{t_color}}}{t[1].strip()}%{{T-}}\n'
-            sys.stdout.write(f'{lhs}{artist} %{{F#657491}}―%{{F}} {title} {duration}')
+            duration = f'%{{T5}}{polybar_mpd.time_color}{t[0].strip()}{delim}{polybar_mpd.time_color}{t[1].strip()}%{{T-}}\n'
+            sys.stdout.write(f'{lhs}{artist} {polybar_mpd.delim} {title} {duration}')
 
     @staticmethod
     def time_convert(n):
