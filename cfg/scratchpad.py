@@ -50,6 +50,13 @@ class scratchpad(Enum):
         spawn = 'teardrop'
     )
 
+    torrment = Δ(
+        geom = '3840x1300+0+0',
+        instance = ['torrment'],
+        keybind_default_toggle = ['Mod4+t'],
+        spawn = 'torrment'
+    )
+
     transients = Δ(
         geom = '1812x797+693+1310',
         match_all = ['True'],

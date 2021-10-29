@@ -41,6 +41,15 @@ class executor(Enum):
         statusline = 0
     )
 
+    torrment = Δ(
+        classw = 'torrment',
+        exec_tmux = [['stig', '/usr/bin/stig']],
+        font = 'Iosevka',
+        font_size = 32,
+        padding = [8, 8],
+        statusline = 0
+    )
+
     term = Δ(
         classw = 'term',
         exec_tmux = [['zsh', 'zsh']],
