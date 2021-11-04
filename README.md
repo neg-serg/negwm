@@ -309,7 +309,7 @@ with Iosevka:18 font. Another examples:
 ```python3
 teardrop = {
   'class': '[[teardrop]]',
-  'exec_tmux': [['top', '/usr/bin/bpytop']],
+  'exec_tmux': [['top', '/usr/bin/btop']],
   'font': 'Iosevka',
   'font_size': 20,
   'padding': [8, 8],
