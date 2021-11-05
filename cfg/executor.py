@@ -34,8 +34,9 @@ class executor(Enum):
 
     teardrop = Δ(
         classw = 'teardrop',
-        exec_tmux = [['top', '/usr/bin/btop']],
+        exec = '/usr/bin/btop',
         font = 'Iosevka',
+        font_normal = 'Iosevka',
         font_size = 20,
         padding = [8, 8],
         statusline = 0
