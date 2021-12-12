@@ -10,7 +10,8 @@ class executor(Enum):
         font_normal = 'Medium',
         font_size = 27,
         opacity = 0.8,
-        padding = [12, 12]
+        padding = [12, 12],
+        term = 'st'
     )
 
     neomutt = Δ(
