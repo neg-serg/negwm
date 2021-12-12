@@ -106,6 +106,9 @@ class env():
     @staticmethod
     def terminal_fallback_detect() -> str:
         """ Detect non alacritty terminal """
+        for t in ['st']:
+            if shutil.which(t):
+                return t
         print('No supported terminal installed, fail :(')
         return ''
 
@@ -172,11 +175,18 @@ class env():
             target=self.yaml_config_create, args=(custom_config,),
             daemon=True
         ).start()
-        self.term_opts = [
-            "alacritty", "--config-file",
-            expanduser(custom_config), "--class", self.wclass,
-            "-t", self.title, "-e", self.default_shell, "-i", "-c"
-        ]
+        if self.term == 'alacritty':
+            self.term_opts = [
+                "alacritty", "--config-file",
+                expanduser(custom_config), "--class", self.wclass,
+                "-t", self.title, "-e", self.default_shell, "-i", "-c"
+            ]
+        elif self.term == "st":
+            self.term_opts = ["st"] + [
+                "-c", self.wclass,
+                "-f", self.font + ":size=" + str(self.font_size),
+                "-e", self.default_shell, "-c",
+            ]
 
 
 class executor(extension, cfg):
