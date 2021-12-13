@@ -11,7 +11,6 @@ class executor(Enum):
         font_size = 27,
         opacity = 0.8,
         padding = [12, 12],
-        term = 'st'
     )
 
     neomutt = Δ(
@@ -30,7 +29,6 @@ class executor(Enum):
         font_size = 27.5,
         opacity = 0.95,
         padding = [8, 8],
-        term = 'st',
         statusline = 0
     )
 
