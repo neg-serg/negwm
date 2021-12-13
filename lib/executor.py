@@ -184,6 +184,7 @@ class env():
         elif self.term == "st":
             self.term_opts = ["st"] + [
                 "-c", self.wclass,
+                "-t", self.name,
                 "-f", self.font + ":size=" + str(self.font_size),
                 "-e", self.default_shell, "-c",
             ]
