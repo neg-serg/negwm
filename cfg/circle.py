@@ -24,7 +24,7 @@ class circle(Enum):
     )
 
     nwim = Δ(
-        instance = ['nwim'],
+        classw = ['nwim'],
         keybind_default_next = ['Mod4+1'],
         spawn = 'nwim',
         ws = 'dev'
