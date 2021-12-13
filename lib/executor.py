@@ -185,7 +185,7 @@ class env():
             self.term_opts = ["st"] + [
                 "-c", self.wclass,
                 "-t", self.name,
-                "-f", self.font + ":size=" + str(self.font_size),
+                "-f", self.font + ":size=" + str(self.font_size) + f":style={self.font_normal}",
                 "-e", self.default_shell, "-c",
             ]
 
