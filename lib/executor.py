@@ -178,7 +178,7 @@ class env():
         if self.term == 'alacritty':
             self.term_opts = [
                 "alacritty", "--config-file",
-                expanduser(custom_config), "--class", self.wclass,
+                expanduser(custom_config), "--class", f'{self.wclass},{self.wclass}',
                 "-t", self.title, "-e", self.default_shell, "-i", "-c"
             ]
         elif self.term == "st":
