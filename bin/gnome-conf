@@ -4,8 +4,8 @@ gset="gsettings set"
 [ -z $GUI_FONT ] && GUI_FONT='Iosevka 10'
 [ -z $GUI_ICONS ] && GUI_ICONS='kora'
 [ -z $GUI_GTK_THEME ] && GUI_GTK_THEME='Flat-Remix-GTK-Blue-Darkest-Solid-NoBorder'
-[ -z $GUI_CURSOR_THEME ] && GUI_CURSOR_THEME='Layan-cursors'
-[ -z $GUI_CURSOR_SIZE ] && GUI_CURSOR_SIZE='128'
+[ -z $GUI_CURSOR_THEME ] && GUI_CURSOR_THEME='Bibata-Original-Classic'
+[ -z $GUI_CURSOR_SIZE ] && GUI_CURSOR_SIZE='48'
 
 $gset org.gnome.desktop.background show-desktop-icons false
 $gset org.gnome.desktop.interface clock-show-date false
