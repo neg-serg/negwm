@@ -8,7 +8,7 @@ class executor(Enum):
         exec = 'ncmpcpp',
         font = 'Iosevka',
         font_normal = 'Medium',
-        font_size = 27,
+        font_size = 17,
         opacity = 0.8,
         padding = [12, 12],
     )
@@ -17,7 +17,7 @@ class executor(Enum):
         classw = 'neomutt',
         exec_dtach = 'neomutt',
         font = 'Iosevka',
-        font_size = 27
+        font_size = 17,
     )
 
     nwim = Δ(
@@ -26,7 +26,7 @@ class executor(Enum):
         exec_tmux = [['nvim', '/usr/bin/nvim']],
         font = 'Iosevka',
         font_normal = 'Medium',
-        font_size = 27.5,
+        font_size = 16.5,
         opacity = 0.95,
         padding = [8, 8],
         statusline = 0
@@ -37,7 +37,7 @@ class executor(Enum):
         exec = '/usr/bin/btop',
         font = 'Iosevka',
         font_normal = 'Iosevka',
-        font_size = 20,
+        font_size = 14,
         padding = [8, 8],
         statusline = 0
     )
@@ -46,7 +46,7 @@ class executor(Enum):
         classw = 'torrment',
         exec_tmux = [['stig', '/usr/bin/stig']],
         font = 'Iosevka',
-        font_size = 32,
+        font_size = 18,
         padding = [8, 8],
         statusline = 0
     )
@@ -55,7 +55,7 @@ class executor(Enum):
         classw = 'term',
         exec_tmux = [['zsh', 'zsh']],
         font = 'Iosevka',
-        font_size = 33,
+        font_size = 19,
         padding = [8, 8],
         statusline = 1
     )
