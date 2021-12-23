@@ -236,7 +236,7 @@ class conf_gen(Enum):
     theme = {
         'default_border' : 'normal',
         'default_floating_border' : 'normal',
-        'font' : 'Iosevka Bold 24',
+        'font' : 'Iosevka Bold 12',
         'hide_edge_borders' : 'both',
         'show_marks' : 'yes',
         'title_align' : 'left'
