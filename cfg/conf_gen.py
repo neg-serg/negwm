@@ -222,19 +222,14 @@ class conf_gen(Enum):
 
     startup = Δ(
         always = Δ(
-            gnome_configs = '${XDG_CONFIG_HOME}/negi3wm/bin/gnome-conf',
-            negi3wm = 'dash -c ${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run',
+            startup = 'systemctl --user start --no-block i3-session.target',
+            negi3wm = '${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run',
             polybar = 'pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && '
                 'ACTIVE_NETWORK_IFACE=$(ip route | grep \'^default\' | awk \'{print $5}\' | head -n1) '
                 'polybar -q main'
         ),
         once = {
-            'dbus-env' : 'hash dbus-update-activation-environment 2>/dev/null && '
-                'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
-            'gpaste' : '/usr/sbin/gpaste-client daemon',
-            'gsd-xsettings' : '/usr/lib/gsd-xsettings',
-            'polkit-gnome' : '/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1',
-            'xiccd' : '/usr/bin/xiccd'
+            'dbus-env' : 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
         }
    )
 
