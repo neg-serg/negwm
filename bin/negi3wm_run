@@ -1,3 +1,4 @@
+#!/usr/bin/env dash
 ENV=$HOME/.profile; export ENV
 log_dir="${HOME}/tmp"
 if [ ! -d "$log_dir" ] && [ ! -L "$log_dir" ]; then
