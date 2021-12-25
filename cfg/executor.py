@@ -26,7 +26,7 @@ class executor(Enum):
         exec_tmux = [['nvim', '/usr/bin/nvim']],
         font = 'Iosevka',
         font_normal = 'Medium',
-        font_size = 16.5,
+        font_size = 17,
         opacity = 0.95,
         padding = [8, 8],
         statusline = 0
