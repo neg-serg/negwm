@@ -221,16 +221,8 @@ class conf_gen(Enum):
     )
 
     startup = Δ(
-        always = Δ(
-            startup = 'systemctl --user start --no-block i3-session.target',
-            negi3wm = '${XDG_CONFIG_HOME}/negi3wm/bin/negi3wm_run',
-            polybar = 'pkill -x polybar; [ $(pgrep -x polybar|wc -l) -le 1 ] && '
-                'ACTIVE_NETWORK_IFACE=$(ip route | grep \'^default\' | awk \'{print $5}\' | head -n1) '
-                'polybar -q main'
-        ),
-        once = {
-            'dbus-env' : 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
-        }
+        always = Δ(startup = 'systemctl --user start --no-block i3-session.target'),
+        once = {'dbus-env' : 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK'}
    )
 
     theme = {
