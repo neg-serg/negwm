@@ -199,8 +199,15 @@ class conf_gen(Enum):
         '[class="(?i)(?:steam|lutris)"]': 'floating enable',
         '[title="(?i)(?:copying|deleting|moving)"]': 'floating enable',
         '[class="steam_app_.*"]': 'floating enable',
-        '[instance="^(gpartedbin|recoll)$"]': 'move workspace $sys, floating enable, focus'
+        '[instance="^(gpartedbin|recoll)$"]': 'move workspace $sys, floating enable, focus',
+        '[title="Firefox — Sharing Indicator"]': 'border pixel 1, sticky enable, move position 20 ppt -5 px',
     }
+
+    no_focus = [
+        '[class="zoom" instance="zoom" title="^zoom$"]',
+        '[title="Firefox — Sharing Indicator"]',
+        '[window_type="splash"]',
+    ]
 
     scratchpad = Δ(
         keymap = Δ(

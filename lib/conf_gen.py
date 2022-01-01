@@ -275,7 +275,15 @@ class conf_gen(extension, cfg):
                     ret += f'for_window {rule} {action}\n'
             return ret
 
-        return rules_scratchpad() + rules_circle() + rules()
+        def no_focus() -> str:
+            ret = ''
+            no_focus = self.cfg.get('no_focus', [])
+            if no_focus:
+                for rule in no_focus:
+                    ret += f'no_focus {rule}\n'
+            return ret
+
+        return rules_scratchpad() + rules_circle() + rules() + no_focus()
 
     @staticmethod
     def mode_start(name) -> str:
