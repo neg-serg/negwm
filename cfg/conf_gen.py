@@ -228,10 +228,14 @@ class conf_gen(Enum):
     )
 
     startup = Δ(
+        always = Δ(
+            negi3wm = 'systemctl --user restart --no-block negi3wm.service',
+        ),
         once = Δ(
             dbus_env = 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
-            startup = 'systemctl --user start --no-block i3-session.target'),
-        )
+            startup = 'systemctl --user start --no-block i3-session.target'
+        ),
+    )
 
     theme = {
         'default_border' : 'normal',
