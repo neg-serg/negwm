@@ -78,12 +78,6 @@ class env():
         self.tmux_session_attach = f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = f"tmux -S {self.sockpath} new-session -s {name}"
         self.exec = cfg_block.get("exec", '')
-        env_list = cfg_block.get("env", '')
-        self.env_dict = {**os.environ}
-        for env_str in env_list:
-            env_data = env_str.split('=')
-            if len(env_data) > 1:
-                self.env_dict.update({env_data[0]: ' '.join(env_data[1:])})
         self.exec_tmux = cfg_block.get("exec_tmux", [])
         self.with_tmux = bool(self.exec_tmux)
         if not self.with_tmux:
@@ -207,7 +201,7 @@ class executor(extension, cfg):
             "run": self.run,
             "reload": self.reload_config,
         }
-        self.i3 = i3
+        self.i3ipc = i3
         self.env = None
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
@@ -230,11 +224,8 @@ class executor(extension, cfg):
 
     def attach_to_session(self) -> None:
         """ Run tmux to attach to given socket. """
-        subprocess.Popen(
-            self.env.term_opts +
-            [f"{self.env.tmux_session_attach}"],
-            env=self.env.env_dict
-        )
+        cmd = f"exec \"{' '.join(self.env.term_opts)} \'{self.env.tmux_session_attach}\'\""
+        self.i3ipc.command(cmd)
 
     def create_new_session(self) -> None:
         """ Run tmux to create the new session on given socket. """
@@ -246,12 +237,9 @@ class executor(extension, cfg):
                 exec_cmd += f'neww -n {token[0]} {token[1]}\\; '
         if not self.env.statusline:
             exec_cmd += 'set status off\\; '
-        subprocess.Popen(
-            self.env.term_opts +
-            [f"{self.env.tmux_new_session} {exec_cmd} && \
-                {self.env.tmux_session_attach}"],
-            env=self.env.env_dict
-        )
+        cmd = f"exec \"{' '.join(self.env.term_opts)} \'{self.env.tmux_new_session} " + \
+            f"{exec_cmd} && {self.env.tmux_session_attach}\'\""
+        self.i3ipc.command(cmd)
 
     def run(self, name: str) -> None:
         """ Entry point, run application with Tmux on dedicated socket(in most
@@ -261,12 +249,10 @@ class executor(extension, cfg):
         if self.env.with_tmux:
             if self.env.name in self.detect_session_bind(
                     self.env.sockpath, self.env.name):
-                if not self.i3.get_tree().find_classed(self.env.wclass):
+                if not self.i3ipc.get_tree().find_classed(self.env.wclass):
                     self.attach_to_session()
             else:
                 self.create_new_session()
         else:
-            subprocess.Popen(
-                self.env.term_opts + [self.env.prog],
-                env=self.env.env_dict
-            )
+            cmd = f"exec \"{' '.join(self.env.term_opts)} {self.env.prog}\""
+            self.i3ipc.command(cmd)

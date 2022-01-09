@@ -22,8 +22,7 @@ class executor(Enum):
 
     nwim = Δ(
         classw = 'nwim',
-        env = ['NVIM_LISTEN_ADDRESS=/tmp/nvimsocket'],
-        exec_tmux = [['nvim', '/usr/bin/nvim']],
+        exec_tmux = [['nvim', '/usr/bin/nvim --listen /tmp/nvimsocket']],
         font = 'Iosevka',
         font_normal = 'Medium',
         font_size = 17,
