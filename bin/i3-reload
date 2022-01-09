@@ -1,3 +1,4 @@
+#!/usr/bin/env dash
 make -C ~/.config/negi3wm/
 ENV=$HOME/.profile; export ENV
 i3-msg reload
