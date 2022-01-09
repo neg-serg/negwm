@@ -35,14 +35,14 @@ class conf_gen(Enum):
         'no_startup_id': {
             'Mod1+grave': 'rofi -show run -show-icons -disable-history -theme neg',
             'Mod4+8': 'playerctl volume 0.0 || amixer -q set Master 0 mute',
-            'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-reload',
+            'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-full-reload',
             'Mod4+c': '~/bin/clip',
             'Mod4+g': '~/bin/g',
             'Mod4+p': '~/bin/rofi-tmux-urls',
             'Mod4+Shift+6': '~/bin/wl',
             'Mod4+Shift+8': 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
             'Mod4+Shift+9': 'dunstctl history-pop',
-            'Mod4+Shift+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-restart',
+            'Mod4+Shift+apostrophe': 'i3-msg restart',
             'Mod4+Shift+i': '~/bin/rofi-nm',
             'Mod4+Shift+l': '~/bin/rofi-lutris',
             'Mod4+Shift+m': '~/bin/rofi-audio',
@@ -228,9 +228,10 @@ class conf_gen(Enum):
     )
 
     startup = Δ(
-        always = Δ(startup = 'systemctl --user start --no-block i3-session.target'),
-        once = {'dbus-env' : 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK'}
-   )
+        once = Δ(
+            dbus_env = 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
+            startup = 'systemctl --user start --no-block i3-session.target'),
+        )
 
     theme = {
         'default_border' : 'normal',

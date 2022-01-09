@@ -1,0 +1,6 @@
+ENV=$HOME/.profile; export ENV
+cp -vn /etc/i3/config $XDG_CONFIG_HOME/i3/config
+make -C $XDG_CONFIG_HOME/negi3wm/
+i3-msg reload
+pkill negi3wm.py
+$XDG_CONFIG_HOME/negi3wm/negi3wm.py

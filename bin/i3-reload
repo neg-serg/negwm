@@ -1,8 +1,0 @@
-#!/usr/bin/env dash
-make -C ~/.config/negi3wm/
-ENV=$HOME/.profile; export ENV
-i3-msg reload
-pkill negi3wm.py
-systemd-cat --identifier=negi3wm $XDG_CONFIG_HOME/negi3wm/negi3wm.py
-sleep 1s
-$XDG_CONFIG_HOME/negi3wm/bin/send conf_gen dump
