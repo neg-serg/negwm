@@ -59,10 +59,6 @@ class negi3wm():
         if self.tracemalloc_enabled:
             tracemalloc.start()
 
-        self.first_run = False
-        if cmd_args["--start"]:
-            self.first_run = True
-
         if not (cmd_args['--debug'] or self.tracemalloc_enabled):
             def loop_exit(signame):
                 print(f"Got signal {signame}: exit")
@@ -133,13 +129,6 @@ class negi3wm():
         if self.show_load_time:
             self.echo(loading_time_msg)
 
-    def autostart(self):
-        """ Autostart auto negi3wm initialization """
-        if self.first_run:
-            circle = self.mods.get('circle')
-            if circle is not None:
-                circle.bindings['next']('term')
-
     async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
             watcher: watcher for cfg. """
@@ -189,7 +178,6 @@ class negi3wm():
         start((mainloop).start)
 
         try:
-            self.autostart()
             self.i3.main()
         except KeyboardInterrupt:
             self.i3.main_quit()
