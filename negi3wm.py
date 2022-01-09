@@ -15,7 +15,7 @@ Options:
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
 github :: https://github.com/neg-serg?tab=repositories
-year :: 2021
+year :: 2022
 """
 
 import asyncio
