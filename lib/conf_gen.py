@@ -216,12 +216,9 @@ class conf_gen(extension, cfg):
             (ret, cmd_dict, scratchpad) = rules_mod('scratchpad')
             ret += '\n'
             for tag in cmd_dict:
-                if tag in {'transients'}:
-                    geom = getattr(scratchpad, 'nsgeom').get_geom(tag)
-                    ret += f'for_window $scratchpad-{tag}' + \
-                        f' move scratchpad, {geom}\n'
-                else:
-                    ret += f'for_window $scratchpad-{tag} floating enable\n'
+                geom = getattr(scratchpad, 'nsgeom').get_geom(tag)
+                ret += f'for_window $scratchpad-{tag}' + \
+                    f' move scratchpad, {geom}\n'
             return ret
 
         def rules_circle() -> str:
