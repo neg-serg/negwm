@@ -137,7 +137,7 @@ class env():
                     conf["font"]["bold"]["style"] = self.font_bold
                     conf["font"]["italic"]["style"] = self.font_italic
                     conf["font"]["size"] = self.font_size
-                    conf["background_opacity"] = self.opacity
+                    conf["window"]["opacity"] = self.opacity
                     conf["window"]["padding"]['x'] = int(self.padding[0])
                     conf["window"]["padding"]['y'] = int(self.padding[1])
             except yaml.YAMLError as yamlerror:
@@ -202,9 +202,8 @@ class executor(extension, cfg):
             "reload": self.reload_config,
         }
         self.i3ipc = i3
-        self.env = None
 
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
+    def __exit__(self) -> None:
         self.envs.clear()
 
     @staticmethod
