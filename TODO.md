@@ -6,6 +6,7 @@
 - Better config generator(fancy output, etc)
 - Create wallpaper setter with rating
 - Dynamic workspaces with circle integration
+- Executor: add kitty support
 - github.com/bakkeby/patches/wiki/riodraw
 - github.com/i3/i3/issues/1210
 - Move tmux status to polybar 
