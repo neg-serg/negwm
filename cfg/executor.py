@@ -22,13 +22,12 @@ class executor(Enum):
 
     nwim = Δ(
         classw = 'nwim',
-        exec_tmux = [['nvim', '/usr/bin/nvim --listen /tmp/nvimsocket']],
+        exec = 'nvim /usr/bin/nvim --listen /tmp/nvimsocket',
         font = 'Iosevka',
         font_normal = 'Medium',
         font_size = 17,
         opacity = 0.95,
         padding = [8, 8],
-        statusline = 0
     )
 
     teardrop = Δ(
