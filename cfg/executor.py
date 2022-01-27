@@ -22,7 +22,7 @@ class executor(Enum):
 
     nwim = Δ(
         classw = 'nwim',
-        exec = 'nvim /usr/bin/nvim --listen /tmp/nvimsocket',
+        exec = '/usr/bin/nvim --listen localhost:7777',
         font = 'Iosevka',
         font_normal = 'Medium',
         font_size = 17,

@@ -25,6 +25,7 @@ class env():
     config: manager to autosave/autoload configutation with inotify """
     def __init__(self, name: str, config) -> None:
         self.name = name
+        self.shell = 'dash'
         cache_dir = Misc.i3path() + '/cache'
         Misc.create_dir(cache_dir)
         tmux_socket_dir = expanduser(f'{cache_dir}/tmux_sockets')
@@ -39,10 +40,6 @@ class env():
         Misc.create_dir(self.alacritty_cfg_dir)
         Misc.create_dir(dtach_session_dir)
         self.sockpath = expanduser(f'{tmux_socket_dir}/{name}.socket')
-        for sh in ['dash', 'zsh', 'bash', 'sh']:
-            if shutil.which(sh):
-                self.default_shell = sh
-                break
         cfg_block = config.get(name, {})
         if not cfg_block:
             return
@@ -173,14 +170,14 @@ class env():
             self.term_opts = [
                 "alacritty", "--config-file",
                 expanduser(custom_config), "--class", f'{self.wclass},{self.wclass}',
-                "-t", self.title, "-e", self.default_shell, "-i", "-c"
+                "-t", self.title, "-e"
             ]
         elif self.term == "st":
             self.term_opts = ["st"] + [
                 "-c", self.wclass,
                 "-t", self.name,
                 "-f", self.font + ":size=" + str(self.font_size) + f":style={self.font_normal}",
-                "-e", self.default_shell, "-c",
+                "-e"
             ]
 
 
@@ -223,7 +220,9 @@ class executor(extension, cfg):
 
     def attach_to_session(self) -> None:
         """ Run tmux to attach to given socket. """
-        cmd = f"exec \"{' '.join(self.env.term_opts)} \'{self.env.tmux_session_attach}\'\""
+        cmd = f"exec \"{' '.join(self.env.term_opts)}" \
+            f" {self.env.shell} -i -c" \
+            f" \'{self.env.tmux_session_attach}\'\""
         self.i3ipc.command(cmd)
 
     def create_new_session(self) -> None:
@@ -236,8 +235,10 @@ class executor(extension, cfg):
                 exec_cmd += f'neww -n {token[0]} {token[1]}\\; '
         if not self.env.statusline:
             exec_cmd += 'set status off\\; '
-        cmd = f"exec \"{' '.join(self.env.term_opts)} \'{self.env.tmux_new_session} " + \
-            f"{exec_cmd} && {self.env.tmux_session_attach}\'\""
+        cmd = f"exec \"{' '.join(self.env.term_opts)}" + \
+            f" {self.env.shell} -i -c" \
+            f" \'{self.env.tmux_new_session}" + \
+            f" {exec_cmd} && {self.env.tmux_session_attach}\'\""
         self.i3ipc.command(cmd)
 
     def run(self, name: str) -> None:
