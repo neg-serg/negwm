@@ -35,7 +35,7 @@ class conf_gen(Enum):
         'no_startup_id': {
             'Mod1+grave': 'rofi -show run -show-icons -disable-history -theme neg',
             'Mod4+8': 'playerctl volume 0.0 || amixer -q set Master 0 mute',
-            'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negi3wm/bin/i3-full-reload',
+            'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negwm/bin/i3-full-reload',
             'Mod4+c': '~/bin/clip',
             'Mod4+g': '~/bin/g',
             'Mod4+p': '~/bin/rofi-tmux-urls',
@@ -229,7 +229,7 @@ class conf_gen(Enum):
 
     startup = Δ(
         always = Δ(
-            negi3wm = 'systemctl --user restart --no-block negi3wm.service',
+            negwm = 'systemctl --user restart --no-block negwm.service',
         ),
         once = Δ(
             dbus_env = 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
@@ -248,7 +248,7 @@ class conf_gen(Enum):
 
     set_vars = Δ(
         exit = 'mode \\"default\\"',
-        i3 = '${XDG_CONFIG_HOME}/negi3wm'
+        i3 = '${XDG_CONFIG_HOME}/negwm'
     )
 
     vol = Δ(

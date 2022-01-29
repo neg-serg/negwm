@@ -1,11 +1,11 @@
 #!/usr/bin/python3
-""" negi3wm daemon script.
-This module loads all negi3wm an start it via main's manager mailoop. Inotify-based watchers for all negi3wm S-expression-based
+""" negwm daemon script.
+This module loads all negwm an start it via main's manager mailoop. Inotify-based watchers for all negwm S-expression-based
 configuration spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running
 several times.
 
 Usage:
-    ./negi3wm.py [--debug|--tracemalloc|--start]
+    ./negwm.py [--debug|--tracemalloc|--start]
 
 Options:
     --debug         disables signal handlers for debug.
@@ -43,7 +43,7 @@ from lib.misc import Misc
 from lib.msgbroker import MsgBroker
 
 
-class negi3wm():
+class negwm():
     def __init__(self, cmd_args):
         """ Init function
 
@@ -99,7 +99,7 @@ class negi3wm():
     def kill_proctree(pid, including_parent=True):
         parent = psutil.Process(pid)
         for child in parent.children(recursive=True):
-            if child.name() == 'negi3wm.py':
+            if child.name() == 'negwm.py':
                 child.kill()
                 print(f'killed {child}')
         if including_parent:
@@ -157,7 +157,7 @@ class negi3wm():
         self.loop.create_task(self.cfg_mods_worker())
 
     def run(self):
-        """ Run negi3wm here. """
+        """ Run negwm here. """
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
                 func (callable): callable routine to run.
@@ -184,15 +184,15 @@ class negi3wm():
 
 
 def cleanup():
-    negi3wm.kill_proctree(os.getpid())
+    negwm.kill_proctree(os.getpid())
 
 def main():
-    """ Run negi3wm from here """
+    """ Run negwm from here """
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
     cmd_args = docopt(__doc__, version='0.9')
-    wm = negi3wm(cmd_args)
+    wm = negwm(cmd_args)
     wm.run()
     if wm.tracemalloc_enabled:
         snapshot = tracemalloc.take_snapshot()

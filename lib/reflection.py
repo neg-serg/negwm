@@ -1,4 +1,4 @@
-""" Static functions for negi3wm reflection """
+""" Static functions for negwm reflection """
 from typing import Dict
 from lib.msgbroker import MsgBroker
 

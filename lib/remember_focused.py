@@ -19,7 +19,7 @@ class remember_focused(extension, cfg):
             i3ipc: i3ipc connection """
         extension.__init__(self)
         cfg.__init__(self, i3ipc) # Initialize cfg.
-        self.i3ipc = i3ipc # i3ipc connection, bypassed by negi3wm runner
+        self.i3ipc = i3ipc # i3ipc connection, bypassed by negwm runner
         # previous / current window list
         self.focus_history = [] # depth of history list
         self.max_remember_focused = 4 # workspaces with auto alt-tab when close

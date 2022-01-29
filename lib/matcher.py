@@ -16,7 +16,7 @@ class Matcher():
         - by name regex
     Of course this list can by expanded. It uses sys.intern hack for better
     performance and simple caching. One of the most resource intensive part of
-    negi3wm. """
+    negwm. """
     factors = [
         sys.intern("classw"),
         sys.intern("instance"),

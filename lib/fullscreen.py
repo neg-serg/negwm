@@ -8,7 +8,7 @@ from cfg import cfg
 
 class fullscreen(extension, cfg):
     def __init__(self, i3conn):
-        # i3ipc connection, bypassed by negi3wm runner
+        # i3ipc connection, bypassed by negwm runner
         self.i3ipc = i3conn
         self.panel_should_be_restored = False
         cfg.__init__(self, i3conn) # Initialize modcfg.

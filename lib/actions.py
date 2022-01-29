@@ -22,7 +22,7 @@ class actions(extension, cfg):
         i3: i3ipc connection """
         # Initialize cfg.
         cfg.__init__(self, i3)
-        # i3ipc connection, bypassed by negi3wm runner.
+        # i3ipc connection, bypassed by negwm runner.
         self.i3ipc = i3
         self.i3ipc.on("window::focus", self.auto_tiling)
         maxlength = self.conf("cache_list_size") # cache list length

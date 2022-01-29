@@ -18,7 +18,7 @@
   - [actions](#win-action)
   - [executor](#executor)
   - [fs](#fs)
-  - [procs to run by negi3wm as another process](#procs-to-run-by-negi3wm-as-another-process)
+  - [procs to run by negwm as another process](#procs-to-run-by-negwm-as-another-process)
 - [Installation](#installation)
 - [Dependencies:](#dependencies-)
   - [Modern python3 with modules:](#modern-python3-with-modules-)
@@ -35,29 +35,29 @@ For now this collection of modules for i3 includes
 
 # main
 
-_negi3wm_ : application that run all modules and handle configuration of
+_negwm_ : application that run all modules and handle configuration of
 i3 and modules on python. Also handles config updating.
 
 Some general notes:
 
-`negi3wm` works as a server and `send` is a client. To look at the last
+`negwm` works as a server and `send` is a client. To look at the last
 actual list of command for modules you can look at `self.bindings` of some
 module. Most of them supports dynamic reloading of configs as you
 save the file, so there is no need to manually reload them. Anyway you can
-reload negi3wm manually:
+reload negwm manually:
 
-At first you need to add something in negi3wm_run and add it to config:
+At first you need to add something in negwm_run and add it to config:
 
 ```cfg
-exec_always ~/.config/negi3wm/negi3wm_run &
+exec_always ~/.config/negwm/negwm_run &
 ```
 
-To restart negi3wm after i3 reload, `negi3wm.py` should close file
+To restart negwm after i3 reload, `negwm.py` should close file
 descriptor automatically, after i3 reload/restart so you can simply run it
 after restart.
 
 ```bash
-make -C ${XDG_CONFIG_HOME}/negi3wm/ &
+make -C ${XDG_CONFIG_HOME}/negwm/ &
 ```
 
 To recompile `send` client.
@@ -345,12 +345,12 @@ Please look for config examples at [my dotfiles](https://github.com/neg-serg/dot
 
 Fullscreen panel hacking.
 
-## procs to run by negi3wm as another process
+## procs to run by negwm as another process
 
-~~There are processes, not threads, separated from the main negi3wm event
+~~There are processes, not threads, separated from the main negwm event
 loop to reach better performance or another goals.~~
 
-For now there are no any processes started by negi3wm. I've considered that
+For now there are no any processes started by negwm. I've considered that
 this scheme of loading can cause various race condictions and another stability
 issues.
 
@@ -361,7 +361,7 @@ To use ws please add to polybar config something like this:
 ```config
 [module/ws]
 type = custom/script
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/negi3wm python -u -m bin.polybar_ws 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/negwm python -u -m bin.polybar_ws 2> /dev/null
 exec-if = sleep 1
 format-background = ${color.mgf}
 format = <label>
@@ -381,7 +381,7 @@ To use fast mpd volume notification module use this:
 type = custom/script
 interval = 0
 format-background = ${color.mgf}
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/negi3wm python -u -m proc.polybar_vol 2> /dev/null
+exec = PYTHONPATH=${XDG_CONFIG_HOME}/negwm python -u -m proc.polybar_vol 2> /dev/null
 exec-if = sleep 1
 tail = true
 ```
@@ -397,7 +397,7 @@ _polybar_vol_ : async MPD printer for polybar.
 
 # Installation
 
-Negi3wm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`,
+Negwm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`,
 so you need to set up your `$XDG_CONFIG_HOME` variable before install, via
 `/etc/profile`, some kind of `.zshenv` or smth else depending or your
 environment, it is mandatory to install.
@@ -409,19 +409,19 @@ reasons.
 The most simple way to install it for now is to use install.sh from repo:
 
 ```
-curl https://raw.githubusercontent.com/neg-serg/negi3wm/master/bin/install.sh | sh
+curl https://raw.githubusercontent.com/neg-serg/negwm/master/bin/install.sh | sh
 ```
 
 After install check it via smth like:
 
 ```
-cd $XDG_CONFIG_HOME/negi3wm
-./bin/negi3wm_run
+cd $XDG_CONFIG_HOME/negwm
+./bin/negwm_run
 ```
 
 If everything is ok then you can use new i3 config example, where `Mod4
 
-- Shift + '`is i3wm reloading, after reload you should get i3 with`negi3wm`
+- Shift + '`is i3wm reloading, after reload you should get i3 with`negwm`
   plugins on the board.
 
 # Run
@@ -429,20 +429,20 @@ If everything is ok then you can use new i3 config example, where `Mod4
 Install it to i3 config directory:
 
 ```sh
-git clone https://github.com/neg-serg/negi3wm ~/.config/negi3wm
+git clone https://github.com/neg-serg/negwm ~/.config/negwm
 ```
 
-negi3wm help:
+negwm help:
 
 ```man
-i3 negi3wm daemon script.
+i3 negwm daemon script.
 
-This module loads all negi3wm an start it via main's manager mailoop. Inotify-based watchers for all negi3wm S-expression-based
+This module loads all negwm an start it via main's manager mailoop. Inotify-based watchers for all negwm S-expression-based
 configuration spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running
 several times.
 
 Usage:
-    ./negi3wm.py [--debug|--tracemalloc|--start]
+    ./negwm.py [--debug|--tracemalloc|--start]
 
 Options:
     --debug         disables signal handlers for debug.
@@ -454,8 +454,8 @@ Options:
 To start daemon you need:
 
 ```bash
-cd ${XDG_CONFIG_HOME}/negi3wm
-./bin/negi3wm_run
+cd ${XDG_CONFIG_HOME}/negwm
+./bin/negwm_run
 ```
 
 # Why

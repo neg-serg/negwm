@@ -21,7 +21,7 @@ class checker():
     def check_for_executable_deps(verbose):
         dependencies = {
             'mandatory' : {
-                'i3': 'you need i3 for negi3wm',
+                'i3': 'you need i3 for negwm',
                 'dash': 'one of the fastest non-interactive shells',
             },
             'recommended' : {
@@ -53,7 +53,7 @@ class checker():
         else:
             xdg_config_home = os.getenv('XDG_CONFIG_HOME')
             if xdg_config_home:
-                i3_path = xdg_config_home + '/negi3wm/'
+                i3_path = xdg_config_home + '/negwm/'
                 make_result = subprocess.run(['make', '-C', i3_path],
                     check=False,
                     capture_output=True

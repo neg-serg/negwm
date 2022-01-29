@@ -34,7 +34,7 @@ class circle(sub, extension, cfg, Matcher):
         self.initialize(i3)
 
     def initialize(self, i3):
-        self.i3ipc = i3 # i3ipc connection, bypassed by negi3wm runner.
+        self.i3ipc = i3 # i3ipc connection, bypassed by negwm runner.
         self.tagged = {} # Map of tag to the tagged windows.
         self.current_position = {} # Current_position for the tag [tag]
         # List of windows which fullscreen state need to be restored.

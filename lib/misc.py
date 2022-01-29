@@ -28,9 +28,9 @@ class Misc():
         cfg_home = os.path.expandvars("$XDG_CONFIG_HOME")
         if cfg_home == "$XDG_CONFIG_HOME":
             cfg_home = os.path.expanduser("~/.config")
-        if not os.path.exists(f"{cfg_home}/negi3wm"):
+        if not os.path.exists(f"{cfg_home}/negwm"):
             os.makedirs(cfg_home)
-        return os.path.expanduser(f"{cfg_home}/negi3wm")
+        return os.path.expanduser(f"{cfg_home}/negwm")
 
     @staticmethod
     def echo_on(*args, **kwargs) -> None:

@@ -50,7 +50,7 @@ class scratchpad(extension, cfg, Matcher):
         # focus_win_flag is a helper to perform attach/detach window to the
         # named scratchpad with add_prop/del_prop routines
         self.focus_win_flag = [False, ""]
-        self.i3ipc = i3 # i3ipc connection, bypassed by negi3wm runner
+        self.i3ipc = i3 # i3ipc connection, bypassed by negwm runner
         self.bindings = {
             "show": self.show_scratchpad,
             "hide": self.hide_scratchpad_all_but_current,
