@@ -5,6 +5,7 @@ from . cfg import cfg
 from . extension import extension
 from . checker import checker
 
+
 class conf_gen(extension, cfg):
     def __init__(self, i3) -> None:
         super().__init__()
@@ -91,6 +92,7 @@ class conf_gen(extension, cfg):
     @staticmethod
     def scratchpad_bindings(mode) -> str:
         ret = ''
+
         def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
             pref, postfix = '', ''
@@ -111,7 +113,7 @@ class conf_gen(extension, cfg):
         if mods is None or not mods:
             return ret
         scratchpad = mods['scratchpad']
-        for tag,settings in scratchpad.cfg.items():
+        for tag, settings in scratchpad.cfg.items():
             for param in settings:
                 if isinstance(settings[param], dict):
                     for p in settings[param]:
@@ -127,6 +129,7 @@ class conf_gen(extension, cfg):
     @staticmethod
     def circle_bindings(mode) -> str:
         ret = ''
+
         def get_binds(mode, tag, settings, p, subtag='') -> str:
             ret = ''
             pref, postfix = '', ''
@@ -317,14 +320,13 @@ class conf_gen(extension, cfg):
                         ret += f'{pre} {modkey}{keymap} {post} {action}{param}{end}\n'
         return ret
 
-
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
 
         def exec_bindings() -> str:
             exec_ret = ''
             exec_ret += \
-            self.bind('media', 'exec --no-startup-id playerctl', '') + \
+                self.bind('media', 'exec --no-startup-id playerctl', '') + \
                 self.bind('vol', '$vol', '') + \
                 self.bind('menu', '$menu', '') + \
                 self.bind('scratchpad', '$scratchpad', '') + \
