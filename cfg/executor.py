@@ -4,6 +4,7 @@ from enum import Enum
 
 class executor(Enum):
     ncmpcpp = Δ(
+        term = 'kitty',
         classw = 'ncmpcpp',
         exec = 'ncmpcpp',
         font = 'Iosevka',
