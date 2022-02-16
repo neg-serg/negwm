@@ -2,6 +2,33 @@ from enum import Enum
 Δ = dict
 
 class conf_gen(Enum):
+    set_vars = Δ(
+        exit = 'mode \\"default\\"',
+        i3 = '${XDG_CONFIG_HOME}/negwm'
+    )
+
+    workspaces = Δ(
+        term = '︁ α:term',
+        web = ' β:web',
+        dev = ' δ:dev',
+        doc = ' γ:doc',
+        draw = ' ζ:draw',
+        gfx = ' ε:gfx',
+        obs = '@ ρ:obs',
+        pic = ' ξ:pic',
+        steam = ' ι:steam',
+        sys = ' η:sys',
+        vm = ' λ:vm',
+        wine = ' μ:wine'
+    )
+
+    bind_modes = Δ(
+        default = '',
+        resize = 'Mod4+r',
+        spec = 'Mod1+e',
+        wm = 'Mod4+minus'
+    )
+
     actions_wm = Δ(
         keymap = Δ(
             grow = ['Shift+plus'],
@@ -13,13 +40,6 @@ class conf_gen(Enum):
             revert_maximize = ['Shift+m', 'Shift+x', 'Shift+y'],
             shrink = ['Shift+minus']
         )
-    )
-
-    bind_modes = Δ(
-        default = '',
-        resize = 'Mod4+r',
-        spec = 'Mod1+e',
-        wm = 'Mod4+minus'
     )
 
     colors = Δ(
@@ -39,6 +59,7 @@ class conf_gen(Enum):
             'Mod4+c': '~/bin/clip',
             'Mod4+g': '~/bin/g',
             'Mod4+p': '~/bin/rofi-tmux-urls',
+            'Mod4+m': '~/bin/music-rename current',
             'Mod4+Shift+6': '~/bin/wl',
             'Mod4+Shift+8': 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
             'Mod4+Shift+9': 'dunstctl history-pop',
@@ -246,29 +267,9 @@ class conf_gen(Enum):
         'title_align' : 'left'
     }
 
-    set_vars = Δ(
-        exit = 'mode \\"default\\"',
-        i3 = '${XDG_CONFIG_HOME}/negwm'
-    )
-
     vol = Δ(
         keymap = Δ(
             d = ['XF86AudioLowerVolume'],
             u = ['XF86AudioRaiseVolume']
         )
-    )
-
-    workspaces = Δ(
-        term = '︁ α:term',
-        web = ' β:web',
-        dev = ' δ:dev',
-        doc = ' γ:doc',
-        draw = ' ζ:draw',
-        gfx = ' ε:gfx',
-        obs = '@ ρ:obs',
-        pic = ' ξ:pic',
-        steam = ' ι:steam',
-        sys = ' η:sys',
-        vm = ' λ:vm',
-        wine = ' μ:wine'
     )
