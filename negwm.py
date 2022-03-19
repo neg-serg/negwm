@@ -191,7 +191,7 @@ def main():
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
-    cmd_args = docopt(__doc__, version='0.9')
+    cmd_args = docopt(str(__doc__), version='0.9')
     wm = negwm(cmd_args)
     wm.run()
     if wm.tracemalloc_enabled:
