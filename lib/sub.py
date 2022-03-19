@@ -1,4 +1,5 @@
 from multiprocessing import Process
+import logging
 import zmq
 
 class sub():
@@ -16,9 +17,9 @@ class sub():
             zmq.SUBSCRIBE, self.topic.encode('utf-8')
         )
         try:
-            print(f'Begin to listen for {self.topic}')
+            logging.info(f'Begin to listen for {self.topic}')
             while True:
                 topic, msg = zmq_socket.recv_multipart()
-                print(f"Topic {topic.decode('utf-8')}, msg {msg.decode('utf-8')}")
+                logging.info(f"Topic {topic.decode('utf-8')}, msg {msg.decode('utf-8')}")
         except KeyboardInterrupt:
             pass

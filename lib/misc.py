@@ -6,6 +6,7 @@ import errno
 import functools
 import operator
 import re
+import logging
 from typing import List
 
 
@@ -35,7 +36,7 @@ class Misc():
     @staticmethod
     def echo_on(*args, **kwargs) -> None:
         """ Print info """
-        print(*args, **kwargs)
+        logging.info(*args, **kwargs)
 
     @staticmethod
     def echo_off(*_dummy_args, **_dummy_kwargs) -> None:
@@ -44,7 +45,7 @@ class Misc():
 
     @staticmethod
     def print_run_exception_info(proc_err) -> None:
-        print(f'returncode={proc_err.returncode}, \
+        logging.info(f'returncode={proc_err.returncode}, \
                 cmd={proc_err.cmd}, \
                 output={proc_err.output}')
 
@@ -101,7 +102,7 @@ class Misc():
             Misc.print_run_exception_info(proc_err)
         if check_config:
             error_data = check_config.encode('utf-8')
-            print(error_data)
+            logging.error(error_data)
             if remove:
                 os.remove(conf_gen_path)  # remove invalid config
             return False

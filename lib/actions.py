@@ -9,6 +9,7 @@ to you, miseran(https://github.com/miseran)
 import collections
 import sys
 from typing import Mapping
+import logging
 
 from . display import Display
 from . cfg import cfg
@@ -210,7 +211,7 @@ class actions(extension, cfg):
         try:
             mode = int(mode)
         except TypeError:
-            print("cannot convert mode={mode} to int")
+            logging.error("cannot convert mode={mode} to int")
             return
         curr_scr = self.current_resolution
         self.current_win = self.i3ipc.get_tree().find_focused()
@@ -376,7 +377,7 @@ class actions(extension, cfg):
             try:
                 amount = int(amount)
             except ValueError:
-                print("Bad resize amount given.")
+                logging.error("Bad resize amount given.")
                 return
         node = self.i3ipc.get_tree().find_focused()
         single, vertical = True, False
@@ -594,4 +595,4 @@ class actions(extension, cfg):
                     if new_layout != con.parent.layout:
                         self.i3ipc.command(new_layout)
         except Exception as exception:
-            print(f'Error: {exception}', file=sys.stderr)
+            logging.error(f'Error: {exception}')

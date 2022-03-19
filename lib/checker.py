@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import logging
 from lib.misc import Misc
 
 class checker():
@@ -9,12 +10,12 @@ class checker():
         path = shutil.which(exe)
         if path:
             if verbose:
-                print(f'{exe}: {shutil.which(exe)} [{kind}] [OK]')
+                logging.info(f'{exe}: {shutil.which(exe)} [{kind}] [OK]')
         else:
-            print(f'{exe}: {exe} not found [{kind}] [FAIL]\n'
+            logging.error(f'{exe}: {exe} not found [{kind}] [FAIL]\n'
                     f'You need it for {description}')
             if kind == 'mandatory':
-                print('You cannot run without mandatory dependencies')
+                logging.error('You cannot run without mandatory dependencies')
                 os._exit(1)
 
     @staticmethod
@@ -37,7 +38,7 @@ class checker():
         }
 
         if verbose:
-            print('Check for executables')
+            logging.info('Check for executables')
         for kind, value in dependencies.items():
             for exe, description in value.items():
                 checker.which(exe, description, kind, verbose)
@@ -45,11 +46,11 @@ class checker():
     @staticmethod
     def check_for_send(verbose):
         if verbose:
-            print('Check for send executable and build it if needed')
+            logging.info('Check for send executable and build it if needed')
         send_path = shutil.which('bin/send')
         if send_path is not None:
             if verbose:
-                print(f'send binary {send_path} [OK]')
+                logging.info(f'send binary {send_path} [OK]')
         else:
             xdg_config_home = os.getenv('XDG_CONFIG_HOME')
             if xdg_config_home:
@@ -59,26 +60,26 @@ class checker():
                     capture_output=True
                 )
                 if make_result.returncode == 0:
-                    print('send build is successful')
+                    logging.info('send build is successful')
                 else:
-                    print('Please try to run `make` manually and check the results')
+                    logging.error('Please try to run `make` manually and check the results')
 
     @staticmethod
     def check_i3_config(verbose, cfg='config'):
         if verbose:
-            print('Check for i3 config consistency')
+            logging.info('Check for i3 config consistency')
         i3_cfg = f'{os.environ["XDG_CONFIG_HOME"]}/i3/{cfg}'
         if not (os.path.isfile(i3_cfg) and \
                 os.path.getsize(i3_cfg) > 0):
-            print(f'There is no target i3 config file in {i3_cfg}, fail')
+            logging.error(f'There is no target i3 config file in {i3_cfg}, fail')
             os._exit(1)
 
         i3_check = Misc.validate_i3_config(i3_cfg)
         if i3_check:
             if verbose:
-                print('i3 config is valid [OK]')
+                logging.info('i3 config is valid [OK]')
         else:
-            print('i3 config is invalid [FAIL]'
+            logging.error('i3 config is invalid [FAIL]'
                 f'please run i3 -C {Misc.i3path()}/{cfg} to check it'
             )
             os._exit(1)
@@ -87,19 +88,19 @@ class checker():
     @staticmethod
     def check_env(verbose):
         if verbose:
-            print('Check for environment')
+            logging.info('Check for environment')
         xdg_config_home = os.getenv('XDG_CONFIG_HOME')
         if xdg_config_home:
             if verbose:
-                print(f'XDG_CONFIG_HOME = {xdg_config_home}')
+                logging.info(f'XDG_CONFIG_HOME = {xdg_config_home}')
         else:
             user = os.getenv('USER')
             if user:
-                print('XDG_CONFIG_HOME is unset, '
+                logging.error('XDG_CONFIG_HOME is unset, '
                     'you should set it via some kind of '
                     '.zshenv or /etc/profile')
             else:
-                print('You should have some $USER env to run')
+                logging.error('You should have some $USER env to run')
                 os._exit(1)
 
     @staticmethod

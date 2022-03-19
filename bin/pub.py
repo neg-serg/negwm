@@ -2,6 +2,7 @@
 
 import zmq
 import sys
+import logging
 from multiprocessing import Process
 
 class pub():
@@ -19,7 +20,7 @@ class pub():
         zmq_socket.bind(bind_to)
         try:
             msg_body = str(f"{topic} {cmd} {target}").encode('utf-8')
-            print(f'Topic: {topic} msg:{msg_body}')
+            logging.info(f'Topic: {topic} msg:{msg_body}')
             zmq_socket.send_multipart([topic.encode('utf-8'), msg_body])
         except KeyboardInterrupt:
             pass

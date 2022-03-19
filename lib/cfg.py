@@ -8,6 +8,7 @@ pretty simple API. I've considered that inheritance here is good idea.
 import sys
 import pickle
 import traceback
+import logging
 from typing import Set, Callable, Any
 from lib.misc import Misc
 
@@ -73,9 +74,9 @@ class cfg():
         try:
             self.load_config()
             self.__init__(self.i3ipc)
-            print(f"[{self.mod}] config reloaded")
+            logging.info(f"[{self.mod}] config reloaded")
         except Exception:
-            print(f"[{self.mod}] config reload failed")
+            logging.info(f"[{self.mod}] config reload failed")
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
             self.__init__(*_)
@@ -110,7 +111,7 @@ class cfg():
             with open(self.i3_cfg_mod_path, "rb") as mod_cfg:
                 self.cfg = pickle.load(mod_cfg)
         except FileNotFoundError:
-            print(f'file {self.i3_cfg_mod_path} not exists')
+            logging.error(f'file {self.i3_cfg_mod_path} not exists')
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """

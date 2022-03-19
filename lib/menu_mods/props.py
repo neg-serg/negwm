@@ -1,6 +1,7 @@
 import subprocess
 import re
 import socket
+import logging
 from typing import List
 from extension import extension
 
@@ -50,7 +51,7 @@ class props():
         if tag_name is not None and tag_name:
             extension.get_mods()[mod].add_prop(tag_name, aprop_str)
         else:
-            print(f'No tag name specified for props {aprop_str}')
+            logging.error(f'No tag name specified for props {aprop_str}')
 
     def get_mod(self) -> str:
         """ Select extension for add_prop by menu. """

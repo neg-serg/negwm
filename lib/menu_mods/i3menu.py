@@ -2,6 +2,7 @@ import sys
 import json
 import re
 import subprocess
+import logging
 
 from typing import List
 
@@ -81,7 +82,7 @@ class i3menu():
         }
         while not (ok or args == ['<end>'] or args == []):
             if debug:
-                print(f"evaluated cmd=[{cmd}] args=[{self.i3_cmd_args(cmd)}]")
+                logging.debug(f"evaluated cmd=[{cmd}] args=[{self.i3_cmd_args(cmd)}]")
             out = subprocess.run(
                 (f"{self.menu.i3cmd} " + cmd).split(),
                 stdout=subprocess.PIPE,

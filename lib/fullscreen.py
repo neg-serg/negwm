@@ -3,6 +3,7 @@ xset here. There is better solution possible, for example wayland-friendly. """
 
 import subprocess
 import shutil
+import logging
 from extension import extension
 from cfg import cfg
 
@@ -48,9 +49,9 @@ class fullscreen(extension, cfg):
         except Exception:
             xdo_path = shutil.which('xdo')
             if xdo_path:
-                print('xdo exists in {xdo_path}, but not working')
+                logging.error('xdo exists in {xdo_path}, but not working')
             else:
-                print('There is no xdo, please install')
+                logging.error('There is no xdo, please install')
         if not ret and restore is not None:
             self.panel_should_be_restored = restore
 

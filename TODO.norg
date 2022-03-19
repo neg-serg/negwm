@@ -4,7 +4,6 @@
 
 = General
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
-    - Python logging
     - Support for i3 open for tiling
     - github.com/bakkeby/patches/wiki/riodraw
     - github.com/i3/i3/issues/1210

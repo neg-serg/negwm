@@ -13,6 +13,7 @@ import threading
 import multiprocessing
 import yaml
 import yamlloader
+import logging
 
 from . extension import extension
 from . cfg import cfg
@@ -47,10 +48,10 @@ class env():
         self.term = cfg_block.get("term", "alacritty").lower()
         if os.path.exists(self.alacritty_cfg):
             if os.stat(self.alacritty_cfg).st_size == 0:
-                print('Alacritty cfg {self.alacritty_cfg} is empty')
+                logging.error('Alacritty cfg {self.alacritty_cfg} is empty')
                 self.term = env.terminal_fallback_detect()
         else:
-            print('Alacritty cfg {self.alacritty_cfg} not exists, put it here')
+            logging.error('Alacritty cfg {self.alacritty_cfg} not exists, put it here')
             self.term = env.terminal_fallback_detect()
         self.wclass = cfg_block.get("classw", self.term)
         self.title = cfg_block.get("title", self.wclass)
@@ -100,7 +101,7 @@ class env():
         for t in ['st', 'kitty']:
             if shutil.which(t):
                 return t
-        print('No supported terminal installed, fail :(')
+        logging.error('No supported terminal installed, fail :(')
         return ''
 
     def create_alacritty_cfg(self, cfg_dir, config: dict, name: str) -> str:
@@ -138,7 +139,7 @@ class env():
                     conf["window"]["padding"]['x'] = int(self.padding[0])
                     conf["window"]["padding"]['y'] = int(self.padding[1])
             except yaml.YAMLError as yamlerror:
-                print(yamlerror)
+                logging.error(yamlerror)
 
         if conf is not None and conf:
             with open(custom_config, 'w', encoding='utf8') as outfile:
@@ -153,7 +154,7 @@ class env():
                         Dumper=yamlloader.ordereddict.CDumper
                     )
                 except yaml.YAMLError as yamlerror:
-                    print(yamlerror)
+                    logging.error(yamlerror)
 
     def create_term_params(self, config: dict, name: str) -> None:
         """ This function fill self.term_opts for settings.abs

@@ -3,6 +3,7 @@
 import zmq
 import itertools
 import time
+import logging
 from multiprocessing import Process
 
 class publisher():
@@ -20,11 +21,11 @@ class publisher():
         ]
         zmq_socket = zmq.Context().socket(zmq.PUB)
         zmq_socket.bind(bind_to)
-        print(f'{all_topics}')
+        logging.info(f'{all_topics}')
         try:
             for topic in itertools.cycle(all_topics):
                 msg_body = str(f"{topic}lol").encode('utf-8')
-                print(f'Topic: {topic}, msg:{msg_body}')
+                logging.info(f'Topic: {topic}, msg:{msg_body}')
                 zmq_socket.send_multipart([topic.encode('utf-8'), msg_body])
                 time.sleep(0.1)
         except KeyboardInterrupt:

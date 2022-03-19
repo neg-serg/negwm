@@ -4,6 +4,7 @@ import importlib
 import pickle
 import glob
 import pathlib
+import logging
 sys.path.append("../cfg")
 sys.path.append("../lib")
 from misc import Misc
@@ -24,13 +25,11 @@ class Configs():
 
     def print(self):
         for mod_name, config in self.config.items():
-            print()
-            print(f'{mod_name} :: ')
+            logging.info(f'\n{mod_name} :: ')
             mod_config = {}
             for elem in config:
                 mod_config.update({elem.name: elem.value})
-            print(mod_config)
-            print()
+            logging.info(f'mod_config\n')
 
     def dump(self):
         for mod_name, raw_config in self.config.items():

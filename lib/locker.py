@@ -4,6 +4,7 @@
 
 import sys
 import socket
+import logging
 
 def get_lock(process_name: str, verbose=False) -> None:
     """
@@ -14,7 +15,7 @@ def get_lock(process_name: str, verbose=False) -> None:
     try:
         get_lock._lock_socket.bind('\0' + process_name)
         if verbose:
-            print('locking successful')
+            logging.info('locking successful')
     except socket.error:
-        print('lock exists')
+        logging.error('lock exists')
         sys.exit()

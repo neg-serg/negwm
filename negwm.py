@@ -30,6 +30,7 @@ import subprocess
 import sys
 from threading import Thread
 import timeit
+import logging
 import tracemalloc
 
 from asyncinotify import Inotify, Mask
@@ -61,7 +62,7 @@ class negwm():
 
         if not (cmd_args['--debug'] or self.tracemalloc_enabled):
             def loop_exit(signame):
-                print(f"Got signal {signame}: exit")
+                logging.info(f"Got signal {signame}: exit")
                 loop.stop()
                 cleanup()
 
@@ -101,7 +102,7 @@ class negwm():
         for child in parent.children(recursive=True):
             if child.name() == 'negwm.py':
                 child.kill()
-                print(f'killed {child}')
+                logging.info(f'killed {child}')
         if including_parent:
             parent.kill()
 
@@ -118,7 +119,7 @@ class negwm():
                 i3mod = importlib.import_module('lib.' + mod)
                 self.mods[mod] = getattr(i3mod, mod)(self.i3)
             except ModuleNotFoundError:
-                print(f'No such module as {mod}')
+                logging.error(f'No such module as {mod}')
             try:
                 self.mods[mod].asyncio_init(self.loop)
             except Exception:
@@ -198,7 +199,7 @@ def main():
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('lineno')
         for stat in top_stats[:10]:
-            print(stat)
+            logging.info(stat)
 
 if __name__ == '__main__':
     checker().check(verbose=False)
