@@ -11,7 +11,7 @@ class scratchpad(Enum):
     )
 
     im = Δ(
-        classw = ['KotatogramDesktop', 'myteam', 'Skype', 'Slack', 'TelegramDesktop', 'zoom'],
+        classw = ['KotatogramDesktop', 'vkteams', 'Skype', 'Slack', 'TelegramDesktop', 'zoom'],
         geom = '1304x2109+2536+2',
         keybind_default_toggle = ['Mod4+e'],
         tel = Δ(
