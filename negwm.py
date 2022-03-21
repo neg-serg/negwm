@@ -202,5 +202,5 @@ def main():
             logging.info(stat)
 
 if __name__ == '__main__':
-    checker().check(verbose=False)
+    checker().check()
     main()
