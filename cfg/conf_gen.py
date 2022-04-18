@@ -51,11 +51,13 @@ class conf_gen(Enum):
         urgent = ['#000000ee', '#2E2457', '#4C407C', '#32275E', '#32275E']
     )
 
+    reload = 'Mod4+apostrophe'
+    restart = 'Mod4+Shift+apostrophe'
+
     exec = {
         'no_startup_id': {
             'Mod1+grave': 'rofi -show run -show-icons -disable-history -theme neg',
             'Mod4+8': 'playerctl volume 0.0 || amixer -q set Master 0 mute',
-            'Mod4+apostrophe': 'i3-msg reload',
             'Mod4+c': '~/bin/clip',
             'Mod4+g': '~/bin/g',
             'Mod4+p': '~/bin/rofi-tmux-urls',
@@ -63,7 +65,6 @@ class conf_gen(Enum):
             'Mod4+Shift+6': '~/bin/wl',
             'Mod4+Shift+8': 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
             'Mod4+Shift+9': 'dunstctl history-pop',
-            'Mod4+Shift+apostrophe': 'i3-msg restart',
             'Mod4+Shift+i': '~/bin/rofi-nm',
             'Mod4+Shift+l': '~/bin/rofi-lutris',
             'Mod4+Shift+m': '~/bin/rofi-audio',

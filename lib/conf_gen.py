@@ -326,6 +326,14 @@ class conf_gen(extension, cfg):
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
 
+        def i3cmd_bindings() -> str:
+            i3cmd_ret = ''
+            for cmd in 'reload', 'restart':
+                bind = self.cfg.get(cmd, '')
+                if bind:
+                    i3cmd_ret += f'bindsym {bind} {cmd}\n'
+            return i3cmd_ret
+
         def exec_bindings() -> str:
             exec_ret = ''
             exec_ret += \
@@ -349,6 +357,7 @@ class conf_gen(extension, cfg):
             self.bind('misc', '', '') + \
             self.bind('focus', 'focus', '') + \
             exec_bindings() + \
+            i3cmd_bindings() + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name)
 
