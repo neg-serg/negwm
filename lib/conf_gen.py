@@ -27,7 +27,7 @@ class conf_gen(extension, cfg):
         i3_path = f'{os.environ["XDG_CONFIG_HOME"]}/i3'
         with open(f'{i3_path}/{test_cfg}', 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
-        if checker.check_i3_config(verbose=False, cfg=test_cfg):
+        if checker.check_i3_config(cfg=test_cfg):
             with open(f'{i3_path}/' + i3_cfg, 'w', encoding='utf8') as fp:
                 fp.write(generated_cfg)
             os.remove(f'{i3_path}/' + test_cfg)
