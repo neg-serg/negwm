@@ -95,6 +95,19 @@ class negwm():
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
         self.i3 = i3ipc.Connection()
+        self.i3.on('binding', self.handle_bindings)
+
+    def handle_bindings(self, _, event):
+        data = event.ipc_data
+        if data:
+            cmd_str = data['binding']['command']
+            if cmd_str[:3] == 'nop':
+                cmd = cmd_str.split()[1:]
+                mod = cmd[0]
+                if mod in self.mods:
+                    mod_cmd = cmd[1]
+                    args = ' '.join(cmd[2:]).split(',')[0].split()
+                    self.mods[mod].bindings[mod_cmd](*args)
 
     @staticmethod
     def kill_proctree(pid, including_parent=True):

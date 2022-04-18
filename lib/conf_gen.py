@@ -169,7 +169,7 @@ class conf_gen(extension, cfg):
         if mods is None or not mods:
             return ret
         for mod in sorted(mods):
-            ret += (f'set ${mod} exec --no-startup-id {self.send_path} {mod}\n')
+            ret += (f'set ${mod} nop {mod}\n')
         return ret
 
     def workspaces(self) -> str:
