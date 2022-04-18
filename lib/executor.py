@@ -204,7 +204,7 @@ class executor(extension, cfg):
             self.envs[app] = env(app, self.cfg)
         self.bindings = {
             "run": self.run,
-            "reload": self.reload_config,
+            "reload": self.reload,
         }
         self.i3ipc = i3
 

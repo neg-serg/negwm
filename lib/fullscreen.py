@@ -5,7 +5,7 @@ import subprocess
 import shutil
 import logging
 from extension import extension
-from cfg import cfg
+from . cfg import cfg
 
 class fullscreen(extension, cfg):
     def __init__(self, i3conn):
@@ -23,8 +23,8 @@ class fullscreen(extension, cfg):
         )
         self.show_panel_on_close = False
         self.bindings = {
-            "reload": self.reload_config,
-            "fullscreen": self.hide,
+            "reload": self.reload,
+            "fullscreen": self.fullscreen,
         }
         self.i3ipc.on('window::close', self.on_window_close)
         self.i3ipc.on('workspace::focus', self.on_workspace_focus)
@@ -63,9 +63,9 @@ class fullscreen(extension, cfg):
         event.container. """
         if event.container.window_class in self.panel_classes:
             return
-        self.hide()
+        self.fullscreen()
 
-    def hide(self):
+    def fullscreen(self):
         """ Hide panel for this workspace """
         i3_tree = self.i3ipc.get_tree()
         fullscreens = i3_tree.find_fullscreen()

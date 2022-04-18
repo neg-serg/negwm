@@ -42,7 +42,7 @@ class menu(extension, cfg):
             "gtk_theme": self.gnome.change_gtk_theme,
             "icon_theme": self.gnome.change_icon_theme,
             "xrandr_resolution": self.xrandr.change_resolution_xrandr,
-            "reload": self.reload_config,
+            "reload": self.reload,
         }
 
     def args(self, params: dict) -> List[str]:

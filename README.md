@@ -204,7 +204,7 @@ self.bindings = {
 
     "xrandr_resolution": self.xrandr.change_resolution_xrandr,
 
-    "reload": self.reload_config,
+    "reload": self.reload,
 }
 ```
 

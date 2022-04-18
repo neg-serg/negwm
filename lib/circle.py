@@ -5,7 +5,7 @@ others. As the result user can get not only the usual run the appropriate
 application if it is not started, but also create a list of application, which
 I call "tag" and then switch to the next of it, instead of just simple focus.
 
-The foundation of it is pretty complicated go_next function, which use counters
+The foundation of it is pretty complicated next function, which use counters
 with incrementing of the current "position" of the window in the tag list over
 the finite field. As the result you get circle over all tagged windows.
 
@@ -59,11 +59,11 @@ class circle(sub, extension, cfg, Matcher):
         # Tag all windows after start
         self.tag_windows(invalidate_winlist=False)
         self.bindings = {
-            "next": self.go_next,
-            "subtag": self.go_subtag,
+            "next": self.next,
+            "subtag": self.subtag,
             "add_prop": self.add_prop,
             "del_prop": self.del_prop,
-            "reload": self.reload_config,
+            "reload": self.reload,
         }
         self.i3ipc.on('window::new', self.add_wins)
         self.i3ipc.on('window::close', self.del_wins)
@@ -97,7 +97,7 @@ class circle(sub, extension, cfg, Matcher):
             tag (str): denotes target [tag] """
         if len(self.tagged[tag]) > 1:
             self.current_position[tag] += 1
-            self.go_next(tag)
+            self.next(tag)
 
     def prefullscreen(self, tag: str) -> None:
         """ Prepare to go fullscreen. """
@@ -121,7 +121,7 @@ class circle(sub, extension, cfg, Matcher):
                    inc_counter: bool = True,
                    fullscreen_handler: bool = True,
                    subtagged: bool = False) -> None:
-        """ Focus next window. Used by go_next function. Tag list is a list of
+        """ Focus next window. Used by next function. Tag list is a list of
         windows by some factor, which determined by config settings.
         tag (str): target tag.
         idx (int): index inside tag list.
@@ -182,7 +182,7 @@ class circle(sub, extension, cfg, Matcher):
             if win.window_class == self.conf(tag, "priority")
         ]
 
-    def go_next(self, tag: str) -> None:
+    def next(self, tag: str) -> None:
         """ Circle over windows. Function "called" from the user-side.
             tag (str): denotes target [tag] """
         self.sort_by_parent(tag)
@@ -206,7 +206,7 @@ class circle(sub, extension, cfg, Matcher):
             else:
                 self.focus_next(tag, idx)
 
-    def go_subtag(self, tag: str, subtag: str) -> None:
+    def subtag(self, tag: str, subtag: str) -> None:
         """ Circle over subtag windows. Function "called" from the user-side.
             tag (str): denotes target [tag]
             subtag (str): denotes the target [subtag]. """

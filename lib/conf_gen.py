@@ -14,7 +14,7 @@ class conf_gen(extension, cfg):
         self.bindings = {
             "print": self.print,
             "dump": self.dump_cfg,
-            "reload": self.reload_config,
+            "reload": self.reload,
         }
         self.send_path = '${XDG_CONFIG_HOME}/negwm/bin/send'
 

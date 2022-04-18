@@ -67,7 +67,7 @@ class cfg():
         """ Helper to create subtag attr list. """
         return cfg.possible_props()
 
-    def reload_config(self, *_) -> None:
+    def reload(self, *_) -> None:
         """ Reload config for current selected module. Call load_config, print
         debug messages and reinit all stuff. """
         prev_conf = self.cfg

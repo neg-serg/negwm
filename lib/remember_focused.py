@@ -25,8 +25,8 @@ class remember_focused(extension, cfg):
         self.max_remember_focused = 4 # workspaces with auto alt-tab when close
         self.autoback = self.conf('autoback')
         self.bindings = {
-            "switch": self.alt_tab,
-            "reload": self.reload_config,
+            "switch": self.switch,
+            "reload": self.reload,
             "focus_next": self.focus_next,
             "focus_prev": self.focus_prev,
             "focus_next_visible": self.focus_next_visible,
@@ -35,11 +35,11 @@ class remember_focused(extension, cfg):
         self.i3ipc.on('window::focus', self.on_window_focus)
         self.i3ipc.on('window::close', self.goto_nonempty_ws_on_close)
 
-    def reload_config(self) -> None:
+    def reload(self) -> None:
         """ Reloads config. Dummy. """
         self.__init__(self.i3ipc)
 
-    def alt_tab(self) -> None:
+    def switch(self) -> None:
         """ Focus previous window. """
         wids = set(w.id for w in self.i3ipc.get_tree().leaves())
         for wid in self.focus_history[1:]:
@@ -122,5 +122,5 @@ class remember_focused(extension, cfg):
         if not workspace.leaves():
             for ws_substr in self.autoback:
                 if focused_ws_name.endswith(ws_substr):
-                    self.alt_tab()
+                    self.switch()
                     return

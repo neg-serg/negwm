@@ -52,20 +52,20 @@ class scratchpad(extension, cfg, Matcher):
         self.focus_win_flag = [False, ""]
         self.i3ipc = i3 # i3ipc connection, bypassed by negwm runner
         self.bindings = {
-            "show": self.show_scratchpad,
-            "hide": self.hide_scratchpad_all_but_current,
-            "next": self.next_win_on_curr_tag,
+            "show": self.show,
+            "hide": self.hide,
+            "next": self.next,
             "toggle": self.toggle,
             "hide_current": self.hide_current,
-            "geom_restore": self.geom_restore_current,
-            "geom_dump": self.geom_dump_current,
-            "geom_save": self.geom_save_current,
-            "geom_autosave": self.autosave_toggle,
-            "subtag": self.run_subtag,
+            "geom_restore": self.geom_restore,
+            "geom_dump": self.geom_dump,
+            "geom_save": self.geom_save,
+            "geom_autosave": self.geom_autosave,
+            "subtag": self.subtag,
             "add_prop": self.add_prop,
             "del_prop": self.del_prop,
-            "reload": self.reload_config,
-            "dialog": self.dialog_toggle,
+            "reload": self.reload,
+            "dialog": self.dialog,
         }
         i3.on('window::new', self.mark_tag)
         i3.on('window::close', self.unmark_tag)
@@ -82,7 +82,7 @@ class scratchpad(extension, cfg, Matcher):
             tag: tag string """
         return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
 
-    def show_scratchpad(self, tag: str, hide: bool = True) -> None:
+    def show(self, tag: str, hide: bool = True) -> None:
         """ Show given [tag]
             tag: tag string
             hide: optional predicate to hide all windows except current. Should
@@ -93,7 +93,7 @@ class scratchpad(extension, cfg, Matcher):
             win.command('move window to workspace current')
             win_to_focus = win
         if hide and tag != 'transients':
-            self.hide_scratchpad_all_but_current(tag, win_to_focus)
+            self.hide(tag, win_to_focus)
         if win_to_focus is not None:
             win_to_focus.command('focus')
 
@@ -101,12 +101,12 @@ class scratchpad(extension, cfg, Matcher):
         """ Hide given [tag]
             tag (str): scratchpad name to hide """
         if self.geom_auto_save:
-            self.geom_save(tag)
+            self.geom_save_(tag)
         for win in self.marked[tag]:
             win.command('move scratchpad')
         self.restore_fullscreens()
 
-    def hide_scratchpad_all_but_current(self, tag: str, current_win) -> None:
+    def hide(self, tag: str, current_win) -> None:
         """ Hide all tagged windows except current.
             tag: tag string """
         if len(self.marked[tag]) > 1 and current_win is not None:
@@ -126,9 +126,9 @@ class scratchpad(extension, cfg, Matcher):
             focused.workspace().leaves()
         )
 
-    def dialog_toggle(self) -> None:
+    def dialog(self) -> None:
         """ Show dialog windows """
-        self.show_scratchpad('transients', hide=False)
+        self.show('transients', hide=False)
 
     def toggle_fs(self, win) -> None:
         """ Toggles fullscreen on/off and show/hide requested scratchpad after.
@@ -165,7 +165,7 @@ class scratchpad(extension, cfg, Matcher):
         focused = self.i3ipc.get_tree().find_focused()
         if self.marked.get(tag, []):
             self.toggle_fs(focused)
-            self.show_scratchpad(tag)
+            self.show(tag)
 
     def focus_sub_tag(self, tag: str, subtag_classes_set: Set) -> None:
         """ Cycle over the subtag windows.
@@ -176,13 +176,13 @@ class scratchpad(extension, cfg, Matcher):
         self.toggle_fs(focused)
         if focused.window_class in subtag_classes_set:
             return
-        self.show_scratchpad(tag)
+        self.show(tag)
         for _ in self.marked[tag]:
             if focused.window_class not in subtag_classes_set:
-                self.next_win_on_curr_tag()
+                self.next()
                 focused = self.i3ipc.get_tree().find_focused()
 
-    def run_subtag(self, tag: str, subtag: str) -> None:
+    def subtag(self, tag: str, subtag: str) -> None:
         """ Run-or-focus the application for subtag
             tag (str): denotes the target tag.
             subtag (str): denotes the target subtag. """
@@ -235,7 +235,7 @@ class scratchpad(extension, cfg, Matcher):
 
     def apply_to_current_tag(self, func: Callable) -> bool:
         """ Apply function [func] to the current tag
-            This is the generic function used in next_win_on_curr_tag,
+            This is the generic function used in next,
             hide_current and another to perform actions on the currently
             selected tag.
             func(Callable) : function to apply. """
@@ -244,13 +244,13 @@ class scratchpad(extension, cfg, Matcher):
             func(curr_tag)
         return bool(curr_tag)
 
-    def next_win_on_curr_tag(self, hide: bool = True) -> None:
+    def next(self, hide: bool = True) -> None:
         """ Show the next window for the currently selected tag.
             hide (bool): hide window or not. Primarly used to cleanup "garbage"
             that can appear after i3 (re)start, etc. Because of I've think that
             is't better to make screen clear after (re)start. """
         def next_win(tag: str) -> None:
-            self.show_scratchpad(tag, hide_)
+            self.show(tag, hide_)
             for idx, win in enumerate(self.marked[tag]):
                 if focused_win.id != win.id:
                     self.marked[tag][idx].command(
@@ -261,7 +261,7 @@ class scratchpad(extension, cfg, Matcher):
                         self.marked[tag].pop(idx)
                     )
                     win.command('move scratchpad')
-            self.show_scratchpad(tag, hide_)
+            self.show(tag, hide_)
 
         hide_ = hide
         focused_win = self.i3ipc.get_tree().find_focused()
@@ -271,7 +271,7 @@ class scratchpad(extension, cfg, Matcher):
         """ Hide the currently selected tag. """
         self.apply_to_current_tag(self.hide_scratchpad)
 
-    def geom_restore(self, tag: str) -> None:
+    def geom_restore_(self, tag: str) -> None:
         """ Restore default window geometry
         tag(str) : hide another windows for the current tag or not. """
         for idx, win in enumerate(self.marked[tag]):
@@ -283,11 +283,11 @@ class scratchpad(extension, cfg, Matcher):
             win.command(win_cmd)
             self.marked[tag].append(win)
 
-    def geom_restore_current(self) -> None:
+    def geom_restore(self) -> None:
         """ Restore geometry for the current selected tag. """
-        self.apply_to_current_tag(self.geom_restore)
+        self.apply_to_current_tag(self.geom_restore_)
 
-    def geom_dump(self, tag: str) -> None:
+    def geom_dump_(self, tag: str) -> None:
         """ Dump geometry for the given tag
             tag(str): denotes target tag. """
         focused = self.i3ipc.get_tree().find_focused()
@@ -299,7 +299,7 @@ class scratchpad(extension, cfg, Matcher):
                 self.dump_config()
                 break
 
-    def geom_save(self, tag: str) -> None:
+    def geom_save_(self, tag: str) -> None:
         """ Save geometry for the given tag
             tag(str): denotes target tag. """
         focused = self.i3ipc.get_tree().find_focused()
@@ -327,17 +327,17 @@ class scratchpad(extension, cfg, Matcher):
             not. """
         self.geom_auto_save = save
 
-    def autosave_toggle(self) -> None:
+    def geom_autosave(self) -> None:
         """ Toggle autosave mode. """
         self.auto_save_geom(not self.geom_auto_save)
 
-    def geom_dump_current(self) -> None:
+    def geom_dump(self) -> None:
         """ Dump geometry for the current selected tag. """
-        self.apply_to_current_tag(self.geom_dump)
+        self.apply_to_current_tag(self.geom_dump_)
 
-    def geom_save_current(self) -> None:
+    def geom_save(self) -> None:
         """ Save geometry for the current selected tag. """
-        self.apply_to_current_tag(self.geom_save)
+        self.apply_to_current_tag(self.geom_save_)
 
     def add_prop(self, tag_to_add: str, prop_str: str) -> None:
         """ Add property via [prop_str] to the target [tag].
@@ -379,7 +379,7 @@ class scratchpad(extension, cfg, Matcher):
                         f"{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
                         {self.nsgeom.get_geom(tag)}")
                     self.marked[tag].append(win)
-                    self.show_scratchpad(tag, hide=True)
+                    self.show(tag, hide=True)
             elif is_dialog_win and tag == "transients":
                 win.command(
                     f"{scratchpad.mark_uuid_tag('transients')}, \
@@ -390,11 +390,11 @@ class scratchpad(extension, cfg, Matcher):
         if self.focus_win_flag[0]:
             special_tag = self.focus_win_flag[1]
             if special_tag in self.cfg:
-                self.show_scratchpad(special_tag, hide=True)
+                self.show(special_tag, hide=True)
             self.focus_win_flag[0] = False
             self.focus_win_flag[1] = ""
 
-        self.dialog_toggle()
+        self.dialog()
 
     def unmark_tag(self, _, event) -> None:
         """ Delete unique mark from the closed window.
@@ -407,7 +407,7 @@ class scratchpad(extension, cfg, Matcher):
             for win in self.marked[tag]:
                 if win.id == win_ev.id:
                     self.marked[tag].remove(win)
-                    self.show_scratchpad(tag)
+                    self.show(tag)
                     break
         if win_ev.fullscreen_mode:
             self.apply_to_current_tag(self.hide_scratchpad)

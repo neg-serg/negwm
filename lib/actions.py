@@ -43,22 +43,27 @@ class actions(extension, cfg):
         # Coeff to shrink window in all dimensions
         self.shrink_coeff = self.conf("shrink_coeff")
         self.bindings = {
-            "reload": self.reload_config,
+            "reload": self.reload,
             "maximize": self.maximize,
-            "maxhor": lambda: self.maximize(by='X'),
-            "maxvert": lambda: self.maximize(by='Y'),
+            "maxhor": self.maxhor,
+            "maxvert": self.maxvert,
             "x2": self.x2,
-            "x4": self.quad,
-            "quad": self.quad,
+            "x4": self.x4,
             "grow": self.grow,
             "shrink": self.shrink,
-            "center": self.move_center,
+            "center": self.center,
             "revert_maximize": self.revert_maximize,
             "resize": self.resize,
-            "tab-focus": self.focus_tab,
-            "tab-move": self.move_tab,
+            "focus_tab": self.focus_tab,
+            "move_tab": self.move_tab,
             "next_ws": self.next_ws,
         }
+
+    def maxhor(self):
+        self.maximize(by='X')
+
+    def maxvert(self):
+         self.maximize(by='Y')
 
     def load_useless_gaps(self) -> None:
         """ Load useless gaps settings. """
@@ -99,7 +104,7 @@ class actions(extension, cfg):
         geom['y'] = center['y'] - int(geom['height'] / 2)
         return geom
 
-    def move_center(self, resize: str) -> None:
+    def center(self, resize: str) -> None:
         """ Move window to center
         resize (str): predicate which shows resize target window or not. """
         focused = self.i3ipc.get_tree().find_focused()
@@ -203,7 +208,7 @@ class actions(extension, cfg):
                     geom = self.get_prev_geom()
             actions.set_geom(self.current_win, geom)
 
-    def quad(self, mode: int) -> None:
+    def x4(self, mode: int) -> None:
         """ Move window to the 1,2,3,4 quad of 2D screen space
             mode (1,2,3,4): defines 1,2,3 or 4 quad of
                             screen space to move.
