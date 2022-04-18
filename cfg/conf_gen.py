@@ -55,7 +55,7 @@ class conf_gen(Enum):
         'no_startup_id': {
             'Mod1+grave': 'rofi -show run -show-icons -disable-history -theme neg',
             'Mod4+8': 'playerctl volume 0.0 || amixer -q set Master 0 mute',
-            'Mod4+apostrophe': '${XDG_CONFIG_HOME}/negwm/bin/i3-full-reload',
+            'Mod4+apostrophe': 'i3-msg reload',
             'Mod4+c': '~/bin/clip',
             'Mod4+g': '~/bin/g',
             'Mod4+p': '~/bin/rofi-tmux-urls',
