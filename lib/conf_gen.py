@@ -11,19 +11,14 @@ class conf_gen(extension, cfg):
         super().__init__()
         cfg.__init__(self, i3)
         self.i3ipc = i3
-        self.bindings = {
-            "print": self.print,
-            "dump": self.dump_cfg,
-            "reload": self.reload,
-        }
         self.send_path = '${XDG_CONFIG_HOME}/negwm/bin/send'
 
     def print(self) -> None:
-        print(''.join(self.generate()))
+        print(self.generate())
 
-    def dump_cfg(self) -> None:
+    def write_cfg(self) -> None:
         i3_cfg, test_cfg = 'config', '.config_test'
-        generated_cfg = '\n'.join(self.generate())
+        generated_cfg = self.generate()
         i3_path = f'{os.environ["XDG_CONFIG_HOME"]}/i3'
         with open(f'{i3_path}/{test_cfg}', 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
@@ -45,7 +40,7 @@ class conf_gen(extension, cfg):
                 mode_name=name, mode_bind=keybind
             )
             ret.append(keybind_data)
-        return ret
+        return '\n'.join(filter(None, ret))
 
     def set_vars(self) -> str:
         ret = ''

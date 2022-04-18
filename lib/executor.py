@@ -202,10 +202,6 @@ class executor(extension, cfg):
         self.envs = {}
         for app in self.cfg:
             self.envs[app] = env(app, self.cfg)
-        self.bindings = {
-            "run": self.run,
-            "reload": self.reload,
-        }
         self.i3ipc = i3
 
     def __exit__(self) -> None:

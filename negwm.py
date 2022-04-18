@@ -102,12 +102,15 @@ class negwm():
         if data:
             cmd_str = data['binding']['command']
             if cmd_str[:3] == 'nop':
-                cmd = cmd_str.split()[1:]
+                cmd = cmd_str.split(',')[0].split()[1:]
                 mod = cmd[0]
                 if mod in self.mods:
-                    mod_cmd = cmd[1]
                     args = ' '.join(cmd[2:]).split(',')[0].split()
-                    self.mods[mod].bindings[mod_cmd](*args)
+                    mod_cmd = cmd[1]
+                    try:
+                        getattr(self.mods[mod], mod_cmd)(*args)
+                    except TypeError:
+                        print(f'Cannot call mod={self.mods[mod]} cmd={mod_cmd} args=({args})')
 
     @staticmethod
     def kill_proctree(pid, including_parent=True):
@@ -161,10 +164,10 @@ class negwm():
                             cwd=binpath, check=False
                         )
                         if reload_one:
-                            self.mods[changed_mod].bindings['reload']()
+                            self.mods[changed_mod].reload()
                         else:
                             for mod in self.mods:
-                                self.mods[mod].bindings['reload']()
+                                self.mods[mod].reload()
 
     def run_config_watchers(self):
         """ Start all watchers in background via ensure_future """

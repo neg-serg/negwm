@@ -27,23 +27,21 @@ class menu(extension, cfg):
         for mod in self.cfg['modules']:
             module = importlib.import_module('menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
-        self.bindings = {
-            "cmd_menu": self.i3menu.cmd_menu,
-            "xprop": self.xprop.xprop,
-            "autoprop": self.props.autoprop,
-            "show_props": self.props.show_props,
-            "pulse_output": self.pulse_menu.pulseaudio_output,
-            "pulse_input": self.pulse_menu.pulseaudio_input,
-            "pulse_mute": self.pulse_menu.pulseaudio_mute,
-            "ws": self.winact.goto_ws,
-            "goto_win": self.winact.goto_win,
-            "attach": self.winact.attach_win,
-            "movews": self.winact.move_to_ws,
-            "gtk_theme": self.gnome.change_gtk_theme,
-            "icon_theme": self.gnome.change_icon_theme,
-            "xrandr_resolution": self.xrandr.change_resolution_xrandr,
-            "reload": self.reload,
-        }
+        self.cmd_menu = self.i3menu.cmd_menu
+        self.xprop_show = self.xprop.xprop
+        self.autoprop = self.props.autoprop
+        self.show_props = self.props.show_props
+        self.pulse_output = self.pulse_menu.pulseaudio_output
+        self.pulse_input = self.pulse_menu.pulseaudio_input
+        self.pulse_mute = self.pulse_menu.pulseaudio_mute
+        self.ws = self.winact.goto_ws
+        self.goto_win = self.winact.goto_win
+        self.attach = self.winact.attach_win
+        self.movews = self.winact.move_to_ws
+        self.gtk_theme = self.gnome.change_gtk_theme
+        self.icon_theme = self.gnome.change_icon_theme
+        self.xrandr_resolution = self.xrandr.change_resolution_xrandr
+        self.reload = self.reload
 
     def args(self, params: dict) -> List[str]:
         """ Create run parameters to spawn rofi process from dict

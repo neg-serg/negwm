@@ -138,7 +138,7 @@ class conf_gen(Enum):
             icon_theme = ['Shift+i'],
             pulse_input = ['i'],
             pulse_output = ['o'],
-            xprop = ['m']
+            xprop_show = ['m']
         )
     )
 

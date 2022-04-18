@@ -3,7 +3,7 @@ from lib.reflection import Reflection
 
 class extension():
     def __init__(self):
-        self.bindings = {}
+        pass
 
     @staticmethod
     def get_mods():
@@ -15,4 +15,4 @@ class extension():
         used by external users as i3-bindings, etc. Need the [send] binary
         which can send commands to the appropriate socket.
         args (List): argument list for the selected function. """
-        self.bindings[args[0]](*args[1:])
+        getattr(self, args[0])(*args[1:])

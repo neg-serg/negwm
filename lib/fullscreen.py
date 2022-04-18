@@ -22,10 +22,6 @@ class fullscreen(extension, cfg):
             "classes_to_hide_panel", []
         )
         self.show_panel_on_close = False
-        self.bindings = {
-            "reload": self.reload,
-            "fullscreen": self.fullscreen,
-        }
         self.i3ipc.on('window::close', self.on_window_close)
         self.i3ipc.on('workspace::focus', self.on_workspace_focus)
 

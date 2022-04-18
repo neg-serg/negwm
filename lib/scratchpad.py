@@ -51,22 +51,6 @@ class scratchpad(extension, cfg, Matcher):
         # named scratchpad with add_prop/del_prop routines
         self.focus_win_flag = [False, ""]
         self.i3ipc = i3 # i3ipc connection, bypassed by negwm runner
-        self.bindings = {
-            "show": self.show,
-            "hide": self.hide,
-            "next": self.next,
-            "toggle": self.toggle,
-            "hide_current": self.hide_current,
-            "geom_restore": self.geom_restore,
-            "geom_dump": self.geom_dump,
-            "geom_save": self.geom_save,
-            "geom_autosave": self.geom_autosave,
-            "subtag": self.subtag,
-            "add_prop": self.add_prop,
-            "del_prop": self.del_prop,
-            "reload": self.reload,
-            "dialog": self.dialog,
-        }
         i3.on('window::new', self.mark_tag)
         i3.on('window::close', self.unmark_tag)
 
@@ -156,7 +140,7 @@ class scratchpad(extension, cfg, Matcher):
                     if mods:
                         executor = mods.get('executor')
                         if executor is not None:
-                            executor.bindings['run'](spawn_str)
+                            executor.run(spawn_str)
         if self.visible_window_with_tag(tag):
             self.hide_scratchpad(tag)
             return

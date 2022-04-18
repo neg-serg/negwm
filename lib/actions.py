@@ -42,22 +42,6 @@ class actions(extension, cfg):
         self.grow_coeff = self.conf("grow_coeff")
         # Coeff to shrink window in all dimensions
         self.shrink_coeff = self.conf("shrink_coeff")
-        self.bindings = {
-            "reload": self.reload,
-            "maximize": self.maximize,
-            "maxhor": self.maxhor,
-            "maxvert": self.maxvert,
-            "x2": self.x2,
-            "x4": self.x4,
-            "grow": self.grow,
-            "shrink": self.shrink,
-            "center": self.center,
-            "revert_maximize": self.revert_maximize,
-            "resize": self.resize,
-            "focus_tab": self.focus_tab,
-            "move_tab": self.move_tab,
-            "next_ws": self.next_ws,
-        }
 
     def maxhor(self):
         self.maximize(by='X')

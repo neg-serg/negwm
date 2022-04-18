@@ -58,13 +58,6 @@ class circle(sub, extension, cfg, Matcher):
             self.current_position[tag] = 0
         # Tag all windows after start
         self.tag_windows(invalidate_winlist=False)
-        self.bindings = {
-            "next": self.next,
-            "subtag": self.subtag,
-            "add_prop": self.add_prop,
-            "del_prop": self.del_prop,
-            "reload": self.reload,
-        }
         self.i3ipc.on('window::new', self.add_wins)
         self.i3ipc.on('window::close', self.del_wins)
         self.i3ipc.on("window::focus", self.set_curr_win)
@@ -90,7 +83,7 @@ class circle(sub, extension, cfg, Matcher):
                 if spawn_str:
                     executor = extension.get_mods().get('executor')
                     if executor is not None:
-                        executor.bindings['run'](spawn_str)
+                        executor.run(spawn_str)
 
     def find_next_not_the_same_win(self, tag: str) -> None:
         """ It was used as the guard to infinite loop in the past.
@@ -145,7 +138,7 @@ class circle(sub, extension, cfg, Matcher):
         if self.conf(tag, "mpd_shut") == 1:
             vol = extension.get_mods().get('vol')
             if vol is not None:
-                vol.bindings['mute']()
+                vol.mute()
 
     def twin(self, tag: str, idx: int, with_subtag: bool = False):
         """ Detect target window.

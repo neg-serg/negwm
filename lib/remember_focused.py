@@ -24,14 +24,6 @@ class remember_focused(extension, cfg):
         self.focus_history = [] # depth of history list
         self.max_remember_focused = 4 # workspaces with auto alt-tab when close
         self.autoback = self.conf('autoback')
-        self.bindings = {
-            "switch": self.switch,
-            "reload": self.reload,
-            "focus_next": self.focus_next,
-            "focus_prev": self.focus_prev,
-            "focus_next_visible": self.focus_next_visible,
-            "focus_prev_visible": self.focus_prev_visible,
-        }
         self.i3ipc.on('window::focus', self.on_window_focus)
         self.i3ipc.on('window::close', self.goto_nonempty_ws_on_close)
 
