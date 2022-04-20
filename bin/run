@@ -1,4 +1,3 @@
 cp -vn /etc/i3/config $XDG_CONFIG_HOME/i3/config
-make -C $XDG_CONFIG_HOME/negwm/
 i3-msg reload
 $XDG_CONFIG_HOME/negwm/negwm.py

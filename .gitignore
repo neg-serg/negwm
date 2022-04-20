@@ -2,7 +2,6 @@ __pycache__
 cache/tmux_sockets
 cache/alacritty_cfg
 cache/dtach_sessions
-bin/send
 pyproject.toml
 poetry.lock
 dist

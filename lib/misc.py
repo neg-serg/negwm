@@ -50,20 +50,6 @@ class Misc():
                 output={proc_err.output}')
 
     @staticmethod
-    def send(*args, i3=None) -> None:
-        """ Send wrapper """
-        send_path = Misc.i3path() + '/bin/send'
-        if i3 is None:
-            try:
-                subprocess.run([send_path] + list(args), check=True)
-            except subprocess.CalledProcessError as proc_err:
-                Misc.print_run_exception_info(proc_err)
-        else:
-            exec_cmd = 'exec ' + send_path + ' '
-            largs = functools.reduce(operator.iconcat, list(args), [])
-            i3.command(exec_cmd + ' '.join(largs))
-
-    @staticmethod
     def parse_attr(attrib_list: List, end='"] ') -> str:
         """ Create attribute matching string.
             tag (str): target tag.

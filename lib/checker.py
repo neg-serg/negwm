@@ -42,25 +42,6 @@ class checker():
                 checker.which(exe, description, kind)
 
     @staticmethod
-    def check_for_send():
-        logging.info('Check for send executable and build it if needed')
-        send_path = shutil.which('bin/send')
-        if send_path is not None:
-            logging.info(f'send binary {send_path} [OK]')
-        else:
-            xdg_config_home = os.getenv('XDG_CONFIG_HOME')
-            if xdg_config_home:
-                i3_path = xdg_config_home + '/negwm/'
-                make_result = subprocess.run(['make', '-C', i3_path],
-                    check=False,
-                    capture_output=True
-                )
-                if make_result.returncode == 0:
-                    logging.info('send build is successful')
-                else:
-                    logging.error('Please try to run `make` manually and check the results')
-
-    @staticmethod
     def check_i3_config(cfg='config'):
         logging.info('Check for i3 config consistency')
         i3_cfg = f'{os.environ["XDG_CONFIG_HOME"]}/i3/{cfg}'
@@ -102,4 +83,3 @@ class checker():
         checker.check_env()
         checker.check_for_executable_deps()
         checker.check_i3_config()
-        checker.check_for_send()
