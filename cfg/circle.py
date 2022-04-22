@@ -50,11 +50,11 @@ class circle(Enum):
         ws = 'steam'
     )
 
-    sxiv = Δ(
-        classw = ['Sxiv'],
+    nsxiv = Δ(
+        classw = ['Nsxiv'],
         keybind_default_next = ['Mod4+Control+c'],
-        prog = "dash -c 'exec find ~/dw/ ~/tmp/shots/ -maxdepth 1 -type d -print0 | xargs -0 ~/bin/sx'",
-        wallpaper = {'classw': ['Sxiv'], 'keybind_default_subtag': ['Mod4+Shift+c'], 'prog': '~/bin/wl --show'},
+        prog = "~/bin/sx ~/dw/ ~/tmp/shots/",
+        wallpaper = {'classw': ['Nsxiv'], 'keybind_default_subtag': ['Mod4+Shift+c'], 'prog': '~/bin/wl --show'},
         ws = 'gfx'
     )
 
