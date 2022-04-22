@@ -79,7 +79,7 @@ class checker():
     @staticmethod
     def check():
         """ Check for various dependencies """
-        logging.basicConfig(encoding='utf-8', level=logging.ERROR)
+        logging.basicConfig(level=logging.ERROR)
         checker.check_env()
         checker.check_for_executable_deps()
         checker.check_i3_config()
