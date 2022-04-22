@@ -31,7 +31,6 @@ import sys
 from threading import Thread
 import timeit
 import logging
-import tracemalloc
 
 from asyncinotify import Inotify, Mask
 from docopt import docopt
@@ -52,15 +51,9 @@ class negwm():
             connection, connects to the asyncio eventloop.
         """
         loop = asyncio.new_event_loop()
-        self.tracemalloc_enabled = False
         self.show_load_time = False
-        if cmd_args["--tracemalloc"]:
-            self.tracemalloc_enabled = True
 
-        if self.tracemalloc_enabled:
-            tracemalloc.start()
-
-        if not (cmd_args['--debug'] or self.tracemalloc_enabled):
+        if not (cmd_args['--debug']):
             def loop_exit(signame):
                 logging.info(f"Got signal {signame}: exit")
                 loop.stop()
@@ -211,11 +204,6 @@ def main():
     cmd_args = docopt(str(__doc__), version='0.9')
     wm = negwm(cmd_args)
     wm.run()
-    if wm.tracemalloc_enabled:
-        snapshot = tracemalloc.take_snapshot()
-        top_stats = snapshot.statistics('lineno')
-        for stat in top_stats[:10]:
-            logging.info(stat)
 
 if __name__ == '__main__':
     checker().check()
