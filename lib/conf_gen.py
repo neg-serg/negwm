@@ -289,28 +289,34 @@ class conf_gen(extension, cfg):
         return ret + '}\n'
 
     @staticmethod
-    def mode_binding(keymap, name) -> str:
+    def mode(keymap, name) -> str:
         return f'bindsym {keymap} mode "{name}"\n'
+
+    def bind_mode(self, section_name, post, exit=False, mode=True):
+        return self.bind(section_name, post, exit, mode)
 
     def bind(self, section_name, post, exit=False, mode=False) -> str:
         ret = ''
+        prefix = f'\tbindsym' if mode else 'bindsym'
+        end = '' if not exit else ', $exit'
+
         section = self.cfg.get(section_name, {})
         if section:
             modkey = section.get('modkey', '')
-            param = section.get('param', '')
             if modkey:
                 modkey += '+'
-            if param:
-                param = ' ' + param
             ret += '\n'
-            keymaps = section.get('keymap', {})
-            if keymaps:
-                end = ''
-                prefix = f'\tbindsym' if mode else 'bindsym'
-                end = '' if not exit else ', $exit'
-                for action, maps in keymaps.items():
-                    for keymap in maps:
-                        ret += f'{prefix} {modkey}{keymap} {post} {action}{param}{end}\n'
+            keymap = section.get('keymap', {})
+            if keymap:
+                for action, maps in keymap.items():
+                    if isinstance(maps, list):
+                        for keymap in maps:
+                            ret += f'{prefix} {modkey}{keymap} {post} {action}{end}\n'
+                    elif isinstance(maps, dict):
+                        param = ' ' + maps.get('param', '')
+                        binds = maps.get('binds', [])
+                        for key in binds:
+                            ret += f'{prefix} {modkey}{key} {post} {action}{param}{end}\n'
         return ret
 
     def mode_default(self, mode_name, mode_bind) -> str:
@@ -352,30 +358,28 @@ class conf_gen(extension, cfg):
             conf_gen.circle_bindings(mode_name)
 
     def mode_resize(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode_binding(mode_bind, mode_name) + \
+        return conf_gen.mode(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('resize_plus', '$actions resize', mode=True) + \
-            self.bind('resize_minus', '$actions resize', mode=True) + \
+            self.bind_mode('plus_resize', '$actions resize') + \
+            self.bind_mode('minus_resize', '$actions resize') + \
             conf_gen.mode_end()
 
     def mode_spec(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode_binding(mode_bind, mode_name) + \
+        return conf_gen.mode(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('misc_spec', '', exit=True, mode=True) + \
-            self.bind('menu_spec', '$menu', exit=True, mode=True) + \
+            self.bind_mode('misc_spec', '', exit=True) + \
+            self.bind_mode('menu_spec', '$menu', exit=True) + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()
 
     def mode_wm(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode_binding(mode_bind, mode_name) + \
+        return conf_gen.mode(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('layout_wm', 'layout', exit=True, mode=True) + \
-            self.bind('split', 'split', exit=True, mode=True) + \
-            self.bind('move', 'move', mode=True) + \
-            self.bind('move_acts', '$actions', mode=True) + \
-            self.bind('quad', '$actions', mode=True) + \
-            self.bind('actions_wm', '$actions', mode=True) + \
+            self.bind_mode('layout', 'layout', exit=True) + \
+            self.bind_mode('split', 'split', exit=True) + \
+            self.bind_mode('move', 'move') + \
+            self.bind_mode('actions', '$actions') + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()

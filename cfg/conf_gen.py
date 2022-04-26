@@ -29,7 +29,7 @@ class conf_gen(Enum):
         wm = 'Mod4+minus'
     )
 
-    actions_wm = Δ(
+    actions = Δ(
         keymap = Δ(
             grow = ['Shift+plus'],
             maxhor = ['x'],
@@ -38,7 +38,11 @@ class conf_gen(Enum):
             none = ['c'],
             resize = ['Shift+c'],
             revert_maximize = ['Shift+m', 'Shift+x', 'Shift+y'],
-            shrink = ['Shift+minus']
+            shrink = ['Shift+minus'],
+            hdown = {"binds": ['Shift+w'], "param": 'x2'},
+            hup = {"binds": ['Shift+a'], "param": 'x2'},
+            vleft = {"binds": ['Shift+s'], "param": 'x2'},
+            vright = {"binds": ['Shift+d'], "param": 'x2'},
         )
     )
 
@@ -89,7 +93,7 @@ class conf_gen(Enum):
         modkey = 'Mod4'
     )
 
-    layout_wm = Δ(
+    layout = Δ(
         keymap = Δ(
            default = ['grave'],
            splith = ['minus'],
@@ -142,20 +146,20 @@ class conf_gen(Enum):
         )
     )
 
-    misc = Δ(
-        keymap = {
-            'fullscreen toggle': ['q'],
-            'kill': ['Control+q']
-        },
-        modkey = 'Mod4'
-    )
-
     misc_spec = Δ(
         keymap = {
             '[urgent=latest] focus': ['e'],
             'floating toggle': ['Shift+d'],
             'exec i3lockr -p 8 ': ['l'],
         }
+    )
+
+    misc = Δ(
+        keymap = {
+            'fullscreen toggle': ['q'],
+            'kill': ['Control+q']
+        },
+        modkey = 'Mod4'
     )
 
     move = Δ(
@@ -167,25 +171,6 @@ class conf_gen(Enum):
         )
     )
 
-    move_acts = Δ(
-        keymap = Δ(
-            hdown = ['Shift+w'],
-            hup = ['Shift+a'],
-            vleft = ['Shift+s'],
-            vright = ['Shift+d']
-        ),
-        param = 'x2'
-    )
-
-    quad = Δ(
-        keymap = {
-            '1' : '1',
-            '2' : '2',
-            '3' : '3',
-            '4' : '4'
-        }
-    )
-
     remember_focused = Δ(
         keymap = Δ(
             focus_next_visible = ['Mod4+grave'],
@@ -194,25 +179,23 @@ class conf_gen(Enum):
         )
     )
 
-    resize_minus = Δ(
+    plus_resize = Δ(
         keymap = Δ(
-            bottom = ['j', 's'],
-            left = ['h', 'a'],
-            right = ['l', 'd'],
-            top = ['k', 'w']
+            bottom = {"binds": ['j', 's'], "param": '4'},
+            left = {"binds": ['h', 'a'], "param": '4'},
+            right = {"binds": ['l', 'd'], "param": '4'},
+            top = {"binds": ['k', 'w'], "param": '4'},
         ),
-        modkey = 'Shift',
-        param = '-4'
     )
 
-    resize_plus = Δ(
+    minus_resize = Δ(
         keymap = Δ(
-            bottom = ['j', 's'],
-            left = ['h', 'a'],
-            right = ['l', 'd'],
-            top = ['k', 'w']
+            bottom = {"binds": ['j', 's'], "param": '-4'},
+            left = {"binds": ['h', 'a'], "param": '-4'},
+            right = {"binds": ['l', 'd'], "param": '-4'},
+            top = {"binds": ['k', 'w'], "param": '-4'},
         ),
-        param = '4'
+        modkey = 'Shift',
     )
 
     rules = {
