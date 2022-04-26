@@ -11,7 +11,6 @@ class conf_gen(extension, cfg):
         super().__init__()
         cfg.__init__(self, i3)
         self.i3ipc = i3
-        self.send_path = '${XDG_CONFIG_HOME}/negwm/bin/send'
 
     def print(self) -> None:
         print(self.generate())
@@ -92,7 +91,7 @@ class conf_gen(extension, cfg):
             ret = ''
             pref, postfix = '', ''
             if mode != 'default':
-                pref, postfix = '\t', ',$exit'
+                pref, postfix = '\t', ', $exit'
             get_binds = p.split('_')
             mode_, cmd = get_binds[1], get_binds[2]
             if len(get_binds) == 3:
@@ -129,7 +128,7 @@ class conf_gen(extension, cfg):
             ret = ''
             pref, postfix = '', ''
             if mode != 'default':
-                pref, postfix = '\t', ',$exit'
+                pref, postfix = '\t', ', $exit'
             get_binds = p.split('_')
             mode_, cmd = get_binds[1], get_binds[2]
             if len(get_binds) == 3:
@@ -174,13 +173,6 @@ class conf_gen(extension, cfg):
             for index, ws in enumerate(workspaces.values()):
                 ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
         return ret
-
-    @staticmethod
-    def scratchpad_hide_cmd(hide: bool) -> str:
-        """ Returns cmd needed to hide scratchpad. """
-        if hide:
-            return ", [con_id=__focused__] scratchpad show"
-        return ""
 
     def rules(self) -> str:
         def fill_rules_dict(mod, cmd_dict) -> List:
@@ -293,14 +285,14 @@ class conf_gen(extension, cfg):
         pref = '\t'
         bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
         for keybind in bindings:
-            ret += f'{pref}bindsym {keybind},$exit\n'
+            ret += f'{pref}bindsym {keybind}, $exit\n'
         return ret + '}\n'
 
     @staticmethod
     def mode_binding(keymap, name) -> str:
         return f'bindsym {keymap} mode "{name}"\n'
 
-    def bind(self, section_name, post, end, pre='bindsym') -> str:
+    def bind(self, section_name, post, exit=False, mode=False) -> str:
         ret = ''
         section = self.cfg.get(section_name, {})
         if section:
@@ -313,9 +305,12 @@ class conf_gen(extension, cfg):
             ret += '\n'
             keymaps = section.get('keymap', {})
             if keymaps:
+                end = ''
+                prefix = f'\tbindsym' if mode else 'bindsym'
+                end = '' if not exit else ', $exit'
                 for action, maps in keymaps.items():
                     for keymap in maps:
-                        ret += f'{pre} {modkey}{keymap} {post} {action}{param}{end}\n'
+                        ret += f'{prefix} {modkey}{keymap} {post} {action}{param}{end}\n'
         return ret
 
     def mode_default(self, mode_name, mode_bind) -> str:
@@ -332,11 +327,11 @@ class conf_gen(extension, cfg):
         def exec_bindings() -> str:
             exec_ret = ''
             exec_ret += \
-                self.bind('media', 'exec --no-startup-id playerctl', '') + \
-                self.bind('vol', '$vol', '') + \
-                self.bind('menu', '$menu', '') + \
-                self.bind('scratchpad', '$scratchpad', '') + \
-                self.bind('remember_focused', '$remember_focused', '')
+                self.bind('media', 'exec --no-startup-id playerctl') + \
+                self.bind('vol', '$vol') + \
+                self.bind('menu', '$menu') + \
+                self.bind('scratchpad', '$scratchpad') + \
+                self.bind('remember_focused', '$remember_focused')
             execs = self.cfg.get('exec', {})
             if execs:
                 plain = execs.get('plain', {})
@@ -349,8 +344,8 @@ class conf_gen(extension, cfg):
             return exec_ret
 
         return \
-            self.bind('misc', '', '') + \
-            self.bind('focus', 'focus', '') + \
+            self.bind('misc', '') + \
+            self.bind('focus', 'focus') + \
             exec_bindings() + \
             i3cmd_bindings() + \
             conf_gen.scratchpad_bindings(mode_name) + \
@@ -359,15 +354,15 @@ class conf_gen(extension, cfg):
     def mode_resize(self, mode_name, mode_bind) -> str:
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('resize_plus', '$actions resize', '', pre='\tbindsym') + \
-            self.bind('resize_minus', '$actions resize', '', pre='\tbindsym') + \
+            self.bind('resize_plus', '$actions resize', mode=True) + \
+            self.bind('resize_minus', '$actions resize', mode=True) + \
             conf_gen.mode_end()
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('misc_spec', '', ',$exit', pre='\tbindsym') + \
-            self.bind('menu_spec', '$menu', ',$exit', pre='\tbindsym') + \
+            self.bind('misc_spec', '', exit=True, mode=True) + \
+            self.bind('menu_spec', '$menu', exit=True, mode=True) + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()
@@ -375,12 +370,12 @@ class conf_gen(extension, cfg):
     def mode_wm(self, mode_name, mode_bind) -> str:
         return conf_gen.mode_binding(mode_bind, mode_name) + \
             conf_gen.mode_start(mode_name) + \
-            self.bind('layout_wm', 'layout', ',$exit', pre='\tbindsym') + \
-            self.bind('split', 'split', ',$exit', pre='\tbindsym') + \
-            self.bind('move', 'move', '', pre='\tbindsym') + \
-            self.bind('move_acts', '$actions', '', pre='\tbindsym') + \
-            self.bind('quad', '$actions', '', pre='\tbindsym') + \
-            self.bind('actions_wm', '$actions', '', pre='\tbindsym') + \
+            self.bind('layout_wm', 'layout', exit=True, mode=True) + \
+            self.bind('split', 'split', exit=True, mode=True) + \
+            self.bind('move', 'move', mode=True) + \
+            self.bind('move_acts', '$actions', mode=True) + \
+            self.bind('quad', '$actions', mode=True) + \
+            self.bind('actions_wm', '$actions', mode=True) + \
             conf_gen.scratchpad_bindings(mode_name) + \
             conf_gen.circle_bindings(mode_name) + \
             conf_gen.mode_end()
