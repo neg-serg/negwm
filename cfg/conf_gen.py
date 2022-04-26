@@ -223,6 +223,11 @@ class conf_gen(Enum):
         '[class="steam_app_.*"]': 'floating enable',
         '[instance="^(gpartedbin|recoll)$"]': 'move workspace $sys, floating enable, focus',
         '[title="Firefox — Sharing Indicator"]': 'border pixel 1, sticky enable, move position 20 ppt -5 px',
+        '[title="alsamixer"]': 'floating enable border pixel 1',
+        '[title="File Transfer*"]': 'floating enable',
+        '[title="i3_help"]': 'floating enable sticky enable border normal',
+        '[class="pavucontrol-qt"]': 'floating enable border normal',
+        '[class="qt5ct"]': 'floating enable sticky enable border normal'
     }
 
     no_focus = [
