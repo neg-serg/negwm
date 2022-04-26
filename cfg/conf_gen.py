@@ -153,7 +153,8 @@ class conf_gen(Enum):
     misc_spec = Δ(
         keymap = {
             '[urgent=latest] focus': ['e'],
-            'floating toggle': ['Shift+d']
+            'floating toggle': ['Shift+d'],
+            'exec i3lockr -p 8 ': ['l'],
         }
     )
 
