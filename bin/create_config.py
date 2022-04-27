@@ -7,7 +7,8 @@ import pathlib
 import logging
 sys.path.append("../cfg")
 sys.path.append("../lib")
-from misc import Misc
+sys.path.append("..")
+from lib.misc import Misc
 
 
 class Configs():

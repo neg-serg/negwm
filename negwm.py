@@ -153,7 +153,7 @@ class negwm():
                         binpath = f'{Misc.i3path()}/bin/'
                         subprocess.run(
                             [f'{binpath}/create_config.py'],
-                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             cwd=binpath, check=False
                         )
                         if reload_one:
