@@ -115,8 +115,8 @@ class conf_gen(Enum):
         default = Δ(
             sections = Δ(
                 focus = Δ(
-                    keymap = Δ(down = ['j'], left = ['h'], right = ['l'], up = ['k']),
                     modkey = 'Mod4',
+                    keymap = Δ(down = ['j'], left = ['h'], right = ['l'], up = ['k']),
                     post = 'focus'
                 ),
                 vol = Δ(
@@ -132,13 +132,19 @@ class conf_gen(Enum):
                     post = '$remember_focused'
                 ),
                 scratchpad = Δ(
-                    keymap = Δ(dialog = ['Control+a'], geom_dump = ['Control+s'], geom_restore = ['Control+space'], hide_current = ['s'], next = ['3']),
                     modkey = 'Mod4',
+                    keymap = Δ(
+                        dialog = ['Control+a'],
+                        geom_dump = ['Control+s'],
+                        geom_restore = ['Control+space'],
+                        hide_current = ['s'],
+                        next = ['3']
+                    ),
                     post = '$scratchpad'
                 ),
                 media = Δ(
-                    keymap = {'next': ['period'], 'play-pause': ['Shift+2'], 'previous': ['comma']},
                     modkey = 'Mod4',
+                    keymap = {'next': ['period'], 'play-pause': ['Shift+2'], 'previous': ['comma']},
                     post = 'exec --no-startup-id playerctl'
                 ),
                 media_xf86 = Δ(
@@ -162,11 +168,11 @@ class conf_gen(Enum):
                     post = '$menu'
                 ),
                 misc = Δ(
+                    modkey = 'Mod4',
                     keymap = {
                         'fullscreen toggle': ['q'],
                         'kill': ['Control+q']
                     },
-                    modkey = 'Mod4'
                 ),
             ),
         ),
@@ -183,13 +189,13 @@ class conf_gen(Enum):
                     post = '$actions resize'
                 ),
                 minus = Δ(
+                    modkey = 'Shift',
                     keymap = Δ(
                         bottom = {"binds": ['j', 's'], "param": '-4'},
                         left = {"binds": ['h', 'a'], "param": '-4'},
                         right = {"binds": ['l', 'd'], "param": '-4'},
                         top = {"binds": ['k', 'w'], "param": '-4'},
                     ),
-                    modkey = 'Shift',
                     post = '$actions resize'
                 )
             )
