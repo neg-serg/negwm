@@ -6,6 +6,8 @@ from . checker import checker
 
 
 class conf_gen(extension, cfg):
+    self_configured_modules = ['circle', 'scratchpad']
+
     def __init__(self, i3) -> None:
         super().__init__()
         cfg.__init__(self, i3)
@@ -100,23 +102,24 @@ class conf_gen(extension, cfg):
         return ret
 
     @staticmethod
-    def bindings(mode, mode_name) -> str:
+    def module_binds(mode) -> str:
         ret = ''
-        mods = extension.get_mods()
-        if mods is None or not mods:
-            return ret
-        mod = mods[mode_name]
-        for tag, settings in mod.cfg.items():
-            for param in settings:
-                if isinstance(settings[param], dict):
-                    for p in settings[param]:
-                        if p.startswith('keybind_'):
-                            subtag = param
-                            ret += conf_gen.generate_bindsym(
-                                mode, tag, settings[param], p, subtag=subtag, mod=mode_name
-                            )
-                elif param.startswith('keybind_'):
-                    ret += conf_gen.generate_bindsym(mode, tag, settings, param, mod=mode_name)
+        for mod_name in conf_gen.self_configured_modules:
+            mods = extension.get_mods()
+            if mods is None or not mods:
+                return ret
+            mod = mods[mod_name]
+            for tag, settings in mod.cfg.items():
+                for param in settings:
+                    if isinstance(settings[param], dict):
+                        for p in settings[param]:
+                            if p.startswith('keybind_'):
+                                subtag = param
+                                ret += conf_gen.generate_bindsym(
+                                    mode, tag, settings[param], p, subtag=subtag, mod=mod_name
+                                )
+                    elif param.startswith('keybind_'):
+                        ret += conf_gen.generate_bindsym(mode, tag, settings, param, mod=mod_name)
         return ret
 
     def mods_commands(self) -> str:
@@ -196,10 +199,10 @@ class conf_gen(extension, cfg):
             return ret + '}\n'
         return ''
 
-    def bind_mode(self, section_name, post, exit=False, mode=True):
-        return self.bind(section_name, post, exit, mode)
+    def bind_mode(self, section_name, exit=False, mode=True):
+        return self.bind(section_name, exit, mode)
 
-    def bind(self, section_name, post, exit=False, mode=False) -> str:
+    def bind(self, section_name, exit=False, mode=False) -> str:
         ret = ''
         prefix = f'\tbindsym' if mode else 'bindsym'
         end = '' if not exit else ', $exit'
@@ -214,6 +217,7 @@ class conf_gen(extension, cfg):
                 modkey += '+'
             ret += '\n'
             keymap = section.get('keymap', {})
+            post = section.get('post', '')
             if keymap:
                 for action, maps in keymap.items():
                     if isinstance(maps, list):
@@ -228,12 +232,6 @@ class conf_gen(extension, cfg):
 
     def exec_bindings(self) -> str:
         exec_ret = ''
-        exec_ret += \
-        self.bind('media', 'exec --no-startup-id playerctl') + \
-            self.bind('vol', '$vol') + \
-            self.bind('menu', '$menu') + \
-            self.bind('scratchpad', '$scratchpad') + \
-            self.bind('remember_focused', '$remember_focused')
         execs = self.cfg.get('exec', {})
         if execs:
             plain = execs.get('plain', {})
@@ -256,38 +254,40 @@ class conf_gen(extension, cfg):
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
-        return self.bind('misc', '') + \
-            self.bind('focus', 'focus') + \
+        return self.bind('misc') + \
             self.exec_bindings() + \
             self.i3cmd_bindings() + \
-            conf_gen.bindings(mode_name, 'scratchpad') + \
-            conf_gen.bindings(mode_name, 'circle') + \
-            self.bind(f'{mode_name}:focus', 'focus') + \
-            self.bind(f'{mode_name}:scratchpad', '$scratchpad')
+            self.bind(f'{mode_name}:focus') + \
+            self.bind(f'{mode_name}:vol') + \
+            self.bind(f'{mode_name}:remember_focused') + \
+            self.bind(f'{mode_name}:scratchpad') + \
+            self.bind(f'{mode_name}:menu') + \
+            self.bind(f'{mode_name}:misc') + \
+            self.bind(f'{mode_name}:media') + \
+            self.bind(f'{mode_name}:media_xf86') + \
+            conf_gen.module_binds(mode_name)
 
     def mode_resize(self, mode_name, mode_bind) -> str:
         return conf_gen.mode(mode_name, mode_bind) + \
             conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode('resize:plus', '$actions resize') + \
-            self.bind_mode('resize:minus', '$actions resize') + \
+            self.bind_mode(f'{mode_name}:plus') + \
+            self.bind_mode(f'{mode_name}:minus') + \
             conf_gen.mode(end=True)
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         return conf_gen.mode(mode_name, mode_bind) + \
             conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode('spec:misc', '', exit=True) + \
-            self.bind_mode('spec:menu', '$menu', exit=True) + \
-            conf_gen.bindings(mode_name, 'scratchpad') + \
-            conf_gen.bindings(mode_name, 'circle') + \
+            self.bind_mode(f'{mode_name}:misc', exit=True) + \
+            self.bind_mode(f'{mode_name}:menu', exit=True) + \
+            conf_gen.module_binds(mode_name) + \
             conf_gen.mode(end=True)
 
     def mode_wm(self, mode_name, mode_bind) -> str:
         return conf_gen.mode(mode_name, mode_bind) + \
             conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode('wm:layout', 'layout', exit=True) + \
-            self.bind_mode('wm:split', 'split', exit=True) + \
-            self.bind_mode('wm:move', 'move') + \
-            self.bind_mode('wm:actions', '$actions') + \
-            conf_gen.bindings(mode_name, 'scratchpad') + \
-            conf_gen.bindings(mode_name, 'circle') + \
+            self.bind_mode(f'{mode_name}:layout', exit=True) + \
+            self.bind_mode(f'{mode_name}:split', exit=True) + \
+            self.bind_mode(f'{mode_name}:move') + \
+            self.bind_mode(f'{mode_name}:actions') + \
+            conf_gen.module_binds(mode_name) + \
             conf_gen.mode(end=True)

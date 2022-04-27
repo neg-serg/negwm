@@ -2,6 +2,16 @@ from enum import Enum
 Δ = dict
 
 class conf_gen(Enum):
+    startup = Δ(
+        always = Δ(
+            negwm = 'systemctl --user restart --no-block negwm.service',
+        ),
+        once = Δ(
+            dbus_env = 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
+            startup = 'systemctl --user start --no-block i3-session.target'
+        ),
+    )
+
     set_vars = Δ(
         exit = 'mode \\"default\\"',
         i3 = '${XDG_CONFIG_HOME}/negwm'
@@ -70,53 +80,6 @@ class conf_gen(Enum):
         workspace_layout = 'tabbed'
     )
 
-    media = Δ(
-        keymap = {
-            'next': ['XF86AudioNext', 'period'],
-            'play': ['XF86AudioPlay'],
-            'play-pause': ['Shift+2'],
-            'previous': ['XF86AudioPrev', 'comma'],
-            'stop': ['XF86AudioStop']
-        },
-        modkey = 'Mod4'
-    )
-
-    menu = Δ(
-        keymap = Δ(
-            attach = ['Mod4+Shift+a'],
-            autoprop = ['Mod4+Shift+s'],
-            cmd_menu = ['Mod4+Control+grave'],
-            goto_win = ['Mod1+g'],
-            movews = ['Mod4+Control+g'],
-            ws = ['Mod1+Control+g']
-        )
-    )
-
-    misc = Δ(
-        keymap = {
-            'fullscreen toggle': ['q'],
-            'kill': ['Control+q']
-        },
-        modkey = 'Mod4'
-    )
-
-    move = Δ(
-        keymap = Δ(
-            bottom = ['s'],
-            left = ['a'],
-            right = ['d'],
-            top = ['w']
-        )
-    )
-
-    remember_focused = Δ(
-        keymap = Δ(
-            focus_next_visible = ['Mod4+grave'],
-            focus_prev_visible = ['Mod4+Shift+grave'],
-            switch = ['Mod1+Tab', 'Mod4+slash']
-        )
-    )
-
     rules = {
         '[class=".*"]': 'title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 5',
         '[class="^(Gcolor3|rdesktop|openssh-askpass)$"]': 'floating enable',
@@ -139,16 +102,6 @@ class conf_gen(Enum):
         '[window_type="splash"]',
     ]
 
-    startup = Δ(
-        always = Δ(
-            negwm = 'systemctl --user restart --no-block negwm.service',
-        ),
-        once = Δ(
-            dbus_env = 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
-            startup = 'systemctl --user start --no-block i3-session.target'
-        ),
-    )
-
     theme = {
         'default_border' : 'normal',
         'default_floating_border' : 'normal',
@@ -158,22 +111,61 @@ class conf_gen(Enum):
         'title_align' : 'left'
     }
 
-    vol = Δ(
-        keymap = Δ(
-            d = ['XF86AudioLowerVolume'],
-            u = ['XF86AudioRaiseVolume']
-        )
-    )
-
     bindings = Δ(
         default = Δ(
             sections = Δ(
                 focus = Δ(
                     keymap = Δ(down = ['j'], left = ['h'], right = ['l'], up = ['k']),
-                    modkey = 'Mod4'
+                    modkey = 'Mod4',
+                    post = 'focus'
+                ),
+                vol = Δ(
+                    keymap = Δ(d = ['XF86AudioLowerVolume'], u = ['XF86AudioRaiseVolume']),
+                    post = '$vol'
+                ),
+                remember_focused = Δ(
+                    keymap = Δ(
+                        focus_next_visible = ['Mod4+grave'],
+                        focus_prev_visible = ['Mod4+Shift+grave'],
+                        switch = ['Mod1+Tab', 'Mod4+slash']
+                    ),
+                    post = '$remember_focused'
                 ),
                 scratchpad = Δ(
                     keymap = Δ(dialog = ['Control+a'], geom_dump = ['Control+s'], geom_restore = ['Control+space'], hide_current = ['s'], next = ['3']),
+                    modkey = 'Mod4',
+                    post = '$scratchpad'
+                ),
+                media = Δ(
+                    keymap = {'next': ['period'], 'play-pause': ['Shift+2'], 'previous': ['comma']},
+                    modkey = 'Mod4',
+                    post = 'exec --no-startup-id playerctl'
+                ),
+                media_xf86 = Δ(
+                    keymap = {
+                        'next': ['XF86AudioNext'],
+                        'play': ['XF86AudioPlay'],
+                        'previous': ['XF86AudioPrev'],
+                        'stop': ['XF86AudioStop']
+                    },
+                    post = 'exec --no-startup-id playerctl'
+                ),
+                menu = Δ(
+                    keymap = Δ(
+                        attach = ['Mod4+Shift+a'],
+                        autoprop = ['Mod4+Shift+s'],
+                        cmd_menu = ['Mod4+Control+grave'],
+                        goto_win = ['Mod1+g'],
+                        movews = ['Mod4+Control+g'],
+                        ws = ['Mod1+Control+g']
+                    ),
+                    post = '$menu'
+                ),
+                misc = Δ(
+                    keymap = {
+                        'fullscreen toggle': ['q'],
+                        'kill': ['Control+q']
+                    },
                     modkey = 'Mod4'
                 ),
             ),
@@ -188,6 +180,7 @@ class conf_gen(Enum):
                         right = {"binds": ['l', 'd'], "param": '4'},
                         top = {"binds": ['k', 'w'], "param": '4'},
                     ),
+                    post = '$actions resize'
                 ),
                 minus = Δ(
                     keymap = Δ(
@@ -197,12 +190,20 @@ class conf_gen(Enum):
                         top = {"binds": ['k', 'w'], "param": '-4'},
                     ),
                     modkey = 'Shift',
+                    post = '$actions resize'
                 )
             )
         ),
         spec = Δ(
             bind = 'Mod1+e',
             sections = Δ(
+                misc = Δ(
+                    keymap = {
+                        '[urgent=latest] focus': ['e'],
+                        'floating toggle': ['Shift+d'],
+                        'exec i3lockr -p 8 ': ['l'],
+                    }
+                ),
                 menu = Δ(
                     keymap = Δ(
                         gtk_theme = ['Shift+t'],
@@ -210,15 +211,9 @@ class conf_gen(Enum):
                         pulse_input = ['i'],
                         pulse_output = ['o'],
                         xprop_show = ['m']
-                    )
+                    ),
+                    post = '$menu'
                 ),
-                misc = Δ(
-                    keymap = {
-                        '[urgent=latest] focus': ['e'],
-                        'floating toggle': ['Shift+d'],
-                        'exec i3lockr -p 8 ': ['l'],
-                    }
-                )
             )
         ),
         wm = Δ(
@@ -231,10 +226,17 @@ class conf_gen(Enum):
                        splitv = ['backslash'],
                        tabbed = ['t'],
                        toggle = ['Control+t'],
-                    )
+                    ),
+                    post = 'layout',
                 ),
-                split = Δ(keymap = Δ(horizontal = ['h', 'l'], vertical = ['j', 'k'])),
-                move = Δ(keymap = Δ(bottom = ['s'], left = ['a'], right = ['d'], top = ['w'])),
+                split = Δ(
+                    keymap = Δ(horizontal = ['h', 'l'], vertical = ['j', 'k']),
+                    post = 'split',
+                ),
+                move = Δ(
+                    keymap = Δ(bottom = ['s'], left = ['a'], right = ['d'], top = ['w']),
+                    post = 'move'
+                ),
                 actions = Δ(
                     keymap = Δ(
                         grow = ['Shift+plus'],
@@ -249,7 +251,8 @@ class conf_gen(Enum):
                         hup = {"binds": ['Shift+a'], "param": 'x2'},
                         vleft = {"binds": ['Shift+s'], "param": 'x2'},
                         vright = {"binds": ['Shift+d'], "param": 'x2'},
-                    )
+                    ),
+                    post = '$actions'
                 )
             )
         )
