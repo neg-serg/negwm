@@ -84,77 +84,39 @@ class conf_gen(extension, cfg):
         return ret.rstrip("\n")
 
     @staticmethod
-    def scratchpad_bindings(mode) -> str:
-        ret = ''
-
-        def get_binds(mode, tag, settings, p, subtag='') -> str:
-            ret = ''
-            pref, postfix = '', ''
-            if mode != 'default':
-                pref, postfix = '\t', ', $exit'
-            get_binds = p.split('_')
-            mode_, cmd = get_binds[1], get_binds[2]
-            if len(get_binds) == 3:
-                if mode_ == mode:
-                    if subtag:
-                        subtag = f' {subtag}'
-                    for keybind in settings[p]:
-                        ret += f'{pref}bindsym {keybind.strip()}' + ' ' + \
-                            f' $scratchpad {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
-            return ret
-
-        mods = extension.get_mods()
-        if mods is None or not mods:
-            return ret
-        scratchpad = mods['scratchpad']
-        for tag, settings in scratchpad.cfg.items():
-            for param in settings:
-                if isinstance(settings[param], dict):
-                    for p in settings[param]:
-                        if p.startswith('keybind_'):
-                            subtag = param
-                            ret += get_binds(
-                                mode, tag, settings[param], p, subtag=subtag
-                            )
-                elif param.startswith('keybind_'):
-                    ret += get_binds(mode, tag, settings, param)
+    def generate_bindsym(mode, tag, settings, p, subtag='', mod='') -> str:
+        ret, pref, postfix = '', '', ''
+        if mode != 'default':
+            pref, postfix = '\t', ', $exit'
+        generate_bindsym = p.split('_')
+        mode_, cmd = generate_bindsym[1], generate_bindsym[2]
+        if len(generate_bindsym) == 3:
+            if mode_ == mode:
+                if subtag:
+                    subtag = f' {subtag}'
+                for keybind in settings[p]:
+                    ret += f'{pref}bindsym {keybind.strip()}' + ' ' + \
+                        f' ${mod} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
         return ret
 
     @staticmethod
-    def circle_bindings(mode) -> str:
+    def bindings(mode, mode_name) -> str:
         ret = ''
-
-        def get_binds(mode, tag, settings, p, subtag='') -> str:
-            ret = ''
-            pref, postfix = '', ''
-            if mode != 'default':
-                pref, postfix = '\t', ', $exit'
-            get_binds = p.split('_')
-            mode_, cmd = get_binds[1], get_binds[2]
-            if len(get_binds) == 3:
-                if mode_ == mode:
-                    if subtag:
-                        subtag = f' {subtag}'
-                    for keybind in settings[p]:
-                        ret += f'{pref}bindsym {keybind} $circle' + ' ' + \
-                            f' {cmd} {tag}{subtag}{postfix}'.strip() + '\n'
-            return ret
-
         mods = extension.get_mods()
         if mods is None or not mods:
             return ret
-        circle = mods['circle']
-        for tag, settings in circle.cfg.items():
+        mod = mods[mode_name]
+        for tag, settings in mod.cfg.items():
             for param in settings:
                 if isinstance(settings[param], dict):
                     for p in settings[param]:
                         if p.startswith('keybind_'):
                             subtag = param
-                            ret += get_binds(
-                                mode, tag, settings[subtag], p, subtag
+                            ret += conf_gen.generate_bindsym(
+                                mode, tag, settings[param], p, subtag=subtag, mod=mode_name
                             )
                 elif param.startswith('keybind_'):
-                    ret += get_binds(mode, tag, settings, param)
+                    ret += conf_gen.generate_bindsym(mode, tag, settings, param, mod=mode_name)
         return ret
 
     def mods_commands(self) -> str:
@@ -299,7 +261,6 @@ class conf_gen(extension, cfg):
         ret = ''
         prefix = f'\tbindsym' if mode else 'bindsym'
         end = '' if not exit else ', $exit'
-
         section = self.cfg.get(section_name, {})
         if section:
             modkey = section.get('modkey', '')
@@ -319,43 +280,42 @@ class conf_gen(extension, cfg):
                             ret += f'{prefix} {modkey}{key} {post} {action}{param}{end}\n'
         return ret
 
-    def mode_default(self, mode_name, mode_bind) -> str:
-        _ = mode_bind
-
-        def i3cmd_bindings() -> str:
-            i3cmd_ret = ''
-            for cmd in 'reload', 'restart':
-                bind = self.cfg.get(cmd, '')
-                if bind:
-                    i3cmd_ret += f'bindsym {bind} {cmd}\n'
-            return i3cmd_ret
-
-        def exec_bindings() -> str:
-            exec_ret = ''
-            exec_ret += \
-                self.bind('media', 'exec --no-startup-id playerctl') + \
-                self.bind('vol', '$vol') + \
-                self.bind('menu', '$menu') + \
-                self.bind('scratchpad', '$scratchpad') + \
-                self.bind('remember_focused', '$remember_focused')
-            execs = self.cfg.get('exec', {})
-            if execs:
-                plain = execs.get('plain', {})
-                if plain:
-                    for bind, prog in plain.items():
-                        exec_ret += f'bindsym {bind} exec {prog}\n'
+    def exec_bindings(self) -> str:
+        exec_ret = ''
+        exec_ret += \
+        self.bind('media', 'exec --no-startup-id playerctl') + \
+            self.bind('vol', '$vol') + \
+            self.bind('menu', '$menu') + \
+            self.bind('scratchpad', '$scratchpad') + \
+            self.bind('remember_focused', '$remember_focused')
+        execs = self.cfg.get('exec', {})
+        if execs:
+            plain = execs.get('plain', {})
+            if plain:
+                for bind, prog in plain.items():
+                    exec_ret += f'bindsym {bind} exec {prog}\n'
                 no_startup_id = execs.get('no_startup_id', {})
                 for bind, prog in no_startup_id.items():
                     exec_ret += f'bindsym {bind} exec {prog}\n'
             return exec_ret
+        return ''
 
-        return \
-            self.bind('misc', '') + \
+    def i3cmd_bindings(self) -> str:
+        i3cmd_ret = ''
+        for cmd in 'reload', 'restart':
+            bind = self.cfg.get(cmd, '')
+            if bind:
+                i3cmd_ret += f'bindsym {bind} {cmd}\n'
+        return i3cmd_ret
+
+    def mode_default(self, mode_name, mode_bind) -> str:
+        _ = mode_bind
+        return self.bind('misc', '') + \
             self.bind('focus', 'focus') + \
-            exec_bindings() + \
-            i3cmd_bindings() + \
-            conf_gen.scratchpad_bindings(mode_name) + \
-            conf_gen.circle_bindings(mode_name)
+            self.exec_bindings() + \
+            self.i3cmd_bindings() + \
+            conf_gen.bindings(mode_name, 'scratchpad') + \
+            conf_gen.bindings(mode_name, 'circle')
 
     def mode_resize(self, mode_name, mode_bind) -> str:
         return conf_gen.mode(mode_bind, mode_name) + \
@@ -369,8 +329,8 @@ class conf_gen(extension, cfg):
             conf_gen.mode_start(mode_name) + \
             self.bind_mode('misc_spec', '', exit=True) + \
             self.bind_mode('menu_spec', '$menu', exit=True) + \
-            conf_gen.scratchpad_bindings(mode_name) + \
-            conf_gen.circle_bindings(mode_name) + \
+            conf_gen.bindings(mode_name, 'scratchpad') + \
+            conf_gen.bindings(mode_name, 'circle') + \
             conf_gen.mode_end()
 
     def mode_wm(self, mode_name, mode_bind) -> str:
@@ -380,6 +340,6 @@ class conf_gen(extension, cfg):
             self.bind_mode('split', 'split', exit=True) + \
             self.bind_mode('move', 'move') + \
             self.bind_mode('actions', '$actions') + \
-            conf_gen.scratchpad_bindings(mode_name) + \
-            conf_gen.circle_bindings(mode_name) + \
+            conf_gen.bindings(mode_name, 'scratchpad') + \
+            conf_gen.bindings(mode_name, 'circle') + \
             conf_gen.mode_end()

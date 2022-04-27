@@ -22,13 +22,6 @@ class conf_gen(Enum):
         wine = ' μ:wine'
     )
 
-    bind_modes = Δ(
-        default = '',
-        resize = 'Mod4+r',
-        spec = 'Mod1+e',
-        wm = 'Mod4+minus'
-    )
-
     actions = Δ(
         keymap = Δ(
             grow = ['Shift+plus'],
@@ -112,6 +105,13 @@ class conf_gen(Enum):
         force_display_urgency_hint = '2000 ms',
         mouse_warping = 'none',
         workspace_layout = 'tabbed'
+    )
+
+    bind_modes = Δ(
+        default = '',
+        resize = 'Mod4+r',
+        spec = 'Mod1+e',
+        wm = 'Mod4+minus'
     )
 
     media = Δ(
