@@ -30,12 +30,13 @@ class conf_gen(extension, cfg):
         for section in self.cfg.keys():
             if hasattr(self, section):
                 section_handler = getattr(self, section)
-                ret.append(section_handler())
+                if section != 'bindings':
+                    ret.append(section_handler())
         ret.append(self.mods_commands())
-        bind_modes = self.cfg.get('bind_modes', {})
-        for name, keybind in bind_modes.items():
-            keybind_data = getattr(self, 'mode_' + name)(
-                mode_name=name, mode_bind=keybind
+        binds = self.cfg.get('bindings', {})
+        for mode, data in binds.items():
+            keybind_data = getattr(self, 'mode_' + mode)(
+                mode_name=mode, mode_bind=data.get('bind', None)
             )
             ret.append(keybind_data)
         return '\n'.join(filter(None, ret))
@@ -203,6 +204,10 @@ class conf_gen(extension, cfg):
         prefix = f'\tbindsym' if mode else 'bindsym'
         end = '' if not exit else ', $exit'
         section = self.cfg.get(section_name, {})
+        if ':' in section_name:
+            s = section_name.split(':')
+            mod, name = s[0], s[1]
+            section = self.cfg['bindings'][mod]['sections'][name]
         if section:
             modkey = section.get('modkey', '')
             if modkey:
@@ -256,20 +261,22 @@ class conf_gen(extension, cfg):
             self.exec_bindings() + \
             self.i3cmd_bindings() + \
             conf_gen.bindings(mode_name, 'scratchpad') + \
-            conf_gen.bindings(mode_name, 'circle')
+            conf_gen.bindings(mode_name, 'circle') + \
+            self.bind(f'{mode_name}:focus', 'focus') + \
+            self.bind(f'{mode_name}:scratchpad', '$scratchpad')
 
     def mode_resize(self, mode_name, mode_bind) -> str:
         return conf_gen.mode(mode_name, mode_bind) + \
             conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode('plus_resize', '$actions resize') + \
-            self.bind_mode('minus_resize', '$actions resize') + \
+            self.bind_mode('resize:plus', '$actions resize') + \
+            self.bind_mode('resize:minus', '$actions resize') + \
             conf_gen.mode(end=True)
 
     def mode_spec(self, mode_name, mode_bind) -> str:
         return conf_gen.mode(mode_name, mode_bind) + \
             conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode('misc_spec', '', exit=True) + \
-            self.bind_mode('menu_spec', '$menu', exit=True) + \
+            self.bind_mode('spec:misc', '', exit=True) + \
+            self.bind_mode('spec:menu', '$menu', exit=True) + \
             conf_gen.bindings(mode_name, 'scratchpad') + \
             conf_gen.bindings(mode_name, 'circle') + \
             conf_gen.mode(end=True)
@@ -277,10 +284,10 @@ class conf_gen(extension, cfg):
     def mode_wm(self, mode_name, mode_bind) -> str:
         return conf_gen.mode(mode_name, mode_bind) + \
             conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode('layout', 'layout', exit=True) + \
-            self.bind_mode('split', 'split', exit=True) + \
-            self.bind_mode('move', 'move') + \
-            self.bind_mode('actions', '$actions') + \
+            self.bind_mode('wm:layout', 'layout', exit=True) + \
+            self.bind_mode('wm:split', 'split', exit=True) + \
+            self.bind_mode('wm:move', 'move') + \
+            self.bind_mode('wm:actions', '$actions') + \
             conf_gen.bindings(mode_name, 'scratchpad') + \
             conf_gen.bindings(mode_name, 'circle') + \
             conf_gen.mode(end=True)

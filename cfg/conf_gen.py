@@ -22,23 +22,6 @@ class conf_gen(Enum):
         wine = ' μ:wine'
     )
 
-    actions = Δ(
-        keymap = Δ(
-            grow = ['Shift+plus'],
-            maxhor = ['x'],
-            maximize = ['m'],
-            maxvert = ['y'],
-            none = ['c'],
-            resize = ['Shift+c'],
-            revert_maximize = ['Shift+m', 'Shift+x', 'Shift+y'],
-            shrink = ['Shift+minus'],
-            hdown = {"binds": ['Shift+w'], "param": 'x2'},
-            hup = {"binds": ['Shift+a'], "param": 'x2'},
-            vleft = {"binds": ['Shift+s'], "param": 'x2'},
-            vright = {"binds": ['Shift+d'], "param": 'x2'},
-        )
-    )
-
     colors = Δ(
         background = ['#000000ee'],
         focused = ['#000011dd', '#000000ee', '#ddddee', '#112211', '#0C0C0D'],
@@ -76,26 +59,6 @@ class conf_gen(Enum):
         }
     }
 
-    focus = Δ(
-        keymap = Δ(
-            down = ['j'],
-            left = ['h'],
-            right = ['l'],
-            up = ['k']
-        ),
-        modkey = 'Mod4'
-    )
-
-    layout = Δ(
-        keymap = Δ(
-           default = ['grave'],
-           splith = ['minus'],
-           splitv = ['backslash'],
-           tabbed = ['t'],
-           toggle = ['Control+t'],
-        )
-    )
-
     main = Δ(
         default_orientation = 'auto',
         floating_modifier = 'Mod4',
@@ -105,13 +68,6 @@ class conf_gen(Enum):
         force_display_urgency_hint = '2000 ms',
         mouse_warping = 'none',
         workspace_layout = 'tabbed'
-    )
-
-    bind_modes = Δ(
-        default = '',
-        resize = 'Mod4+r',
-        spec = 'Mod1+e',
-        wm = 'Mod4+minus'
     )
 
     media = Δ(
@@ -134,24 +90,6 @@ class conf_gen(Enum):
             movews = ['Mod4+Control+g'],
             ws = ['Mod1+Control+g']
         )
-    )
-
-    menu_spec = Δ(
-        keymap = Δ(
-            gtk_theme = ['Shift+t'],
-            icon_theme = ['Shift+i'],
-            pulse_input = ['i'],
-            pulse_output = ['o'],
-            xprop_show = ['m']
-        )
-    )
-
-    misc_spec = Δ(
-        keymap = {
-            '[urgent=latest] focus': ['e'],
-            'floating toggle': ['Shift+d'],
-            'exec i3lockr -p 8 ': ['l'],
-        }
     )
 
     misc = Δ(
@@ -179,25 +117,6 @@ class conf_gen(Enum):
         )
     )
 
-    plus_resize = Δ(
-        keymap = Δ(
-            bottom = {"binds": ['j', 's'], "param": '4'},
-            left = {"binds": ['h', 'a'], "param": '4'},
-            right = {"binds": ['l', 'd'], "param": '4'},
-            top = {"binds": ['k', 'w'], "param": '4'},
-        ),
-    )
-
-    minus_resize = Δ(
-        keymap = Δ(
-            bottom = {"binds": ['j', 's'], "param": '-4'},
-            left = {"binds": ['h', 'a'], "param": '-4'},
-            right = {"binds": ['l', 'd'], "param": '-4'},
-            top = {"binds": ['k', 'w'], "param": '-4'},
-        ),
-        modkey = 'Shift',
-    )
-
     rules = {
         '[class=".*"]': 'title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 5',
         '[class="^(Gcolor3|rdesktop|openssh-askpass)$"]': 'floating enable',
@@ -219,24 +138,6 @@ class conf_gen(Enum):
         '[title="Firefox — Sharing Indicator"]',
         '[window_type="splash"]',
     ]
-
-    scratchpad = Δ(
-        keymap = Δ(
-            dialog = ['Control+a'],
-            geom_dump = ['Control+s'],
-            geom_restore = ['Control+space'],
-            hide_current = ['s'],
-            next = ['3']
-        ),
-        modkey = 'Mod4'
-    )
-
-    split = Δ(
-        keymap = Δ(
-            horizontal = ['h', 'l'],
-            vertical = ['j', 'k']
-        )
-    )
 
     startup = Δ(
         always = Δ(
@@ -261,5 +162,95 @@ class conf_gen(Enum):
         keymap = Δ(
             d = ['XF86AudioLowerVolume'],
             u = ['XF86AudioRaiseVolume']
+        )
+    )
+
+    bindings = Δ(
+        default = Δ(
+            sections = Δ(
+                focus = Δ(
+                    keymap = Δ(down = ['j'], left = ['h'], right = ['l'], up = ['k']),
+                    modkey = 'Mod4'
+                ),
+                scratchpad = Δ(
+                    keymap = Δ(dialog = ['Control+a'], geom_dump = ['Control+s'], geom_restore = ['Control+space'], hide_current = ['s'], next = ['3']),
+                    modkey = 'Mod4'
+                ),
+            ),
+        ),
+        resize = Δ(
+            bind = 'Mod4+r',
+            sections = Δ(
+                plus = Δ(
+                    keymap = Δ(
+                        bottom = {"binds": ['j', 's'], "param": '4'},
+                        left = {"binds": ['h', 'a'], "param": '4'},
+                        right = {"binds": ['l', 'd'], "param": '4'},
+                        top = {"binds": ['k', 'w'], "param": '4'},
+                    ),
+                ),
+                minus = Δ(
+                    keymap = Δ(
+                        bottom = {"binds": ['j', 's'], "param": '-4'},
+                        left = {"binds": ['h', 'a'], "param": '-4'},
+                        right = {"binds": ['l', 'd'], "param": '-4'},
+                        top = {"binds": ['k', 'w'], "param": '-4'},
+                    ),
+                    modkey = 'Shift',
+                )
+            )
+        ),
+        spec = Δ(
+            bind = 'Mod1+e',
+            sections = Δ(
+                menu = Δ(
+                    keymap = Δ(
+                        gtk_theme = ['Shift+t'],
+                        icon_theme = ['Shift+i'],
+                        pulse_input = ['i'],
+                        pulse_output = ['o'],
+                        xprop_show = ['m']
+                    )
+                ),
+                misc = Δ(
+                    keymap = {
+                        '[urgent=latest] focus': ['e'],
+                        'floating toggle': ['Shift+d'],
+                        'exec i3lockr -p 8 ': ['l'],
+                    }
+                )
+            )
+        ),
+        wm = Δ(
+            bind = 'Mod4+minus',
+            sections = Δ(
+                layout = Δ(
+                    keymap = Δ(
+                       default = ['grave'],
+                       splith = ['minus'],
+                       splitv = ['backslash'],
+                       tabbed = ['t'],
+                       toggle = ['Control+t'],
+                    )
+                ),
+                split = Δ(keymap = Δ(horizontal = ['h', 'l'], vertical = ['j', 'k'])),
+                move = Δ(keymap = Δ(bottom = ['s'], left = ['a'], right = ['d'], top = ['w'])),
+                actions = Δ(
+                    keymap = Δ(
+                        grow = ['Shift+plus'],
+                        maxhor = ['x'],
+                        maximize = ['m'],
+                        maxvert = ['y'],
+                        none = ['c'],
+                        resize = ['Shift+c'],
+                        revert_maximize = ['Shift+m', 'Shift+x', 'Shift+y'],
+                        shrink = ['Shift+minus'],
+                        hdown = {"binds": ['Shift+w'], "param": 'x2'},
+                        hup = {"binds": ['Shift+a'], "param": 'x2'},
+                        vleft = {"binds": ['Shift+s'], "param": 'x2'},
+                        vright = {"binds": ['Shift+d'], "param": 'x2'},
+                    )
+                )
+            )
         )
     )
