@@ -137,8 +137,7 @@ class Rules():
         for tag in cmd_dict:
             rules = list(filter(lambda str: str != '', cmd_dict[tag]))
             if rules:
-                ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']'
-                ret += '\n'
+                ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']\n'
         return (ret, cmd_dict, mod)
 
     @staticmethod
@@ -170,5 +169,3 @@ class Rules():
             if cmd:
                 cmd += '"'
         return cmd
-
-
