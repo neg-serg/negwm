@@ -1,6 +1,5 @@
 import os
-from typing import List
-from . misc import Misc
+from . misc import Rules
 from . cfg import cfg
 from . extension import extension
 from . checker import checker
@@ -137,36 +136,9 @@ class conf_gen(extension, cfg):
         return ret
 
     def rules(self) -> str:
-        def fill_rules_dict(mod, cmd_dict) -> List:
-            config = mod.cfg
-            for tag in config:
-                cmd_dict[tag] = []
-                for attr in config[tag]:
-                    for fill in ['classw', 'instance', 'name', 'role']:
-                        cmd_dict[tag].append(info(config, tag, attr, fill))
-            return cmd_dict
-
-        def rules_mod(modname):
-            """ Create i3 match rules for all tags. """
-            ret = ''
-            mods = extension.get_mods()
-            if mods is None or not mods:
-                return ret
-            mod = mods.get(modname, None)
-            if mod is None:
-                return ''
-            cmd_dict = fill_rules_dict(mod, {})
-            for tag in cmd_dict:
-                rules = list(filter(lambda str: str != '', cmd_dict[tag]))
-                if rules:
-                    ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']'
-                    ret += '\n'
-            return (ret, cmd_dict, mod)
-
         def rules_scratchpad() -> str:
             """ Create i3 match rules for all tags. """
-            (ret, cmd_dict, scratchpad) = rules_mod('scratchpad')
-            ret += '\n'
+            (ret, cmd_dict, scratchpad) = Rules.rules_mod('scratchpad')
             for tag in cmd_dict:
                 if tag in {'transients'}:
                     geom = getattr(scratchpad, 'nsgeom').get_geom(tag)
@@ -177,7 +149,7 @@ class conf_gen(extension, cfg):
             return ret
 
         def rules_circle() -> str:
-            (ret, _, circle) = rules_mod('circle')
+            (ret, _, circle) = Rules.rules_mod('circle')
             conf = getattr(circle, 'cfg')
             for tag in conf:
                 focus_cmd = ''
@@ -189,35 +161,6 @@ class conf_gen(extension, cfg):
                     ret += f'for_window $circle-{tag}' \
                         f' move workspace ${ws}{focus_cmd}\n'
             return ret
-
-        def info(config: dict, tag: str, attr: str, fill: str) -> str:
-            """ Create rule in i3 commands format
-                config (dict): extension config.
-                tag (str): target tag.
-                attr (str): tag attrubutes.
-                fill (str): attribute to fill. """
-            conv_dict_attr = {
-                'classw': 'class',
-                'instance': 'instance',
-                'name': 'window_name',
-                'role': 'window_role'
-            }
-            cmd = ''
-            if fill in attr:
-                if not attr.endswith('_r'):
-                    win_attr = conv_dict_attr[attr]
-                else:
-                    win_attr = conv_dict_attr[attr[:-2]]
-                start = f'{win_attr}="' + Misc.ch(config[tag][attr], '^')
-                attrlist = []
-                attrlist = config[tag][attr]
-                if config[tag].get(attr + '_r', ''):
-                    attrlist += config[tag][attr + '_r']
-                if not attr.endswith('_r'):
-                    cmd = start + Misc.parse_attr(attrlist, end='')
-                if cmd:
-                    cmd += '"'
-            return cmd
 
         def rules() -> str:
             ret = ''
@@ -238,21 +181,19 @@ class conf_gen(extension, cfg):
         return rules_scratchpad() + rules_circle() + rules() + no_focus()
 
     @staticmethod
-    def mode_start(name) -> str:
-        return 'mode ' + name + ' {'
-
-    @staticmethod
-    def mode_end() -> str:
-        ret = ''
-        pref = '\t'
-        bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
-        for keybind in bindings:
-            ret += f'{pref}bindsym {keybind}, $exit\n'
-        return ret + '}\n'
-
-    @staticmethod
-    def mode(keymap, name) -> str:
-        return f'bindsym {keymap} mode "{name}"\n'
+    def mode(name='', keymap='', start=False, end=False):
+        if not start and not end:
+            return f'bindsym {keymap} mode "{name}"\n'
+        if start:
+            return 'mode ' + name + ' {'
+        if end:
+            ret = ''
+            pref = '\t'
+            bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
+            for keybind in bindings:
+                ret += f'{pref}bindsym {keybind}, $exit\n'
+            return ret + '}\n'
+        return ''
 
     def bind_mode(self, section_name, post, exit=False, mode=True):
         return self.bind(section_name, post, exit, mode)
@@ -318,28 +259,28 @@ class conf_gen(extension, cfg):
             conf_gen.bindings(mode_name, 'circle')
 
     def mode_resize(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode(mode_bind, mode_name) + \
-            conf_gen.mode_start(mode_name) + \
+        return conf_gen.mode(mode_name, mode_bind) + \
+            conf_gen.mode(mode_name, start=True) + \
             self.bind_mode('plus_resize', '$actions resize') + \
             self.bind_mode('minus_resize', '$actions resize') + \
-            conf_gen.mode_end()
+            conf_gen.mode(end=True)
 
     def mode_spec(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode(mode_bind, mode_name) + \
-            conf_gen.mode_start(mode_name) + \
+        return conf_gen.mode(mode_name, mode_bind) + \
+            conf_gen.mode(mode_name, start=True) + \
             self.bind_mode('misc_spec', '', exit=True) + \
             self.bind_mode('menu_spec', '$menu', exit=True) + \
             conf_gen.bindings(mode_name, 'scratchpad') + \
             conf_gen.bindings(mode_name, 'circle') + \
-            conf_gen.mode_end()
+            conf_gen.mode(end=True)
 
     def mode_wm(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode(mode_bind, mode_name) + \
-            conf_gen.mode_start(mode_name) + \
+        return conf_gen.mode(mode_name, mode_bind) + \
+            conf_gen.mode(mode_name, start=True) + \
             self.bind_mode('layout', 'layout', exit=True) + \
             self.bind_mode('split', 'split', exit=True) + \
             self.bind_mode('move', 'move') + \
             self.bind_mode('actions', '$actions') + \
             conf_gen.bindings(mode_name, 'scratchpad') + \
             conf_gen.bindings(mode_name, 'circle') + \
-            conf_gen.mode_end()
+            conf_gen.mode(end=True)
