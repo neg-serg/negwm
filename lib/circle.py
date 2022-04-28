@@ -63,6 +63,20 @@ class circle(sub, extension, cfg, Matcher):
         self.i3ipc.on("window::focus", self.set_curr_win)
         self.i3ipc.on("window::fullscreen_mode", self.handle_fullscreen)
 
+    def rules(self, _):
+        ret = ''
+        conf = self.cfg
+        for tag in conf:
+            focus_cmd = ''
+            ws = conf[tag].get('ws', '')
+            focus = bool(conf[tag].get('focus', True))
+            if focus:
+                focus_cmd = ',focus'
+            if ws:
+                ret += f'for_window $circle-{tag}' \
+                    f' move workspace ${ws}{focus_cmd}\n'
+        return ret
+
     def run_prog(self, tag: str, subtag: str = '') -> None:
         """ Run the appropriate application for the current tag/subtag.
             tag (str): denotes target [tag]

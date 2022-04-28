@@ -1,8 +1,9 @@
 import os
-from . misc import Rules
+from typing import List
 from . cfg import cfg
 from . extension import extension
 from . checker import checker
+from . rules import Rules
 
 
 class conf_gen(extension, cfg):
@@ -17,7 +18,7 @@ class conf_gen(extension, cfg):
     def print(self) -> None:
         print(self.generate())
 
-    def write_cfg(self) -> None:
+    def write(self) -> None:
         i3_cfg, test_cfg = 'config', '.config_test'
         generated_cfg = self.generate()
         i3_path = f'{os.environ["XDG_CONFIG_HOME"]}/i3'
@@ -44,20 +45,8 @@ class conf_gen(extension, cfg):
             ret.append(keybind_data)
         return '\n'.join(filter(None, ret))
 
-    def main(self) -> str:
-        ret = ''
-        for key, val in self.cfg.get('main', {}).items():
-            ret += f'{key} {val}\n'
-        return ret.rstrip('\n')
-
-    def theme(self) -> str:
-        ret = ''
-        for key, val in self.cfg.get('theme', {}).items():
-            if key != 'font':
-                ret += f'{key} {val}\n'
-            else:
-                ret += f'font pango: {val}\n'
-        return ret.rstrip('\n')
+    def plain(self) -> str:
+        return self.cfg.get('plain', '').rstrip('\n')
 
     def startup(self) -> str:
         ret = ''
@@ -126,56 +115,17 @@ class conf_gen(extension, cfg):
 
     def workspaces(self) -> str:
         ret = ''
-        workspaces = self.cfg.get('workspaces', {})
+        workspaces = self.cfg.get('workspaces', [])
         if workspaces:
-            for index, ws in enumerate(workspaces.values()):
+            for index, ws in enumerate(workspaces):
                 ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
         return ret
 
     def rules(self) -> str:
-        def rules_scratchpad() -> str:
-            """ Create i3 match rules for all tags. """
-            (ret, cmd_dict, scratchpad) = Rules.rules_mod('scratchpad')
-            for tag in cmd_dict:
-                if tag in {'transients'}:
-                    geom = getattr(scratchpad, 'nsgeom').get_geom(tag)
-                    ret += f'for_window $scratchpad-{tag}' + \
-                        f' move scratchpad, {geom}\n'
-                else:
-                    ret += f'for_window $scratchpad-{tag} floating enable\n'
-            return ret
-
-        def rules_circle() -> str:
-            (ret, _, circle) = Rules.rules_mod('circle')
-            conf = getattr(circle, 'cfg')
-            for tag in conf:
-                focus_cmd = ''
-                ws = conf[tag].get('ws', '')
-                focus = bool(conf[tag].get('focus', True))
-                if focus:
-                    focus_cmd = ',focus'
-                if ws:
-                    ret += f'for_window $circle-{tag}' \
-                        f' move workspace ${ws}{focus_cmd}\n'
-            return ret
-
-        def rules() -> str:
-            ret = ''
-            rules = self.cfg.get('rules', {})
-            if rules:
-                for rule, action in rules.items():
-                    ret += f'for_window {rule} {action}\n'
-            return ret
-
-        def no_focus() -> str:
-            ret = ''
-            no_focus = self.cfg.get('no_focus', [])
-            if no_focus:
-                for rule in no_focus:
-                    ret += f'no_focus {rule}\n'
-            return ret
-
-        return rules_scratchpad() + rules_circle() + rules() + no_focus()
+        return \
+            Rules.rules_mod('scratchpad') + \
+            Rules.rules_mod('circle') + \
+            self.cfg.get('rules', '').rstrip('\n')
 
     @staticmethod
     def mode(name='', keymap='', start=False, end=False):
@@ -203,7 +153,7 @@ class conf_gen(extension, cfg):
         if ':' in section_name:
             s = section_name.split(':')
             mod, name = s[0], s[1]
-            section = self.cfg['bindings'][mod]['sections'][name]
+            section = self.cfg['bindings'][mod][name]
         if section:
             modkey = section.get('modkey', '')
             if modkey:
@@ -239,8 +189,7 @@ class conf_gen(extension, cfg):
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
-        return self.bind('misc') + \
-            self.exec_bindings() + \
+        return self.exec_bindings() + \
             self.bind(f'{mode_name}:focus') + \
             self.bind(f'{mode_name}:i3') + \
             self.bind(f'{mode_name}:vol') + \

@@ -72,7 +72,7 @@ class negwm():
         blacklist = {
             'cfg', 'checker', 'display', 'extension', 'geom', 'locker', 'misc',
             'msgbroker', 'matcher', 'negewmh', 'reflection', 'standalone_cfg',
-            'sub', 'pub', '__init__'
+            'sub', 'pub', 'rules', '__init__'
         }
         mods = map(
             pathlib.Path,

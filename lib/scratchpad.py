@@ -60,6 +60,18 @@ class scratchpad(extension, cfg, Matcher):
         tag_list.remove('transients')
         return tag_list
 
+    def rules(self, cmd_dict) -> str:
+        """ Create i3 match rules for all tags. """
+        ret = ''
+        for tag in cmd_dict:
+            if tag in {'transients'}:
+                geom = self.nsgeom.get_geom(tag)
+                ret += f'for_window $scratchpad-{tag}' + \
+                    f' move scratchpad, {geom}\n'
+            else:
+                ret += f'for_window $scratchpad-{tag} floating enable\n'
+        return ret
+
     @staticmethod
     def mark_uuid_tag(tag: str) -> str:
         """ Generate unique mark for the given [tag]
