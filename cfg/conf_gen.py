@@ -12,11 +12,6 @@ class conf_gen(Enum):
         ),
     )
 
-    set_vars = Δ(
-        exit = 'mode \\"default\\"',
-        i3 = '${XDG_CONFIG_HOME}/negwm'
-    )
-
     workspaces = Δ(
         term = '︁ α:term',
         web = ' β:web',
@@ -41,11 +36,8 @@ class conf_gen(Enum):
         urgent = ['#000000ee', '#2E2457', '#4C407C', '#32275E', '#32275E']
     )
 
-    reload = 'Mod4+apostrophe'
-    restart = 'Mod4+Shift+apostrophe'
-
-    exec = {
-        'no_startup_id': {
+    exec = Δ(
+        no_startup_id = {
             'Mod1+grave': 'rofi -show run -show-icons -disable-history -theme neg',
             'Mod4+8': 'playerctl volume 0.0 || amixer -q set Master 0 mute',
             'Mod4+c': '~/bin/clip',
@@ -62,12 +54,12 @@ class conf_gen(Enum):
             'Mod4+space': 'dunstctl close-all',
             'XF86Sleep': 'sudo systemctl suspend'
         },
-        'plain': {
+        plain = {
             'Mod4+4': '~/bin/screenshot',
             'Mod4+Control+4': '~/bin/screenshot -r',
             'Mod4+Shift+4': 'flameshot gui'
         }
-    }
+    )
 
     main = Δ(
         default_orientation = 'auto',
@@ -79,6 +71,15 @@ class conf_gen(Enum):
         mouse_warping = 'none',
         workspace_layout = 'tabbed'
     )
+
+    theme = {
+        'default_border' : 'normal',
+        'default_floating_border' : 'normal',
+        'font' : 'Iosevka Bold 12',
+        'hide_edge_borders' : 'both',
+        'show_marks' : 'yes',
+        'title_align' : 'left'
+    }
 
     rules = {
         '[class=".*"]': 'title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 5',
@@ -102,25 +103,31 @@ class conf_gen(Enum):
         '[window_type="splash"]',
     ]
 
-    theme = {
-        'default_border' : 'normal',
-        'default_floating_border' : 'normal',
-        'font' : 'Iosevka Bold 12',
-        'hide_edge_borders' : 'both',
-        'show_marks' : 'yes',
-        'title_align' : 'left'
-    }
-
     bindings = Δ(
         default = Δ(
             sections = Δ(
                 focus = Δ(
                     modkey = 'Mod4',
-                    keymap = Δ(down = ['j'], left = ['h'], right = ['l'], up = ['k']),
+                    keymap = Δ(
+                        down = ['j'],
+                        left = ['h'],
+                        right = ['l'],
+                        up = ['k']
+                    ),
                     post = 'focus'
                 ),
+                i3 = Δ(
+                    modkey = 'Mod4',
+                    keymap = Δ(
+                        reload = ['apostrophe'],
+                        restart = ['Shift+apostrophe']
+                    ),
+                ),
                 vol = Δ(
-                    keymap = Δ(d = ['XF86AudioLowerVolume'], u = ['XF86AudioRaiseVolume']),
+                    keymap = Δ(
+                        d = ['XF86AudioLowerVolume'],
+                        u = ['XF86AudioRaiseVolume']
+                    ),
                     post = '$vol'
                 ),
                 remember_focused = Δ(
@@ -144,7 +151,11 @@ class conf_gen(Enum):
                 ),
                 media = Δ(
                     modkey = 'Mod4',
-                    keymap = {'next': ['period'], 'play-pause': ['Shift+2'], 'previous': ['comma']},
+                    keymap = {
+                        'next': ['period'],
+                        'play-pause': ['Shift+2'],
+                        'previous': ['comma']
+                    },
                     post = 'exec --no-startup-id playerctl'
                 ),
                 media_xf86 = Δ(
@@ -236,11 +247,19 @@ class conf_gen(Enum):
                     post = 'layout',
                 ),
                 split = Δ(
-                    keymap = Δ(horizontal = ['h', 'l'], vertical = ['j', 'k']),
+                    keymap = Δ(
+                        horizontal = ['h', 'l'],
+                        vertical = ['j', 'k']
+                    ),
                     post = 'split',
                 ),
                 move = Δ(
-                    keymap = Δ(bottom = ['s'], left = ['a'], right = ['d'], top = ['w']),
+                    keymap = Δ(
+                        bottom = ['s'],
+                        left = ['a'],
+                        right = ['d'],
+                        top = ['w']
+                    ),
                     post = 'move'
                 ),
                 actions = Δ(

@@ -7,6 +7,7 @@ from . checker import checker
 
 class conf_gen(extension, cfg):
     self_configured_modules = ['circle', 'scratchpad']
+    mode_exit = 'mode "default"'
 
     def __init__(self, i3) -> None:
         super().__init__()
@@ -42,14 +43,6 @@ class conf_gen(extension, cfg):
             )
             ret.append(keybind_data)
         return '\n'.join(filter(None, ret))
-
-    def set_vars(self) -> str:
-        ret = ''
-        set_vars = self.cfg.get('set_vars', {})
-        if set_vars:
-            for name, value in set_vars.items():
-                ret += f'set ${name} {value}\n'
-        return ret.rstrip('\n')
 
     def main(self) -> str:
         ret = ''
@@ -89,7 +82,7 @@ class conf_gen(extension, cfg):
     def generate_bindsym(mode, tag, settings, p, subtag='', mod='') -> str:
         ret, pref, postfix = '', '', ''
         if mode != 'default':
-            pref, postfix = '\t', ', $exit'
+            pref, postfix = '\t', f', {conf_gen.mode_exit}'
         generate_bindsym = p.split('_')
         mode_, cmd = generate_bindsym[1], generate_bindsym[2]
         if len(generate_bindsym) == 3:
@@ -195,7 +188,7 @@ class conf_gen(extension, cfg):
             pref = '\t'
             bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
             for keybind in bindings:
-                ret += f'{pref}bindsym {keybind}, $exit\n'
+                ret += f'{pref}bindsym {keybind}, {conf_gen.mode_exit}\n'
             return ret + '}\n'
         return ''
 
@@ -205,7 +198,7 @@ class conf_gen(extension, cfg):
     def bind(self, section_name, exit=False, mode=False) -> str:
         ret = ''
         prefix = f'\tbindsym' if mode else 'bindsym'
-        end = '' if not exit else ', $exit'
+        end = '' if not exit else f', {conf_gen.mode_exit}'
         section = self.cfg.get(section_name, {})
         if ':' in section_name:
             s = section_name.split(':')
@@ -244,20 +237,12 @@ class conf_gen(extension, cfg):
             return exec_ret
         return ''
 
-    def i3cmd_bindings(self) -> str:
-        i3cmd_ret = ''
-        for cmd in 'reload', 'restart':
-            bind = self.cfg.get(cmd, '')
-            if bind:
-                i3cmd_ret += f'bindsym {bind} {cmd}\n'
-        return i3cmd_ret
-
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
         return self.bind('misc') + \
             self.exec_bindings() + \
-            self.i3cmd_bindings() + \
             self.bind(f'{mode_name}:focus') + \
+            self.bind(f'{mode_name}:i3') + \
             self.bind(f'{mode_name}:vol') + \
             self.bind(f'{mode_name}:remember_focused') + \
             self.bind(f'{mode_name}:scratchpad') + \
