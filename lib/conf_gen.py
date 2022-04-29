@@ -48,6 +48,9 @@ class conf_gen(extension, cfg):
     def plain(self) -> str:
         return self.cfg.get('plain', '').rstrip('\n')
 
+    def colors(self) -> str:
+        return self.cfg.get('colors', '').rstrip('\n')
+
     def startup(self) -> str:
         ret = ''
         startup = self.cfg.get('startup', {})
@@ -59,13 +62,6 @@ class conf_gen(extension, cfg):
             for exe in always.values():
                 ret += f'exec_always {exe}\n'
         return ret.rstrip('\n')
-
-    def colors(self) -> str:
-        ret = ''
-        for key, values in self.cfg.get('colors', {}).items():
-            colors = ' '.join(str(val) for val in values)
-            ret += f'client.{key} {colors}\n'
-        return ret.rstrip("\n")
 
     @staticmethod
     def generate_bindsym(mode, tag, settings, p, subtag='', mod='') -> str:

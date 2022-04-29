@@ -66,13 +66,17 @@ class conf_gen(Enum):
         ' μ:wine'
     ]
 
-    colors = Δ(
-        background = ['#000000ee'],
-        focused = ['#000011dd', '#000000ee', '#ddddee', '#112211', '#0C0C0D'],
-        focused_inactive = ['#000000dd', '#000000ee', '#005fff', '#000000', '#020204'],
-        placeholder = ['#000000ee', '#000000', '#ffffff', '#000000', '#0c0c0c'],
-        unfocused = ['#000000ee', '#000000', '#315c70', '#000000', '#020204'],
-        urgent = ['#000000ee', '#2E2457', '#4C407C', '#32275E', '#32275E']
+
+    colors = inspect.cleandoc(f'''
+        # set_from_resource $background background
+        # set_from_resource $foreground foreground
+        client.background        #000000ee
+        client.focused           #000011dd  #000000ee  #ddddee  #112211  #0C0C0D
+        client.focused_inactive  #000000dd  #000000ee  #005fff  #000000  #020204
+        client.placeholder       #000000ee  #000000    #ffffff  #000000  #0c0c0c
+        client.unfocused         #000000ee  #000000    #315c70  #000000  #020204
+        client.urgent            #000000ee  #2E2457    #4C407C  #32275E  #32275E
+    '''
     )
 
     exec = Δ(
