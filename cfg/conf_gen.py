@@ -79,199 +79,167 @@ class conf_gen(Enum):
     '''
     )
 
-    exec = Δ(
-        no_startup_id = {
-            ('Mod1+grave'): 'rofi -show run -show-icons -disable-history -theme neg',
-            ('Mod4+8'): 'playerctl volume 0.0 || amixer -q set Master 0 mute',
-            ('Mod4+c'): '~/bin/clip',
-            ('Mod4+g'): '~/bin/g',
-            ('Mod4+p'): '~/bin/rofi-tmux-urls',
-            ('Mod4+m'): '~/bin/music-rename current',
-            ('Mod4+Shift+6'): '~/bin/wl',
-            ('Mod4+Shift+8'): 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
-            ('Mod4+Shift+9'): 'dunstctl history-pop',
-            ('Mod4+Shift+i'): '~/bin/rofi-nm',
-            ('Mod4+Shift+l'): '~/bin/rofi-lutris',
-            ('Mod4+Shift+m'): '~/bin/rofi-audio',
-            ('Mod4+Shift+y'): '~/bin/clip youtube-dw-list',
-            ('Mod4+space'): 'dunstctl close-all',
-            ('XF86Sleep'): 'sudo systemctl suspend'
-        },
-        plain = {
-            ('Mod4+4'): '~/bin/screenshot',
-            ('Mod4+Control+4'): '~/bin/screenshot -r',
-            ('Mod4+Shift+4'): 'flameshot gui'
-        }
-    )
-
     bindings = Δ(
         default = Δ(
-            focus = Δ(
-                modkey = 'Mod4',
-                keymap = Δ(
-                    down = ['j'],
-                    left = ['h'],
-                    right = ['l'],
-                    up = ['k']
-                ),
-                post = 'focus'
-            ),
-            i3 = Δ(
-                modkey = 'Mod4',
-                keymap = Δ(
-                    reload = ['apostrophe'],
-                    restart = ['Shift+apostrophe']
-                ),
-            ),
-            vol = Δ(
-                keymap = Δ(
-                    d = ['XF86AudioLowerVolume'],
-                    u = ['XF86AudioRaiseVolume']
-                ),
-                post = '$vol'
-            ),
-            remember_focused = Δ(
-                keymap = Δ(
-                    focus_next_visible = ['Mod4+grave'],
-                    focus_prev_visible = ['Mod4+Shift+grave'],
-                    switch = ['Mod1+Tab', 'Mod4+slash']
-                ),
-                post = '$remember_focused'
-            ),
-            scratchpad = Δ(
-                modkey = 'Mod4',
-                keymap = Δ(
-                    dialog = ['Control+a'],
-                    geom_dump = ['Control+s'],
-                    geom_restore = ['Control+space'],
-                    hide_current = ['s'],
-                    next = ['3']
-                ),
-                post = '$scratchpad'
-            ),
-            media = Δ(
-                modkey = 'Mod4',
-                keymap = {
-                    'next': ['period'],
-                    'play-pause': ['Shift+2'],
-                    'previous': ['comma']
-                },
-                post = 'exec --no-startup-id playerctl'
-            ),
-            media_xf86 = Δ(
-                keymap = {
-                    'next': ['XF86AudioNext'],
-                    'play': ['XF86AudioPlay'],
-                    'previous': ['XF86AudioPrev'],
-                    'stop': ['XF86AudioStop']
-                },
-                post = 'exec --no-startup-id playerctl'
-            ),
-            menu = Δ(
-                keymap = Δ(
-                    attach = ['Mod4+Shift+a'],
-                    autoprop = ['Mod4+Shift+s'],
-                    cmd_menu = ['Mod4+Control+grave'],
-                    goto_win = ['Mod1+g'],
-                    movews = ['Mod4+Control+g'],
-                    ws = ['Mod1+Control+g']
-                ),
-                post = '$menu'
-            ),
-            misc = Δ(
-                modkey = 'Mod4',
-                keymap = {
-                    'fullscreen toggle': ['q'],
-                    'kill': ['Control+q']
-                },
-            ),
+            exec = {
+                ('Mod4+4'): '~/bin/screenshot',
+                ('Mod4+Control+4'): '~/bin/screenshot -r',
+                ('Mod4+Shift+4'): 'flameshot gui',
+
+                'action_prefix': 'exec'
+            },
+            exec_no_startup_id = {
+                ('Mod1+grave'): 'rofi -show run -show-icons -disable-history -theme neg',
+                ('Mod4+8'): 'playerctl volume 0.0 || amixer -q set Master 0 mute',
+                ('Mod4+c'): '~/bin/clip',
+                ('Mod4+g'): '~/bin/g',
+                ('Mod4+p'): '~/bin/rofi-tmux-urls',
+                ('Mod4+m'): '~/bin/music-rename current',
+                ('Mod4+Shift+6'): '~/bin/wl',
+                ('Mod4+Shift+8'): 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
+                ('Mod4+Shift+9'): 'dunstctl history-pop',
+                ('Mod4+Shift+i'): '~/bin/rofi-nm',
+                ('Mod4+Shift+l'): '~/bin/rofi-lutris',
+                ('Mod4+Shift+m'): '~/bin/rofi-audio',
+                ('Mod4+Shift+y'): '~/bin/clip youtube-dw-list',
+                ('Mod4+space'): 'dunstctl close-all',
+                ('XF86Sleep'): 'sudo systemctl suspend',
+
+                'action_prefix' : 'exec --no-startup-id',
+            },
+            focus = {
+                'Mod4+j' : 'down',
+                'Mod4+h': 'left',
+                'Mod4+l': 'right',
+                'Mod4+k' : 'up',
+
+                'action_prefix' : 'focus',
+            },
+            i3 = {
+                'Mod4+apostrophe': 'reload',
+                'Mod4+Shift+apostrophe': 'restart'
+            },
+            vol = {
+                'XF86AudioLowerVolume': 'd',
+                'XF86AudioRaiseVolume': 'u',
+                'action_prefix' : '$vol',
+            },
+            remember_focused = {
+                'focus_next_visible' : ['Mod4+grave'],
+                'focus_prev_visible' : ['Mod4+Shift+grave'],
+                'switch' : ['Mod1+Tab', 'Mod4+slash'],
+
+                'action_prefix' : '$remember_focused'
+            },
+            scratchpad = {
+                'Mod4+Control+a' : 'dialog',
+                'Mod4+Control+s' : 'geom_dump',
+                'Mod4+Control+space' : 'geom_restore',
+                'Mod4+s' : 'hide_current',
+                'Mod4+3' : 'next',
+
+                'action_prefix' : '$scratchpad'
+            },
+            media = {
+                'Mod4+period': 'next',
+                'Mod4+Shift+2': 'play-pause',
+                'Mod4+comma': 'previous',
+
+                'action_prefix' : 'exec --no-startup-id playerctl'
+            },
+            media_xf86 = {
+                'next': ['XF86AudioNext'],
+                'play': ['XF86AudioPlay'],
+                'previous': ['XF86AudioPrev'],
+                'stop': ['XF86AudioStop'],
+
+                'action_prefix' : 'exec --no-startup-id playerctl'
+            },
+            menu = {
+                'attach' : ['Mod4+Shift+a'],
+                'autoprop' : ['Mod4+Shift+s'],
+                'cmd_menu' : ['Mod4+Control+grave'],
+                'goto_win' : ['Mod1+g'],
+                'movews' : ['Mod4+Control+g'],
+                'ws' : ['Mod1+Control+g'],
+
+                'action_prefix' : '$menu'
+            },
+            misc = {
+                'fullscreen toggle': ['Mod4+q'],
+                'kill': ['Mod4+Control+q']
+            },
         ),
         resize = Δ(
             bind = 'Mod4+r',
-            plus = Δ(
-                keymap = Δ(
-                    bottom = {"binds": ['j', 's'], "param": '4'},
-                    left = {"binds": ['h', 'a'], "param": '4'},
-                    right = {"binds": ['l', 'd'], "param": '4'},
-                    top = {"binds": ['k', 'w'], "param": '4'},
-                ),
-                post = '$actions resize'
-            ),
-            minus = Δ(
-                modkey = 'Shift',
-                keymap = Δ(
-                    bottom = {"binds": ['j', 's'], "param": '-4'},
-                    left = {"binds": ['h', 'a'], "param": '-4'},
-                    right = {"binds": ['l', 'd'], "param": '-4'},
-                    top = {"binds": ['k', 'w'], "param": '-4'},
-                ),
-                post = '$actions resize'
-            )
+            plus = {
+                'bottom' : {"binds": ['j', 's'], "param": '4'},
+                'left' : {"binds": ['h', 'a'], "param": '4'},
+                'right' : {"binds": ['l', 'd'], "param": '4'},
+                'top' : {"binds": ['k', 'w'], "param": '4'},
+                'action_prefix' : '$actions resize'
+            },
+            minus = {
+                'bottom' : {"binds": ['Shift+j', 'Shift+s'], "param": '-4'},
+                'left' : {"binds": ['Shift+h', 'Shift+a'], "param": '-4'},
+                'right' : {"binds": ['Shift+l', 'Shift+d'], "param": '-4'},
+                'top' : {"binds": ['Shift+k', 'Shift+w'], "param": '-4'},
+                'action_prefix' : '$actions resize'
+            }
         ),
         spec = Δ(
             bind = 'Mod1+e',
-            misc = Δ(
-                keymap = {
-                    '[urgent=latest] focus': ['e'],
-                    'floating toggle': ['Shift+d'],
-                    'exec i3lockr -p 8 ': ['l'],
-                }
-            ),
-            menu = Δ(
-                keymap = Δ(
-                    gtk_theme = ['Shift+t'],
-                    icon_theme = ['Shift+i'],
-                    pulse_input = ['i'],
-                    pulse_output = ['o'],
-                    xprop_show = ['m']
-                ),
-                post = '$menu'
-            ),
+            misc = {
+                '[urgent=latest] focus': ['e'],
+                'floating toggle': ['Shift+d'],
+                'exec i3lockr -p 8 ': ['l'],
+            },
+            menu = {
+                'gtk_theme' : ['Shift+t'],
+                'icon_theme' : ['Shift+i'],
+                'pulse_input' : ['i'],
+                'pulse_output' : ['o'],
+                'xprop_show' : ['m'],
+
+                'action_prefix' : '$menu'
+            },
         ),
         wm = Δ(
             bind = 'Mod4+minus',
-            layout = Δ(
-                keymap = Δ(
-                   default = ['grave'],
-                   splith = ['minus'],
-                   splitv = ['backslash'],
-                   tabbed = ['t'],
-                   toggle = ['Control+t'],
-                ),
-                post = 'layout',
-            ),
-            split = Δ(
-                keymap = Δ(
-                    horizontal = ['h', 'l'],
-                    vertical = ['j', 'k']
-                ),
-                post = 'split',
-            ),
-            move = Δ(
-                keymap = Δ(
-                    bottom = ['s'],
-                    left = ['a'],
-                    right = ['d'],
-                    top = ['w']
-                ),
-                post = 'move'
-            ),
-            actions = Δ(
-                keymap = Δ(
-                    grow = ['Shift+plus'],
-                    maxhor = ['x'],
-                    maximize = ['m'],
-                    maxvert = ['y'],
-                    none = ['c'],
-                    resize = ['Shift+c'],
-                    revert_maximize = ['Shift+m', 'Shift+x', 'Shift+y'],
-                    shrink = ['Shift+minus'],
-                    hdown = {"binds": ['Shift+w'], "param": 'x2'},
-                    hup = {"binds": ['Shift+a'], "param": 'x2'},
-                    vleft = {"binds": ['Shift+s'], "param": 'x2'},
-                    vright = {"binds": ['Shift+d'], "param": 'x2'},
-                ),
-                post = '$actions'
-            )
+            layout = {
+                'default' : ['grave'],
+                'splith' : ['minus'],
+                'splitv' : ['backslash'],
+                'tabbed' : ['t'],
+                'toggle' : ['Control+t'],
+                'action_prefix' : 'layout',
+            },
+            split = {
+                'horizontal' : ['h', 'l'],
+                'vertical' : ['j', 'k'],
+                'action_prefix' : 'split',
+            },
+            move = {
+                'bottom' : ['s'],
+                'left' : ['a'],
+                'right' : ['d'],
+                'top' : ['w'],
+                'action_prefix' : 'move',
+            },
+            actions = {
+                'grow' : ['Shift+plus'],
+                'maxhor' : ['x'],
+                'maximize' : ['m'],
+                'maxvert' : ['y'],
+                'none' : ['c'],
+                'resize' : ['Shift+c'],
+                'revert_maximize' : ['Shift+m', 'Shift+x', 'Shift+y'],
+                'shrink' : ['Shift+minus'],
+                'hdown' : {"binds": ['Shift+w'], "param": 'x2'},
+                'hup' : {"binds": ['Shift+a'], "param": 'x2'},
+                'vleft' : {"binds": ['Shift+s'], "param": 'x2'},
+                'vright' : {"binds": ['Shift+d'], "param": 'x2'},
+                'action_prefix' : '$actions'
+            }
         )
     )

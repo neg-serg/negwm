@@ -146,46 +146,33 @@ class conf_gen(extension, cfg):
         prefix = f'\tbindsym' if mode else 'bindsym'
         end = '' if not exit else f', {conf_gen.mode_exit}'
         section = self.cfg.get(section_name, {})
-        if ':' in section_name:
-            s = section_name.split(':')
-            mod, name = s[0], s[1]
-            section = self.cfg['bindings'][mod][name]
+        s = section_name.split(':')
+        mod, name = s[0], s[1]
+        section = self.cfg.get('bindings', {}).get(mod, {}).get(name, {})
         if section:
-            modkey = section.get('modkey', '')
-            if modkey:
-                modkey += '+'
             ret += '\n'
-            keymap = section.get('keymap', {})
-            post = section.get('post', '')
-            if keymap:
-                for action, maps in keymap.items():
-                    if isinstance(maps, list):
-                        for keymap in maps:
-                            ret += f'{prefix} {modkey}{keymap} {post} {action}{end}\n'
-                    elif isinstance(maps, dict):
-                        param = ' ' + maps.get('param', '')
-                        binds = maps.get('binds', [])
-                        for key in binds:
-                            ret += f'{prefix} {modkey}{key} {post} {action}{param}{end}\n'
+            action_prefix = section.get('action_prefix', '')
+            for key, val in section.items():
+                print(f'key={key}, val={val}')
+                if key == 'action_prefix':
+                    continue
+                if isinstance(val, str) and isinstance(key, str):
+                    # key: binding, val: action
+                    ret += f'{prefix} {key} {action_prefix} {val}{end}\n'
+                if isinstance(val, list) and not isinstance(key, tuple):
+                    for keymap in val:
+                        ret += f'{prefix} {keymap} {action_prefix} {key}{end}\n'
+                elif isinstance(val, dict):
+                    param = ' ' + val.get('param', '')
+                    binds = val.get('binds', [])
+                    for k in binds:
+                        ret += f'{prefix} {k} {action_prefix} {key}{param}{end}\n'
         return ret
-
-    def exec_bindings(self) -> str:
-        exec_ret = ''
-        execs = self.cfg.get('exec', {})
-        if execs:
-            plain = execs.get('plain', {})
-            if plain:
-                for bind, prog in plain.items():
-                    exec_ret += f'bindsym {bind} exec {prog}\n'
-                no_startup_id = execs.get('no_startup_id', {})
-                for bind, prog in no_startup_id.items():
-                    exec_ret += f'bindsym {bind} exec {prog}\n'
-            return exec_ret
-        return ''
 
     def mode_default(self, mode_name, mode_bind) -> str:
         _ = mode_bind
-        return self.exec_bindings() + \
+        return self.bind(f'{mode_name}:exec') + \
+            self.bind(f'{mode_name}:exec_no_startup_id') + \
             self.bind(f'{mode_name}:focus') + \
             self.bind(f'{mode_name}:i3') + \
             self.bind(f'{mode_name}:vol') + \
