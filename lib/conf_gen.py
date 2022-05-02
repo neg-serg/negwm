@@ -1,9 +1,9 @@
 import os
-from typing import List
 from . cfg import cfg
 from . extension import extension
 from . checker import checker
 from . rules import Rules
+from . keymap import keymap as Keymap
 
 
 class conf_gen(extension, cfg):
@@ -31,11 +31,12 @@ class conf_gen(extension, cfg):
 
     def generate(self):
         ret = []
-        for section in self.cfg.keys():
-            if hasattr(self, section):
-                section_handler = getattr(self, section)
-                if section != 'bindings':
-                    ret.append(section_handler())
+        for cfg_section in self.cfg.keys():
+            if cfg_section.startswith('mode_'):
+                ret.append(self.bind(cfg_section))
+            if hasattr(self, cfg_section):
+                cfg_section_handler = getattr(self, cfg_section)
+                ret.append(cfg_section_handler())
         ret.append(self.mods_commands())
         binds = self.cfg.get('bindings', {})
         for mode, data in binds.items():
@@ -66,6 +67,7 @@ class conf_gen(extension, cfg):
     @staticmethod
     def generate_bindsym(mode, tag, settings, p, subtag='', mod='') -> str:
         ret, pref, postfix = '', '', ''
+        mode = mode.removeprefix('mode_')
         if mode != 'default':
             pref, postfix = '\t', f', {conf_gen.mode_exit}'
         generate_bindsym = p.split('_')
@@ -123,88 +125,46 @@ class conf_gen(extension, cfg):
             Rules.rules_mod('circle') + \
             self.cfg.get('rules', '').rstrip('\n')
 
-    @staticmethod
-    def mode(name='', keymap='', start=False, end=False):
-        if not start and not end:
-            return f'bindsym {keymap} mode "{name}"\n'
-        if start:
-            return 'mode ' + name + ' {'
-        if end:
-            ret = ''
-            pref = '\t'
+    def mode(self, name='', end=False):
+        ret = ''
+        if name == 'mode_default':
+            return ret
+        if not end:
+            keymap = self.cfg.get(name, {}).get('bind', '')
+            name = name.lstrip('mode_')
+            if keymap:
+                ret += f'bindsym {keymap} mode "{name}"\n'
+            name = name.lstrip('mode_')
+
+            return f'{ret} mode {name} {{'
+        else:
             bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
             for keybind in bindings:
-                ret += f'{pref}bindsym {keybind}, {conf_gen.mode_exit}\n'
+                ret += f'\tbindsym {keybind}, {conf_gen.mode_exit}\n'
+
             return ret + '}\n'
-        return ''
 
-    def bind_mode(self, section_name, exit=False, mode=True):
-        return self.bind(section_name, exit, mode)
+    def bind(self, mod) -> str:
+        ret = f'{self.mode(mod, end=False)}'
+        prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
+        section = self.cfg.get(mod, {})
+        for param in section:
+            if param not in {'bind', 'exit'}:
+                ret += '\n'
+                kmap = section[param]
+                end = f', {conf_gen.mode_exit}' if kmap.exit else ''
+                for key, val in kmap.items():
+                    if isinstance(val, str) and isinstance(key, str):
+                        # key: binding, val: action
+                        ret += f'{prefix} {key} {kmap.fmt} {val}{end}\n'
+                    if isinstance(val, list) and not isinstance(key, tuple):
+                        for b in val:
+                            ret += f'{prefix} {b} {kmap.fmt} {key}{end}\n'
+                    elif isinstance(val, dict):
+                        param = ' ' + val.get('param', '')
+                        binds = val.get('binds', [])
+                        for k in binds:
+                            ret += f'{prefix} {k} {kmap.fmt} {key}{param}{end}\n'
+        ret += f'{conf_gen.module_binds(mod)}{self.mode(mod, end=True)}'
 
-    def bind(self, section_name, exit=False, mode=False) -> str:
-        ret = ''
-        prefix = f'\tbindsym' if mode else 'bindsym'
-        end = '' if not exit else f', {conf_gen.mode_exit}'
-        section = self.cfg.get(section_name, {})
-        s = section_name.split(':')
-        mod, name = s[0], s[1]
-        section = self.cfg.get('bindings', {}).get(mod, {}).get(name, {})
-        if section:
-            ret += '\n'
-            action_prefix = section.get('action_prefix', '')
-            for key, val in section.items():
-                print(f'key={key}, val={val}')
-                if key == 'action_prefix':
-                    continue
-                if isinstance(val, str) and isinstance(key, str):
-                    # key: binding, val: action
-                    ret += f'{prefix} {key} {action_prefix} {val}{end}\n'
-                if isinstance(val, list) and not isinstance(key, tuple):
-                    for keymap in val:
-                        ret += f'{prefix} {keymap} {action_prefix} {key}{end}\n'
-                elif isinstance(val, dict):
-                    param = ' ' + val.get('param', '')
-                    binds = val.get('binds', [])
-                    for k in binds:
-                        ret += f'{prefix} {k} {action_prefix} {key}{param}{end}\n'
         return ret
-
-    def mode_default(self, mode_name, mode_bind) -> str:
-        _ = mode_bind
-        return self.bind(f'{mode_name}:exec') + \
-            self.bind(f'{mode_name}:exec_no_startup_id') + \
-            self.bind(f'{mode_name}:focus') + \
-            self.bind(f'{mode_name}:i3') + \
-            self.bind(f'{mode_name}:vol') + \
-            self.bind(f'{mode_name}:remember_focused') + \
-            self.bind(f'{mode_name}:scratchpad') + \
-            self.bind(f'{mode_name}:menu') + \
-            self.bind(f'{mode_name}:misc') + \
-            self.bind(f'{mode_name}:media') + \
-            self.bind(f'{mode_name}:media_xf86') + \
-            conf_gen.module_binds(mode_name)
-
-    def mode_resize(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode(mode_name, mode_bind) + \
-            conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode(f'{mode_name}:plus') + \
-            self.bind_mode(f'{mode_name}:minus') + \
-            conf_gen.mode(end=True)
-
-    def mode_spec(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode(mode_name, mode_bind) + \
-            conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode(f'{mode_name}:misc', exit=True) + \
-            self.bind_mode(f'{mode_name}:menu', exit=True) + \
-            conf_gen.module_binds(mode_name) + \
-            conf_gen.mode(end=True)
-
-    def mode_wm(self, mode_name, mode_bind) -> str:
-        return conf_gen.mode(mode_name, mode_bind) + \
-            conf_gen.mode(mode_name, start=True) + \
-            self.bind_mode(f'{mode_name}:layout', exit=True) + \
-            self.bind_mode(f'{mode_name}:split', exit=True) + \
-            self.bind_mode(f'{mode_name}:move') + \
-            self.bind_mode(f'{mode_name}:actions') + \
-            conf_gen.module_binds(mode_name) + \
-            conf_gen.mode(end=True)
