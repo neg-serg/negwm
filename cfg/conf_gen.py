@@ -3,7 +3,9 @@ import inspect
 import sys
 sys.path.append("../lib")
 from keymap import keymap
-Δ = dict
+from keymap import bindmap
+Δ = bindmap
+λ = keymap
 
 class conf_gen(Enum):
     M1 = 'Mod1'
@@ -85,13 +87,13 @@ class conf_gen(Enum):
     )
 
     mode_default = Δ(
-        exec = keymap({
+        exec = λ({
             (f'{M4}+4') : '~/bin/screenshot',
             (f'{M4}+{Ct}+4') : '~/bin/screenshot -r',
             (f'{M4}+{Sh}+4') : 'flameshot gui',
         }, fmt='exec'),
 
-        exec_no_startup_id = keymap({
+        exec_no_startup_id = λ({
             (f'{M1}+grave') : 'rofi -show run -show-icons -disable-history -theme neg',
             (f'{M4}+8') : 'playerctl volume 0.0 || amixer -q set Master 0 mute',
             (f'{M4}+c') : '~/bin/clip',
@@ -109,31 +111,31 @@ class conf_gen(Enum):
             ('XF86Sleep') : 'sudo systemctl suspend',
         }, fmt='exec --no-startup-id'),
 
-        focus = keymap({
+        focus = λ({
             (f'{M4}+j') : 'down',
             (f'{M4}+h') : 'left',
             (f'{M4}+l') : 'right',
             (f'{M4}+k') : 'up',
         }, fmt='focus'),
 
-        i3 = keymap({
+        i3 = λ({
             (f'{M4}+apostrophe') : 'reload',
             (f'{M4}+{Sh}+apostrophe') : 'restart'
         }),
 
-        vol = keymap({
+        vol = λ({
             ('XF86AudioLowerVolume') : 'd',
             ('XF86AudioRaiseVolume') : 'u',
         }, fmt='$vol'),
 
-        remember_focused = keymap({
+        remember_focused = λ({
             (f'{M4}+grave') : 'focus_next_visible',
             (f'{M4}+{Sh}+grave') : 'focus_prev_visible',
             (f'{M1}+Tab'): 'switch',
             (f'{M4}+slash') : 'switch',
         }, fmt='$remember_focused'),
 
-        scratchpad = keymap({
+        scratchpad = λ({
             (f'{M4}+{Ct}+a') : 'dialog',
             (f'{M4}+{Ct}+s') : 'geom_dump',
             (f'{M4}+{Ct}+space') : 'geom_restore',
@@ -141,20 +143,20 @@ class conf_gen(Enum):
             (f'{M4}+3') : 'next',
         }, fmt='$scratchpad'),
 
-        media = keymap({
+        media = λ({
             (f'{M4}+period') : 'next',
             (f'{M4}+{Sh}+2') : 'play-pause',
             (f'{M4}+comma') : 'previous',
         }, fmt='exec --no-startup-id playerctl'),
 
-        media_xf86 = keymap({
+        media_xf86 = λ({
             ('XF86AudioNext') : 'next',
             ('XF86AudioPlay') : 'play',
             ('XF86AudioPrev') : 'previous',
             ('XF86AudioStop') : 'stop',
         }, fmt='exec --no-startup-id playerctl'),
 
-        menu = keymap({
+        menu = λ({
             (f'{M4}+{Sh}+a') : 'attach',
             (f'{M4}+{Sh}+s') : 'autoprop',
             (f'{M4}+{Ct}+grave') : 'cmd_menu',
@@ -163,38 +165,36 @@ class conf_gen(Enum):
             (f'{M1}+{Ct}+g') : 'ws',
         }, fmt='$menu'),
 
-        misc = keymap({
+        misc = λ({
             (f'{M4}+q') : 'fullscreen toggle',
             (f'{M4}+{Ct}+q') : 'kill',
         }),
     )
 
-    mode_resize = Δ(
-        bind = f'{M4}+r',
-        plus = keymap({
+    mode_resize = Δ(bind=f'{M4}+r',
+        plus = λ({
             'bottom' : {"binds": ['j', 's'], "param": '4'},
             'left' : {"binds": ['h', 'a'], "param": '4'},
             'right' : {"binds": ['l', 'd'], "param": '4'},
             'top' : {"binds": ['k', 'w'], "param": '4'},
         }, fmt='$actions resize'),
 
-        minus = keymap({
+        minus = λ({
             'bottom' : {"binds": [f'{Sh}+j', f'{Sh}+s'], "param": '-4'},
             'left' : {"binds": [f'{Sh}+h', f'{Sh}+a'], "param": '-4'},
             'right' : {"binds": [f'{Sh}+l', f'{Sh}+d'], "param": '-4'},
             'top' : {"binds": [f'{Sh}+k', f'{Sh}+w'], "param": '-4'},
-        }, fmt='$actions resize')
+        }, fmt='$actions resize'),
     )
 
-    mode_spec = Δ(
-        bind = f'{M1}+e',
-        misc = keymap({
+    mode_spec = Δ(bind=f'{M1}+e',
+        misc = λ({
             ('e') : '[urgent=latest] focus',
             ('l') : 'exec i3lockr -p 8 ',
             (f'{Sh}+d') : 'floating toggle',
         }, exit=True),
 
-        menu = keymap({
+        menu = λ({
             (f'{Sh}+t') : 'gtk_theme',
             (f'{Sh}+i') : 'icon_theme',
             ('i') : 'pulse_input',
@@ -203,9 +203,8 @@ class conf_gen(Enum):
         }, fmt='$menu', exit=True),
     )
 
-    mode_wm = Δ(
-        bind = f'{M4}+minus',
-        layout = keymap({
+    mode_wm = Δ(bind=f'{M4}+minus',
+        layout = λ({
             (f'grave') : 'default',
             (f'minus') : 'splith',
             (f'backslash') : 'splitv',
@@ -213,19 +212,19 @@ class conf_gen(Enum):
             (f'{Ct}+t') : 'toggle',
         }, fmt='layout', exit=True),
 
-        split = keymap({
+        split = λ({
             'horizontal' : ['h', 'l'],
             'vertical' : ['j', 'k'],
         }, fmt='split', exit=True),
 
-        move = keymap({
+        move = λ({
             ('w') : 'top',
             ('a') : 'left',
             ('s') : 'bottom',
             ('d') : 'right',
         }, fmt='move'),
 
-        actions = keymap({
+        actions = λ({
             (f'{Sh}+plus') : 'grow',
             ('x') : 'maxhor',
             ('m') : 'maximize',

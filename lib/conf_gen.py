@@ -125,18 +125,15 @@ class conf_gen(extension, cfg):
             Rules.rules_mod('circle') + \
             self.cfg.get('rules', '').rstrip('\n')
 
-    def mode(self, name='', end=False):
+    def mode(self, name='', bind='',  end=False):
         ret = ''
-        if name == 'mode_default':
+        name = name.removeprefix('mode_')
+        if name == 'default':
             return ret
         if not end:
-            keymap = self.cfg.get(name, {}).get('bind', '')
-            name = name.lstrip('mode_')
-            if keymap:
-                ret += f'bindsym {keymap} mode "{name}"\n'
-            name = name.lstrip('mode_')
-
-            return f'{ret} mode {name} {{'
+            if bind:
+                ret += f'bindsym {bind} mode "{name}"\n'
+            return f'{ret}mode {name} {{'
         else:
             bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
             for keybind in bindings:
@@ -145,26 +142,25 @@ class conf_gen(extension, cfg):
             return ret + '}\n'
 
     def bind(self, mod) -> str:
-        ret = f'{self.mode(mod, end=False)}'
-        prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
         section = self.cfg.get(mod, {})
+        ret = f'{self.mode(mod, bind=section.bind, end=False)}'
+        prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
         for param in section:
-            if param not in {'bind', 'exit'}:
-                ret += '\n'
-                kmap = section[param]
-                end = f', {conf_gen.mode_exit}' if kmap.exit else ''
-                for key, val in kmap.items():
-                    if isinstance(val, str) and isinstance(key, str):
-                        # key: binding, val: action
-                        ret += f'{prefix} {key} {kmap.fmt} {val}{end}\n'
-                    if isinstance(val, list) and not isinstance(key, tuple):
-                        for b in val:
-                            ret += f'{prefix} {b} {kmap.fmt} {key}{end}\n'
-                    elif isinstance(val, dict):
-                        param = ' ' + val.get('param', '')
-                        binds = val.get('binds', [])
-                        for k in binds:
-                            ret += f'{prefix} {k} {kmap.fmt} {key}{param}{end}\n'
+            ret += '\n'
+            kmap = section[param]
+            end = f', {conf_gen.mode_exit}' if kmap.exit else ''
+            for key, val in kmap.items():
+                if isinstance(val, str) and isinstance(key, str):
+                    # key: binding, val: action
+                    ret += f'{prefix} {key} {kmap.fmt} {val}{end}\n'
+                if isinstance(val, list) and not isinstance(key, tuple):
+                    for b in val:
+                        ret += f'{prefix} {b} {kmap.fmt} {key}{end}\n'
+                elif isinstance(val, dict):
+                    param = ' ' + val.get('param', '')
+                    binds = val.get('binds', [])
+                    for k in binds:
+                        ret += f'{prefix} {k} {kmap.fmt} {key}{param}{end}\n'
         ret += f'{conf_gen.module_binds(mod)}{self.mode(mod, end=True)}'
 
         return ret
