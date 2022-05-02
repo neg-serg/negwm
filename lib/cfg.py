@@ -74,7 +74,10 @@ class cfg():
         try:
             self.load_config()
             self.__init__(self.i3ipc)
+            if self.mod == 'conf_gen':
+                getattr(self, 'write')()
             logging.info(f"[{self.mod}] config reloaded")
+            print(f"[{self.mod}] config reloaded")
         except Exception:
             logging.info(f"[{self.mod}] config reload failed")
             traceback.print_exc(file=sys.stdout)
