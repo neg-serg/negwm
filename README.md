@@ -39,30 +39,32 @@ _negwm_ : application that run all modules and handle configuration of i3 and mo
 
 Some general notes:
 
-`negwm` works as a server and `send` is a client. To look at the last actual list of command for modules you can look at `self.bindings` of
-some module. Most of them supports dynamic reloading of configs as you save the file, so there is no need to manually reload them. Anyway
-you can reload negwm manually:
+`negwm` works as a server in port 15555. It splited by various modules.
+You can call any function of any module with something like this:
+
+```
+echo 'scratchpad toggle ncmpcpp'|nc localhost 15555 -v -w 0
+```
+
+Where 1st argument is module, 2nd is function and another is parameters.
+
+Most of modules supports dynamic reloading of configs as you save the file, so there is no need to manually reload them. Anyway you can
+reload negwm manually, for example to reload `executor`:
+
+```
+echo 'executor reload'|nc localhost 15555 -v -w 0
+```
 
 At first you need to add something in run and add it to config:
 
-```cfg
-exec_always ~/.config/negwm/run &
-```
-
-Or start it via systemd user service:
+Start it via systemd user service:
 
 ```cfg
 exec_always systemctl --user restart --no-block negwm.service
 ```
 
-To restart negwm after i3 reload, `negwm.py` should close file automatically, after i3 reload/restart so you can simply run it
-after restart.
-
-```bash
-make -C ${XDG_CONFIG_HOME}/negwm/ &
-```
-
-To recompile `send` client.
+To restart negwm after i3 reload, `negwm.py` should close file automatically, after i3 reload/restart so you can simply run it after
+restart.
 
 # modules
 
@@ -84,13 +86,13 @@ attached to.
 Some interesting commands:
 
 ```cfg
-show: show scratchpad
-hide: hide scratchpad
-next: go to the next window in scratchpad
-toggle: show/hide this named scratchpad, very useful
-hide_current: hide current scratchpad despite of type
-subtag: you can create groups inside groups.
-dialog: toggle dialogs
+    show: show scratchpad
+    hide: hide scratchpad
+    next: go to the next window in scratchpad
+    toggle: show/hide this named scratchpad, very useful
+    hide_current: hide current scratchpad despite of type
+    subtag: you can create groups inside groups.
+    dialog: toggle dialogs
 ```
 
 Interesting parts here:
@@ -168,11 +170,11 @@ class RememberFocused(Enum):
 remember_focused commands:
 
 ```cfg
-switch: go to previous window
-focus_next: focus next window
-focus_prev: focus previous window
-focus_next_visible: focus next visible window
-focus_prev_visible: focus previous visible window
+    switch: go to previous window
+    focus_next: focus next window
+    focus_prev: focus previous window
+    focus_next_visible: focus next visible window
+    focus_prev_visible: focus previous visible window
 ```
 
 ## menu
@@ -182,29 +184,21 @@ and more.
 
 It consists of main `menu.py` with the bindings to the menu modules, for example:
 
-```python
-self.bindings = {
-    "cmd_menu": self.i3menu.cmd_menu,
-
-    "xprop": self.xprop.xprop,
-
-    "autoprop": self.props.autoprop,
-    "show_props": self.props.show_props,
-
-    "pulse_output": self.pulse_menu.pulseaudio_output,
-    "pulse_input": self.pulse_menu.pulseaudio_input,
-
-    "ws": self.winact.goto_ws,
-    "goto_win": self.winact.goto_win,
-    "attach": self.winact.attach_win,
-    "movews": self.winact.move_to_ws,
-
-    "gtk_theme": self.gnome.change_gtk_theme,
-    "icon_theme": self.gnome.change_icon_theme,
-
-    "xrandr_resolution": self.xrandr.change_resolution_xrandr,
-
-    "reload": self.reload,
+```cfg
+    cmd_menu : 
+    xprop_show :
+    autoprop : 
+    show_props : 
+    pulse_output : 
+    pulse_input : 
+    pulse_mute : 
+    ws : 
+    goto_win : 
+    attach :
+    movews : 
+    gtk_theme :
+    icon_theme :
+    xrandr_resolution :
 }
 ```
 
@@ -240,10 +234,12 @@ to the mpv window if not. To use it add to i3 config something like this:
 Command list:
 
 ```cfg
-u: volume up
-d: volume down
-reload: reload module.
+    u: volume up
+    d: volume down
+    reload: reload module.
 ```
+
+Why not just use playerctl instead? Very similar functionality, but the version with this module is faster and more responsive.
 
 ## actions
 
