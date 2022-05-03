@@ -87,7 +87,7 @@ class conf_gen(Enum):
             (f'{M4}+4') : '~/bin/screenshot',
             (f'{M4}+{Ct}+4') : '~/bin/screenshot -r',
             (f'{M4}+{Sh}+4') : 'flameshot gui',
-        }, fmt='exec'),
+        }, fmt='exec {cmd}'),
 
         exec_no_startup_id = λ({
             (f'{M1}+grave') : 'rofi -show run -show-icons -disable-history -theme neg',
@@ -105,14 +105,14 @@ class conf_gen(Enum):
             (f'{M4}+{Sh}+y') : '~/bin/clip youtube-dw-list',
             (f'{M4}+space') : 'dunstctl close-all',
             ('XF86Sleep') : 'sudo systemctl suspend',
-        }, fmt='exec --no-startup-id'),
+        }, fmt='exec --no-startup-id {cmd}'),
 
         focus = λ({
             (f'{M4}+j') : 'down',
             (f'{M4}+h') : 'left',
             (f'{M4}+l') : 'right',
             (f'{M4}+k') : 'up',
-        }, fmt='focus'),
+        }, fmt='focus {cmd}'),
 
         i3 = λ({
             (f'{M4}+apostrophe') : 'reload',
@@ -122,14 +122,14 @@ class conf_gen(Enum):
         vol = λ({
             ('XF86AudioLowerVolume') : 'd',
             ('XF86AudioRaiseVolume') : 'u',
-        }, fmt='$vol'),
+        }, fmt='$vol {cmd}'),
 
         remember_focused = λ({
             (f'{M4}+grave') : 'focus_next_visible',
             (f'{M4}+{Sh}+grave') : 'focus_prev_visible',
             (f'{M1}+Tab'): 'switch',
             (f'{M4}+slash') : 'switch',
-        }, fmt='$remember_focused'),
+        }, fmt='$remember_focused {cmd}'),
 
         scratchpad = λ({
             (f'{M4}+{Ct}+a') : 'dialog',
@@ -137,20 +137,20 @@ class conf_gen(Enum):
             (f'{M4}+{Ct}+space') : 'geom_restore',
             (f'{M4}+s') : 'hide_current',
             (f'{M4}+3') : 'next',
-        }, fmt='$scratchpad'),
+        }, fmt='$scratchpad {cmd}'),
 
         media = λ({
             (f'{M4}+period') : 'next',
             (f'{M4}+{Sh}+2') : 'play-pause',
             (f'{M4}+comma') : 'previous',
-        }, fmt='exec --no-startup-id playerctl'),
+        }, fmt='exec --no-startup-id playerctl {cmd}'),
 
         media_xf86 = λ({
             ('XF86AudioNext') : 'next',
             ('XF86AudioPlay') : 'play',
             ('XF86AudioPrev') : 'previous',
             ('XF86AudioStop') : 'stop',
-        }, fmt='exec --no-startup-id playerctl'),
+        }, fmt='exec --no-startup-id playerctl {cmd}'),
 
         menu = λ({
             (f'{M4}+{Sh}+a') : 'attach',
@@ -159,7 +159,7 @@ class conf_gen(Enum):
             (f'{M1}+g') : 'goto_win',
             (f'{M4}+{Ct}+g') : 'movews',
             (f'{M1}+{Ct}+g') : 'ws',
-        }, fmt='$menu'),
+        }, fmt='$menu {cmd}'),
 
         misc = λ({
             (f'{M4}+q') : 'fullscreen toggle',
@@ -169,18 +169,18 @@ class conf_gen(Enum):
 
     mode_resize = Δ(bind=f'{M4}+r',
         plus = λ({
-            'bottom' : {"binds": ['j', 's'], "param": '4'},
-            'left' : {"binds": ['h', 'a'], "param": '4'},
-            'right' : {"binds": ['l', 'd'], "param": '4'},
-            'top' : {"binds": ['k', 'w'], "param": '4'},
-        }, fmt='$actions resize'),
+            'bottom' : ['j', 's'],
+            'left' : ['h', 'a'],
+            'right' : ['l', 'd'],
+            'top' : ['k', 'w'],
+        }, fmt='$actions resize {cmd} 4'),
 
         minus = λ({
-            'bottom' : {"binds": [f'{Sh}+j', f'{Sh}+s'], "param": '-4'},
-            'left' : {"binds": [f'{Sh}+h', f'{Sh}+a'], "param": '-4'},
-            'right' : {"binds": [f'{Sh}+l', f'{Sh}+d'], "param": '-4'},
-            'top' : {"binds": [f'{Sh}+k', f'{Sh}+w'], "param": '-4'},
-        }, fmt='$actions resize'),
+            'bottom' : [f'{Sh}+j', f'{Sh}+s'],
+            'left' : [f'{Sh}+h', f'{Sh}+a'],
+            'right' : [f'{Sh}+l', f'{Sh}+d'],
+            'top' : [f'{Sh}+k', f'{Sh}+w'],
+        }, fmt='$actions resize {cmd} -4'),
     )
 
     mode_spec = Δ(bind=f'{M1}+e',
@@ -196,7 +196,7 @@ class conf_gen(Enum):
             ('i') : 'pulse_input',
             ('o') : 'pulse_output',
             ('m') : 'xprop_show',
-        }, fmt='$menu', exit=True),
+        }, fmt='$menu {cmd}', exit=True),
     )
 
     mode_wm = Δ(bind=f'{M4}+minus',
@@ -206,7 +206,7 @@ class conf_gen(Enum):
             (f'backslash') : 'splitv',
             (f't') : 'tabbed',
             (f'{Ct}+t') : 'toggle',
-        }, fmt='layout', exit=True),
+        }, fmt='layout {cmd}', exit=True),
 
         split = λ({
             'horizontal' : ['h', 'l'],
@@ -218,7 +218,7 @@ class conf_gen(Enum):
             ('a') : 'left',
             ('s') : 'bottom',
             ('d') : 'right',
-        }, fmt='move'),
+        }, fmt='move {cmd}'),
 
         actions = λ({
             (f'{Sh}+plus') : 'grow',
@@ -229,9 +229,12 @@ class conf_gen(Enum):
             (f'{Sh}+c') : 'resize',
             'revert_maximize' : [f'{Sh}+m', f'{Sh}+x', f'{Sh}+y'],
             'shrink' : [f'{Sh}+minus'],
-            'hdown' : {"binds": [f'{Sh}+w'], "param": 'x2'},
-            'hup' : {"binds": [f'{Sh}+a'], "param": 'x2'},
-            'vleft' : {"binds": [f'{Sh}+s'], "param": 'x2'},
-            'vright' : {"binds": [f'{Sh}+d'], "param": 'x2'},
         }, fmt='$actions'),
+
+        actions_x2 = λ({
+            'hdown' : [f'{Sh}+w'],
+            'hup' : [f'{Sh}+a'],
+            'vleft' : [f'{Sh}+s'],
+            'vright' : [f'{Sh}+d'],
+        }, fmt='$actions {cmd} x2'),
     )

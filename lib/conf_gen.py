@@ -156,15 +156,21 @@ class conf_gen(extension, cfg):
             for key, val in kmap.items():
                 if isinstance(val, str) and isinstance(key, str):
                     # key: binding, val: action
-                    ret += f'{prefix} {key} {kmap.fmt} {val}{end}\n'
+                    if '{cmd}' not in kmap.fmt:
+                        ret += f'{prefix} {key} {kmap.fmt} {val}{end}\n'
+                    else:
+                        format = kmap.fmt
+                        format = format.replace('{cmd}', val)
+                        ret += f'{prefix} {key} {format}{end}\n'
                 if isinstance(val, list) and not isinstance(key, tuple):
                     for b in val:
-                        ret += f'{prefix} {b} {kmap.fmt} {key}{end}\n'
-                elif isinstance(val, dict):
-                    param = ' ' + val.get('param', '')
-                    binds = val.get('binds', [])
-                    for k in binds:
-                        ret += f'{prefix} {k} {kmap.fmt} {key}{param}{end}\n'
+                        if '{cmd}' not in kmap.fmt:
+                            ret += f'{prefix} {b} {kmap.fmt} {key}{end}\n'
+                        else:
+                            format = kmap.fmt
+                            format = format.replace('{cmd}', key)
+                            ret += f'{prefix} {b} {format}{end}\n'
+
         ret += f'{conf_gen.module_binds(mod)}{self.mode(mod, end=True)}'
 
         return ret
