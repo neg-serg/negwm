@@ -1,4 +1,5 @@
 import os
+from . misc import Misc
 from . cfg import cfg
 from . extension import extension
 from . checker import checker
@@ -15,19 +16,17 @@ class conf_gen(extension, cfg):
         cfg.__init__(self, i3)
         self.i3ipc = i3
 
-    def print(self) -> None:
-        print(self.generate())
+    def print(self) -> None: print(self.generate())
 
     def write(self) -> None:
-        i3_cfg, test_cfg = 'config', '.config_test'
+        cfg, test_cfg = 'config', '.config_test'
         generated_cfg = self.generate()
-        i3_path = f'{os.environ["XDG_CONFIG_HOME"]}/i3'
-        with open(f'{i3_path}/{test_cfg}', 'w', encoding='utf8') as fp:
+        with open(f'{Misc.i3path()}/{test_cfg}', 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
         if checker.check_i3_config(cfg=test_cfg):
-            with open(f'{i3_path}/' + i3_cfg, 'w', encoding='utf8') as fp:
+            with open(f'{Misc.i3path()}/{cfg}', 'w', encoding='utf8') as fp:
                 fp.write(generated_cfg)
-            os.remove(f'{i3_path}/' + test_cfg)
+            os.remove(f'{Misc.i3path()}/{test_cfg}')
 
     def generate(self):
         ret = []
@@ -38,19 +37,11 @@ class conf_gen(extension, cfg):
                 cfg_section_handler = getattr(self, cfg_section)
                 ret.append(cfg_section_handler())
         ret.append(self.mods_commands())
-        binds = self.cfg.get('bindings', {})
-        for mode, data in binds.items():
-            keybind_data = getattr(self, 'mode_' + mode)(
-                mode_name=mode, mode_bind=data.get('bind', None)
-            )
-            ret.append(keybind_data)
+
         return '\n'.join(filter(None, ret))
 
-    def plain(self) -> str:
-        return self.cfg.get('plain', '').rstrip('\n')
-
-    def colors(self) -> str:
-        return self.cfg.get('colors', '').rstrip('\n')
+    def plain(self) -> str: return self.cfg.get('plain', '').rstrip('\n')
+    def colors(self) -> str: return self.cfg.get('colors', '').rstrip('\n')
 
     def exec_always(self) -> str:
         ret = ''
@@ -92,10 +83,10 @@ class conf_gen(extension, cfg):
     @staticmethod
     def module_binds(mode) -> str:
         ret = ''
+        mods = extension.get_mods()
+        if mods is None or not mods:
+            return ret
         for mod_name in conf_gen.self_configured_modules:
-            mods = extension.get_mods()
-            if mods is None or not mods:
-                return ret
             mod = mods[mod_name]
             for tag, settings in mod.cfg.items():
                 for param in settings:
@@ -115,7 +106,7 @@ class conf_gen(extension, cfg):
         if mods is None or not mods:
             return ret
         for mod in sorted(mods):
-            ret += (f'set ${mod} nop {mod}\n')
+            ret = f'{ret}set ${mod} nop {mod}\n'
         return ret
 
     def workspaces(self) -> str:
@@ -123,7 +114,7 @@ class conf_gen(extension, cfg):
         workspaces = self.cfg.get('workspaces', [])
         if workspaces:
             for index, ws in enumerate(workspaces):
-                ret += f'set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
+                ret = f'{ret}set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
         return ret
 
     def rules(self) -> str:
@@ -132,19 +123,19 @@ class conf_gen(extension, cfg):
             Rules.rules_mod('circle') + \
             self.cfg.get('rules', '').rstrip('\n')
 
-    def mode(self, name='', bind='',  end=False):
+    def mode(self, name, bind='', end=False):
         ret = ''
         name = name.removeprefix('mode_')
         if name == 'default':
             return ret
         if not end:
             if bind:
-                ret += f'bindsym {bind} mode "{name}"\n'
+                ret = f'{ret}bindsym {bind} mode "{name}"\n'
             return f'{ret}mode {name} {{'
         else:
             bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
             for keybind in bindings:
-                ret += f'\tbindsym {keybind}, {conf_gen.mode_exit}\n'
+                ret = f'{ret}\tbindsym {keybind}, {conf_gen.mode_exit}\n'
 
             return ret + '}\n'
 
