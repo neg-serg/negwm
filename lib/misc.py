@@ -24,13 +24,23 @@ class Misc():
 
     @staticmethod
     def negwm_path() -> str:
-        """ Easy way to return i3 config path. """
+        """ Easy way to return negwm config path. """
         cfg_home = os.path.expandvars("$XDG_CONFIG_HOME")
         if cfg_home == "$XDG_CONFIG_HOME":
             cfg_home = os.path.expanduser("~/.config")
         if not os.path.exists(f"{cfg_home}/negwm"):
             os.makedirs(cfg_home)
         return os.path.expanduser(f"{cfg_home}/negwm")
+
+    @staticmethod
+    def i3path() -> str:
+        """ Easy way to return i3 config path. """
+        cfg_home = os.path.expandvars("$XDG_CONFIG_HOME")
+        if cfg_home == "$XDG_CONFIG_HOME":
+            cfg_home = os.path.expanduser("~/.config")
+        if not os.path.exists(f"{cfg_home}/i3"):
+            os.makedirs(cfg_home)
+        return os.path.expanduser(f"{cfg_home}/i3")
 
     @staticmethod
     def echo_on(*args, **kwargs) -> None:
