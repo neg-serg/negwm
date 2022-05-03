@@ -20,7 +20,7 @@ class menu(extension, cfg):
         extension.__init__(self)
         cfg.__init__(self, i3ipc)
         self.i3ipc = i3ipc
-        self.i3_path = Misc.i3path()
+        self.i3_path = Misc.negwm_path()
         self.i3cmd = self.conf("i3cmd") # i3-msg application name
         # Window properties shown by xprop menu.
         self.xprops_list = self.conf("xprops_list")

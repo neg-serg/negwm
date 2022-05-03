@@ -55,7 +55,7 @@ class checker():
             logging.info('i3 config is valid [OK]')
         else:
             logging.error('i3 config is invalid [FAIL]'
-                f'please run i3 -C {Misc.i3path()}/{cfg} to check it'
+                f'please run i3 -C {Misc.negwm_path()}/{cfg} to check it'
             )
             os._exit(1)
         return True

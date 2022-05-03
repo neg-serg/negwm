@@ -37,7 +37,7 @@ class Configs():
             mod_config = {}
             for elem in raw_config:
                 mod_config.update({elem.name: elem.value})
-            i3_cfg_mod_path = f'{Misc.i3path()}/cache/cfg/{mod_name}.pickle'
+            i3_cfg_mod_path = f'{Misc.negwm_path()}/cache/cfg/{mod_name}.pickle'
             with open(i3_cfg_mod_path, "wb") as mod_cfg:
                 pickle.dump(mod_config, mod_cfg)
 

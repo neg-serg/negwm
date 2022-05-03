@@ -146,11 +146,11 @@ class negwm():
         while True:
             with Inotify() as inotify:
                 inotify.add_watch(
-                    f'{Misc.i3path()}/cfg/', Mask.MODIFY)
+                    f'{Misc.negwm_path()}/cfg/', Mask.MODIFY)
                 async for event in inotify:
                     changed_mod = str(event.name).removesuffix(config_extension)
                     if changed_mod in self.mods:
-                        binpath = f'{Misc.i3path()}/bin/'
+                        binpath = f'{Misc.negwm_path()}/bin/'
                         subprocess.run(
                             [f'{binpath}/create_config.py'],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,

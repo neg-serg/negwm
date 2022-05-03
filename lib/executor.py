@@ -27,7 +27,7 @@ class env():
     def __init__(self, name: str, config) -> None:
         self.name = name
         self.shell = 'dash'
-        cache_dir = Misc.i3path() + '/cache'
+        cache_dir = Misc.negwm_path() + '/cache'
         Misc.create_dir(cache_dir)
         tmux_socket_dir = expanduser(f'{cache_dir}/tmux_sockets')
         dtach_session_dir = expanduser(f'{cache_dir}/dtach_sessions')

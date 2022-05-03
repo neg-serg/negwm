@@ -23,9 +23,8 @@ class Misc():
                 raise
 
     @staticmethod
-    def i3path() -> str:
+    def negwm_path() -> str:
         """ Easy way to return i3 config path. """
-        cfg_home = ''
         cfg_home = os.path.expandvars("$XDG_CONFIG_HOME")
         if cfg_home == "$XDG_CONFIG_HOME":
             cfg_home = os.path.expanduser("~/.config")
