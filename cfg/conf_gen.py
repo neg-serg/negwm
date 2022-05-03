@@ -31,6 +31,12 @@ class conf_gen(Enum):
         '''
     )
 
+    exec = (
+        'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
+        'systemctl --user start --no-block i3-session.target'
+    )
+    exec_always = ('systemctl --user restart --no-block negwm.service',)
+
     rules = inspect.cleandoc(f'''
         for_window [class=".*"] title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 5
         for_window [class="^(Gcolor3|rdesktop|openssh-askpass)$"] floating enable
@@ -49,16 +55,6 @@ class conf_gen(Enum):
         no_focus [title="Firefox — Sharing Indicator"]
         no_focus [window_type="splash"]
         '''
-    )
-
-    startup = Δ(
-        always = Δ(
-            negwm = 'systemctl --user restart --no-block negwm.service',
-        ),
-        once = Δ(
-            dbus_env = 'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
-            startup = 'systemctl --user start --no-block i3-session.target'
-        ),
     )
 
     workspaces = [

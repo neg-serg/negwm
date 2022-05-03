@@ -52,16 +52,20 @@ class conf_gen(extension, cfg):
     def colors(self) -> str:
         return self.cfg.get('colors', '').rstrip('\n')
 
-    def startup(self) -> str:
+    def exec_always(self) -> str:
         ret = ''
-        startup = self.cfg.get('startup', {})
-        once, always = startup.get('once', {}), startup.get('always', {})
-        if once:
-            for exe in once.values():
-                ret += f'exec {exe}\n'
-        if always:
-            for exe in always.values():
+        exec_always = self.cfg.get('exec_always', {})
+        if exec_always:
+            for exe in exec_always:
                 ret += f'exec_always {exe}\n'
+        return ret.rstrip('\n')
+
+    def exec(self) -> str:
+        ret = ''
+        exec = self.cfg.get('exec', {})
+        if exec:
+            for exe in exec:
+                ret += f'exec {exe}\n'
         return ret.rstrip('\n')
 
     @staticmethod
