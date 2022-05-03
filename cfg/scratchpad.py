@@ -6,14 +6,14 @@ class scratchpad(Enum):
     discord = Δ(
         classw = ['discord'],
         geom = '1898x1273+1936+825',
-        keybind_default_toggle = ['Mod4+v'],
+        keybind_toggle = ['Mod4+v'],
         prog = 'discord'
     )
 
     im = Δ(
         classw = ['KotatogramDesktop', 'vkteams', 'Skype', 'Slack', 'TelegramDesktop', 'zoom'],
         geom = '1304x2109+2536+2',
-        keybind_default_toggle = ['Mod4+e'],
+        keybind_toggle = ['Mod4+e'],
         tel = Δ(
             classw = ['KotatogramDesktop'],
             keybind_spec_subtag = ['t'],
@@ -24,7 +24,7 @@ class scratchpad(Enum):
     ncmpcpp = Δ(
         geom = '2251x852+753+1181',
         classw = ['ncmpcpp'],
-        keybind_default_toggle = ['Mod4+f'],
+        keybind_toggle = ['Mod4+f'],
         spawn = 'ncmpcpp',
     )
 
@@ -32,28 +32,28 @@ class scratchpad(Enum):
         classw = ['mutterfox'],
         geom = '3670x2228+104+0',
         instance = ['mutterfox', 'neomutt'],
-        keybind_default_toggle = ['Mod4+n'],
+        keybind_toggle = ['Mod4+n'],
         spawn = 'neomutt',
     )
 
     password = Δ(
         geom = '1690x838+2150+1272',
         instance = ['1password'],
-        keybind_default_toggle = ['Mod4+Control+p'],
+        keybind_toggle = ['Mod4+Control+p'],
         prog = '1password'
     )
 
     teardrop = Δ(
         geom = '3840x1300+0+0',
         instance = ['teardrop'],
-        keybind_default_toggle = ['Mod4+d'],
+        keybind_toggle = ['Mod4+d'],
         spawn = 'teardrop'
     )
 
     torrment = Δ(
         geom = '3840x1300+0+0',
         instance = ['torrment'],
-        keybind_default_toggle = ['Mod4+t'],
+        keybind_toggle = ['Mod4+t'],
         spawn = 'torrment'
     )
 

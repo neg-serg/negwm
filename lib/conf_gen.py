@@ -72,17 +72,21 @@ class conf_gen(extension, cfg):
     def generate_bindsym(mode, tag, settings, p, subtag='', mod='') -> str:
         ret, pref, postfix = '', '', ''
         mode = mode.removeprefix('mode_')
-        if mode != 'default':
+        bind_data = p.split('_')[1:]
+        if subtag:
+            subtag = f' {subtag}'
+        if mode != 'default' and bind_data[0] == mode:
             pref, postfix = '\t', f', {conf_gen.mode_exit}'
-        generate_bindsym = p.split('_')
-        mode_, cmd = generate_bindsym[1], generate_bindsym[2]
-        if len(generate_bindsym) == 3:
-            if mode_ == mode:
-                if subtag:
-                    subtag = f' {subtag}'
+            cmd = bind_data[1]
+            for keybind in settings[p]:
+                ret += f'{pref}bindsym {keybind.strip()} ' + \
+                    f' ${mod} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
+        else:
+            if len(bind_data) == 1 and mode == 'default':
+                cmd = bind_data[0]
                 for keybind in settings[p]:
-                    ret += f'{pref}bindsym {keybind.strip()}' + ' ' + \
-                        f' ${mod} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
+                    ret += f'bindsym {keybind.strip()} ' + \
+                        f' ${mod} {cmd.strip()} {tag}{subtag}'.strip() + '\n'
         return ret
 
     @staticmethod
@@ -96,11 +100,10 @@ class conf_gen(extension, cfg):
             for tag, settings in mod.cfg.items():
                 for param in settings:
                     if isinstance(settings[param], dict):
-                        for p in settings[param]:
-                            if p.startswith('keybind_'):
-                                subtag = param
+                        for param_name in settings[param]:
+                            if param_name.startswith('keybind_'):
                                 ret += conf_gen.generate_bindsym(
-                                    mode, tag, settings[param], p, subtag=subtag, mod=mod_name
+                                    mode, tag, settings[param], param_name, subtag=param, mod=mod_name
                                 )
                     elif param.startswith('keybind_'):
                         ret += conf_gen.generate_bindsym(mode, tag, settings, param, mod=mod_name)
