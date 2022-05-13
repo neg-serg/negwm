@@ -64,14 +64,6 @@ class Misc():
         return ret
 
     @staticmethod
-    def ch(lst: List, ch: str) -> str:
-        """ Return char is list is not empty to prevent stupid commands. """
-        ret = ''
-        if len(lst) > 1:
-            ret = ch
-        return ret
-
-    @staticmethod
     def validate_i3_config(conf_gen_path, remove=False) -> bool:
         """ Checks that i3 config is ok. """
         check_config = ""

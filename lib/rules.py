@@ -49,7 +49,9 @@ class Rules():
                 win_attr = conv_dict_attr[attr]
             else:
                 win_attr = conv_dict_attr[attr[:-2]]
-            start = f'{win_attr}="' + Misc.ch(config[tag][attr], '^')
+            start = f'{win_attr}="'
+            if len(config[tag][attr]) > 1:
+                start = f'{start}^'
             attrlist = []
             attrlist = config[tag][attr]
             if config[tag].get(attr + '_r', ''):
