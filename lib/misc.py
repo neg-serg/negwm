@@ -7,8 +7,6 @@ import re
 import logging
 from typing import List
 
-from extension import extension
-
 
 class Misc():
     """ Implements various helper functions """
