@@ -84,7 +84,6 @@ class negwm():
                 if name not in blacklist:
                     self.mods[sys.intern(name)] = None
         self.port = 15555
-        self.echo = Misc.echo_on
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
         self.i3 = i3ipc.Connection()
@@ -137,7 +136,7 @@ class negwm():
         total_startup_time = str(round(sum(mod_startup_times), 6))
         loading_time_msg = f'[ok], load time {total_startup_time}'
         if self.show_load_time:
-            self.echo(loading_time_msg)
+            logging.info(loading_time_msg)
 
     async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.

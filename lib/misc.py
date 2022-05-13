@@ -41,16 +41,6 @@ class Misc():
         return os.path.expanduser(f"{cfg_home}/i3")
 
     @staticmethod
-    def echo_on(*args, **kwargs) -> None:
-        """ Print info """
-        logging.info(*args, **kwargs)
-
-    @staticmethod
-    def echo_off(*_dummy_args, **_dummy_kwargs) -> None:
-        """ Do not print info """
-        return
-
-    @staticmethod
     def print_run_exception_info(proc_err) -> None:
         logging.info(f'returncode={proc_err.returncode}, \
                 cmd={proc_err.cmd}, \
