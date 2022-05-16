@@ -5,11 +5,10 @@ configuration spawned here, to use it just start it from any place without param
 several times.
 
 Usage:
-    ./negwm.py [--debug|--tracemalloc|--start]
+    ./negwm.py [--debug|--start]
 
 Options:
     --debug         disables signal handlers for debug.
-    --tracemalloc   calculates and shows memory tracing with help of tracemalloc.
     --start         make actions for the start, not reloading
 
 Created by :: Neg
