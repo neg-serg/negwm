@@ -67,7 +67,6 @@ class negwm():
         super().__init__()
 
         self.loop, self.mods = loop, {}
-        extension = 'py'
         blacklist = {
             'cfg', 'checker', 'display', 'extension', 'geom', 'locker', 'misc',
             'msgbroker', 'matcher', 'negewmh', 'reflection', 'standalone_cfg',
@@ -75,11 +74,11 @@ class negwm():
         }
         mods = map(
             pathlib.Path,
-            glob.glob(f"{os.path.dirname(sys.argv[0])}/lib/*.{extension}")
+            glob.glob(f"{os.path.dirname(sys.argv[0])}/lib/*.py")
         )
         for mod in mods:
             if mod.is_file():
-                name = str(mod.name).removesuffix(f'.{extension}')
+                name = str(mod.name).removesuffix('.py')
                 if name not in blacklist:
                     self.mods[sys.intern(name)] = None
         self.port = 15555
@@ -122,11 +121,8 @@ class negwm():
         mod_startup_times = []
         for mod in self.mods:
             start_time = timeit.default_timer()
-            try:
-                i3mod = importlib.import_module('lib.' + mod)
-                self.mods[mod] = getattr(i3mod, mod)(self.i3)
-            except ModuleNotFoundError:
-                logging.error(f'No such module as {mod}')
+            i3mod = importlib.import_module('lib.' + mod)
+            self.mods[mod] = getattr(i3mod, mod)(self.i3)
             try:
                 self.mods[mod].asyncio_init(self.loop)
             except Exception:
