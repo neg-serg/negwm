@@ -12,22 +12,15 @@ class conf_gen(Enum):
     M4 = 'Mod4'
     Sh = 'Shift'
     Ct = 'Control'
+    Font = 'Iosevka Bold 12'
 
     plain = inspect.cleandoc(f'''
-        default_orientation auto
-        floating_modifier Mod4
+        floating_modifier {M4}
         focus_follows_mouse no
-        focus_on_window_activation smart
-        focus_wrapping workspace
-        force_display_urgency_hint 2000 ms
-        mouse_warping none
-        workspace_layout tabbed
         default_border normal
         default_floating_border normal
-        font pango: Iosevka Bold 12
+        font pango: {Font}
         hide_edge_borders both
-        show_marks yes
-        title_align left
         '''
     )
 
