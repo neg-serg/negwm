@@ -115,11 +115,6 @@ class conf_gen(Enum):
             (f'{M4}+{Sh}+apostrophe') : 'restart'
         }),
 
-        vol = λ({
-            ('XF86AudioLowerVolume') : 'd',
-            ('XF86AudioRaiseVolume') : 'u',
-        }, fmt='$vol {cmd}'),
-
         remember_focused = λ({
             (f'{M4}+grave') : 'focus_next_visible',
             (f'{M4}+{Sh}+grave') : 'focus_prev_visible',
@@ -139,6 +134,8 @@ class conf_gen(Enum):
             (f'{M4}+period') : 'next',
             (f'{M4}+{Sh}+2') : 'play-pause',
             (f'{M4}+comma') : 'previous',
+            ('XF86AudioLowerVolume') : 'volume 0.05- || playerctl volume 0.01-',
+            ('XF86AudioRaiseVolume') : 'volume 0.05+ || playerctl volume 0.01+',
         }, fmt='exec --no-startup-id playerctl {cmd}'),
 
         media_xf86 = λ({
