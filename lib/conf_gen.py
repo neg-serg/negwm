@@ -41,7 +41,6 @@ class conf_gen(extension, cfg):
         return '\n'.join(filter(None, ret))
 
     def plain(self) -> str: return self.cfg.get('plain', '').rstrip('\n')
-    def colors(self) -> str: return self.cfg.get('colors', '').rstrip('\n')
 
     def exec_always(self) -> str:
         ret = ''

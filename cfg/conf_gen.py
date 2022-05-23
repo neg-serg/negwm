@@ -8,10 +8,8 @@ from keymap import keymap, bindmap
 λ = keymap
 
 class conf_gen(Enum):
-    M1 = 'Mod1'
-    M4 = 'Mod4'
-    Sh = 'Shift'
-    Ct = 'Control'
+    M1, M4 = 'Mod1', 'Mod4'
+    Sh, Ct = 'Shift', 'Control'
     Font = 'Iosevka Bold 12'
 
     plain = inspect.cleandoc(f'''
@@ -21,6 +19,22 @@ class conf_gen(Enum):
         default_floating_border normal
         font pango: {Font}
         hide_edge_borders both
+
+        set_from_resource        $bg     bg
+        set_from_resource        $fg     fg
+        set_from_resource        $fb     fb
+        set_from_resource        $ib     ib
+        set_from_resource        $ub     ub
+        set_from_resource        $blue   blue
+        set_from_resource        $actbr  actbr
+
+        client.focused           $fb     $bg    $fg    $bg  $actbr
+        client.focused_inactive  $ib     $bg    $fg    $bg  $bg
+        client.placeholder       $bg     $bg    $fg    $bg  $bg
+        client.unfocused         $bg     $bg    $blue  $bg  $bg
+        client.urgent            $bg     $ub    $fg    $ub  $ib
+
+        client.background        $bg
         '''
     )
 
@@ -31,7 +45,7 @@ class conf_gen(Enum):
     exec_always = ('systemctl --user restart --no-block negwm.service',)
 
     rules = inspect.cleandoc(f'''
-        for_window [class=".*"] title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 5
+        for_window [class=".*"] title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 2
         for_window [class="^(Gcolor3|rdesktop|openssh-askpass)$"] floating enable
         for_window [class="^(inkscape|gimp)$"] move workspace $draw
         for_window [class="(?i)(?:steam|lutris)"] floating enable
@@ -65,25 +79,6 @@ class conf_gen(Enum):
         ' μ:wine'
     ]
 
-    colors = inspect.cleandoc(f'''
-        set_from_resource        $bg     bg
-        set_from_resource        $fg     fg
-        set_from_resource        $fb     fb
-        set_from_resource        $ib     ib
-        set_from_resource        $ub     ub
-        set_from_resource        $blue   blue
-        set_from_resource        $actbr  actbr
-
-        client.focused           $fb     $bg    $fg    $bg  $actbr
-        client.focused_inactive  $ib     $bg    $fg    $bg  $bg
-        client.placeholder       $bg     $bg    $fg    $bg  $bg
-        client.unfocused         $bg     $bg    $blue  $bg  $bg
-        client.urgent            $bg     $ub    $fg    $ub  $ib
-
-        client.background        $bg
-    '''
-    )
-
     mode_default = Δ(
         exec = λ({
             (f'{M4}+4') : '~/bin/screenshot',
@@ -96,17 +91,16 @@ class conf_gen(Enum):
             (f'{M4}+8') : 'playerctl volume 0.0 || amixer -q set Master 0 mute',
             (f'{M4}+c') : '~/bin/clip',
             (f'{M4}+g') : '~/bin/g',
-            (f'{M4}+p') : '~/bin/rofi-tmux-urls',
             (f'{M4}+m') : '~/bin/music-rename current',
+            (f'{M4}+p') : '~/bin/rofi-tmux-urls',
             (f'{M4}+{Sh}+6') : '~/bin/wl',
             (f'{M4}+{Sh}+8') : 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
             (f'{M4}+{Sh}+9') : 'dunstctl history-pop',
-            (f'{M4}+{Sh}+i') : '~/bin/rofi-nm',
             (f'{M4}+{Sh}+l') : '~/bin/rofi-lutris',
             (f'{M4}+{Sh}+m') : '~/bin/rofi-audio',
             (f'{M4}+{Sh}+y') : '~/bin/clip youtube-dw-list',
             (f'{M4}+space') : 'dunstctl close-all',
-            ('XF86Sleep') : 'sudo systemctl suspend',
+            ('XF86Sleep') : 'systemctl suspend',
         }, fmt='exec --no-startup-id {cmd}'),
 
         focus = λ({
