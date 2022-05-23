@@ -1,4 +1,5 @@
 from collections import UserDict
+from collections import UserList
 
 class keymap(UserDict):
     def __init__(*args, **kw):
@@ -19,7 +20,7 @@ class keymap(UserDict):
         self.pop('exit', None)
 
 
-class bindmap(UserDict):
+class bindmap(UserList):
     def __init__(*args, **kw):
         if not args:
             raise TypeError("descriptor '__init__' of 'WeakValueDictionary' "
@@ -32,7 +33,4 @@ class bindmap(UserDict):
         setattr(self, 'bind', kw.get('bind', ''))
         setattr(self, 'pretty_name', kw.get('pretty_name', ''))
 
-        UserDict.__init__(self, *args, **kw)
-
-        self.pop('bind', None)
-        self.pop('pretty_name', None)
+        UserList.__init__(self, *args)

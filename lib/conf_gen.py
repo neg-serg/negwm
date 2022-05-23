@@ -4,7 +4,7 @@ from . cfg import cfg
 from . extension import extension
 from . checker import checker
 from . rules import Rules
-from . keymap import keymap as Keymap
+from . keymap import bindmap as Bindmap
 
 
 class conf_gen(extension, cfg):
@@ -139,12 +139,11 @@ class conf_gen(extension, cfg):
             return ret + '}\n'
 
     def bind(self, mod) -> str:
-        section = self.cfg.get(mod, {})
-        ret = f'{self.mode(mod, bind=section.bind, end=False)}'
+        bindlist = self.cfg.get(mod, Bindmap())
+        ret = f'{self.mode(mod, bind=bindlist.bind, end=False)}'
         prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
-        for param in section:
+        for kmap in bindlist:
             ret += '\n'
-            kmap = section[param]
             end = f', {conf_gen.mode_exit}' if kmap.exit else ''
             for key, val in kmap.items():
                 if isinstance(val, str) and isinstance(key, str):
