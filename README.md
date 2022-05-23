@@ -14,7 +14,6 @@
   - [circle](#circle)
   - [remember_focused](#win-history)
   - [menu](#menu)
-  - [vol](#vol)
   - [actions](#win-action)
   - [executor](#executor)
   - [fs](#fs)
@@ -224,22 +223,6 @@ class menu(Enum):
 ```
 
 Also it contains some settings for menus.
-
-## vol
-
-Contextual volume manager. Handles mpd by default. If mpd is stopped then
-handles mpv with mpvc if the current window is mpv, or with sending 0, 9 keys
-to the mpv window if not. To use it add to i3 config something like this:
-
-Command list:
-
-```cfg
-    u: volume up
-    d: volume down
-    reload: reload module.
-```
-
-Why not just use playerctl instead? Very similar functionality, but the version with this module is faster and more responsive.
 
 ## actions
 
