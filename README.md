@@ -374,14 +374,7 @@ This module loads all negwm an start it via main's manager mailoop. Inotify-base
 spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running several times.
 
 Usage:
-    ./negwm.py [--debug|--tracemalloc|--start]
-
-Options:
-    --debug         disables signal handlers for debug.
-    --tracemalloc   calculates and shows memory tracing with help of
-                    tracemalloc.
-    --start         make actions for the start, not reloading
-```
+    ./negwm.py
 
 # Why
 

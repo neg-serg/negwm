@@ -5,11 +5,7 @@ configuration spawned here, to use it just start it from any place without param
 several times.
 
 Usage:
-    ./negwm.py [--debug|--start]
-
-Options:
-    --debug         disables signal handlers for debug.
-    --start         make actions for the start, not reloading
+    ./negwm.py
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -43,7 +39,7 @@ from lib.msgbroker import MsgBroker
 
 
 class negwm():
-    def __init__(self, cmd_args):
+    def __init__(self):
         """ Init function
 
             Using of self.intern for better performance, create i3ipc
@@ -52,17 +48,16 @@ class negwm():
         loop = asyncio.new_event_loop()
         self.show_load_time = False
 
-        if not (cmd_args['--debug']):
-            def loop_exit(signame):
-                logging.info(f"Got signal {signame}: exit")
-                loop.stop()
-                cleanup()
+        def loop_exit(signame):
+            logging.info(f"Got signal {signame}: exit")
+            loop.stop()
+            cleanup()
 
-            for signame in ['SIGINT', 'SIGTERM']:
-                loop.add_signal_handler(
-                    getattr(signal, signame),
-                    functools.partial(loop_exit, signame))
-            loop.set_exception_handler(None)
+        for signame in ['SIGINT', 'SIGTERM']:
+            loop.add_signal_handler(
+                getattr(signal, signame),
+                functools.partial(loop_exit, signame))
+        loop.set_exception_handler(None)
 
         super().__init__()
 
@@ -195,8 +190,8 @@ def main():
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
-    cmd_args = docopt(str(__doc__), version='0.9')
-    wm = negwm(cmd_args)
+    docopt(str(__doc__), version='0.9')
+    wm = negwm()
     wm.run()
 
 if __name__ == '__main__':
