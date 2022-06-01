@@ -19,13 +19,13 @@ class conf_gen(Enum):
         font pango: {Font}
         hide_edge_borders both
 
-        set_from_resource        $bg     bg
-        set_from_resource        $fg     fg
-        set_from_resource        $fb     fb
-        set_from_resource        $ib     ib
-        set_from_resource        $ub     ub
-        set_from_resource        $blue   blue
-        set_from_resource        $actbr  actbr
+        set  $bg     #000000ee
+        set  $fg     #899CA1
+        set  $fb     #005faf
+        set  $ib     #285981
+        set  $ub     #2E2457
+        set  $blue   #285981
+        set  $actbr  #020204
 
         client.focused           $fb     $bg    $fg    $bg  $actbr
         client.focused_inactive  $ib     $bg    $fg    $bg  $bg
