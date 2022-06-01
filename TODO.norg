@@ -9,6 +9,8 @@
 
 = Config
     - Better generator(fancy output, etc)
+    - Custom name for binding mode
+    - Use menu hotkey as new mode
 
 = Bin
     - Create wallpaper setter with rating
