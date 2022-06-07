@@ -86,6 +86,7 @@ class conf_gen(Enum):
             (f'{M4}+g') : '~/bin/g',
             (f'{M4}+m') : '~/bin/music-rename current',
             (f'{M4}+p') : '~/bin/rofi-tmux-urls',
+            (f'{M4}+{Sh}+p') : 'zsh -c /usr/bin/rofi-pass',
             (f'{M4}+{Sh}+6') : '~/bin/wl',
             (f'{M4}+{Sh}+8') : 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
             (f'{M4}+{Sh}+9') : 'dunstctl history-pop',
