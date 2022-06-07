@@ -17,8 +17,10 @@
     - Move tmux status to polybar
 
 = Executor
-    - Replace alacritty config generators with options
     - Add executor run check via something like dash -c
+    - Better kitty support
+    - Replace alacritty config generators with options
+    - Zutty support
 
 = Scratchpad
     - Add ability to set geometry with mouse
