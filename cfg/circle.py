@@ -16,13 +16,6 @@ class circle(Enum):
         ws = 'doc'
     )
 
-    lutris = Δ(
-        classw = ['Wine', 'Lutris'],
-        keybind_next = ['Mod4+Control+e'],
-        prog = 'lutris',
-        ws = 'steam'
-    )
-
     nwim = Δ(
         classw = ['nwim'],
         keybind_next = ['Mod4+1'],
@@ -46,7 +39,7 @@ class circle(Enum):
     steam = Δ(
         classw = ['Steam', 'steam'],
         keybind_next = ['Mod4+Shift+e'],
-        prog = 'flatpak run com.valvesoftware.Steam',
+        prog = 'zsh -c "flatpak run com.valvesoftware.Steam"',
         ws = 'steam'
     )
 
