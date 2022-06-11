@@ -46,7 +46,7 @@ class circle(Enum):
     steam = Δ(
         classw = ['Steam', 'steam'],
         keybind_next = ['Mod4+Shift+e'],
-        prog = 'steam',
+        prog = 'flatpak run com.valvesoftware.Steam',
         ws = 'steam'
     )
 
