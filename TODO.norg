@@ -28,7 +28,9 @@
     - Add labels support print scratchpad names
 
 = Menu
+    - Another rofi text align
     - Better attach circle/scratchpad menu
+    - Larger menu size
 
 = Experiments
     - python reload dynamic
