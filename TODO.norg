@@ -1,11 +1,11 @@
 = New
-    - Mouse helper, for example get windows size and then click on x,y = 20px, 20px
     - Dynamic workspaces with circle integration
+    - Mouse helper, for example get windows size and then click on x,y = 20px, 20px
 
 = General
+    - github.com/bakkeby/patches/wiki/riodraw
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     - Support for i3 open for tiling
-    - github.com/bakkeby/patches/wiki/riodraw
 
 = Config
     - Better generator(fancy output, etc)
@@ -24,8 +24,8 @@
 
 = Scratchpad
     - Add ability to set geometry with mouse
-    - Set geometry for scratchpad windows(optional)
     - Add labels support print scratchpad names
+    - Set geometry for scratchpad windows(optional)
 
 = Menu
     - Another rofi text align
@@ -33,5 +33,5 @@
     - Larger menu size
 
 = Experiments
-    - python reload dynamic
-    - python setdefault
+    - Python reload dynamic
+    - Python setdefault
