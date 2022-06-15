@@ -9,7 +9,7 @@ import sys
 import pickle
 import traceback
 import logging
-from typing import Set, Callable, Any
+from typing import Set, Any
 from lib.misc import Misc
 
 
@@ -48,16 +48,6 @@ class cfg():
         return {"class_r", "instance_r", "name_r", "role_r"}
 
     @staticmethod
-    def win_all_props():
-        """ Basic + regex props """
-        return cfg.cfg_props() | cfg.cfg_regex_props()
-
-    @staticmethod
-    def possible_props() -> Set[str]:
-        """ Windows properties used for props add / del """
-        return {'class', 'instance', 'window_role', 'title'}
-
-    @staticmethod
     def cfg_props() -> Set[str]:
         """ Basic cfg properties, without regexes """
         return {'classw', 'instance', 'name', 'role'}
@@ -65,7 +55,7 @@ class cfg():
     @staticmethod
     def subtag_attr_list() -> Set[str]:
         """ Helper to create subtag attr list. """
-        return cfg.possible_props()
+        return {'class', 'instance', 'window_role', 'title'}
 
     def reload(self, *_) -> None:
         """ Reload config for current selected module. Call load_config, print
@@ -83,29 +73,6 @@ class cfg():
             traceback.print_exc(file=sys.stdout)
             self.cfg = prev_conf
             self.__init__(*_)
-
-    def dict_apply(self, field_conv: Callable, subtag_conv: Callable) -> None:
-        """ Convert list attributes to set for the better performance.
-            field_conv (Callable): function to convert dict field.
-            subtag_conv (Callable): function to convert subtag inside dict. """
-        for string in self.cfg.values():
-            for key in string:
-                if key in self.win_all_props():
-                    string[sys.intern(key)] = field_conv(
-                        string[sys.intern(key)]
-                    )
-                elif key == "subtag":
-                    subtag_conv(string[sys.intern(key)])
-
-    @staticmethod
-    def subtag_apply(subtag, field_conv: Callable) -> None:
-        """ Convert subtag attributes to set for the better performance.
-            subtag (str): target subtag name.
-            field_conv (Callable): function to convert dict field. """
-        for val in subtag.values():
-            for key in val:
-                if key in cfg.subtag_attr_list():
-                    val[sys.intern(key)] = field_conv(val[sys.intern(key)])
 
     def load_config(self) -> None:
         """ Reload config itself and convert lists in it to sets for the better
@@ -129,8 +96,7 @@ class cfg():
         for token in prop_str.split('@'):
             if token:
                 toks = token.split('=')
-                attr = toks[0]
-                value = toks[1]
+                attr, value = toks[0], toks[1]
                 if value[0] == value[-1] and value[0] in {'"', "'"}:
                     value = value[1:-1]
                 if attr in cfg.subtag_attr_list():
