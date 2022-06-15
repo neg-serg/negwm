@@ -41,7 +41,9 @@ class conf_gen(Enum):
         'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
         'systemctl --user start --no-block i3-session.target'
     )
-    exec_always = ('systemctl --user restart --no-block negwm.service',)
+    exec_always = (
+        'systemctl --user restart --no-block negwm.service',
+    )
 
     rules = inspect.cleandoc(f'''
         for_window [class=".*"] title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 2

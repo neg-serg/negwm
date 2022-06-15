@@ -16,11 +16,11 @@ class conf_gen(extension, cfg):
         cfg.__init__(self, i3)
         self.i3ipc = i3
 
-    def print(self) -> None: print(self.generate())
+    def print(self) -> None: print(self.generate_config())
 
     def write(self) -> None:
         cfg, test_cfg = 'config', '.config_test'
-        generated_cfg = self.generate()
+        generated_cfg = self.generate_config()
         with open(f'{Misc.i3path()}/{test_cfg}', 'w', encoding='utf8') as fp:
             fp.write(generated_cfg)
         if checker.check_i3_config(cfg=test_cfg):
@@ -28,7 +28,7 @@ class conf_gen(extension, cfg):
                 fp.write(generated_cfg)
             os.remove(f'{Misc.i3path()}/{test_cfg}')
 
-    def generate(self):
+    def generate_config(self):
         ret = []
         for cfg_section in self.cfg.keys():
             if cfg_section.startswith('mode_'):
@@ -42,20 +42,16 @@ class conf_gen(extension, cfg):
 
     def plain(self) -> str: return self.cfg.get('plain', '').rstrip('\n')
 
-    def exec_always(self) -> str:
-        ret = ''
-        exec_always = self.cfg.get('exec_always', {})
-        if exec_always:
-            for exe in exec_always:
-                ret += f'exec_always {exe}\n'
-        return ret.rstrip('\n')
-
     def exec(self) -> str:
         ret = ''
         exec = self.cfg.get('exec', {})
         if exec:
             for exe in exec:
                 ret += f'exec {exe}\n'
+        exec_always = self.cfg.get('exec_always', {})
+        if exec_always:
+            for exe in exec_always:
+                ret += f'exec_always {exe}\n'
         return ret.rstrip('\n')
 
     @staticmethod
