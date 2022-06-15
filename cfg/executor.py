@@ -55,6 +55,6 @@ class executor(Enum):
         exec_tmux = [['zsh', 'zsh']],
         font = 'Iosevka',
         font_size = 19,
-        padding = [8, 8],
+        padding = [2, 2],
         statusline = 1
     )
