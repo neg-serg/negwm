@@ -36,13 +36,6 @@ class scratchpad(Enum):
         spawn = 'neomutt',
     )
 
-    password = Δ(
-        geom = '1690x838+2150+1272',
-        instance = ['1password'],
-        keybind_toggle = ['Mod4+Control+p'],
-        prog = '1password'
-    )
-
     teardrop = Δ(
         geom = '3840x1300+0+0',
         instance = ['teardrop'],
