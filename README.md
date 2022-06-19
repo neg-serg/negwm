@@ -32,9 +32,26 @@
 
 For now this collection of modules for i3 includes
 
-# main
-
 _negwm_ : application that run all modules and handle configuration of i3 and modules on python. Also handles config updating.
+
+# Why
+
+It is only my attempt to port the best UX parts from ion3/notion and also improve it when possible. But if you try I may find that things,
+like better scratchpad or navigation very useful.
+
+# Help
+
+```man
+i3 negwm daemon script.
+
+This module loads all negwm an start it via main's manager mailoop. Inotify-based watchers for all negwm S-expression-based configuration
+spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running several times.
+
+Usage:
+    ./negwm.py
+```
+
+# General
 
 Some general notes:
 
@@ -65,9 +82,9 @@ exec_always systemctl --user restart --no-block negwm.service
 To restart negwm after i3 reload, `negwm.py` should close file automatically, after i3 reload/restart so you can simply run it after
 restart.
 
-# modules
+# Modules
 
-## scratchpad
+## Scratchpad
 
 Named ion3-like scratchpads with a whistles and fakes.
 
@@ -85,13 +102,13 @@ attached to.
 Some interesting commands:
 
 ```cfg
-    show: show scratchpad
+    dialog: toggle dialogs
+    hide_current: hide current scratchpad despite of type
     hide: hide scratchpad
     next: go to the next window in scratchpad
-    toggle: show/hide this named scratchpad, very useful
-    hide_current: hide current scratchpad despite of type
+    show: show scratchpad
     subtag: you can create groups inside groups.
-    dialog: toggle dialogs
+    toggle: show/hide this named scratchpad, very useful
 ```
 
 Interesting parts here:
@@ -108,7 +125,7 @@ tel` if you want to run telegram or go to the window of telegram if it's opened 
 
 Use `dialog` to show dialog window. I have placed it in the separated scratchpad for convenience.
 
-## circle
+## Circle
 
 Better run-or-raise, with jump in a circle, subtags, priorities and more. Run-or-raise is the following:
 
@@ -150,11 +167,11 @@ consider then that `tor-browser` is opened, then you can iterate over two of the
 Some useful commands:
 
 ```cfg
-next: go to the next window
-subtag: go to the next subtag window
+    next: go to the next window
+    subtag: go to the next subtag window
 ```
 
-## remember_focused
+## Remember focused
 
 Goto to the previous window, not the workspace. Default i3 alt-tab cannot to remember from what window alt-tab have been done, this mod fix
 at by storing history of last selected windows.
@@ -176,7 +193,7 @@ remember_focused commands:
     focus_prev_visible: focus previous visible window
 ```
 
-## menu
+## Menu
 
 Menu module including i3-menu with hackish autocompletion, menu to attach window to window group(circled) or target named scratchpad(nsd)
 and more.
@@ -184,21 +201,20 @@ and more.
 It consists of main `menu.py` with the bindings to the menu modules, for example:
 
 ```cfg
-    cmd_menu : 
-    xprop_show :
-    autoprop : 
-    show_props : 
-    pulse_output : 
-    pulse_input : 
-    pulse_mute : 
-    ws : 
-    goto_win : 
-    attach :
-    movews : 
-    gtk_theme :
-    icon_theme :
-    xrandr_resolution :
-}
+    attach
+    autoprop 
+    cmd_menu 
+    goto_win 
+    gtk_theme
+    icon_theme
+    movews 
+    pulse_input 
+    pulse_mute 
+    pulse_output 
+    show_props 
+    ws 
+    xprop_show
+    xrandr_resolution
 ```
 
 It loads appropriate modules dynamically, to handle it please edit `cfg/menu.py` Too many of options to document it properly.
@@ -224,12 +240,12 @@ class menu(Enum):
 
 Also it contains some settings for menus.
 
-## actions
+## Actions
 
 Various stuff to emulate some 2bwm UX. I do not use it actively for now, so too lazy to write good documentation for it but if you are
 interested you are free to look at `lib/actions.py` source code.
 
-## executor
+## Executor
 
 Module to create various terminal windows with custom config and/or tmux session handling. Supports a lot of terminal emulators, but for now
 only `alacritty` has nice support, because of I think it's the best terminal emulator for X11 for now.
@@ -347,19 +363,3 @@ Install it to i3 config directory:
 ```sh
 git clone https://github.com/neg-serg/negwm ~/.config/negwm
 ```
-
-negwm help:
-
-```man
-i3 negwm daemon script.
-
-This module loads all negwm an start it via main's manager mailoop. Inotify-based watchers for all negwm S-expression-based configuration
-spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running several times.
-
-Usage:
-    ./negwm.py
-
-# Why
-
-It is only my attempt to port the best UX parts from ion3/notion and also improve it when possible. But if you try I may find that things,
-like better scratchpad or navigation very useful.
