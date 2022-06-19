@@ -351,10 +351,8 @@ cd $XDG_CONFIG_HOME/negwm
 ./bin/run
 ```
 
-If everything is ok then you can use new i3 config example, where `Mod4
-
-- Shift + '`is i3wm reloading, after reload you should get i3 with`negwm`
-  plugins on the board.
+If everything is ok then you can use new i3 config example, where `Mod4- Shift + '`
+is i3wm reloading, after reload you should get i3 with `negwm` plugins on the board.
 
 # Run
 
