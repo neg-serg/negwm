@@ -1,11 +1,5 @@
 ![banner](https://i.imgur.com/fgmuilL.png)
 
-# Screenshots
-
-![terminal_shot](https://i.imgur.com/O08SzU3.png)
-![nvim_shot](https://i.imgur.com/Tqfu65R.png)
-![unixporn_like_shot](https://i.imgur.com/z1arTLh.png)
-
 - [Screenshots](#screenshots)
 - [What is it?](#what-is-it-)
 - [main](#main)
@@ -27,6 +21,12 @@
 - [Why](#why)
 - [Bugs](#bugs)
 - [Video Demonstration](#video-demonstration)
+
+# Screenshots
+
+![terminal_shot](https://i.imgur.com/O08SzU3.png)
+![nvim_shot](https://i.imgur.com/Tqfu65R.png)
+![unixporn_like_shot](https://i.imgur.com/z1arTLh.png)
 
 # What is it?
 
