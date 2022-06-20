@@ -28,7 +28,7 @@ class executor(Enum):
         font_normal = 'Medium',
         font_size = 17,
         opacity = 0.95,
-        padding = [8, 8],
+        padding = [4, 4],
     )
 
     teardrop = Δ(
