@@ -196,18 +196,19 @@ class conf_gen(Enum):
             (f'minus') : 'splith',
             (f'backslash') : 'splitv',
             (f't') : 'tabbed',
-            (f'{Ct}+t') : 'toggle',
         }, fmt='layout {cmd}', exit=True),
 
+        λ({(f'Tab') : 'toggle'}, fmt='layout {cmd}', exit=False),
+
         λ({
-            'horizontal' : ['h', 'l'],
-            'vertical' : ['j', 'k'],
+            'horizontal' : [f'{Sh}+h', f'{Sh}+l'],
+            'vertical' : [f'{Sh}+j', f'{Sh}+k'],
         }, fmt='split', exit=True),
 
         λ({
-            ('w') : 'top',
+            ('w') : 'up',
             ('a') : 'left',
-            ('s') : 'bottom',
+            ('s') : 'down',
             ('d') : 'right',
         }, fmt='move {cmd}'),
 
