@@ -27,11 +27,11 @@ class conf_gen(Enum):
         set  $blue   #285981
         set  $actbr  #020204
 
-        client.focused           $fb     $bg    $fg    $bg  $actbr
-        client.focused_inactive  $ib     $bg    $fg    $bg  $bg
-        client.placeholder       $bg     $bg    $fg    $bg  $bg
-        client.unfocused         $bg     $bg    $blue  $bg  $bg
-        client.urgent            $bg     $ub    $fg    $ub  $ib
+        client.focused           $fb  $bg  $fg    $bg  $actbr
+        client.focused_inactive  $ib  $bg  $fg    $bg  $bg
+        client.placeholder       $bg  $bg  $fg    $bg  $bg
+        client.unfocused         $bg  $bg  $blue  $bg  $bg
+        client.urgent            $bg  $ub  $fg    $ub  $ib
 
         client.background        $bg
         '''
@@ -85,8 +85,7 @@ class conf_gen(Enum):
             (f'{M1}+grave') : 'rofi -show run -show-icons -disable-history -theme neg',
             (f'{M4}+8') : 'playerctl volume 0.0 || amixer -q set Master 0 mute',
             (f'{M4}+c') : '~/bin/clip',
-            (f'{M4}+g') : '~/bin/g',
-            (f'{M4}+m') : '~/bin/music-rename current',
+            (f'{M4}+m') : 'zsh -c ~/bin/music-rename current',
             (f'{M4}+p') : '~/bin/rofi-tmux-urls',
             (f'{M4}+{Sh}+p') : 'zsh -c /usr/bin/rofi-pass',
             (f'{M4}+{Sh}+6') : '~/bin/wl',
