@@ -85,7 +85,7 @@ class conf_gen(Enum):
             (f'{M1}+grave') : 'rofi -show run -show-icons -disable-history -theme neg',
             (f'{M4}+8') : 'playerctl volume 0.0 || amixer -q set Master 0 mute',
             (f'{M4}+c') : '~/bin/clip',
-            (f'{M4}+m') : 'zsh -c ~/bin/music-rename current',
+            (f'{M4}+m') : 'zsh -c "~/bin/music-rename current"',
             (f'{M4}+p') : '~/bin/rofi-tmux-urls',
             (f'{M4}+{Sh}+p') : 'zsh -c /usr/bin/rofi-pass',
             (f'{M4}+{Sh}+6') : '~/bin/wl',
