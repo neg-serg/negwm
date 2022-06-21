@@ -27,19 +27,17 @@ class env():
     def __init__(self, name: str, config) -> None:
         self.name = name
         self.shell = 'dash'
-        cache_dir = Misc.negwm_path() + '/cache'
+        cache_dir = f'{Misc.negwm_path()}/cache'
         Misc.create_dir(cache_dir)
         tmux_socket_dir = expanduser(f'{cache_dir}/tmux_sockets')
         dtach_session_dir = expanduser(f'{cache_dir}/dtach_sessions')
         self.alacritty_cfg_dir = expanduser(f'{cache_dir}/alacritty_cfg')
         xdg_config_home = os.environ.get("XDG_CONFIG_HOME")
-        if xdg_config_home:
-            self.alacritty_cfg = expanduser(f'{xdg_config_home}/alacritty/alacritty.yml')
-        else:
-            self.alacritty_cfg = expanduser('~/.config/alacritty/alacritty.yml')
-        Misc.create_dir(tmux_socket_dir)
-        Misc.create_dir(self.alacritty_cfg_dir)
-        Misc.create_dir(dtach_session_dir)
+        if not xdg_config_home:
+            xdg_config_home = '~/.config'
+        self.alacritty_cfg = expanduser(f'{xdg_config_home}/alacritty/alacritty.yml')
+        for dir in tmux_socket_dir, self.alacritty_cfg_dir, dtach_session_dir:
+            Misc.create_dir(dir)
         self.sockpath = expanduser(f'{tmux_socket_dir}/{name}.socket')
         cfg_block = config.get(name, {})
         if not cfg_block:
@@ -98,7 +96,7 @@ class env():
     @staticmethod
     def terminal_fallback_detect() -> str:
         """ Detect non alacritty terminal """
-        for t in ['st', 'kitty']:
+        for t in ['st', 'kitty', 'zutty']:
             if shutil.which(t):
                 return t
         logging.error('No supported terminal installed, fail :(')
@@ -169,25 +167,34 @@ class env():
         ).start()
         if self.term == 'alacritty':
             self.term_opts = [
-                "alacritty", "--config-file",
-                expanduser(custom_config), "--class", f'{self.wclass},{self.wclass}',
-                "-t", self.title, "-e"
+                f"{self.term}",
+                f"--config-file {expanduser(custom_config)}",
+                f"--class {self.wclass},{self.wclass}",
+                f"-t {self.title} -e"
             ]
         elif self.term == "st":
-            self.term_opts = ["st"] + [
-                "-c", self.wclass,
-                "-t", self.name,
-                "-f", self.font + ":size=" + str(self.font_size) + f":style={self.font_normal}",
+            self.term_opts = [
+                f"{self.term}",
+                f"-c {self.wclass}",
+                f"-t {self.name}",
+                f"-f {self.font} :size={str(self.font_size)}:style={self.font_normal}",
                 "-e"
             ]
         elif self.term == "kitty":
-            self.term_opts = ["kitty"] + [
+            self.term_opts = [
+                f"{self.term}",
                 f"--class={self.wclass}",
                 f"--title={self.name}",
                 f"-o font_family='{self.font} {self.font_normal}'",
                 f"-o font_size={str(self.font_size)}",
             ]
-
+        elif self.term == "zutty":
+            self.term_opts = [
+                f"{self.term}",
+                f"-name {self.wclass}",
+                f"-font {self.font}",
+                f"-fontsize {str(self.font_size)}",
+            ]
 
 class executor(extension, cfg):
     """ Tmux Manager class. Easy and consistent way to create tmux sessions on
