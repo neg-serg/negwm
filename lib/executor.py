@@ -102,21 +102,6 @@ class env():
         logging.error('No supported terminal installed, fail :(')
         return ''
 
-    def create_alacritty_cfg(self, cfg_dir, config: dict, name: str) -> str:
-        """ Config generator for alacritty. We need it because of alacritty
-        cannot bypass most of user parameters with command line now.
-        cfg_dir: alacritty config dir
-        config: config dirtionary
-        name(str): name of config to generate
-        cfgname(str): configname """
-        app_name = config.get(name, {}).get('app_name', '')
-        if not app_name:
-            app_name = config.get(name, {}).get('classw')
-        app_name = f'{app_name}.yml'
-        cfgname = expanduser(f'{cfg_dir}/{app_name}')
-        shutil.copyfile(self.alacritty_cfg, cfgname)
-        return cfgname
-
     def yaml_config_create(self, custom_config: str) -> None:
         """ Create config for alacritty
         custom_config(str): config name to create """
@@ -154,47 +139,69 @@ class env():
                 except yaml.YAMLError as yamlerror:
                     logging.error(yamlerror)
 
-    def create_term_params(self, config: dict, name: str) -> None:
-        """ This function fill self.term_opts for settings.abs
-            config(dict): config dictionary which should be adopted to
-            commandline options or settings. """
-        custom_config = self.create_alacritty_cfg(
-            self.alacritty_cfg_dir, config, name
-        )
+    def create_alacritty_cfg(self, cfg_dir, config: dict, name: str) -> str:
+        """ Config generator for alacritty. We need it because of alacritty
+        cannot bypass most of user parameters with command line now.
+        cfg_dir: alacritty config dir
+        config: config dirtionary
+        name(str): name of config to generate
+        cfgname(str): configname """
+        app_name = config.get(name, {}).get('app_name', '')
+        if not app_name:
+            app_name = config.get(name, {}).get('classw')
+        app_name = f'{app_name}.yml'
+        cfgname = expanduser(f'{cfg_dir}/{app_name}')
+        shutil.copyfile(self.alacritty_cfg, cfgname)
+        return cfgname
+
+    def alacritty_term(self, config, name):
+        custom_config = self.create_alacritty_cfg(self.alacritty_cfg_dir, config, name)
         multiprocessing.Process(
             target=self.yaml_config_create, args=(custom_config,),
             daemon=True
         ).start()
+
+        self.term_opts = [
+            f"{self.term}",
+            f"--config-file {expanduser(custom_config)}",
+            f"--class {self.wclass},{self.wclass}",
+            f"-t {self.title} -e"]
+
+    def st_term(self):
+        self.term_opts = [
+            f"{self.term}",
+            f"-c {self.wclass}",
+            f"-t {self.name}",
+            f"-f {self.font} :size={str(self.font_size)}:style={self.font_normal}",
+            "-e"]
+
+    def kitty_term(self):
+        self.term_opts = [
+            f"{self.term}",
+            f"--class={self.wclass}",
+            f"--title={self.name}",
+            f"-o font_family='{self.font} {self.font_normal}'",
+            f"-o font_size={str(self.font_size)}"]
+
+    def zutty_term(self):
+        self.term_opts = [
+            f"{self.term}",
+            f"-name {self.wclass}",
+            f"-font {self.font}",
+            f"-fontsize {str(self.font_size)}"]
+
+    def create_term_params(self, config: dict, name: str) -> None:
+        """ This function fill self.term_opts for settings.abs
+            config(dict): config dictionary which should be adopted to
+            commandline options or settings. """
         if self.term == 'alacritty':
-            self.term_opts = [
-                f"{self.term}",
-                f"--config-file {expanduser(custom_config)}",
-                f"--class {self.wclass},{self.wclass}",
-                f"-t {self.title} -e"
-            ]
+            self.alacritty_term(config, name)
         elif self.term == "st":
-            self.term_opts = [
-                f"{self.term}",
-                f"-c {self.wclass}",
-                f"-t {self.name}",
-                f"-f {self.font} :size={str(self.font_size)}:style={self.font_normal}",
-                "-e"
-            ]
+            self.st_term()
         elif self.term == "kitty":
-            self.term_opts = [
-                f"{self.term}",
-                f"--class={self.wclass}",
-                f"--title={self.name}",
-                f"-o font_family='{self.font} {self.font_normal}'",
-                f"-o font_size={str(self.font_size)}",
-            ]
+            self.kitty_term()
         elif self.term == "zutty":
-            self.term_opts = [
-                f"{self.term}",
-                f"-name {self.wclass}",
-                f"-font {self.font}",
-                f"-fontsize {str(self.font_size)}",
-            ]
+            self.zutty_term()
 
 class executor(extension, cfg):
     """ Tmux Manager class. Easy and consistent way to create tmux sessions on
