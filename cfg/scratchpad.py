@@ -53,6 +53,7 @@ class scratchpad(Enum):
     transients = Δ(
         geom = '1812x797+693+1310',
         match_all = ['True'],
+        keybind_spec_toggle = ['a'],
         role = ['GtkFileChooserDialog', 'Organizer', 'Manager']
     )
 
