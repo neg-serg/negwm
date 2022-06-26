@@ -19,8 +19,8 @@
 # Executor
     * Add executor run check via something like dash -c
     * Better kitty support
+    * Kitty padding
     * Replace alacritty config generators with options
-    * Zutty support
 
 # Scratchpad
     * Add ability to set geometry with mouse
