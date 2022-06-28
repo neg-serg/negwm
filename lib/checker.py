@@ -1,6 +1,5 @@
 import os
 import shutil
-import subprocess
 import logging
 from lib.misc import Misc
 
