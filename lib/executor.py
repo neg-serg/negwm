@@ -25,9 +25,10 @@ class env():
     parameters and settings of application, like used terminal enumator, fonts, all path settings, etc.
     config: manager to autosave/autoload configutation with inotify '''
 
-    tmux_socket_dir = expanduser(f'{Misc.cache_path()}/tmux_sockets')
-    dtach_session_dir = expanduser(f'{Misc.cache_path()}/dtach_sessions')
-    alacritty_cfg_dir = expanduser(f'{Misc.cache_path()}/alacritty_cfg')
+    cache = expanduser(f'{Misc.cache_path()}')
+    tmux_socket_dir = f'{cache}/tmux_sockets'
+    dtach_session_dir = f'{cache}/dtach_sessions'
+    alacritty_cfg_dir = f'{cache}/alacritty_cfg'
     alacritty_cfg = expanduser(f'{Misc.xdg_config_home()}/alacritty/alacritty.yml')
 
     def __init__(self, name: str, config) -> None:
