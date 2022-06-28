@@ -19,7 +19,6 @@
 
 # Executor
     * Add executor run check via something like dash -c
-    * Better kitty support
     * Replace alacritty config generators with options
 
 # Scratchpad

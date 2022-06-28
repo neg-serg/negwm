@@ -197,11 +197,13 @@ class env():
 
     def kitty_term(self):
         padding = self.cfg_block().get('padding', [0, 0])[0]
+        opacity = self.cfg_block().get('opacity', 0.88)
         return [
             f"{self.term}",
             f"--class={self.wclass}",
             f"--title={self.name}",
             f"-o window_padding_width={padding}",
+            f"-o background_opacity={opacity}",
             f"-o font_family='{self.font()} {self.style()['normal']}'",
             f"-o font_size={str(self.font_size())}"]
 
