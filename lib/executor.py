@@ -41,16 +41,6 @@ class env():
         for dir in env.tmux_socket_dir, env.alacritty_cfg_dir, env.dtach_session_dir:
             Misc.create_dir(dir)
 
-        # Get terminal from config, use Alacritty by default
-        self.term = self.cfg_block().get("term", "alacritty").lower()
-        if os.path.exists(env.alacritty_cfg):
-            if os.stat(env.alacritty_cfg).st_size == 0:
-                logging.error(f'Alacritty cfg {env.alacritty_cfg} is empty')
-                self.term = env.terminal_fallback_detect()
-        else:
-            logging.error(f'Alacritty cfg {env.alacritty_cfg} not exists, put it here')
-            self.term = env.terminal_fallback_detect()
-
         self.sockpath = expanduser(f'{env.tmux_socket_dir}/{name}.socket')
         self.tmux_session_attach = f"tmux -S {self.sockpath} a -t {name}"
         self.tmux_new_session = f"tmux -S {self.sockpath} new-session -s {name}"
@@ -87,6 +77,18 @@ class env():
         ret = self.config.get('default_font_size', '')
         if not ret:
             ret = self.cfg_block().get('font_size', '14')
+        return ret
+
+    def term(self):
+        # Get terminal from config, use Alacritty by default
+        ret = self.cfg_block().get("term", "alacritty").lower()
+        if os.path.exists(env.alacritty_cfg):
+            if os.stat(env.alacritty_cfg).st_size == 0:
+                logging.error(f'Alacritty cfg {env.alacritty_cfg} is empty')
+                ret = env.terminal_fallback_detect()
+        else:
+            logging.error(f'Alacritty cfg {env.alacritty_cfg} not exists, put it here')
+            ret = env.terminal_fallback_detect()
         return ret
 
     def style(self) -> dict:
@@ -183,14 +185,14 @@ class env():
         ).start()
 
         return [
-            f"{self.term}",
+            f"{self.term()}",
             f"--config-file {expanduser(custom_config)}",
             f"--class {self.wclass},{self.wclass}",
             f"-t {self.title} -e"]
 
     def st_term(self):
         return [
-            f"{self.term}",
+            f"{self.term()}",
             f"-c {self.wclass}",
             f"-t {self.name}",
             f"-f {self.font} :size={str(self.font_size())}:style={self.style()['normal']}",
@@ -200,7 +202,7 @@ class env():
         padding = self.cfg_block().get('padding', [0, 0])[0]
         opacity = self.cfg_block().get('opacity', 0.88)
         return [
-            f"{self.term}",
+            f"{self.term()}",
             f"--class={self.wclass}",
             f"--title={self.name}",
             f"-o window_padding_width={padding}",
@@ -210,7 +212,7 @@ class env():
 
     def zutty_term(self):
         return [
-            f"{self.term}",
+            f"{self.term()}",
             f"-name {self.wclass}",
             f"-font {self.font}",
             f"-fontsize {str(self.font_size())}"]
@@ -219,15 +221,15 @@ class env():
         ''' This function fill self.opts for settings.abs
             config(dict): config dictionary which should be adopted to
             commandline options or settings. '''
-        self.wclass = self.cfg_block().get("classw", self.term)
+        self.wclass = self.cfg_block().get("classw", self.term())
 
-        if self.term == 'alacritty':
+        if self.term() == 'alacritty':
             self.opts = self.alacritty_term(name)
-        elif self.term == 'st':
+        elif self.term() == 'st':
             self.opts =self.st_term()
-        elif self.term == 'kitty':
+        elif self.term() == 'kitty':
             self.opts = self.kitty_term()
-        elif self.term == 'zutty':
+        elif self.term() == 'zutty':
             self.opts = self.zutty_term()
 
 class executor(extension, cfg):
