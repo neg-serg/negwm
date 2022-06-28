@@ -31,12 +31,14 @@ from asyncinotify import Inotify, Mask
 from docopt import docopt
 import i3ipc
 import psutil
+from rich.traceback import install
 
 from lib.checker import checker
 from lib.locker import get_lock
 from lib.misc import Misc
 from lib.msgbroker import MsgBroker
 
+install(show_locals=True)
 
 class negwm():
     def __init__(self):
