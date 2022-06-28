@@ -209,6 +209,7 @@ class env():
         opacity = self.cfg_block().get('opacity', 0.88)
         return ' '.join([
             f"{self.term()}",
+            "-1",
             f"--class={self.wclass}",
             f"--title={self.name}",
             f"-o window_padding_width={padding}",
