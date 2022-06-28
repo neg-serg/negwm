@@ -21,11 +21,16 @@ class Misc():
                 raise
 
     @staticmethod
-    def negwm_path() -> str:
-        """ Easy way to return negwm config path. """
+    def xdg_config_home() -> str:
         cfg_home = os.path.expandvars("$XDG_CONFIG_HOME")
         if cfg_home == "$XDG_CONFIG_HOME":
             cfg_home = os.path.expanduser("~/.config")
+        return cfg_home
+
+    @staticmethod
+    def negwm_path() -> str:
+        """ Easy way to return negwm config path. """
+        cfg_home = Misc.xdg_config_home()
         if not os.path.exists(f"{cfg_home}/negwm"):
             os.makedirs(cfg_home)
         return os.path.expanduser(f"{cfg_home}/negwm")
@@ -33,12 +38,14 @@ class Misc():
     @staticmethod
     def i3path() -> str:
         """ Easy way to return i3 config path. """
-        cfg_home = os.path.expandvars("$XDG_CONFIG_HOME")
-        if cfg_home == "$XDG_CONFIG_HOME":
-            cfg_home = os.path.expanduser("~/.config")
+        cfg_home = Misc.xdg_config_home()
         if not os.path.exists(f"{cfg_home}/i3"):
             os.makedirs(cfg_home)
         return os.path.expanduser(f"{cfg_home}/i3")
+
+    @staticmethod
+    def cache_path() -> str:
+        return f'{Misc.negwm_path()}/cache'
 
     @staticmethod
     def print_run_exception_info(proc_err) -> None:

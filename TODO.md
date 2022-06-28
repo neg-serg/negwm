@@ -5,6 +5,7 @@
 # General
     * github.com/bakkeby/patches/wiki/riodraw
     * Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
+    * Remove all default parameters and add config validation
     * Support for i3 open for tiling
 
 # Config
@@ -19,7 +20,6 @@
 # Executor
     * Add executor run check via something like dash -c
     * Better kitty support
-    * Kitty padding
     * Replace alacritty config generators with options
 
 # Scratchpad
