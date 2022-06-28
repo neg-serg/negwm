@@ -32,7 +32,7 @@ class checker():
                 'xdo': 'optional polybar hide support instead of built-in',
                 'zsh': 'use zsh as one of the best interactive shells',
                 'alacritty': 'alacritty is recommended as default shell',
-                'pulseaudio': 'you need pulseaudio for pulsectl menu',
+                'pactl': 'you need pactl for pulsectl menu',
             }
         }
 
