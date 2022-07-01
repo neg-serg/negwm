@@ -27,20 +27,20 @@ class menu(extension, cfg):
         for mod in self.cfg['modules']:
             module = importlib.import_module('menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
-        self.cmd_menu = self.i3menu.cmd_menu
-        self.xprop_show = self.xprop.xprop
-        self.autoprop = self.props.autoprop
-        self.show_props = self.props.show_props
-        self.pulse_output = self.pulse_menu.pulseaudio_output
-        self.pulse_input = self.pulse_menu.pulseaudio_input
-        self.pulse_mute = self.pulse_menu.pulseaudio_mute
-        self.ws = self.winact.goto_ws
-        self.goto_win = self.winact.goto_win
-        self.attach = self.winact.attach_win
-        self.movews = self.winact.move_to_ws
-        self.gtk_theme = self.gnome.change_gtk_theme
-        self.icon_theme = self.gnome.change_icon_theme
-        self.xrandr_resolution = self.xrandr.change_resolution_xrandr
+        self.cmd_menu = getattr(self, 'i3menu').cmd_menu
+        self.xprop_show = getattr(self, 'xprop').xprop
+        self.autoprop = getattr(self, 'props').autoprop
+        self.show_props = getattr(self, 'props').show_props
+        self.pulse_output = getattr(self, 'pulse_menu').pulseaudio_output
+        self.pulse_input = getattr(self, 'pulse_menu').pulseaudio_input
+        self.pulse_mute = getattr(self, 'pulse_menu').pulseaudio_mute
+        self.ws = getattr(self, 'winact').goto_ws
+        self.goto_win = getattr(self, 'winact').goto_win
+        self.attach = getattr(self, 'winact').attach_win
+        self.movews = getattr(self, 'winact').move_to_ws
+        self.gtk_theme = getattr(self, 'gnome').change_gtk_theme
+        self.icon_theme = getattr(self, 'gnome').change_icon_theme
+        self.xrandr_resolution = getattr(self, 'xrandr').change_resolution_xrandr
         self.reload = self.reload
 
     def args(self, params: dict) -> List[str]:
