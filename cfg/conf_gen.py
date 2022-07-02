@@ -169,7 +169,7 @@ class conf_gen(Enum):
             'right' : [f'{Sh}+l', f'{Sh}+d'],
             'top' : [f'{Sh}+k', f'{Sh}+w'],
         }, fmt='$actions resize {cmd} -4'),
-        ], bind=f'{M4}+r'
+        ], bind=f'{M4}+r', name='%{T4}%{T-}'
      )
 
     mode_spec = Δ([
@@ -186,7 +186,7 @@ class conf_gen(Enum):
             ('o') : 'pulse_output',
             ('m') : 'xprop_show',
         }, fmt='$menu {cmd}', exit=True),
-        ], bind=f'{M1}+e'
+        ], bind=f'{M1}+e', name='%{T4}%{T-}'
     )
 
     mode_wm = Δ([
@@ -228,5 +228,5 @@ class conf_gen(Enum):
             'vleft' : [f'{Sh}+s'],
             'vright' : [f'{Sh}+d'],
         }, fmt='$actions {cmd} x2'),
-        ], bind=f'{M4}+minus'
+        ], bind=f'{M4}+minus', name='%{T4}%{T-}',
     )

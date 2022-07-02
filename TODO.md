@@ -10,7 +10,6 @@
 
 # Config
     * Better generator(fancy output, etc)
-    * Custom name for binding mode
     * Use menu hotkey as new mode. Also Shift+Menu, Alt+Menu, Ctrl+Menu!
 
 # Bin

@@ -136,7 +136,13 @@ class conf_gen(extension, cfg):
 
     def bind(self, mod) -> str:
         bindlist = self.cfg.get(mod, Bindmap())
-        ret = f'{self.mode(mod, bind=getattr(bindlist,"bind"), end=False)}'
+        name = getattr(bindlist, "name", '')
+        if not name:
+            name = mod
+        ret = self.mode(
+            name,
+            bind=getattr(bindlist, "bind"),
+            end=False)
         prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
         for kmap in bindlist:
             ret += '\n'

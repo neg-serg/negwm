@@ -31,6 +31,7 @@ class bindmap(UserList):
             raise TypeError('expected at most 1 arguments, got %d' % len(args))
 
         setattr(self, 'bind', kw.get('bind', ''))
+        setattr(self, 'name', kw.get('name', ''))
         setattr(self, 'pretty_name', kw.get('pretty_name', ''))
 
         UserList.__init__(self, *args)
