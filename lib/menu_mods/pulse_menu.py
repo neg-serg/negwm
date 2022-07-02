@@ -1,33 +1,22 @@
 import subprocess
 import pulsectl
-import shutil
 
 
 class pulse_menu():
     def __init__(self, menu):
         self.menu = menu
-        self.pulse_data = {}
-        if shutil.which('pulseaudio') is None:
+        try:
+            self.pulse = pulsectl.Pulse('neg-pulse-selector')
+        except Exception:
             self.pulse = None
-            return
-
-        check_pulseaudio = subprocess.run(['pulseaudio', '--check'],
-            check=False,
-            capture_output=True
-        )
-        if check_pulseaudio.returncode == 0:
-            try:
-                self.pulse = pulsectl.Pulse('neg-pulse-selector')
-            except Exception:
-                self.pulse = None
 
     def pulse_data_init(self):
         self.pulse_data = {
             "app_list": [],
             "sink_output_list": [],
             "app_props": {},
-            "pulse_sink_list": self.pulse.sink_list(),
-            "pulse_app_list": self.pulse.sink_input_list(),
+            "pulse_sink_list": getattr(self, 'pulse').sink_list(),
+            "pulse_app_list": getattr(self, 'pulse').sink_input_list(),
         }
 
     def pulseaudio_mute(self, mute):
@@ -35,7 +24,7 @@ class pulse_menu():
         self.fill_output_list(False)
         target_idx = self.pulseaudio_select_output()
         if mute and target_idx:
-            self.pulse.sink_mute(int(target_idx), bool(int(mute)))
+            getattr(self, 'pulse').sink_mute(int(target_idx), bool(int(mute)))
 
     def pulseaudio_output(self):
         if self.pulse is None:
@@ -70,8 +59,6 @@ class pulse_menu():
             return 0
 
         menu_params = {
-            'cnum': 1,
-            'lnum': len(self.pulse_data["app_list"]),
             'auto_selection': '-auto-select',
             'prompt': f'{self.menu.wrap_str("pulse app")} \
             {self.menu.conf("prompt")}',
@@ -94,7 +81,7 @@ class pulse_menu():
     def get_exclude_device_name(self, app_ret):
         sel_app_props = \
             self.pulse_data["app_props"][app_ret].proplist
-        for stream in self.pulse.stream_restore_list():
+        for stream in getattr(self, 'pulse').stream_restore_list():
             if stream is not None:
                 if stream.device is not None:
                     if stream.name == sel_app_props['module-stream-restore.id']:
@@ -123,8 +110,6 @@ class pulse_menu():
             return None
 
         menu_params = {
-            'cnum': 1,
-            'lnum': len(self.pulse_data["sink_output_list"]),
             'auto_selection': '-auto-select',
             'prompt':
                 f'{self.menu.wrap_str("pulse output")} \
@@ -149,7 +134,7 @@ class pulse_menu():
         """ Move selected input for the given application """
         if int(self.pulse_data["app_props"][app_ret].index) is not None \
                 and target_idx and int(target_idx) is not None:
-            self.pulse.sink_input_move(
+            getattr(self, 'pulse').sink_input_move(
                 int(self.pulse_data["app_props"][app_ret].index),
                 int(target_idx),
             )
