@@ -27,9 +27,7 @@
     * Set geometry for scratchpad windows(optional)
 
 # Menu
-    * Another rofi text align
     * Better attach circle/scratchpad menu
-    * Larger menu size
 
 # Experiments
     * Python reload dynamic
