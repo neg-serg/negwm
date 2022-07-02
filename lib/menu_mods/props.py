@@ -26,7 +26,6 @@ class props():
             mod (str): module name string.
             lst (List[str]): list of menu input. """
         menu_params = {
-            'cnum': len(lst),
             'prompt': f'{self.menu.wrap_str(mod)} {self.menu.conf("prompt")}',
         }
         menu_tag = subprocess.run(
@@ -56,8 +55,6 @@ class props():
     def get_mod(self) -> str:
         """ Select extension for add_prop by menu. """
         menu_params = {
-            'cnum': len(self.possible_mods),
-            'lnum': 1,
             'prompt': f'{self.menu.wrap_str("selmod")}' \
             f'{self.menu.conf("prompt")}'
         }

@@ -59,7 +59,7 @@ class pulse_menu():
             return 0
 
         menu_params = {
-            'auto_selection': '-auto-select',
+            'auto-select': '-auto-select',
             'prompt': f'{self.menu.wrap_str("pulse app")} {self.menu.conf("prompt")}',
         }
         menu_app_sel = subprocess.run(
@@ -109,7 +109,7 @@ class pulse_menu():
             return None
 
         menu_params = {
-            'auto_selection': '-auto-select',
+            'auto-select': '-auto-select',
             'prompt':
                 f'{self.menu.wrap_str("pulse output")}{self.menu.conf("prompt")}'
         }

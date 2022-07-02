@@ -8,9 +8,9 @@ class xrandr():
 
     def change_resolution_xrandr(self):
         from display import Display
+        ret = ''
         xrandr_data = Display.xrandr_resolution_list()
         menu_params = {
-            'cnum': 8,
             'prompt': f'{self.menu.wrap_str("gtk_theme")} \
             {self.menu.conf("prompt")}',
         }
@@ -23,6 +23,7 @@ class xrandr():
         if resolution_sel is not None:
             ret = resolution_sel.decode('UTF-8').strip()
         ret_list = []
+        size_id = 0
         if ret and 'x' in ret:
             size_pair = ret.split(':')
             size_id = size_pair[0]
@@ -30,4 +31,4 @@ class xrandr():
             ret_list = res_str.split('x')
         width, height = ret_list[0].strip(), ret_list[1].strip()
         logging.info(f'Set size to {width}x{height}')
-        Display.set_screen_size(size_id)
+        Display.set_screen_size(int(size_id))

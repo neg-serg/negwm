@@ -25,12 +25,7 @@ class xprop():
                         xprops.append(line)
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
-        menu_params = {
-            'cnum': 1,
-            'lnum': len(xprops),
-            'prompt':
-                f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'
-        }
+        menu_params = {'prompt': f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'}
         ret = ""
         try:
             xprop_sel = subprocess.run(

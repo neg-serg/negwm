@@ -50,12 +50,12 @@ class menu(extension, cfg):
         prompt = self.conf("prompt")
         params['prompt'] = params.get('prompt', prompt)
         params['markup_rows'] = params.get('markup_rows', '-no-markup-rows')
-        params['auto_selection'] = \
-            params.get('auto_selection', "-no-auto-selection")
+        params['auto-select'] = \
+            params.get('auto-select', "-no-auto-select")
         matching = self.conf("matching")
         return [
             'rofi', '-show', '-dmenu', '-disable-history',
-            params['auto_selection'], params['markup_rows'],
+            params['auto-select'], params['markup_rows'],
             '-p', params['prompt'], '-i', '-matching', f'{matching}']
 
     def wrap_str(self, string: str) -> str:

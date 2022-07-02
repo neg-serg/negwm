@@ -9,7 +9,7 @@ class winact():
         self.menu = menu
 
     def win_act_simple(self, cmd: str, prompt: str) -> None:
-        """ Run simple and fast selection dialog for window with given action.
+        """ Run simple and fast rofi menu for window with given action.
             Args:
                 cmd (str): action for window to run.
                 prompt (str): custom prompt for menu.
@@ -17,10 +17,7 @@ class winact():
         leaves = self.menu.i3ipc.get_tree().leaves()
         winlist = [win.name for win in leaves]
         winlist_len = len(winlist)
-        menu_params = {
-            'cnum': winlist_len,
-            'prompt': f"{prompt} {self.menu.conf('prompt')}"
-        }
+        menu_params = {'prompt': f"{prompt} {self.menu.conf('prompt')}"}
         win_name = None
         if winlist and winlist_len > 1:
             win_name = subprocess.run(
@@ -38,7 +35,7 @@ class winact():
                     win.command(cmd)
 
     def goto_win(self) -> None:
-        """ Run menu goto selection dialog """
+        """ Run menu goto rofi menu """
         self.win_act_simple('focus', self.menu.wrap_str('go'))
 
     def attach_win(self) -> None:
@@ -50,10 +47,7 @@ class winact():
     def select_ws(self) -> str:
         """ Apply target function to workspace. """
         ws_list = list(extension.get_mods()['conf_gen'].cfg['workspaces'].values())
-        menu_params = {
-            'cnum': len(ws_list),
-            'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}',
-        }
+        menu_params = {'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}'}
         try:
             workspace_name = subprocess.run(
                 self.menu.args(menu_params),

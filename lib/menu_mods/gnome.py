@@ -17,14 +17,9 @@ class gnome():
             Misc.negwm_path() + '/bin/gnome-conf'
         )
 
-    def menu_params(self, length, prompt):
+    def menu_params(self, prompt):
         """ Set menu params """
-        return {
-            'cnum': length / 2,
-            'lnum': 2,
-            'prompt':
-                f'{self.menu.wrap_str(prompt)} {self.menu.conf("prompt")}'
-        }
+        return { 'prompt': f'{self.menu.wrap_str(prompt)} {self.menu.conf("prompt")}' }
 
     def apply_settings(self):
         """ Apply selected gnome settings """
@@ -40,7 +35,7 @@ class gnome():
         for icon in icons_path.glob('*'):
             if icon:
                 icon_dirs += [pathlib.Path(icon).name]
-        menu_params = self.menu_params(len(icon_dirs), 'icon theme')
+        menu_params = self.menu_params('icon theme')
         selection = ''
         if not icon_dirs:
             return
@@ -67,7 +62,7 @@ class gnome():
         for theme in gtk_theme_path.glob('*/*/gtk.css'):
             if theme:
                 theme_dirs += [pathlib.PurePath(theme).parent.parent.name]
-        menu_params = self.menu_params(len(theme_dirs), 'gtk theme')
+        menu_params = self.menu_params('gtk theme')
         selection = ''
         if not theme_dirs:
             return
