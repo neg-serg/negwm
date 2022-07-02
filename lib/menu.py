@@ -49,20 +49,14 @@ class menu(extension, cfg):
             List(str) to do rofi subprocessing """
         prompt = self.conf("prompt")
         params['prompt'] = params.get('prompt', prompt)
-        params['cnum'] = params.get('cnum', 16)
-        params['lnum'] = params.get('lnum', 2)
         params['markup_rows'] = params.get('markup_rows', '-no-markup-rows')
         params['auto_selection'] = \
             params.get('auto_selection', "-no-auto-selection")
         matching = self.conf("matching")
         return [
-            'rofi', '-show', '-dmenu',
-            '-columns', str(params['cnum']),
-            '-lines', str(params['lnum']),
-            '-disable-history',
+            'rofi', '-show', '-dmenu', '-disable-history',
             params['auto_selection'], params['markup_rows'],
-            '-p', params['prompt'], '-i',
-            '-matching', f'{matching}']
+            '-p', params['prompt'], '-i', '-matching', f'{matching}']
 
     def wrap_str(self, string: str) -> str:
         """ String wrapper to make it beautiful """
