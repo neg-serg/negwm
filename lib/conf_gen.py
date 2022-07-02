@@ -28,7 +28,7 @@ class conf_gen(extension, cfg):
                 fp.write(generated_cfg)
             os.remove(f'{Misc.i3path()}/{test_cfg}')
 
-    def generate_config(self):
+    def generate_config(self) -> str:
         ret = []
         for cfg_section in self.cfg.keys():
             if cfg_section.startswith('mode_'):
@@ -118,7 +118,7 @@ class conf_gen(extension, cfg):
             Rules.rules_mod('circle') + \
             self.cfg.get('rules', '').rstrip('\n')
 
-    def mode(self, name, bind='', end=False):
+    def mode(self, name, bind='', end=False) -> str:
         ret = ''
         name = name.removeprefix('mode_')
         if name == 'default':
