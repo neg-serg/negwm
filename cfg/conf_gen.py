@@ -81,19 +81,19 @@ class conf_gen(Enum):
 
         λ({
             (f'{M1}+grave') : 'rofi -show run -show-icons -disable-history -theme neg',
-            (f'{M4}+8') : 'playerctl volume 0.0 || amixer -q set Master 0 mute',
             (f'{M4}+c') : '~/bin/clip',
             (f'{M4}+m') : 'zsh -c "~/bin/music-rename current"',
             (f'{M4}+p') : '~/bin/rofi-tmux-urls',
             (f'{M4}+{Sh}+p') : 'zsh -c /usr/bin/rofi-pass',
             (f'{M4}+{Sh}+6') : '~/bin/wl',
-            (f'{M4}+{Sh}+8') : 'playerctl volume 1.0 || amixer -q set Master 65536 unmute',
             (f'{M4}+{Sh}+9') : 'dunstctl history-pop',
             (f'{M4}+{Sh}+l') : '~/bin/rofi-lutris',
             (f'{M4}+{Sh}+m') : '~/bin/rofi-audio',
             (f'{M4}+{Sh}+y') : '~/bin/clip youtube-dw-list',
             (f'{M4}+space') : 'dunstctl close-all',
             ('XF86Sleep') : 'systemctl suspend',
+            (f'{M4}+8') : '~/bin/pl vol mute',
+            (f'{M4}+{Sh}+8') : '~/bin/pl vol unmute',
         }, fmt='exec --no-startup-id {cmd}'),
 
         λ({
@@ -124,19 +124,19 @@ class conf_gen(Enum):
         }, fmt='$scratchpad {cmd}'),
 
         λ({
-            (f'{M4}+period') : 'next',
-            (f'{M4}+{Sh}+2') : 'play-pause',
-            (f'{M4}+comma') : 'previous',
-            ('XF86AudioLowerVolume') : 'volume 0.05- || playerctl volume 0.01-',
-            ('XF86AudioRaiseVolume') : 'volume 0.05+ || playerctl volume 0.01+',
-        }, fmt='exec --no-startup-id playerctl {cmd}'),
+            (f'{M4}+period') : 'cmd next',
+            (f'{M4}+{Sh}+2') : 'cmd play-pause',
+            (f'{M4}+comma') : 'cmd previous',
+            ('XF86AudioLowerVolume') : 'vol down',
+            ('XF86AudioRaiseVolume') : 'vol up',
+        }, fmt='exec --no-startup-id ~/bin/pl {cmd}'),
 
         λ({
-            ('XF86AudioNext') : 'next',
-            ('XF86AudioPlay') : 'play',
-            ('XF86AudioPrev') : 'previous',
-            ('XF86AudioStop') : 'stop',
-        }, fmt='exec --no-startup-id playerctl {cmd}'),
+            ('XF86AudioNext') : 'cmd next',
+            ('XF86AudioPlay') : 'cmd play',
+            ('XF86AudioPrev') : 'cmd previous',
+            ('XF86AudioStop') : 'cmd stop',
+        }, fmt='exec --no-startup-id ~/bin/pl {cmd}'),
 
         λ({
             (f'{M4}+{Sh}+a') : 'attach',
