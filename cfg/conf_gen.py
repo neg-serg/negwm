@@ -48,12 +48,10 @@ class conf_gen(Enum):
     rules = inspect.cleandoc(f'''
         for_window [class=".*"] title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 2
         for_window [class="^(inkscape|gimp)$"] move workspace $draw
-        for_window [class="(?i)(?:steam|qt5ct|gcolor3|rdesktop|openssh-askpass|pavucontrol-qt|lutris|steam_app_.*|mpv)"] floating enable
-        for_window [title="(?i)(?:copying|alsamixer|deleting|moving|File Transfer.*)"] floating enable
+        for_window [class="(?i)(?:steam|qt5ct|gcolor3|rdesktop|openssh-askpass|lutris|steam_app_.*|mpv)"] floating enable
         for_window [instance="^(gpartedbin|recoll)$"] move workspace $sys, floating enable, focus
         for_window [title="Firefox — Sharing Indicator"] border pixel 1, sticky enable, move position 20 ppt -5 px
-        for_window [title="i3_help"] floating enable sticky enable border normal
-        no_focus [class="zoom" instance="zoom" title="^zoom$"]
+        for_window [title="(?i)(?:File Transfer.*)"] floating enable
         no_focus [title="Firefox — Sharing Indicator"]
         no_focus [window_type="splash"]
         '''
