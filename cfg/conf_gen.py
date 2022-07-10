@@ -103,6 +103,12 @@ class conf_gen(Enum):
             (f'{M4}+k') : 'up',
         }, fmt='focus {cmd}'),
 
+        # move workspace to left and right monitors
+        λ({
+            (f'{M4}+Shift+bracketleft') : 'left',
+            (f'{M4}+Shift+bracketright') : 'right',
+        }, fmt='move workspace to output {cmd}'),
+
         λ({
             (f'{M4}+apostrophe') : 'reload',
             (f'{M4}+{Sh}+apostrophe') : 'restart'
