@@ -10,8 +10,6 @@ class props():
     def __init__(self, menu):
         self.menu = menu
         self.delim = "@" # Magic delimiter used by add_prop / del_prop routines.
-        self.host = self.menu.conf("host") # default echo server host
-        self.port = int(self.menu.conf("port")) # default echo server port
         # create echo server socket
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         # negwm which allows add / delete property.
