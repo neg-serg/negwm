@@ -52,6 +52,7 @@ class executor(Enum):
     )
 
     term = Δ(
+        term = 'kitty',
         classw = 'term',
         exec_tmux = [['zsh', 'zsh']],
         font = 'Iosevka',
