@@ -3,6 +3,16 @@ from enum import Enum
 
 
 class executor(Enum):
+    term = Δ(
+        term = 'kitty',
+        classw = 'term',
+        exec_tmux = [['zsh', 'zsh']],
+        font = 'Iosevka',
+        font_size = 19,
+        padding = [2, 2],
+        statusline = 1
+    )
+
     ncmpcpp = Δ(
         term = 'kitty',
         classw = 'ncmpcpp',
@@ -12,13 +22,6 @@ class executor(Enum):
         font_size = 17,
         opacity = 0.8,
         padding = [4, 4],
-    )
-
-    neomutt = Δ(
-        classw = 'neomutt',
-        exec_dtach = 'neomutt',
-        font = 'Iosevka',
-        font_size = 17,
     )
 
     nwim = Δ(
@@ -51,12 +54,9 @@ class executor(Enum):
         statusline = 0
     )
 
-    term = Δ(
-        term = 'kitty',
-        classw = 'term',
-        exec_tmux = [['zsh', 'zsh']],
+    neomutt = Δ(
+        classw = 'neomutt',
+        exec_dtach = 'neomutt',
         font = 'Iosevka',
-        font_size = 19,
-        padding = [2, 2],
-        statusline = 1
+        font_size = 17,
     )
