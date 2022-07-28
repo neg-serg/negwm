@@ -36,6 +36,7 @@ class executor(Enum):
     )
 
     teardrop = Δ(
+        term = 'kitty',
         classw = 'teardrop',
         exec = '/usr/bin/btop',
         font = 'Iosevka',
@@ -46,6 +47,7 @@ class executor(Enum):
     )
 
     torrment = Δ(
+        term = 'kitty',
         classw = 'torrment',
         exec_tmux = [['stig', '/usr/bin/stig']],
         font = 'Iosevka',
