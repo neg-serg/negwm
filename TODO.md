@@ -30,3 +30,5 @@
 # Experiments
     * Python reload dynamic
     * Python setdefault
+    - PDB integration
+    - Some module compilation
