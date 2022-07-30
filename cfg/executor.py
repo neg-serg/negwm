@@ -31,6 +31,7 @@ class executor(Enum):
         font = 'Iosevka',
         font_normal = 'Medium',
         font_size = 17,
+        instance_group = 'smaller_term',
         opacity = 0.95,
         padding = [4, 4],
     )
@@ -40,10 +41,10 @@ class executor(Enum):
         classw = 'teardrop',
         exec = '/usr/bin/btop',
         font = 'Iosevka',
-        font_normal = 'Iosevka',
-        font_size = 14,
+        font_normal = 'Medium',
+        font_size = 17,
+        instance_group = 'smaller_term',
         padding = [8, 8],
-        statusline = 0
     )
 
     torrment = Δ(
@@ -52,11 +53,12 @@ class executor(Enum):
         exec_tmux = [['stig', '/usr/bin/stig']],
         font = 'Iosevka',
         font_size = 18,
+        instance_group = 'smaller_term',
         padding = [8, 8],
-        statusline = 0
     )
 
     neomutt = Δ(
+        term = 'kitty',
         classw = 'neomutt',
         exec_dtach = 'neomutt',
         font = 'Iosevka',

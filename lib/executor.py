@@ -74,7 +74,7 @@ class env():
         return self.config.get(self.name, {})
 
     def shell(self) -> str:
-        return self.cfg_block().get('shell', 'dash')
+        return self.cfg_block().get('shell', 'zsh')
 
     def font(self) -> str:
         ret = self.config.get('default_font', '')
@@ -205,8 +205,10 @@ class env():
             "-e"])
 
     def kitty_opts(self):
-        padding = self.cfg_block().get('padding', [0, 0])[0]
-        opacity = self.cfg_block().get('opacity', 0.88)
+        cfg = self.cfg_block()
+        padding = cfg.get('padding', [0, 0])[0]
+        opacity = cfg.get('opacity', 0.88)
+        instance_group = cfg.get('instance_group', self.name)
         style = self.style()['normal']
         if style == 'Regular':
             style=''
@@ -218,7 +220,7 @@ class env():
         ]
         return ' '.join([
             f"{self.term()}",
-            "-1", f"--instance-group {self.name}",
+            "-1", f"--instance-group {instance_group}",
             f"--class={self.wclass}",
             f"--title={self.name}",
             f"-o window_padding_width={padding}",
