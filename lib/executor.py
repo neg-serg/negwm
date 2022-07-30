@@ -207,15 +207,22 @@ class env():
     def kitty_opts(self):
         padding = self.cfg_block().get('padding', [0, 0])[0]
         opacity = self.cfg_block().get('opacity', 0.88)
+        style = self.style()['normal']
+        if style == 'Regular':
+            style=''
+        else:
+            style=f' {style}'
+        font_settings=[
+            f"-o font_family=\'{self.font()}{style}\'",
+            f"-o font_size={str(self.font_size())}"
+        ]
         return ' '.join([
             f"{self.term()}",
-            "-1",
+            "-1", f"--instance-group {self.name}",
             f"--class={self.wclass}",
             f"--title={self.name}",
             f"-o window_padding_width={padding}",
-            f"-o background_opacity={opacity}",
-            f"-o font_family='{self.font()} {self.style()['normal']}'",
-            f"-o font_size={str(self.font_size())}"])
+            f"-o background_opacity={opacity}"] + font_settings)
 
     def zutty_opts(self):
         return ' '.join([
