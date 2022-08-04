@@ -3,10 +3,11 @@
     * Mouse helper, for example get windows size and then click on x,y = 20px, 20px
 
 # General
-    * github.com/bakkeby/patches/wiki/riodraw
     * Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     * Remove all default parameters and add config validation
     * Support for i3 open for tiling
+    * github.com/bakkeby/patches/wiki/riodraw
+    - Don't be nailed to XDG_CONFIG_HOME
 
 # Config
     * Better generator(fancy output, etc)
