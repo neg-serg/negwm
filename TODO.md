@@ -31,5 +31,6 @@
 # Experiments
     * Python reload dynamic
     * Python setdefault
+    - Better dynamic config architecture
     - PDB integration
     - Some module compilation
