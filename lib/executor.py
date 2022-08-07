@@ -74,7 +74,7 @@ class env():
         return self.config.get(self.name, {})
 
     def shell(self) -> str:
-        return self.cfg_block().get('shell', 'zsh')
+        return self.cfg_block().get('shell', 'dash')
 
     def font(self) -> str:
         ret = self.config.get('default_font', '')
