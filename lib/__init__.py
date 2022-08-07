@@ -1,4 +1,5 @@
 import os
 import sys
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/negwm/lib")
-sys.path.append(os.getenv("XDG_CONFIG_HOME") + "/negwm/cfg")
+current_dir=os.path.dirname(__file__)
+sys.path.append(current_dir)
+sys.path.append(f'{current_dir}/../cfg/')
