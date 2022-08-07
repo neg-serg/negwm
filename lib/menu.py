@@ -1,16 +1,15 @@
 """ Menu manager module. This module is about creating various menu. For now it
 contains following menus:
-    - Goto workspace.
-    - Attach to workspace.
     - Add window to named scratchpad or circle group.
-    - xprop menu to get X11-atom parameters of selected window.
-    - i3-cmd menu with autocompletion. """
+    - Attach to workspace.
+    - Goto workspace.
+    - i3-cmd menu with autocompletion.
+    - xprop menu to get X11-atom parameters of selected window. """
 
 import importlib
 from typing import List
 
 from .cfg import cfg
-from .misc import Misc
 from .extension import extension
 
 
@@ -20,10 +19,9 @@ class menu(extension, cfg):
         extension.__init__(self)
         cfg.__init__(self, i3ipc)
         self.i3ipc = i3ipc
-        self.i3_path = Misc.negwm_path()
-        self.i3cmd = self.conf("i3cmd") # i3-msg application name
+        self.i3cmd = self.conf('i3cmd') # i3-msg application name
         # Window properties shown by xprop menu.
-        self.xprops_list = self.conf("xprops_list")
+        self.xprops_list = self.conf('xprops_list')
         for mod in self.cfg['modules']:
             module = importlib.import_module('menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
