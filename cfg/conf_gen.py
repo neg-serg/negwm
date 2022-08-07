@@ -1,6 +1,8 @@
 from enum import Enum
 import inspect
-from lib.keymap import keymap, bindmap
+import sys
+sys.path.append("../lib")
+from keymap import keymap, bindmap
 
 Δ, λ = bindmap, keymap
 
