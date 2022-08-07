@@ -24,14 +24,14 @@ class checker():
                 'dash': 'one of the fastest non-interactive shells',
             },
             'recommended' : {
-                'tmux': 'tmux support',
-                'rofi': 'you need rofi for the all menus',
+                'alacritty': 'alacritty is recommended as default shell',
                 'dunst': 'you need dunst for notifications',
                 'dunstify': 'dunstify is better notify-send alternative',
+                'pactl': 'you need pactl for pulsectl menu',
+                'rofi': 'you need rofi for the all menus',
+                'tmux': 'tmux support',
                 'xdo': 'optional polybar hide support instead of built-in',
                 'zsh': 'use zsh as one of the best interactive shells',
-                'alacritty': 'alacritty is recommended as default shell',
-                'pactl': 'you need pactl for pulsectl menu',
             }
         }
 
