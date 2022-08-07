@@ -27,7 +27,7 @@ class menu(extension, cfg):
         for mod in self.cfg['modules']:
             module = importlib.import_module('menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
-        self.cmd_menu = getattr(self, 'i3menu').cmd_menu
+        self.i3_menu = getattr(self, 'i3menu').i3_menu
         self.xprop_show = getattr(self, 'xprop').xprop
         self.autoprop = getattr(self, 'props').autoprop
         self.show_props = getattr(self, 'props').show_props

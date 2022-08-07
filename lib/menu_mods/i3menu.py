@@ -54,7 +54,7 @@ class i3menu():
         except Exception:
             return [""]
 
-    def cmd_menu(self) -> int:
+    def i3_menu(self) -> int:
         """ Menu for i3 commands with hackish autocompletion. """
         # set default menu args for supported menus
         cmd = ''

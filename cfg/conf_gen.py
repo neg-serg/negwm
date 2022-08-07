@@ -147,7 +147,7 @@ class conf_gen(Enum):
         λ({
             (f'{M4}+{Sh}+a') : 'attach',
             (f'{M4}+{Sh}+s') : 'autoprop',
-            (f'{M4}+{Ct}+grave') : 'cmd_menu',
+            (f'{M4}+{Ct}+grave') : 'i3_menu',
             (f'{M1}+g') : 'goto_win',
             (f'{M4}+{Ct}+g') : 'movews',
             (f'{M1}+{Ct}+g') : 'ws',

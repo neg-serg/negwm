@@ -203,9 +203,9 @@ It consists of main `menu.py` with the bindings to the menu modules, for example
 ```cfg
     attach
     autoprop 
-    cmd_menu 
     goto_win 
     gtk_theme
+    i3_menu 
     icon_theme
     movews 
     pulse_input 
