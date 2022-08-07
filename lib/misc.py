@@ -7,6 +7,12 @@ import re
 import logging
 from typing import List
 
+try:
+    from xdg import xdg_config_home
+    xdg_config_home = str(xdg_config_home())
+except ImportError:
+    from xdg.BaseDirectory import xdg_config_home
+
 
 class Misc():
     """ Implements various helper functions """
@@ -22,18 +28,12 @@ class Misc():
 
     @staticmethod
     def xdg_config_home() -> str:
-        cfg_home = os.path.expandvars("$XDG_CONFIG_HOME")
-        if cfg_home == "$XDG_CONFIG_HOME":
-            cfg_home = os.path.expanduser("~/.config")
-        return cfg_home
+        return xdg_config_home
 
     @staticmethod
     def negwm_path() -> str:
         """ Easy way to return negwm config path. """
-        cfg_home = Misc.xdg_config_home()
-        if not os.path.exists(f"{cfg_home}/negwm"):
-            os.makedirs(cfg_home)
-        return os.path.expanduser(f"{cfg_home}/negwm")
+        return f'{os.path.dirname(__file__)}/../'
 
     @staticmethod
     def i3path() -> str:
