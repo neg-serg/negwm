@@ -1,4 +1,5 @@
 import os
+import subprocess
 import shutil
 import logging
 from lib.misc import Misc
@@ -24,14 +25,12 @@ class checker():
                 'dash': 'one of the fastest non-interactive shells',
             },
             'recommended' : {
-                'alacritty': 'alacritty is recommended as default shell',
                 'dunst': 'you need dunst for notifications',
                 'dunstify': 'dunstify is better notify-send alternative',
                 'pactl': 'you need pactl for pulsectl menu',
                 'rofi': 'you need rofi for the all menus',
                 'tmux': 'tmux support',
                 'xdo': 'optional polybar hide support instead of built-in',
-                'zsh': 'use zsh as one of the best interactive shells',
             }
         }
 
@@ -42,8 +41,13 @@ class checker():
 
     @staticmethod
     def check_i3_config(cfg='config'):
+        def find_between(s, start, end):
+            return (s.split(start))[1].split(end)[0]
+
         logging.info('Check for i3 config consistency')
-        i3_cfg = f'{os.environ["XDG_CONFIG_HOME"]}/i3/{cfg}'
+        output = subprocess.check_output("i3-config-wizard")
+        i3_cfg = find_between(str(output), 'file "', '" already')
+
         if not (os.path.isfile(i3_cfg) and \
                 os.path.getsize(i3_cfg) > 0):
             logging.error(f'There is no target i3 config file in {i3_cfg}, fail')
@@ -71,9 +75,6 @@ class checker():
                 logging.error('XDG_CONFIG_HOME is unset, '
                     'you should set it via some kind of '
                     '.zshenv or /etc/profile')
-            else:
-                logging.error('You should have some $USER env to run')
-                os._exit(1)
 
     @staticmethod
     def check():
