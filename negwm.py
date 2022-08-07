@@ -137,7 +137,7 @@ class negwm():
         while True:
             with Inotify() as inotify:
                 inotify.add_watch(
-                    f'{Misc.negwm_path()}/cfg/', Mask.MODIFY)
+                    f'{Misc.cfg_path()}/', Mask.MODIFY)
                 async for event in inotify:
                     changed_mod = str(event.name).removesuffix(config_extension)
                     if changed_mod in self.mods:

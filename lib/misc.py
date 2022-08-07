@@ -33,7 +33,38 @@ class Misc():
     @staticmethod
     def negwm_path() -> str:
         """ Easy way to return negwm config path. """
-        return f'{os.path.dirname(__file__)}/../'
+        current_dir=os.path.dirname(__file__)
+        return f'{current_dir}/../'
+
+    @staticmethod
+    def lib_path() -> str:
+        """ Easy way to return negwm library path. """
+        current_dir=os.path.dirname(__file__)
+        libdir_env=os.environ.get("NEGWM_LIB", '')
+        if libdir_env:
+            return libdir_env
+        else:
+            return current_dir
+
+    @staticmethod
+    def cfg_path() -> str:
+        """ Easy way to return negwm configurations path. """
+        current_dir=os.path.dirname(__file__)
+        cfgdir_env=os.environ.get("NEGWM_CFG", '')
+        if cfgdir_env:
+            return cfgdir_env
+        else:
+            return f'{current_dir}/../cfg/'
+
+    @staticmethod
+    def cache_path() -> str:
+        """ Easy way to return negwm cache path. """
+        current_dir=os.path.dirname(__file__)
+        cfgdir_env=os.environ.get("NEGWM_CACHE", '')
+        if cfgdir_env:
+            return cfgdir_env
+        else:
+            return f'{current_dir}/../cache/'
 
     @staticmethod
     def i3path() -> str:
@@ -42,10 +73,6 @@ class Misc():
         if not os.path.exists(f"{cfg_home}/i3"):
             os.makedirs(cfg_home)
         return os.path.expanduser(f"{cfg_home}/i3")
-
-    @staticmethod
-    def cache_path() -> str:
-        return f'{Misc.negwm_path()}/cache'
 
     @staticmethod
     def print_run_exception_info(proc_err) -> None:

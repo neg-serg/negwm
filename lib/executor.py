@@ -25,7 +25,7 @@ class env():
     parameters and settings of application, like used terminal enumator, fonts, all path settings, etc.
     config: manager to autosave/autoload configutation with inotify '''
 
-    cache = expanduser(f'{Misc.cache_path()}')
+    cache = Misc.cache_path()
     tmux_socket_dir = f'{cache}/tmux_sockets'
     dtach_session_dir = f'{cache}/dtach_sessions'
     alacritty_cfg_dir = f'{cache}/alacritty_cfg'

@@ -1,19 +1,5 @@
-import os
 import sys
+from .misc import Misc
 
-current_dir=os.path.dirname(__file__)
-libdir_env=os.environ.get("NEGWM_LIBDIR", '')
-cfgdir_env=os.environ.get("NEGWM_CFGDIR", '')
-
-if libdir_env:
-    libdir=libdir_env
-else:
-    libdir=current_dir
-
-if cfgdir_env:
-    cfgdir=cfgdir_env
-else:
-    cfgdir=f'{current_dir}/../cfg/'
-
-sys.path.append(libdir)
-sys.path.append(cfgdir)
+sys.path.append(Misc.lib_path())
+sys.path.append(Misc.cfg_path())
