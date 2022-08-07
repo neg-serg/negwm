@@ -27,7 +27,7 @@ class menu(extension, cfg):
             setattr(self, mod, getattr(module, mod)(self))
         self.i3_menu = getattr(self, 'i3menu').i3_menu
         self.xprop_show = getattr(self, 'xprop').xprop
-        self.autoprop = getattr(self, 'props').autoprop
+        self.move_window = getattr(self, 'props').move_window
         self.show_props = getattr(self, 'props').show_props
         self.pulse_output = getattr(self, 'pulse_menu').pulseaudio_output
         self.pulse_input = getattr(self, 'pulse_menu').pulseaudio_input

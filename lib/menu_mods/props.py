@@ -37,7 +37,7 @@ class props():
 
         return ""
 
-    def autoprop(self) -> None:
+    def move_window(self) -> None:
         """ Start autoprop menu to move current module to smth. """
         mod = self.get_mod()
         if mod is None or not mod:

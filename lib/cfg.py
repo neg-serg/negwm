@@ -14,18 +14,18 @@ from lib.misc import Misc
 
 
 class cfg():
+    def props(prop):
+        if prop == 'title':
+            return 'name'
+        else:
+            return prop
+
     def __init__(self, i3) -> None:
         self.mod = self.__class__.__name__ # detect current extension
         # extension config path
         self.i3_cfg_mod_path = f'{Misc.negwm_path()}/cache/cfg/{self.mod}.pickle'
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
-        self.conv_props = {
-            'classw': 'class',
-            'instance': 'instance',
-            'window_role': 'window_role',
-            'title': 'name',
-        }
         if not self.cfg:
             self.cfg = {}
         self.i3ipc = i3
@@ -100,7 +100,7 @@ class cfg():
                 if value[0] == value[-1] and value[0] in {'"', "'"}:
                     value = value[1:-1]
                 if attr in cfg.subtag_attr_list():
-                    self.win_attrs[self.conv_props.get(attr, {})] = value
+                    self.win_attrs[cfg.props(attr)] = value
 
     def add_props(self, tag: str, prop_str: str) -> None:
         """ Move window to some tag.
