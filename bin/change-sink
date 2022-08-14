@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 # Change default output sink and update all current playbacks.
 
 import subprocess

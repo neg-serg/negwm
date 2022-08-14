@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env dash
 
 xdg_config_home_check() {
     if [ -z "$XDG_CONFIG_HOME" ]; then
