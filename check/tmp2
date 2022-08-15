@@ -1,0 +1,31 @@
+Add the __all__ Variable to __init__.py containing:
+
+__all__ = ["bar", "spam", "eggs"]
+
+See also http://docs.python.org/tutorial/modules.html
+Share
+Follow
+answered Jun 29, 2009 at 9:42
+user avatar
+stefanw
+10.2k33 gold badges3434 silver badges3434 bronze badges
+
+    176
+    Yes, yes, but is there any way of having it be dynamic? – 
+    Evan Fosmark
+    Jun 29, 2009 at 9:52
+    27
+    Combination of os.listdir(), some filtering, stripping of .py extension and __all__. – user234932
+    Sep 8, 2014 at 16:32
+    Not working for me as sample code here github.com/namgivu/python-import-all/blob/master/error_app.py . Maybe I miss something there? – 
+    Nam G VU
+    May 30, 2017 at 6:08
+    1
+    I found out myself - to use the variable/object defined in those modules, we have to use the full reference path e.g. moduleName.varName ref. stackoverflow.com/a/710603/248616 – 
+    Nam G VU
+    May 30, 2017 at 6:34
+    1
+    @NamGVU: This code in my answer to a related question will import all the public sub-modules' names into the the package's namespace. – 
+    martineau
+    Oct 27, 2017 at 18:01
+
