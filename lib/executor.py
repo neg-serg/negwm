@@ -5,7 +5,6 @@ or modifing of various parameters, also it works is faster then dedicated
 scripts, because there is no parsing / translation phase here in runtime. '''
 
 import subprocess
-import os
 from os.path import expanduser
 import shlex
 import shutil
@@ -51,7 +50,7 @@ class env():
                             f'/{name}.session {exec_dtach}'
 
         self.wclass = self.cfg_block().get("classw", self.term())
-        self.opts = getattr(self, f'{self.term()}_opts')()
+        self.opts = getattr(self, self.term())()
 
         def join_processes():
             for prc in multiprocessing.active_children():
@@ -83,22 +82,18 @@ class env():
         return ret
 
     def font_size(self) -> str:
-        ret = self.config.get('default_font_size', '')
-        if not ret:
-            ret = self.cfg_block().get('font_size', '14')
-        return ret
+        return self.cfg_block().get('font_size', '14')
 
     def term(self):
-        # Get terminal from config, use Alacritty by default
-        ret = self.cfg_block().get("term", "alacritty").lower()
-        if os.path.exists(env.alacritty_cfg):
-            if os.stat(env.alacritty_cfg).st_size == 0:
-                logging.error(f'Alacritty cfg {env.alacritty_cfg} is empty')
-                ret = env.terminal_fallback_detect()
-        else:
-            logging.error(f'Alacritty cfg {env.alacritty_cfg} not exists, put it here')
-            ret = env.terminal_fallback_detect()
-        return ret
+        term = self.cfg_block().get('term', '')
+        if term:
+            return term
+        # Detect fallback terminal
+        for t in ['alacritty', 'kitty', 'st', 'zutty']:
+            if shutil.which(t):
+                return t
+        logging.error('No supported terminal installed, fail :(')
+        return ''
 
     def style(self) -> dict:
         use_one_fontstyle = self.config.get('use_one_fontstyle', False)
@@ -117,15 +112,6 @@ class env():
                 'bold' : self.cfg_block().get('font_bold', 'Bold'),
                 'italic': self.cfg_block().get('font_italic', 'Italic')
             }
-
-    @staticmethod
-    def terminal_fallback_detect() -> str:
-        ''' Detect non alacritty terminal '''
-        for t in ['st', 'kitty', 'zutty']:
-            if shutil.which(t):
-                return t
-        logging.error('No supported terminal installed, fail :(')
-        return ''
 
     def yaml_config_create(self, custom_config: str) -> None:
         ''' Create config for alacritty
@@ -182,7 +168,7 @@ class env():
         shutil.copyfile(env.alacritty_cfg, cfgname)
         return cfgname
 
-    def alacritty_opts(self) -> str:
+    def alacritty(self) -> str:
         self.title = self.cfg_block().get("title", self.wclass)
         custom_config = self.create_alacritty_cfg(self.name)
         multiprocessing.Process(
@@ -196,7 +182,7 @@ class env():
             f"--class {self.wclass},{self.wclass}",
             f"-t {self.title} -e"])
 
-    def st_opts(self):
+    def st(self):
         return ' '.join([
             f"{self.term()}",
             f"-c {self.wclass}",
@@ -204,7 +190,7 @@ class env():
             f"-f {self.font} :size={str(self.font_size())}:style={self.style()['normal']}",
             "-e"])
 
-    def kitty_opts(self):
+    def kitty(self):
         cfg = self.cfg_block()
         padding = cfg.get('padding', [0, 0])[0]
         opacity = cfg.get('opacity', 0.88)
@@ -226,7 +212,7 @@ class env():
             f"-o window_padding_width={padding}",
             f"-o background_opacity={opacity}"] + font_settings)
 
-    def zutty_opts(self):
+    def zutty(self):
         return ' '.join([
             f"{self.term()}",
             f"-name {self.wclass}",
