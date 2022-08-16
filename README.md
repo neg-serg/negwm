@@ -294,42 +294,6 @@ Look at the `lib/executor.py` to learn more.
 
 Fullscreen panel hacking.
 
-## procs to run by negwm as another process
-
-~~There are processes, not threads, separated from the main negwm event loop to reach better performance or another goals.~~
-
-For now there are no any processes started by negwm. I've considered that this scheme of loading can cause various race condictions and
-another stability issues.
-
-Current procs binaries intended to be run from polybar.
-
-To use ws please add to polybar config something like this:
-
-```config
-type = custom/script
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/negwm python -u -m bin.polybar_ws 2> /dev/null
-format-background = ${color.mgf}
-format = "<label>"
-format-suffix = " "
-format-prefix = " "
-tail = true
-```
-
-I created ws module because of some race condition in polybar when ws switching is too fast, but for now it also provides good integration
-with i3, for example you can see current binding mode in the left of workspace widget with custom font and also create custom markup for any
-of workspace as you like.
-
-```config
-[module/mpd]
-type = custom/script
-exec = PYTHONPATH=${XDG_CONFIG_HOME}/negwm python -u -m bin.polybar_mpd 2> /dev/null
-format-background = ${color.mgf}
-tail = true
-```
-
-_polybar_ws_: async current i3 workspace printer for polybar.
-_polybar_mpd_ : async MPD printer for polybar.
-
 # Installation
 
 Negwm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`, so you need to set up your `$XDG_CONFIG_HOME` variable before
