@@ -34,3 +34,5 @@
     - Python reload dynamic
     - Python setdefault
     - Some module compilation
+
+    - docs.python.org/3/tutorial/modules.html
