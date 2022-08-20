@@ -2,7 +2,7 @@ from enum import Enum
 import inspect
 import sys
 sys.path.append("../lib")
-from keymap import keymap, bindmap
+from lib.keymap import keymap, bindmap
 
 Δ, λ = bindmap, keymap
 
@@ -14,8 +14,6 @@ class conf_gen(Enum):
     plain = inspect.cleandoc(f'''
         floating_modifier {M4}
         focus_follows_mouse no
-        default_border normal
-        default_floating_border normal
         font pango: {Font}
         hide_edge_borders both
 
