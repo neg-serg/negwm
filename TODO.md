@@ -35,4 +35,9 @@
     - Python setdefault
     - Some module compilation
 
+    - Hotkey to create tmp scratchpad for any window
+    - Hotkey to make window sticky
+    - Review rust i3 modules
     - docs.python.org/3/tutorial/modules.html
+    - github.com/Airblader/i3/issues/190
+    - i3ipc updates review
