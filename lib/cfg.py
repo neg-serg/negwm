@@ -147,8 +147,7 @@ class cfg():
             instance_r_check = (prop == "instance_r" and winattr == win.window_instance)
             role_r_check = (prop == "role_r" and winattr == win.window_role)
             if class_r_check or instance_r_check or role_r_check:
-                # self.cfg[target_tag][prop].remove(target_tag)
-                pass
+                self.cfg[target_tag][prop].remove(target_tag)
 
         lst_by_reg = []
         # Delete appropriate regexes
