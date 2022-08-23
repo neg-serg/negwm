@@ -22,7 +22,7 @@ class scratchpad(Enum):
     )
 
     ncmpcpp = Δ(
-        geom = '2251x852+753+1181',
+        geom = '2251x828+753+1205',
         classw = ['ncmpcpp'],
         keybind_toggle = ['Mod4+f'],
         spawn = 'ncmpcpp',
