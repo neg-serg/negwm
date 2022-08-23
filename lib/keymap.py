@@ -1,7 +1,4 @@
-from collections import UserDict
-from collections import UserList
-
-class keymap(UserDict):
+class keymap(dict):
     def __init__(*args, **kw):
         if not args:
             raise TypeError("descriptor '__init__' of 'WeakValueDictionary' "
@@ -14,13 +11,13 @@ class keymap(UserDict):
         setattr(self, 'fmt', kw.get('fmt', ''))
         setattr(self, 'exit', kw.get('exit', False))
 
-        UserDict.__init__(self, *args, **kw)
+        dict.__init__(self, *args, **kw)
 
         self.pop('fmt', None)
         self.pop('exit', None)
 
 
-class bindmap(UserList):
+class bindmap(list):
     def __init__(*args, **kw):
         if not args:
             raise TypeError("descriptor '__init__' of 'WeakValueDictionary' "
@@ -34,4 +31,4 @@ class bindmap(UserList):
         setattr(self, 'name', kw.get('name', ''))
         setattr(self, 'pretty_name', kw.get('pretty_name', ''))
 
-        UserList.__init__(self, *args)
+        list.__init__(self, *args)
