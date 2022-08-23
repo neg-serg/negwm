@@ -1,17 +1,304 @@
 #!/usr/bin/env python3
 
+import os
+import re
+import subprocess
 import sys
-import errno
+
 import argparse
-import config as config
-import keys
+import errno
+import string
 
 # Hardcoded default variable for the primary modifier key,
 # can be changed with --modvar
 modVariable = "Mod4"
 
+def getKeyCodes():
+    """Get keycodes from xmodmap with the corresponding keysym
+
+    :return: A dictionary with keycode as key and keysym as value
+    :rtype: dict or False
+    """
+
+    keycodes = {}
+    reKeycode = re.compile(
+        r"^keycode\s*(\d+?)\s*=\s*(?:NoSymbol\s?)*(.+?)(?:\s+|$)")
+    try:
+        ls = subprocess.Popen(['xmodmap', '-pke'], stdout=subprocess.PIPE)
+        for line in ls.stdout:
+            l = line.decode().strip()
+            matches = reKeycode.match(l)
+
+            if matches:
+                keycodes[matches.group(1)] = matches.group(2)
+    except FileNotFoundError:
+        print("Warning: Could't call xmodmap. Keycodes will not be mapped to keysyms.")
+        return False
+    return keycodes
+
+
+class Path:
+    """Holds a path to an i3 configuration file and checks if it exists
+    """
+
+    def __init__(self, path, env=""):
+        """Init path
+
+        :param path: path to i3 config
+        :type path: str
+        :param env: environment variable that prepends path e.g. "XDG_CONFIG_HOME", defaults to ""
+        :param env: str, optional
+        """
+
+        if env == "":
+            self.path = self.getPath(path)
+            self.exists = self.checkPath()
+        elif env != "" and env in os.environ:
+            self.path = self.getPath(os.environ[env] + path)
+            self.exists = self.checkPath()
+        else:
+            self.path = None
+            self.exists = False
+
+    def getPath(self, path):
+        """Expands tilde to home path
+
+        :param path: path to config
+        :type path: str
+        :return: expanded path
+        :rtype: str
+        """
+        return os.path.expanduser(path)
+
+    def checkPath(self):
+        """Check if the file exists and if we can read it
+
+        :return: bool
+        :rtype: bool
+        """
+
+        if os.path.isfile(self.path) and os.access(self.path, os.R_OK):
+            return True
+        return False
+
+
+class Config:
+    """Holds a configuration file and the keybindings in it
+    """
+
+    def __init__(self, path):
+        """Init config
+
+        :param path: path to configuration file
+        :type path: str
+        """
+
+        self.path = path
+        self.variables = self.parseVariables()
+        self.bindings = self.parseBindings()
+
+    def readConfig(self):
+        with open(self.path, "r") as f:
+            for line in f:
+                l = line.strip()
+                yield l
+
+    def parseVariables(self):
+        """Parses variables that are set in the config and saves them
+
+        :return: A dict with varName: value
+        :rtype: dict
+        """
+
+        reSet = re.compile(r"^set\s+(\$.+?)\s+(.+?)$")
+        variables = {}
+        for line in self.readConfig():
+            matches = reSet.match(line)
+            if matches:
+                variables[matches.group(1)] = matches.group(2)
+        return variables
+
+    def parseBindings(self):
+        """Gets keybindings from configuration file
+
+        :return: a list of keybindings, [Binding, ...]
+        :rtype: list
+        """
+
+        reBinding = re.compile(r"^bind(sym|code)\s(.+?)\s")
+        bindings = []
+
+        for line in self.readConfig():
+            matches = reBinding.match(line)
+            if matches:
+                bindings.append(
+                    Binding(
+                        matches.group(1), matches.group(2), self.variables
+                    )
+                )
+        return bindings
+
+    def availableBindings(self, keys, combination):
+        """Check which keybindings that aren't used for selected modifiers
+
+        :param keys: list of keys e.g. ["a","1","Escape"]
+        :type keys: list
+        :param combination: dict of modifiers to compare with
+        :type combination: dict
+        :return: a list of available keybindings, bindings that isn't used
+        :rtype: list
+        """
+        newComb = set()
+
+        for c in combination:
+            # if variable, replace it with the right value
+            if c in self.variables:
+                newComb.add(self.variables[c])
+            else:
+                newComb.add(c)
+
+        used = [x.sym.lower()
+                for x in self.bindings if set(x.modifiers) == newComb and x.sym != None]
+        return [x for x in keys if x.lower() not in used]
+
+
+class Binding:
+    """Holds a keybinding
+    """
+
+    def __init__(self, bindtype, keys, variables):
+        """Init Binding
+
+        :param bindtype: either sym or code
+        :type bindtype: str
+        :param keys: string of keys, e.g. "$mod+Shift+a"
+        :type keys: str
+        :param variables: a dict with variables
+        :type variables: dict
+        """
+
+        self.type = bindtype
+        self.sym = None
+        self.code = None
+
+        self.modifiers = []
+        splitted = self.splitKeys(keys)
+        self.keys = self.expandVars(splitted, variables)
+        self.setModifiers()
+
+        if self.type == "sym" and len(self.keys) > 0:
+            self.sym = self.keys[-1]
+        elif self.type == "code" and len(self.keys) > 0:
+            self.code = self.keys[-1]
+            self.sym = self.getKeySym(self.code)
+
+    def expandVars(self, keys, variables):
+        """Expands variable to their corresponding value
+
+        :param keys: a list of keys
+        :type keys: list
+        :param variables: a dict with variables
+        :type variables: dict
+        :return: a list with keys, expanded variables
+        :rtype: list
+        """
+
+        r = []
+        for k in keys:
+            if k in variables:
+                r.append(variables[k])
+            else:
+                r.append(k)
+        return r
+
+    def splitKeys(self, keys):
+        """Splits a string of keys to a list
+
+        :param keys: string of keys, e.g. "$mod+Shift+a"
+        :type keys: str
+        :return: returns a list of keys, e.g. ["$mod", "Shift", "a"]
+        :rtype: list
+        """
+
+        return [x for x in keys.split("+")]
+
+    def setModifiers(self):
+        """Adds all modifiers to a list
+        """
+
+        for k in self.keys[:-1]:
+            self.modifiers.append(k)
+
+    def getKeySym(self, code):
+        """Keycode to keysym
+
+        :param code: Keycode
+        :type code: str
+        :return: Keysym
+        :rtype: str or None
+        """
+
+        if keycodes != False and code in keycodes:
+            return keycodes[code]
+        else:
+            return None
+
+    def __str__(self):
+        """String representation of object
+
+        :return: a string of the keybinding
+        :rtype: str
+        """
+
+        v = []
+        for m in self.modifiers:
+            v.append(m)
+        v.append(self.sym or "(code " + self.code + ")")
+        return "+".join(v)
+
+
+keycodes = getKeyCodes()
+
+class Keys():
+    binds = {
+        "0-9": [str(x) for x in range(10)],
+        "a-z": [x for x in string.ascii_lowercase],
+        "nordic": ["aring", "adiaeresis", "odiaeresis", "oslash", "ae"],
+        "arrow": ["Left", "Up", "Right", "Down"],
+        "common": ["BackSpace", "Tab", "Return", "Pause", "Scroll_Lock", "Escape",
+            "Delete", "Prior", "Next", "End", "Insert", "Menu", "Break",
+            "space", "comma", "period", "slash", "semicolon", "backslash",
+            "bracketleft", "bracketright", "plus", "minus", "equal", "less",
+            "greater", "apostrophe", "asterisk", "grave", "section"],
+        "uncommon": ["Clear", "Sys_Req", "Select", "Print", "Begin", "Find",
+            "Cancel", "Help", "Execute", "Undo", "Redo"],
+        "function": ["F" + str(i) for i in range(1, 13)],
+        "numpad": ["KP_" + str(x) for x in range(10)],
+        "numpad_other": ["KP_Space", "KP_Tab", "KP_Enter", "KP_F1", "KP_F2",
+            "KP_F3", "KP_F4", "KP_Home", "KP_Left", "KP_Up",
+            "KP_Right", "KP_Down", "KP_Prior", "KP_Next", "KP_End",
+            "KP_Begin", "KP_Insert", "KP_Delete", "KP_Equal",
+            "KP_Multiply", "KP_Add", "KP_Separator", "KP_Subtract",
+            "KP_Decimal", "KP_Divide"]
+    }
+
+    @staticmethod
+    def getKeys(names):
+        """Returns keysyms for selected keys
+
+        :param names: a list of categories, e.g. ["0-9", "a-z", "nordic"]
+        :type names: list
+        :return: a list of keysyms
+        :rtype: list
+        """
+        r = []
+        for n in names:
+            if n in Keys.binds:
+                r += Keys.binds[n]
+        return r
+
 # The keys that will be listed as available
-keys = keys.getKeys(
+keys = Keys.getKeys(
     ["0-9", "a-z", "nordic", "arrow", "common", "function"])
 
 def printAvailable(modifier, available):
@@ -19,7 +306,7 @@ def printAvailable(modifier, available):
 
     :param modifier: list of modifiers
     :type modifier: dict
-    :param available: list of available keys, see config.Config.availableBindings()
+    :param available: list of available keys, see Config.availableBindings()
     :type available: list
     """
 
@@ -67,18 +354,18 @@ if args.bindings:
 
 # Use user selected config else search defaults
 if args.config:
-    conf = config.Path(args.config)
+    conf = Path(args.config)
     if conf.exists == False:
         print("Error: Couldn't find or read the i3 configuration file", file=sys.stderr)
         sys.exit(errno.ENOENT)
 else:
     configs = [
-        config.Path("~/.i3/config"),
-        config.Path("/i3/config", "XDG_CONFIG_HOME"),
-        config.Path("~/.config/i3/config"),
-        config.Path("/etc/i3/config"),
-        config.Path("/i3/config", "XDG_CONFIG_DIRS"),
-        config.Path("/etc/xdg/i3/config"),
+        Path("~/.i3/config"),
+        Path("/i3/config", "XDG_CONFIG_HOME"),
+        Path("~/.config/i3/config"),
+        Path("/etc/i3/config"),
+        Path("/i3/config", "XDG_CONFIG_DIRS"),
+        Path("/etc/xdg/i3/config"),
     ]
     conf = None
     for c in configs:
@@ -90,7 +377,7 @@ else:
         sys.exit(errno.ENOENT)
 
 print(f"Reading from {conf.path}")
-c = config.Config(conf.path)
+c = Config(conf.path)
 
 # Checks if atleast one keygroup is selected, else all True
 if not args.bindings and not any([getattr(args, x) for x in boolArgs]):
