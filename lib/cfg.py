@@ -14,6 +14,7 @@ from lib.misc import Misc
 
 
 class cfg():
+    @staticmethod
     def props(prop):
         if prop == 'title':
             return 'name'
