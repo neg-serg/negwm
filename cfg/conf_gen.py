@@ -99,6 +99,8 @@ class conf_gen(Enum):
             (f'{M4}+h') : 'left',
             (f'{M4}+l') : 'right',
             (f'{M4}+k') : 'up',
+            (f'{M4}+7') : 'parent',
+            (f'{M4}+2') : 'child',
         }, fmt='focus {cmd}'),
 
         # move workspace to left and right monitors
