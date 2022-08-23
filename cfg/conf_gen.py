@@ -109,7 +109,7 @@ class conf_gen(Enum):
         }, fmt='move workspace to output {cmd}'),
 
         λ({
-            f'{M4}+apostrophe': 'reload',
+            f'{M4}+apostrophe': 'reload; exec --no-startup-id systemctl --user restart negwm',
             f'{M4}+{Sh}+apostrophe': 'restart'
         }),
 
