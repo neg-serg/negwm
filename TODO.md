@@ -41,3 +41,6 @@
     - docs.python.org/3/tutorial/modules.html
     - github.com/Airblader/i3/issues/190
     - i3ipc updates review
+
+    - i3: hotkey to create tmp scratchpad for any window
+    - i3: hotkey to make window sticky
