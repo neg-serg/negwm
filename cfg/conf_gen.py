@@ -60,13 +60,28 @@ class conf_gen(Enum):
         ' δ:dev',
         ' γ:doc',
         ' ζ:draw',
-        ' ε:gfx',
-        '@ ρ:obs',
+        '߷ :gfx',
+        '✽ ρ:obs',
         ' ξ:pic',
         ' ι:steam',
         ' η:sys',
         ' λ:vm',
         ' μ:wine'
+    ]
+
+    workspaces_alternative = [
+        '︁ ➊:term',
+        ' :web',
+        ' ➌:dev',
+        ' ➍:doc',
+        ' ➎:draw',
+        '߷ ➏:gfx',
+        '✽ ➐:obs',
+        ' ➑:pic',
+        ' ➒:steam',
+        ' ➓:sys',
+        ' ➊➊:vm',
+        ' ➊➋:wine'
     ]
 
     mode_default = Δ([
