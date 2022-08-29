@@ -20,7 +20,7 @@ class executor(Enum):
         font = 'Iosevka',
         font_normal = 'Medium',
         font_size = 17,
-        opacity = 0.8,
+        opacity = 0.95,
         padding = [4, 4],
     )
 
