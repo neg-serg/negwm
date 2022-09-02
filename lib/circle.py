@@ -247,14 +247,6 @@ class circle(extension, cfg, Matcher):
             window in/from scratchpad. """
         self.del_props(tag, prop_str)
 
-    def find_acceptable_windows(self, tag: str) -> None:
-        """ Wrapper over Matcher.match to find acceptable windows and add it to
-            tagged[tag] list.
-            tag (str): denotes the target tag. """
-        for win in self.winlist:
-            if self.match(win, tag):
-                self.tagged.get(tag, []).append(win)
-
     def tag_windows(self, invalidate_winlist=True) -> None:
         """ Find acceptable windows for the all tags and add it to the
             tagged[tag] list.
@@ -265,6 +257,14 @@ class circle(extension, cfg, Matcher):
         for tag in self.cfg:
             self.tagged[tag] = []
             self.find_acceptable_windows(tag)
+
+    def find_acceptable_windows(self, tag: str) -> None:
+        """ Wrapper over Matcher.match to find acceptable windows and add it to
+            tagged[tag] list.
+            tag (str): denotes the target tag. """
+        for win in self.winlist:
+            if self.match(win, tag):
+                self.tagged.get(tag, []).append(win)
 
     def sort_by_parent(self, tag: str) -> None:
         """ Sort windows by some infernal logic: At first sort by parent
