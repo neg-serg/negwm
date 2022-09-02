@@ -44,3 +44,5 @@
 
     - i3: hotkey to create tmp scratchpad for any window
     - i3: hotkey to make window sticky
+    
+    - cpu load, gpu load, vnstat or network for some period, cava integration
