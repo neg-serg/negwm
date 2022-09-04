@@ -302,7 +302,7 @@ install, via `/etc/profile`, some kind of `.zshenv` or smth else depending or yo
 Before install make sure to backup your i3 configuration, install script should do it automatically, but it's better to do it by hand for
 the reliability reasons.
 
-The most simple way to install it for now is to use install.sh from repo:
+The most simple way to install it for now is to use install from repo:
 
 ```
 curl https://raw.githubusercontent.com/neg-serg/negwm/master/bin/install.sh | sh
