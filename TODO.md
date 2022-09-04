@@ -4,9 +4,18 @@
 
 # General
     - github.com/bakkeby/patches/wiki/riodraw
+    - Create PKGBUILD
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     - Remove all default parameters and add config validation
     - Support for i3 open for tiling
+
+    <!-- install_mandatory_deps() { -->
+    <!--     install_deps i3 dash -->
+    <!-- } -->
+    <!---->
+    <!-- install_recommended_deps() { -->
+    <!--     install_deps zsh tmux rofi dunst xdo alacritty pulseaudio -->
+    <!-- } -->
 
 # Config
     - Better generator(fancy output, etc)
