@@ -1,0 +1,383 @@
+#!/usr/bin/env python3
+
+"""Build a multi screen wallpaper."""
+
+# Alternative:
+# curl -s https://bzamayo.com/extras/apple-tv-screensavers.json \
+#   | jq -r '.data[].screensavers[].videoURL' \
+#   | shuf \
+#   | xargs nix run nixpkgs.xwinwrap -c \
+#        xwinwrap -b -s -fs -st -sp -nf -ov -- \
+#        mpv -wid WID -really-quiet -framedrop=vo --no-audio --panscan=1.0 \
+#                     -loop-playlist=inf
+
+# Alternative:
+# https://moewalls.com/category/pixel-art/
+
+import os
+import sys
+import random
+import argparse
+import tempfile
+import collections
+import itertools
+import logging
+import logging.handlers
+import inspect
+
+from Xlib import display
+from Xlib.ext import randr
+from systemd import journal
+import PIL.Image
+from PIL.Image import Image
+from PIL.ImageFile import ImageFile
+from typing import Optional, NamedTuple
+
+# We use typing, but it seems mostly broken with PIL.
+
+logger = logging.getLogger("wallpaper")
+
+
+class Rectangle(NamedTuple):
+    x: int
+    y: int
+    width: int
+    height: int
+
+
+class WallpaperPart(NamedTuple):
+    rectangle: Rectangle
+    image: Image
+
+
+def get_outputs() -> tuple[list[Rectangle], Image]:
+    """Get physical outputs."""
+    # Get display size
+    d = display.Display()
+    screen = d.screen()
+    window = screen.root.create_window(0, 0, 1, 1, 1, screen.root_depth)
+    background = PIL.Image.new("RGB", (screen.width_in_pixels, screen.height_in_pixels))
+
+    # Query randr extension
+    outputs = []
+    screen_resources = randr.get_screen_resources_current(window)
+    for output in screen_resources.outputs:
+        output_info = randr.get_output_info(window, output, screen_resources.timestamp)
+        if output_info.crtc == 0:
+            continue
+        crtc_info = randr.get_crtc_info(window, output_info.crtc, output_info.timestamp)
+        outputs.append(
+            Rectangle(crtc_info.x, crtc_info.y, crtc_info.width, crtc_info.height)
+        )
+
+    for o in outputs:
+        logger.debug("output: %s", o)
+    return outputs, background
+
+
+def get_covering_rectangles(outputs: list[Rectangle]) -> set[tuple[Rectangle, ...]]:
+    """Compute all possible groups of covering boxes for the provided
+    outputs. For each group, an output is included in exactly one box.
+
+    >>> gcr = get_covering_rectangles
+    >>> gcr([Rectangle(0, 0, 100, 100)])
+    {(Rectangle(x=0, y=0, width=100, height=100),)}
+    >>> gcr([Rectangle(0, 0, 100, 100),
+    ...      Rectangle(100, 0, 100, 100)]) # doctest: +NORMALIZE_WHITESPACE
+    {(Rectangle(x=0, y=0, width=100, height=100),
+      Rectangle(x=100, y=0, width=100, height=100)),
+     (Rectangle(x=0, y=0, width=200, height=100),)}
+    >>> gcr([Rectangle(0, 0, 100, 100),
+    ...      Rectangle(100, 0, 100, 100),
+    ...      Rectangle(0, 100, 100, 100)]) # doctest: +NORMALIZE_WHITESPACE
+    {(Rectangle(x=100, y=0, width=100, height=100),
+      Rectangle(x=0, y=100, width=100, height=100),
+      Rectangle(x=0, y=0, width=100, height=100)),
+     (Rectangle(x=100, y=0, width=100, height=100),
+      Rectangle(x=0, y=0, width=100, height=200)),
+     (Rectangle(x=0, y=0, width=200, height=100),
+      Rectangle(x=0, y=100, width=100, height=100))}
+    >>> gcr([Rectangle(0, 0, 2560, 1440),
+    ...      Rectangle(2560, 0, 1920, 1080)]) # doctest: +NORMALIZE_WHITESPACE
+    {(Rectangle(x=2560, y=0, width=1920, height=1080),
+      Rectangle(x=0, y=0, width=2560, height=1440))}
+    """
+
+    candidates = set()
+    for output in outputs:
+        candidates.add(output)
+        for ooutput in outputs:
+            if ooutput == output:
+                continue
+            if output.x > ooutput.x or output.y > ooutput.y:
+                continue
+            candidates.add(
+                Rectangle(
+                    output.x,
+                    output.y,
+                    ooutput.x - output.x + ooutput.width,
+                    ooutput.y - output.y + ooutput.height,
+                )
+            )
+
+    # Get all rectangle combinations to cover outputs without overlapping
+    groups = set()
+    for r in range(len(candidates)):
+        for candidate in itertools.combinations(candidates, r + 1):
+            for output in outputs:
+                nb = 0
+                for c in candidate:
+                    if (
+                        c.x <= output.x < c.x + c.width
+                        and c.y <= output.y < c.y + c.height
+                        and output.x + output.width <= c.x + c.width
+                        and output.y + output.height <= c.y + c.height
+                    ):
+                        nb += 1
+                if nb != 1:  # output not contained in a single rectangle
+                    break
+            else:
+                # Test for overlap
+                overlap = False
+                for c1 in candidate:
+                    for c2 in candidate:
+                        if c1 == c2:
+                            continue
+                        if not (
+                            c1.x >= c2.x + c2.width
+                            or c1.x + c1.width <= c2.x
+                            or c1.y >= c2.y + c2.height
+                            or c1.y + c1.height <= c2.y
+                        ):
+                            overlap = True
+                if not overlap:
+                    groups.add(candidate)
+
+    for g in groups:
+        logger.debug("group: %s", g)
+    return groups
+
+
+def get_random_images(directory: str, number: int) -> list[Image]:
+    """Get random images from a directory."""
+    image_files = []
+    for base, _, files in os.walk(os.path.join(directory)):
+        for i in files:
+            if os.path.splitext(i)[1].lower() in (".jpg", ".jpeg", ".png", ".webp"):
+                image_files.append(os.path.join(base, i))
+    images = [PIL.Image.open(image) for image in random.sample(image_files, number)]
+
+    for image in images:
+        directory_len = len(directory) + 1
+        logger.debug("image: %s %s×%s", image.filename[directory_len:], *image.size)
+    return images
+
+
+def get_best_parts(
+    groups: set[tuple[Rectangle, ...]],
+    images: list[Image],
+    ratio_score: int = 100,
+    scale_score: int = 60,
+    wallpaper_score: int = 2,
+) -> Optional[list[WallpaperPart]]:
+    """Find optimal association for images for the groups of covering rectangles.
+
+    >>> gbp = get_best_parts
+    >>> gbp([[Rectangle(0, 0, 100, 100)]],
+    ...     [PIL.Image.new("RGB", (100, 100))]) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    [WallpaperPart(rectangle=Rectangle(x=0, y=0, width=100, height=100),
+                   image=<PIL.Image.Image image mode=RGB size=100x100 at ...>)]
+    >>> gbp([[Rectangle(0, 0, 100, 100)]],
+    ...     [PIL.Image.new("RGB", (100, 100)),
+    ...      PIL.Image.new("RGB", (100, 200))]) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    [WallpaperPart(rectangle=Rectangle(x=0, y=0, width=100, height=100),
+                   image=<PIL.Image.Image image mode=RGB size=100x100 at ...>)]
+    >>> gbp([[Rectangle(0, 0, 100, 100)]],
+    ...     [PIL.Image.new("RGB", (50, 50)),
+    ...      PIL.Image.new("RGB", (100, 200))]) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    [WallpaperPart(rectangle=Rectangle(x=0, y=0, width=100, height=100),
+                   image=<PIL.Image.Image image mode=RGB size=50x50 at ...>)]
+    >>> gbp([[Rectangle(0, 0, 100, 100)]],
+    ...     [PIL.Image.new("RGB", (10, 10)),
+    ...      PIL.Image.new("RGB", (100, 200))]) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    [WallpaperPart(rectangle=Rectangle(x=0, y=0, width=100, height=100),
+                   image=<PIL.Image.Image image mode=RGB size=100x200 at ...>)]
+    >>> gbp([[Rectangle(0, 0, 100, 100), Rectangle(0, 100, 100, 100)],
+    ...      [Rectangle(0, 0, 200, 100)]],
+    ...     [PIL.Image.new("RGB", (100, 100)),
+    ...      PIL.Image.new("RGB", (200, 100))]) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    [WallpaperPart(rectangle=Rectangle(x=0, y=0, width=200, height=100),
+                   image=<PIL.Image.Image image mode=RGB size=200x100 at ...>)]
+    >>> gbp([[Rectangle(0, 0, 100, 100), Rectangle(100, 0, 100, 100)],
+    ...      [Rectangle(0, 0, 200, 100)]],
+    ...     [PIL.Image.new("RGB", (100, 100)),
+    ...      PIL.Image.new("RGB", (100, 100))]) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    [WallpaperPart(rectangle=Rectangle(x=0, y=0, width=100, height=100),
+                   image=<PIL.Image.Image image mode=RGB size=100x100 at ...>),
+     WallpaperPart(rectangle=Rectangle(x=100, y=0, width=100, height=100),
+                   image=<PIL.Image.Image image mode=RGB size=100x100 at ...>)]
+    >>> gbp([[Rectangle(0, 0, 1920, 1080), Rectangle(1920, 0, 1920, 1080)],
+    ...      [Rectangle(0, 0, 3840, 1080)]],
+    ...     [PIL.Image.new("RGB", (2560, 1440)),
+    ...      PIL.Image.new("RGB", (3840, 1440))]) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    [WallpaperPart(rectangle=Rectangle(x=0, y=0, width=3840, height=1080),
+                   image=<PIL.Image.Image image mode=RGB size=3840x1440 at ...>)]
+    """
+    best_association = None
+    best_score: float = 0
+    for group in groups:
+        associations = [tuple(zip(group, p)) for p in itertools.permutations(images)]
+        seen = []
+        for association in associations:
+            if association in seen:
+                continue
+            seen.append(association)
+            score: float = 0
+            association_ = [
+                WallpaperPart(rectangle=assoc[0], image=assoc[1])
+                for assoc in association
+            ]
+            for assoc in association_:
+                # Similar ratio
+                oratio = assoc.rectangle.width * 100 // assoc.rectangle.height
+                iratio = assoc.image.width * 100 // assoc.image.height
+                r = iratio / oratio
+                if r > 1:
+                    r = 1 / r
+                score += r * ratio_score
+                # Similar scale (when cropped)
+                opixels = assoc.rectangle.width * assoc.rectangle.height
+                ipixels = assoc.image.width * assoc.image.height * r
+                r = ipixels / opixels
+                if r >= 1:
+                    r = 1
+                score += r * scale_score
+            score /= pow(len(group), wallpaper_score)
+            logger.debug("association: %s, score %.2f", association_, score)
+            if score > best_score or best_association is None:
+                best_association = association_
+                best_score = score
+
+    return best_association
+
+
+def build(background: Image, wallpaper_parts: list[WallpaperPart]) -> None:
+    """Stitch wallpaper into provided background."""
+    for part in wallpaper_parts:
+        rectangle = part.rectangle
+        image = part.image
+
+        imx, imy = rectangle.width, image.height * rectangle.width // image.width
+        if imy < rectangle.height:
+            imx, imy = image.width * rectangle.height // image.height, rectangle.height
+        if image.size != (imx, imy):
+            image = image.resize((imx, imy), PIL.Image.Resampling.LANCZOS)
+        image = image.crop(
+            (
+                (imx - rectangle.width) // 2,
+                (imy - rectangle.height) // 2,
+                imx - (imx - rectangle.width) // 2,
+                imy - (imy - rectangle.height) // 2,
+            )
+        )
+        background.paste(image, (rectangle.x, rectangle.y))
+
+
+def save(wallpaper: Image, target: str, compression: int) -> None:
+    """Save wallpaper to target."""
+    with tempfile.NamedTemporaryFile(
+        delete=False, dir=os.path.dirname(os.path.realpath(target))
+    ) as tmp:
+        wallpaper.save(tmp, "png", compress_level=compression)
+        os.rename(tmp.name, target)
+
+
+if __name__ == "__main__":
+    # Parse
+    description = sys.modules[__name__].__doc__
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        default=False,
+        help="enable debugging",
+    )
+    group = parser.add_argument_group("image selection")
+    group.add_argument(
+        "-d",
+        "--directory",
+        default=".",
+        help="search for images in DIRECTORY",
+    )
+    group.add_argument(
+        "--extra-images",
+        default=3,
+        metavar="N",
+        help="consider N additional images to choose the best combination",
+    )
+    params = inspect.signature(get_best_parts).parameters
+    group.add_argument(
+        "--ratio-score",
+        default=params["ratio_score"].default,
+        help="multiplicative weight applied to ratio matching for score",
+    )
+    group.add_argument(
+        "--scale-score",
+        default=params["scale_score"].default,
+        help="multiplicative weight applied to pixel matching for score",
+    )
+    group.add_argument(
+        "--wallpaper-score",
+        default=params["wallpaper_score"].default,
+        help="invert power weight applied to the number of wallpapers used",
+    )
+    group = parser.add_argument_group("image output")
+    group.add_argument(
+        "-t",
+        "--target",
+        default="background.png",
+        help="write background to FILE",
+    )
+    group.add_argument(
+        "--compression", default=0, type=int, help="compression level when saving"
+    )
+    options = parser.parse_args()
+
+    # Logging
+    root = logging.getLogger("")
+    root.setLevel(logging.WARNING)
+    logger.setLevel(options.debug and logging.DEBUG or logging.INFO)
+    if sys.stderr.isatty():
+        ch = logging.StreamHandler()
+        ch.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+        root.addHandler(ch)
+    else:
+        root.addHandler(journal.JournalHandler(SYSLOG_IDENTIFIER=logger.name))
+
+    try:
+        outputs, background = get_outputs()
+        candidates = get_covering_rectangles(outputs)
+        images = get_random_images(
+            options.directory, len(outputs) + options.extra_images
+        )
+        wallpaper_parts = get_best_parts(
+            candidates,
+            images,
+            ratio_score=options.ratio_score,
+            scale_score=options.scale_score,
+            wallpaper_score=options.wallpaper_score,
+        )
+        assert wallpaper_parts is not None
+        for part in wallpaper_parts:
+            logger.info(
+                "wallpaper: {} ({}×{})".format(
+                    part.image.filename[(len(options.directory) + 1) :],
+                    *part.image.size
+                )
+            )
+        build(background, wallpaper_parts)
+        save(background, options.target, options.compression)
+    except Exception as e:
+        logger.exception("%s", e)
+        sys.exit(1)
+    sys.exit(0)

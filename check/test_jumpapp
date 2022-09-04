@@ -1,0 +1,527 @@
+#!/usr/bin/env bash
+
+setUp() {
+    active_windowid=0
+    get_window_types_output=_NET_WM_WINDOW_TYPE_NORMAL
+    list_pids_for_command_output=
+    list_stacking_order_output=
+
+    has_command_val=0
+
+    change_workspace_activate_window_called=
+    keep_workspace_activate_window_called=
+    activate_window_called=
+    activate_window_arg=
+    center_cursor_called=
+    center_cursor_arg=
+    minimize_active_window_called=
+    die_called=
+    exec_command_called=
+    focus_window_by_class_called=
+    fork_command_called=
+}
+
+it_echoes_help_when_run_with_0_args() {
+    local output=$(main)
+    [[ "$output" == Usage:*  ]] || fail 'Output does not begin with "Usage:"'
+}
+
+it_echoes_help_when_run_with_dash_h() {
+    local output=$(main -h)
+    [[ "$output" == Usage:*  ]] || fail 'Output does not begin with "Usage:"'
+}
+
+it_throws_an_error_when_wmctrl_is_not_installed() {
+    has_command_val=1
+    main someapp
+    assertNotNull 'die() called' "$die_called"
+}
+
+it_calls_fork_command_when_process_is_not_running() {
+    focus_window_by_class_val=1
+    local output_file=$(mktemp)
+
+    main someapp >|"$output_file"
+
+    assertNotNull 'fork_command() called' "$fork_command_called"
+    [[ "$(<"$output_file")" == *someapp* ]] || fail 'Output does not include "someapp"'
+    assertEquals 'fork_command' someapp "$fork_command_cmd"
+
+    rm -f "$output_file"
+}
+
+it_calls_exec_command_when_called_with_dash_n_and_process_is_not_running() {
+    focus_window_by_class_val=1
+    exec_command_cmd=
+    local output_file=$(mktemp)
+
+    main -n someapp >|"$output_file"
+
+    assertNotNull 'exec_command() called' "$exec_command_called"
+    [[ "$(<"$output_file")" == *someapp* ]] || fail 'Output does not include "someapp"'
+    assertEquals 'exec_command' someapp "$exec_command_cmd"
+
+    rm -f "$output_file"
+}
+
+it_throws_an_error_when_process_is_running_but_no_windows_found() {
+    list_pids_for_command_output='123'
+    main someapp >/dev/null
+    assertNotNull 'die() called' "$die_called"
+}
+
+it_calls_fork_command_when_called_with_dash_f_and_process_is_running_but_no_windows_found() {
+    list_pids_for_command_output='123'
+    main -f someapp >/dev/null
+    assertNotNull 'fork_command() called' "$fork_command_called"
+}
+
+it_calls_activate_window_when_window_found_by_pid() {
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_change_workspace_activate_window_when_-R_is_not_passed() {
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main someapp
+
+    assertNull 'keep_workspace_activate_window() not called' "$keep_workspace_activate_window_called"
+    assertNotNull 'change_workspace_activate_window() called' "$change_workspace_activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_keep_workspace_activate_window_when_-R_is_passed() {
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main -R someapp
+
+    assertNull 'change_workspace_activate_window() not called' "$change_workspace_activate_window_called"
+    assertNotNull 'keep_workspace_activate_window() called' "$keep_workspace_activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_activate_window_only_on_local_windows_when_window_found_by_pid() {
+    list_pids_for_command_output='123'
+    list_windows_output='456 otherhost 123 -1 some-class
+                         567 somehost 123 -1 some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 567 "$activate_window_arg"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_activate_window_on_windows_missing_hostname_when_window_found_by_pid() {
+    list_pids_for_command_output='123'
+    list_windows_output='456 otherhost 123 -1 some-class
+                         567 N/A 123 -1 some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 567 "$activate_window_arg"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_activate_window_when_multiple_pids_exist() {
+    list_pids_for_command_output='1 2 3 123'
+    list_windows_output='456 somehost 123 -1 Some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_activate_window_when_window_found_by_class() {
+    list_windows_output='456 somehost 123 -1 someapp'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_activate_window_when_window_found_by_class_and_hostname_is_for_another_machine() {
+    list_windows_output='456 otherhost 123 -1 someapp'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_activate_window_when_window_class_matches_with_different_case() {
+    list_windows_output='456 somehost 123 -1 SomeAPP'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertNull 'fork_command() not called' "$fork_command_called"
+}
+
+it_calls_activate_window_with_second_windowid_when_first_is_active() {
+    active_windowid=456
+    list_stacking_order_output='999 456 999'
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 123 -1 someapp'
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 567 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_first_windowid_when_last_is_active() {
+    active_windowid=678
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 123 -1 someapp
+                         678 somehost 123 -1 someapp'
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_rightmost_matching_windowid_in_list_stacking_order_when_active_window_isnt_in_list_stacking_order() {
+    active_windowid=000
+    list_stacking_order_output='999 456 789 999'
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 123 -1 someapp
+                         678 somehost 123 -1 someapp
+                         789 somehost 123 -1 someapp'
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 789 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_last_windowid_when_first_is_active_and_r_flag_is_passed() {
+    active_windowid=456
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 123 -1 someapp
+                         678 somehost 123 -1 someapp'
+    main -r someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 678 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_first_windowid_when_second_is_active_and_r_flag_is_passed() {
+    active_windowid=567
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 123 -1 someapp
+                         678 somehost 123 -1 someapp'
+    main -r someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_leftmost_matching_windowid_in_list_stacking_order_when_active_window_isnt_in_list_stacking_order() {
+    active_windowid=000
+    list_stacking_order_output='999 567 678 999'
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 123 -1 someapp
+                         678 somehost 123 -1 someapp
+                         789 somehost 123 -1 someapp'
+    main -r someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 567 "$activate_window_arg"
+}
+
+it_matches_list_stacking_order_windowids_by_numeric_comparison() {
+    active_windowid=000
+    list_stacking_order_output='999 0xff 999'
+    list_windows_output='456 somehost 123 -1 someapp
+                         255 somehost 123 -1 someapp
+                         678 somehost 123 -1 someapp'
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 255 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_windowid_that_matches_regex_title_passed_with_-t() {
+    list_windows_output='456 somehost 123 -1 someapp not the window
+                         567 somehost 123 -1 someapp Some window and text
+                         678 somehost 123 -1 someapp'
+
+    main -t "[Ss]ome window" someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 567 "$activate_window_arg"
+}
+
+it_calls_fork_command_if_no_matching_windows_but_matching_pids_and_title_passed_with_-t() {
+    list_pids_for_command_output='123'
+
+    main -t "Any window" someapp >/dev/null
+
+    assertNull 'activate_window() not called' "$activate_window_called"
+    assertNotNull 'fork_command() called' "$fork_command_called"
+}
+
+it_calls_activate_window_with_windowid_of_first_window_on_workspace_when_-w_passed() {
+    active_workspace=1
+    list_windows_output='456 somehost 123 0 someapp
+                         567 somehost 123 1 someapp
+                         678 somehost 123 0 someapp'
+    main -w someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 567 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_windowid_where_workspace_is_-1_when_-w_passed() {
+    active_workspace=1
+    list_windows_output='456 somehost 123 0 someapp
+                         567 somehost 123 -1 someapp
+                         678 somehost 123 0 someapp'
+    main -w someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 567 "$activate_window_arg"
+}
+
+it_throws_an_error_when_process_is_running_but_all_window_type_are_known_not_normal_windows() {
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 someapp'
+    get_window_types_output='_NET_WM_WINDOW_TYPE_DESKTOP, _NET_WM_WINDOW_TYPE_DOCK, _NET_WM_WINDOW_TYPE_TOOLBAR'
+
+    main someapp >/dev/null
+
+    assertNotNull 'die() called' "$die_called"
+}
+
+it_calls_activate_window_when_get_window_types_returns_normal_window() {
+    get_window_types_output='_NET_WM_WINDOW_TYPE_NORMAL'
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+}
+
+it_calls_activate_window_when_get_window_types_returns_dialog_window() {
+    get_window_types_output='_NET_WM_WINDOW_TYPE_NORMAL'
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+}
+
+it_calls_activate_window_when_get_window_types_returns_unknown_window_type() {
+    get_window_types_output='_NET_WM_WINDOW_TYPE_DERP'
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+}
+
+it_calls_activate_window_when_get_window_types_returns_multiple_entires() {
+    get_window_types_output='_NET_SOME_TYPE, _NET_WM_WINDOW_TYPE_NORMAL, _NET_ANOTHER_TYPE'
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main someapp
+
+    assertNotNull 'activate_window() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+}
+
+it_calls_activate_window_with_second_windowid_when_first_is_not_normal() {
+    # I haven't figured out how to test this yet, since we need to output
+    # different values from `get_window_typees` and `get_window_types` is being
+    # called in a subshell.
+    :
+}
+
+it_calls_center_cursor_on_window_when_-C_is_passed() {
+    list_pids_for_command_output='123'
+    list_windows_output='456 somehost 123 -1 some-class'
+
+    main -C someapp
+
+    assertNotNull 'center_cursor() called' "$center_cursor_called"
+    assertEquals 456 "$center_cursor_arg"
+}
+
+it_calls_list_pids_for_command_without_the_full_path() {
+    list_pids_for_command_cmd_file=$(mktemp)
+    main /usr/bin/someapp >/dev/null
+    assertEquals someapp "$(<$list_pids_for_command_cmd_file)"
+    rm -f "$list_pids_for_command_cmd_file"
+}
+
+it_calls_fork_command_if_-p_option_passed_and_a_command_argument_is_passed() {
+    list_windows_output='456 somehost 123 -1 someapp' # even if the application is already running
+
+    main -p someapp somearg >/dev/null
+
+    assertNull 'activate_window() not called' "$activate_window_called"
+    assertNotNull 'fork_command() called' "$fork_command_called"
+}
+
+it_prints_count_0_when_called_with_-L() {
+    list_windows_output=''
+
+    local output=$(main -L someapp)
+    [[ "$output" == "Matched Windows [0]" ]] || fail 'Output is not "Matched Windows [0]"'
+}
+
+it_prints_count_2_when_called_with_-L_and_2_match() {
+    list_windows_output='456 somehost 123 -1 someapp SomeApp Window #1
+                         567 somehost 234 -1 anotherapp AnotherApp Window
+                         678 somehost 123 -1 someapp SomeApp Window #2'
+
+    local output=$(main -L someapp)
+    [[ "$output" == "Matched Windows [2]"* ]] || fail 'Output does not start with "Matched Windows [2]"'
+}
+
+it_prints_matching_windows_when_called_with_-L() {
+    list_windows_output='456 somehost 123 -1 someapp SomeApp Window #1
+                         567 somehost 234 -1 anotherapp AnotherApp Window
+                         678 somehost 123 -1 someapp SomeApp Window #2'
+
+    local output=$(main -L someapp)
+    [[ "$output" == *"456 somehost 123 -1 someapp: SomeApp Window #1"* ]] || fail 'Output does not list Window #1'
+    [[ "$output" != *"anotherapp"* ]] || fail 'Output lists anotherapp'
+    [[ "$output" == *"678 somehost 123 -1 someapp: SomeApp Window #2"* ]] || fail 'Output does not list Window #2'
+}
+
+it_calls_minimize_active_window_when_called_with_-m_and_window_is_active() {
+    active_windowid=456
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 234 -1 anotherapp AnotherApp Window'
+    main -m someapp
+
+    assertNotNull 'minimize_active_window() called' "$minimize_active_window_called"
+}
+
+it_calls_activate_window_when_called_with_-m_but_the_window_is_not_active() {
+    active_windowid=567
+    list_windows_output='456 somehost 123 -1 someapp
+                         567 somehost 234 -1 anotherapp AnotherApp Window'
+    main -m someapp
+
+    assertNull 'minimize_active_window() not called' "$minimize_active_window_called"
+    assertNotNull 'i() called' "$activate_window_called"
+    assertEquals 456 "$activate_window_arg"
+}
+
+##### Test Doubles #####
+
+source ./jumpapp # load app now, so we can override it
+
+fork_command() {
+    fork_command_called=1
+    fork_command_cmd=$cmd
+}
+
+exec_command() {
+    exec_command_called=1
+    exec_command_cmd=$cmd
+}
+
+list_pids_for_command() {
+    if [[ "$list_pids_for_command_cmd_file" ]]; then
+        printf '%s\n' "$1" >|"$list_pids_for_command_cmd_file"
+    fi
+    printf '%s\n' "$list_pids_for_command_output"
+}
+
+list_windows() {
+    printf '%s\n' "$list_windows_output"
+}
+
+get_active_windowid() {
+    printf '%s\n' "$active_windowid"
+}
+
+get_window_types() {
+    printf '%s\n' "$get_window_types_output"
+}
+
+get_active_workspace() {
+    printf '%s\n' "$active_workspace"
+}
+
+change_workspace_activate_window() {
+    change_workspace_activate_window_called=1
+    activate_window_called=1
+    activate_window_arg=$1
+    return 0
+}
+
+keep_workspace_activate_window() {
+    keep_workspace_activate_window_called=1
+    activate_window_called=1
+    activate_window_arg=$1
+    return 0
+}
+
+center_cursor() {
+    center_cursor_called=1
+    center_cursor_arg=$1
+}
+
+minimize_active_window() {
+    minimize_active_window_called=1
+}
+
+has_command() {
+    return "$has_command_val"
+}
+
+get_hostname() {
+    printf '%s\n' "somehost"
+}
+
+die() {
+    die_called=1
+    return 1
+}
+
+list_stacking_order() {
+    printf '%s\n' "$list_stacking_order_output"
+}
+
+##### Test Harness #####
+
+# suite() -- find and register tests to be run
+#   Derived from Gary Bernhardt's screencast #68
+#   (https://www.destroyallsoftware.com/screencasts/catalog/test-driving-shell-scripts)
+suite() {
+    tests=( $(grep ^it_ "$0" | cut -d '(' -f 1) )
+    for name in "${tests[@]}"; do
+        suite_addTest "$name"
+    done
+}
+
+if hash shunit2 2>/dev/null; then
+    source shunit2
+else
+    echo 'Error: shunit2(1) could not be located. Please install it on your $PATH.' >&2
+    exit 1
+fi
