@@ -134,6 +134,7 @@ class conf_gen(Enum):
 
         λ({
             f'{M4}+apostrophe': 'reload; exec --no-startup-id systemctl --user restart negwm',
+            f'{M4}+backslash': 'reload; exec --no-startup-id systemctl --user restart negwm; exec --no-startup-id polybar-msg cmd restart',
             f'{M4}+{Sh}+apostrophe': 'restart'
         }),
 
