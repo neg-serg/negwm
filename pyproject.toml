@@ -19,6 +19,9 @@ inotipy = "^0.1.1"
 pulsectl = "^21.9.1"
 python3-xlib = "^0.15"
 yamlloader = "^1.1.0"
+psutil = "^5.9.2"
+rich = "^12.5.1"
+xdg = "^5.1.1"
 
 [tool.poetry.dev-dependencies]
 
