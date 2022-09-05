@@ -1,6 +1,6 @@
 #!/usr/bin/env dash
 
-negwm_dir_prepare() {
+negwm_prepare() {
     if [ -z "$XDG_CONFIG_HOME" ]; then
         echo "\$XDG_CONFIG_HOME should be set to install"
         exit 1
@@ -12,20 +12,20 @@ negwm_dir_prepare() {
     fi
 }
 
-git_clone() {
+negwm_git_clone() {
     if ! which git > /dev/null; then
-        echo "Install git"
-        sudo pacman -S git --noconfirm
+        echo "You need install git to continue"
+        exit 1
     fi
     git clone https://github.com/neg-serg/negwm "$XDG_CONFIG_HOME/negwm"
 }
 
 pip_deps_install() {
     echo "install python dependencies..."
-    sudo pip install -r "$XDG_CONFIG_HOME/negwm/requirements.txt" --upgrade
+    pip3 install -r "$XDG_CONFIG_HOME/negwm/requirements.txt" --upgrade
 }
 
-install_python_deps() {
+negwm_install() {
     if which pip3 > /dev/null; then
         pip_deps_install
     else
@@ -34,9 +34,9 @@ install_python_deps() {
 }
 
 main(){
-    negwm_dir_prepare
-    git_clone
-    install_python_deps
+    negwm_prepare
+    negwm_git_clone
+    negwm_install
 }
 
 main "$@"
