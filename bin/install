@@ -20,23 +20,19 @@ negwm_git_clone() {
     git clone https://github.com/neg-serg/negwm "$XDG_CONFIG_HOME/negwm"
 }
 
-pip_deps_install() {
+deps_install() {
     echo "install python dependencies..."
     pip3 install -r "$XDG_CONFIG_HOME/negwm/requirements.txt" --upgrade
 }
 
 negwm_install() {
     if which pip3 > /dev/null; then
-        pip_deps_install
+        deps_install
     else
-        echo 'you need pip to install negwm'
+        echo 'You need pip for python3 to install negwm'
     fi
 }
 
-main(){
-    negwm_prepare
-    negwm_git_clone
-    negwm_install
-}
-
-main "$@"
+negwm_prepare
+negwm_git_clone
+negwm_install
