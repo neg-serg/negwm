@@ -177,8 +177,12 @@ class conf_gen(Enum):
         }, fmt='$menu {cmd}'),
 
         λ({
-            f'{M4}+q': 'fullscreen toggle',
             f'{M4}+{Ct}+q': 'kill',
+            f'{M4}+5': '[floating] floating disable, unmark "^_all_$"',
+            f'{M4}+{Sh}+g': 'mark --replace _all_, move scratchpad',
+            f'{M4}+g': '[con_mark="^_all_$"] scratchpad show',
+            f'{M4}+q': 'fullscreen toggle',
+            f'{M4}+y': 'sticky toggle',
         }),
     ])
 
