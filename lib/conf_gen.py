@@ -37,6 +37,7 @@ class conf_gen(extension, cfg):
                 cfg_section_handler = getattr(self, cfg_section)
                 ret.append(cfg_section_handler())
         ret.append(self.mods_commands())
+        ret.append('# vim:filetype=i3config')
 
         return '\n'.join(filter(None, ret))
 
