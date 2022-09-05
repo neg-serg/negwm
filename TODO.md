@@ -3,19 +3,11 @@
     - Mouse helper, for example get windows size and then click on x,y = 20px, 20px
 
 # General
-    - github.com/bakkeby/patches/wiki/riodraw
     - Create PKGBUILD
+    - Make post on usability porn reddit
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     - Remove all default parameters and add config validation
-    - Support for i3 open for tiling
-
-    <!-- install_mandatory_deps() { -->
-    <!--     install_deps i3 dash -->
-    <!-- } -->
-    <!---->
-    <!-- install_recommended_deps() { -->
-    <!--     install_deps zsh tmux rofi dunst xdo alacritty pulseaudio -->
-    <!-- } -->
+    - github.com/bakkeby/patches/wiki/riodraw
 
 # Config
     - Better generator(fancy output, etc)
@@ -38,20 +30,13 @@
 
 # Experiments
     - Better dynamic config architecture
+    - Cpu load, gpu load, vnstat or network for some period, cava integration
+    - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Importlib vs __import__
     - PDB integration
     - Python reload dynamic
     - Python setdefault
+    - Review rust i3 modules
     - Some module compilation
 
-    - Hotkey to create tmp scratchpad for any window
-    - Hotkey to make window sticky
-    - Review rust i3 modules
     - docs.python.org/3/tutorial/modules.html
-    - github.com/Airblader/i3/issues/190
-    - i3ipc updates review
-
-    - i3: hotkey to create tmp scratchpad for any window
-    - i3: hotkey to make window sticky
-    
-    - cpu load, gpu load, vnstat or network for some period, cava integration
