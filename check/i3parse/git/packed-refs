@@ -1,0 +1,4 @@
+# pack-refs with: peeled fully-peeled sorted 
+3e468afa917a38344e17dd0311ff8cc869ca8fd6 refs/remotes/origin/master
+2d17f87dbb706cd1628f96f9c6697e6b2205e91c refs/remotes/origin/talwrii--2018-01-02--issue-1--more-files
+a0eeab1af449268c320369da74920065d2ff3c1c refs/remotes/origin/talwrii--2018-01-24--issue-5--new_float

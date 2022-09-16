@@ -1,0 +1,509 @@
+
+# All configuration from i3
+# Created with
+# firecmd document.body.innerHTML  | clixpath '//div[contains(@class, "listingblock")]/descendant-or-self::tt/text()' | xclip -i
+
+
+font <X core font description>
+font pango:<family list> [<style options>] <size>
+font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font pango:DejaVu Sans Mono 10
+font pango:DejaVu Sans Mono, Terminus Bold Semi-Condensed 11
+font pango:Terminus 11px
+# Fullscreen
+bindsym $mod+f fullscreen toggle
+
+# Restart
+bindsym $mod+Shift+r restart
+
+# Notebook-specific hotkeys
+bindcode 214 exec --no-startup-id /home/michael/toggle_beamer.sh
+
+# Simulate ctrl+v upon pressing $mod+x
+bindsym --release $mod+x exec --no-startup-id xdotool key --clearmodifiers ctrl+v
+
+# Take a screenshot upon pressing $mod+x (select an area)
+bindsym --release $mod+x exec --no-startup-id import /tmp/latest-screenshot.png
+bindsym --release button2 kill
+
+# The middle button and a modifer over any part of the window kills the window
+bindsym --whole-window $mod+button2 kill
+
+# The right button toggles floating
+bindsym button3 floating toggle
+bindsym $mod+button3 floating toggle
+
+# The side buttons move the window around
+bindsym button9 move left
+bindsym button8 move right
+
+set $mode_launcher Launch: [f]irefox [t]hunderbird
+bindsym $mod+o mode "$mode_launcher"
+
+mode "$mode_launcher" {
+    bindsym f exec firefox
+    bindsym t exec thunderbird
+
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+}
+
+floating_modifier <Modifier>
+floating_modifier Mod1
+floating_minimum_size 75 x 50
+floating_maximum_size -1 x -1
+default_orientation vertical
+workspace_layout tabbed
+new_window normal
+new_window none
+new_window pixel 5
+# A 3 px border
+new_window pixel 3
+
+hide_edge_borders vertical
+hide_edge_borders horizontal
+hide_edge_borders both
+hide_edge_borders smart
+
+no_focus [window_role="pop-up"]
+set $m Mod1
+bindsym $m+Shift+r restart
+set_from_resource $black i3wm.color0 #000000
+assign [class="URxvt"] 2
+
+# Same thing, but more precise (exact match instead of substring)
+assign [class="^URxvt$"] 2
+
+# Same thing, but with a beautiful arrow :)
+assign [class="^URxvt$"] → 2
+
+# Assignment to a named workspace
+assign [class="^URxvt$"] → work
+
+# Start urxvt -name irssi
+assign [class="^URxvt$" instance="^irssi$"] → 3
+
+# Start iceweasel on workspace 3, then switch back to workspace 1
+# (Being a command-line utility, i3-msg does not support startup notifications,
+#  hence the exec --no-startup-id.)
+# (Starting iceweasel with i3’s exec command is important in order to make i3
+#  create a startup notification context, without which the iceweasel window(s)
+#  cannot be matched onto the workspace on which the command was started.)
+exec --no-startup-id i3-msg 'workspace 3; exec iceweasel; workspace 1'
+
+exec chromium
+exec_always ~/my_script.sh
+
+# Execute the terminal emulator urxvt, which is not yet startup-notification aware.
+exec --no-startup-id urxvt
+workspace 1 output LVDS1
+workspace 5 output VGA1
+workspace "2: vim" output VGA1
+focus_follows_mouse no
+mouse_warping none
+popup_during_fullscreen smart
+force_focus_wrapping yes
+force_xinerama yes
+workspace_auto_back_and_forth yes
+force_display_urgency_hint 500 ms
+focus_on_window_activation smart|urgent|focus|none
+show_marks yes|no
+show_marks yes
+bindsym Mod1+f \
+fullscreen toggle
+
+# this line is not continued \
+bindsym Mod1+F fullscreen toggle
+bar {
+    status_command i3status
+}
+i3bar_command <command>
+bar {
+    i3bar_command /home/user/bin/i3bar
+}
+status_command <command>
+bar {
+    status_command i3status --config ~/.i3status.conf
+
+    # For dash(1) users who want signal handling to work:
+    status_command exec ~/.bin/my_status_command
+}
+mode dock|hide|invisible
+hidden_state hide|show
+modifier <Modifier>|none
+bar {
+    mode hide
+    hidden_state hide
+    modifier Mod1
+}
+bindsym button<n> <command>
+bar {
+    # disable clicking on workspace buttons
+    bindsym button1 nop
+    # execute custom script when scrolling downwards
+    bindsym button5 exec ~/.i3/scripts/custom_wheel_down
+}
+id <bar_id>
+bar {
+    id bar-1
+}
+position top|bottom
+bar {
+    position top
+}
+output primary|<output>
+# big monitor: everything
+bar {
+    # The display is connected either via HDMI or via DisplayPort
+    output HDMI2
+    output DP2
+    status_command i3status
+}
+
+# laptop monitor: bright colors and i3status with less modules.
+bar {
+    output LVDS1
+    status_command i3status --config ~/.i3status-small.conf
+    colors {
+        background #000000
+        statusline #ffffff
+    }
+}
+
+# show bar on the primary monitor and on HDMI2
+bar {
+    output primary
+    output HDMI2
+    status_command i3status
+}
+xrandr --output <output> --primary
+tray_output none|primary|<output>
+# disable system tray
+bar {
+    tray_output none
+}
+
+# show tray icons on the primary monitor
+bar {
+    tray_output primary
+}
+
+# show tray icons on the big monitor
+bar {
+    tray_output HDMI2
+}
+xrandr --output <output> --primary
+tray_padding <px> [px]
+# Obey Fitts's law
+tray_padding 0
+font <font>
+bar {
+    font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+    font pango:DejaVu Sans Mono 10
+}
+separator_symbol <symbol>
+bar {
+    separator_symbol ":|:"
+}
+workspace_buttons yes|no
+bar {
+    workspace_buttons no
+}
+strip_workspace_numbers yes|no
+bar {
+    strip_workspace_numbers yes
+}
+binding_mode_indicator yes|no
+bar {
+    binding_mode_indicator no
+}
+colors {
+    background <color>
+    statusline <color>
+    separator <color>
+
+    <colorclass> <border> <background> <text>
+}
+bar {
+    colors {
+        background #000000
+        statusline #ffffff
+        separator #666666
+
+        focused_workspace  #4c7899 #285577 #ffffff
+        active_workspace   #333333 #5f676a #ffffff
+        inactive_workspace #333333 #222222 #888888
+        urgent_workspace   #2f343a #900000 #ffffff
+        binding_mode       #2f343a #900000 #ffffff
+    }
+}
+# execute this on your shell to make the current container borderless
+i3-msg border none
+bindsym $mod+x move container to workspace 3; workspace 3
+# if you want to kill all windows which have the class Firefox, use:
+bindsym $mod+x [class="Firefox"] kill
+
+# same thing, but case-insensitive
+bindsym $mod+x [class="(?i)firefox"] kill
+
+# kill only the About dialog from Firefox
+bindsym $mod+x [class="Firefox" window_role="About"] kill
+
+# enable floating mode and move container to workspace 4
+for_window [class="^evil-app$"] floating enable, move container to workspace 4
+
+# move all floating windows to the scratchpad
+bindsym $mod+x [floating] move scratchpad
+exec [--no-startup-id] <command>
+# Start the GIMP
+bindsym $mod+g exec gimp
+
+# Start the terminal emulator urxvt which is not yet startup-notification-aware
+bindsym $mod+Return exec --no-startup-id urxvt
+# Execute a command with a comma in it
+bindsym $mod+p exec "notify-send Hello, i3"
+# Execute a command with a comma, semicolon and internal quotes
+bindsym $mod+p exec "notify-send \\"Hello, i3; from $USER\\""
+split vertical|horizontal|toggle
+bindsym $mod+v split vertical
+bindsym $mod+h split horizontal
+bindsym $mod+t split toggle
+layout default|tabbed|stacking|splitv|splith
+layout toggle [split|all]
+layout toggle [split|tabbed|stacking|splitv|splith] [split|tabbed|stacking|splitv|splith]…
+bindsym $mod+s layout stacking
+bindsym $mod+l layout toggle split
+bindsym $mod+w layout tabbed
+
+# Toggle between stacking/tabbed/split:
+bindsym $mod+x layout toggle
+
+# Toggle between stacking/tabbed/splith/splitv:
+bindsym $mod+x layout toggle all
+
+# Toggle between stacking/tabbed/splith:
+bindsym $mod+x layout toggle stacking tabbed splith
+
+# Toggle between splitv/tabbed
+bindsym $mod+x layout toggle splitv tabbed
+
+# Toggle between last split layout/tabbed/stacking
+bindsym $mod+x layout toggle split tabbed stacking
+
+# Toggle fullscreen
+bindsym $mod+f fullscreen toggle
+
+# Toggle floating/tiling
+bindsym $mod+t floating toggle
+focus left|right|down|up
+focus parent|child|floating|tiling|mode_toggle
+focus output left|right|up|down|primary|<output>
+# Focus container on the left, bottom, top, right
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# Focus parent container
+bindsym $mod+u focus parent
+
+# Focus last floating/tiling container
+bindsym $mod+g focus mode_toggle
+
+# Focus the output right to the current one
+bindsym $mod+x focus output right
+
+# Focus the big output
+bindsym $mod+x focus output HDMI-2
+
+# Focus the primary output
+bindsym $mod+x focus output primary
+xrandr --output <output> --primary
+# Moves the container into the given direction.
+# The optional pixel argument specifies how far the
+# container should be moved if it is floating and
+# defaults to 10 pixels.
+move <left|right|down|up> [<px> px]
+
+# Moves the container either to a specific location
+# or to the center of the screen. If 'absolute' is
+# used, it is moved to the center of all outputs.
+move [absolute] position <pos_x> [px] <pos_y> [px]
+move [absolute] position center
+
+# Moves the container to the current position of the
+# mouse cursor. Only affects floating containers.
+move position mouse
+# Move container to the left, bottom, top, right
+bindsym $mod+j move left
+bindsym $mod+k move down
+bindsym $mod+l move up
+bindsym $mod+semicolon move right
+
+# Move container, but make floating containers
+# move more than the default
+bindsym $mod+j move left 20 px
+
+# Move floating container to the center of all outputs
+bindsym $mod+c move absolute position center
+
+# Move container to the current position of the cursor
+bindsym $mod+m move position mouse
+swap container with id|con_id|mark <arg>
+# Swaps the focused container with the container marked »swapee«.
+swap container with mark swapee
+
+# Swaps container marked »A« and »B«
+[con_mark="^A$"] swap container with mark B
+sticky enable|disable|toggle
+# make a terminal sticky that was started as a notepad
+for_window [instance=notepad] sticky enable
+workspace next|prev|next_on_output|prev_on_output
+workspace back_and_forth
+workspace [--no-auto-back-and-forth] <name>
+workspace [--no-auto-back-and-forth] number <name>
+
+move [--no-auto-back-and-forth] [window|container] [to] workspace <name>
+move [--no-auto-back-and-forth] [window|container] [to] workspace number <name>
+move [window|container] [to] workspace prev|next|current
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3:<span foreground="red">vim</span>
+...
+
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+...
+
+# switch between the current and the previously focused one
+bindsym $mod+b workspace back_and_forth
+bindsym $mod+Shift+b move container to workspace back_and_forth
+
+# move the whole workspace to the next output
+bindsym $mod+x move workspace to output right
+
+# move firefox to current workspace
+bindsym $mod+F1 [class="Firefox"] move workspace current
+bindsym $mod+1 workspace mail
+...
+bindsym $mod+1 workspace 1: mail
+bindsym $mod+2 workspace 2: www
+...
+rename workspace <old_name> to <new_name>
+rename workspace to <new_name>
+i3-msg 'rename workspace 5 to 6'
+i3-msg 'rename workspace 1 to "1: www"'
+i3-msg 'rename workspace "1: www" to "10: www"'
+i3-msg 'rename workspace to "2: mail"'
+bindsym $mod+r exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
+bindsym $mod+1 workspace number "1: www"
+bindsym $mod+2 workspace number "2: mail"
+...
+move container to output left|right|down|up|current|primary|<output>
+move workspace to output left|right|down|up|current|primary|<output>
+# Move the current workspace to the next output
+# (effectively toggles when you only have two outputs)
+bindsym $mod+x move workspace to output right
+
+# Put this window on the presentation output.
+bindsym $mod+x move container to output VGA1
+
+# Put this window on the primary output.
+bindsym $mod+x move container to output primary
+Note that you might not have a primary output configured yet. To do so, run:
+=== Moving containers/windows to marks
+
+To move a container to another container with a specific mark (see <<vim_like_marks>>),
+you can use the following command.
+
+The window will be moved right after the marked container in the tree, i.e., it ends up
+in the same position as if you had opened a new window when the marked container was
+focused. If the mark is on a split container, the window will appear as a new child
+after the currently focused child within that container.
+
+*Syntax*:
+for_window [instance="tabme"] move window to mark target
+resize grow|shrink <direction> [<px> px [or <ppt> ppt]]
+resize set <width> [px] <height> [px]
+for_window [class="urxvt"] resize set 640 480
+[class="class"] focus
+[title="title"] focus
+# Get me to the next open VIM instance
+bindsym $mod+a [class="urxvt" title="VIM"] focus
+mark [--add|--replace] [--toggle] <identifier>
+[con_mark="identifier"] focus
+unmark <identifier>
+# marks the focused container
+mark irssi
+
+# focus the container with the mark "irssi"
+'[con_mark="irssi"] focus'
+
+# remove the mark "irssi" from whichever container has it
+unmark irssi
+
+# remove all marks on all firefox windows
+[class="(?i)firefox"] unmark
+title_format <format>
+# give the focused window a prefix
+bindsym $mod+p title_format "Important | %title"
+
+# print all window titles bold
+for_window [class=".*"] title_format "<b>%title</b>"
+
+# print window titles of firefox windows red
+for_window [class="(?i)firefox"] title_format "<span foreground='red'>%title</span>"
+border normal|pixel [<n>]
+border none|toggle
+
+# legacy syntax, equivalent to "border pixel 1"
+border 1pixel
+# use window title, but no border
+bindsym $mod+t border normal 0
+# use no window title and a thick border
+bindsym $mod+y border pixel 3
+# use neither window title nor border
+bindsym $mod+u border none
+shmlog <size_in_bytes>
+shmlog on|off|toggle
+# Enable/disable logging
+bindsym $mod+x shmlog toggle
+
+# or, from a terminal:
+# increase the shared memory log buffer to 50 MiB
+i3-msg shmlog $((50*1024*1024))
+debuglog on|off|toggle
+# Enable/disable logging
+bindsym $mod+x debuglog toggle
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+w reload
+bindsym $mod+Shift+e exit
+move scratchpad
+
+scratchpad show
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
+# Show the sup-mail scratchpad window, if any.
+bindsym mod4+s [title="^Sup ::"] scratchpad show
+nop [<comment>]
+# Disable focus change for clicks on titlebars
+# with the middle mouse button
+bindsym button2 nop
+bar hidden_state hide|show|toggle [<bar_id>]
+
+bar mode dock|hide|invisible|toggle [<bar_id>]
+# Toggle between hide state and show state
+bindsym $mod+m bar hidden_state toggle
+
+# Toggle between dock mode and hide mode
+bindsym $mod+n bar mode toggle
+
+# Set the bar instance with id 'bar-1' to switch to hide mode
+bindsym $mod+b bar mode hide bar-1
+
+# Set the bar instance with id 'bar-1' to always stay hidden
+bindsym $mod+Shift+b bar mode invisible bar-1

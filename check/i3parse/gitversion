@@ -1,0 +1,6 @@
+#!/bin/bash
+
+version=$(git rev-parse HEAD)
+untracked=$(git ls-files --other --directory --exclude-standard | sed q1 > /dev/null || echo -untracked)
+modified=$(git diff-index --quiet HEAD -- || echo -modified)
+echo $version$untracked$modified
