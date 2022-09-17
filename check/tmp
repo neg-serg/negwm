@@ -6,7 +6,6 @@ modules = glob.glob(join(dirname(__file__), "*.py"))
 __all__ = [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
 
-
 Basically so I can drop python files into a directory with no further configuration and have them be executed by a script running somewhere else. – 
 Evan Fosmark
 Jun 30, 2009 at 1:29
@@ -54,3 +53,16 @@ Apr 19, 2019 at 21:45
 @EvanFosmark not exactly, since if the script is running, the files already have been imported. But great point, if the file is dropped on a server, maybe no one will notice when restarting the app. – 
 Enzo Dtz
 May 29 at 23:43
+
+Add the __all__ Variable to __init__.py containing:
+__all__ = ["bar", "spam", "eggs"]
+See also http://docs.python.org/tutorial/modules.html
+
+Yes, yes, but is there any way of having it be dynamic? – 
+
+Combination of os.listdir(), some filtering, stripping of .py extension and __all__. – user234932
+Not working for me as sample code here github.com/namgivu/python-import-all/blob/master/error_app.py . Maybe I miss something there? – 
+
+I found out myself - to use the variable/object defined in those modules, we have to use the full reference path e.g. moduleName.varName ref. stackoverflow.com/a/710603/248616 – 
+
+@NamGVU: This code in my answer to a related question will import all the public sub-modules' names into the the package's namespace. – 
