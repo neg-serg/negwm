@@ -207,7 +207,7 @@ class conf_gen(Enum):
     mode_spec = Δ([
         λ({
             'e': '[urgent=latest] focus',
-            'l': 'exec i3lockr -p 8 ',
+            'l': 'exec ~/bin/x11lock',
             f'{Sh}+d': 'floating toggle',
         }, exit=True),
 
