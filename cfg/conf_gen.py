@@ -8,6 +8,7 @@ from lib.keymap import keymap, bindmap
 M1, M4 = 'Mod1', 'Mod4'
 Sh, Ct = 'Shift', 'Control'
 Font = 'Iosevka Bold 12'
+Exec = 'exec --no-startup-id'
 
 class conf_gen(Enum):
     plain = inspect.cleandoc(f'''
@@ -55,8 +56,7 @@ class conf_gen(Enum):
         for_window [title="Firefox — Sharing Indicator"] border pixel 1, sticky enable, move position 20 ppt -5 px
         for_window [title="(?i)(?:File Transfer.*)"] floating enable
         for_window [window_role="browser"] border none
-        for_window [window_role="pop-up"] floating enable
-        for_window [window_role="task_dialog"] floating enable
+        for_window [window_role="^(pop-up|task_dialog)$"] floating enable
 
         no_focus [title="Firefox — Sharing Indicator"]
         no_focus [window_type="splash"]
@@ -115,7 +115,7 @@ class conf_gen(Enum):
             'XF86Sleep': 'systemctl suspend',
             f'{M4}+8': '~/bin/pl vol mute',
             f'{M4}+{Sh}+8': '~/bin/pl vol unmute',
-        }, fmt='exec --no-startup-id {cmd}'),
+        }, fmt=f'{Exec} {{cmd}}'),
 
         λ({
             f'{M4}+j': 'down',
@@ -133,8 +133,8 @@ class conf_gen(Enum):
         }, fmt='move workspace to output {cmd}'),
 
         λ({
-            f'{M4}+apostrophe': 'reload; exec --no-startup-id systemctl --user restart negwm',
-            f'{M4}+backslash': 'reload; exec --no-startup-id systemctl --user restart negwm; exec --no-startup-id polybar-msg cmd restart',
+            f'{M4}+apostrophe': f'reload; {Exec} systemctl --user restart negwm',
+            f'{M4}+backslash': f'reload; {Exec} systemctl --user restart negwm; {Exec} polybar-msg cmd restart',
             f'{M4}+{Sh}+apostrophe': 'restart'
         }),
 
@@ -159,14 +159,14 @@ class conf_gen(Enum):
             f'{M4}+comma': 'cmd previous',
             'XF86AudioLowerVolume': 'vol down',
             'XF86AudioRaiseVolume': 'vol up',
-        }, fmt='exec --no-startup-id ~/bin/pl {cmd}'),
+        }, fmt=f'{Exec} ~/bin/pl {{cmd}}'),
 
         λ({
             'XF86AudioNext': 'cmd next',
             'XF86AudioPlay': 'cmd play',
             'XF86AudioPrev': 'cmd previous',
             'XF86AudioStop': 'cmd stop',
-        }, fmt='exec --no-startup-id ~/bin/pl {cmd}'),
+        }, fmt=f'{Exec} ~/bin/pl {{cmd}}'),
 
         λ({
             f'{M4}+{Sh}+a': 'attach',
