@@ -7,7 +7,6 @@ to you, miseran(https://github.com/miseran)
 """
 
 import collections
-import sys
 from typing import Mapping
 import logging
 
