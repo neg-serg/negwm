@@ -69,7 +69,7 @@ class conf_gen(Enum):
         ' δ:dev',
         ' γ:doc',
         ' ζ:draw',
-        '߷ :gfx',
+        '߷ θ:gfx',
         '✽ ρ:obs',
         ' ξ:pic',
         ' ι:steam',
