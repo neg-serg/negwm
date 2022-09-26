@@ -31,7 +31,7 @@
 # Experiments
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
-    - Cpu load, gpu load, vnstat or network for some period, cava integration
+    - Cpu load, gpu load, vnstat or network for some period
     - Importlib vs __import__
     - PDB integration
     - Python reload dynamic
