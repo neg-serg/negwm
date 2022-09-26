@@ -7,6 +7,5 @@ psutil
 psutil
 pulsectl
 rich
-xdg
 Xlib
 yamlloader
