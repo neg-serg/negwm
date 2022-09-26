@@ -1,7 +1,7 @@
 import subprocess
 from functools import partial
 from typing import Callable
-from extension import extension
+from lib.extension import extension
 
 
 class winact():
@@ -46,7 +46,7 @@ class winact():
 
     def select_ws(self) -> str:
         """ Apply target function to workspace. """
-        ws_list = list(extension.get_mods()['conf_gen'].cfg['workspaces'].values())
+        ws_list = list(extension.get_mods()['conf_gen'].cfg['workspaces'])
         menu_params = {'prompt': f'{self.menu.wrap_str("ws")} {self.menu.conf("prompt")}'}
         try:
             workspace_name = subprocess.run(
@@ -57,7 +57,7 @@ class winact():
             ).stdout
             selected_ws = workspace_name.decode('UTF-8').strip()
             if selected_ws:
-                num = ws_list.index(selected_ws)
+                num = ws_list.index(selected_ws) + 1
                 return str(f'{num} :: {selected_ws}')
         except Exception:
             return ''
@@ -71,15 +71,8 @@ class winact():
     def goto_ws(self) -> None:
         """ Go to workspace menu. """
         workspace_name = self.select_ws()
-        if workspace_name is not None and workspace_name:
-            ws_splitname = workspace_name.split('::')
-            if len(ws_splitname) > 1:
-                ws_num = ws_splitname[0].strip()
-                self.apply_to_ws(
-                    partial(
-                        self.menu.i3ipc.command, f'workspace number {ws_num}'
-                    )
-                )
+        self.apply_to_ws(
+            partial(self.menu.i3ipc.command, f'workspace {workspace_name}'))
 
     def move_to_ws(self) -> None:
         """ Move current window to the selected workspace """
