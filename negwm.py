@@ -142,7 +142,7 @@ class negwm():
                     if changed_mod in self.mods:
                         binpath = f'{Misc.negwm_path()}/bin/'
                         subprocess.run(
-                            [f'{binpath}/create_config.py'],
+                            [f'{binpath}/create_cfg'],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             cwd=binpath, check=False
                         )
