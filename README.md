@@ -1,26 +1,19 @@
 ![banner](https://i.imgur.com/fgmuilL.png)
 
-- [Screenshots](#screenshots)
-- [What is it?](#what-is-it-)
-- [main](#main)
-- [modules](#modules)
-  - [scratchpad](#scratchpad)
-  - [circle](#circle)
-  - [remember_focused](#win-history)
-  - [menu](#menu)
-  - [actions](#win-action)
-  - [executor](#executor)
-  - [fs](#fs)
-  - [procs to run by negwm as another process](#procs-to-run-by-negwm-as-another-process)
-- [Installation](#installation)
-- [Dependencies](#dependencies-)
-  - [Modern python3 with modules](#modern-python3-with-modules-)
-- [Run](#run)
-- [Performance](#performance)
-  - [Performance profiling](#performance-profiling)
-- [Why](#why)
-- [Bugs](#bugs)
-- [Video Demonstration](#video-demonstration)
+* [Screenshots](#screenshots)
+* [What is it?](#what-is-it)
+* [Why](#why)
+* [Help](#help)
+* [Installation](#installation)
+* [General](#general)
+* [Modules](#modules)
+    * [Scratchpad](#scratchpad)
+    * [Circle](#circle)
+    * [Remember focused](#remember-focused)
+    * [Menu](#menu)
+    * [Actions](#actions)
+    * [Executor](#executor)
+    * [fs](#fs)
 
 # Screenshots
 
@@ -50,6 +43,30 @@ spawned here, to use it just start it from any place without parameters. Moreove
 Usage:
     ./negwm.py
 ```
+
+# Installation
+
+Negwm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`, so you need to set up your `$XDG_CONFIG_HOME` variable before
+install, via `/etc/profile`, some kind of `.zshenv` or smth else depending or your environment, it is mandatory to install.
+
+Before install make sure to backup your i3 configuration, install script should do it automatically, but it's better to do it by hand for
+the reliability reasons.
+
+The most simple way to install it for now is to use install from repo:
+
+`curl https://raw.githubusercontent.com/neg-serg/negwm/master/bin/install | sh`
+
+Also you can clone this to any dir and run `<negwm_dir>/bin/install`
+
+After install check it via smth like:
+
+```
+cd $XDG_CONFIG_HOME/negwm
+./bin/run
+```
+
+If everything is ok then you can use new i3 config example, where `Mod4- Shift + '`
+is i3wm reloading, after reload you should get i3 with `negwm` plugins on the board.
 
 # General
 
@@ -293,35 +310,3 @@ Look at the `lib/executor.py` to learn more.
 ## fs
 
 Fullscreen panel hacking.
-
-# Installation
-
-Negwm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`, so you need to set up your `$XDG_CONFIG_HOME` variable before
-install, via `/etc/profile`, some kind of `.zshenv` or smth else depending or your environment, it is mandatory to install.
-
-Before install make sure to backup your i3 configuration, install script should do it automatically, but it's better to do it by hand for
-the reliability reasons.
-
-The most simple way to install it for now is to use install from repo:
-
-```
-curl https://raw.githubusercontent.com/neg-serg/negwm/master/bin/install.sh | sh
-```
-
-After install check it via smth like:
-
-```
-cd $XDG_CONFIG_HOME/negwm
-./bin/run
-```
-
-If everything is ok then you can use new i3 config example, where `Mod4- Shift + '`
-is i3wm reloading, after reload you should get i3 with `negwm` plugins on the board.
-
-# Run
-
-Install it to i3 config directory:
-
-```sh
-git clone https://github.com/neg-serg/negwm ~/.config/negwm
-```
