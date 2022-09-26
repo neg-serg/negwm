@@ -1,10 +1,11 @@
 import os
-from . misc import Misc
-from . cfg import cfg
-from . extension import extension
-from . checker import checker
-from . rules import Rules
-from . keymap import bindmap as Bindmap
+
+from misc import Misc
+from cfg import cfg
+from extension import extension
+from checker import checker
+from rules import Rules
+from keymap import bindmap as Bindmap
 
 
 class conf_gen(extension, cfg):

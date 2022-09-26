@@ -9,8 +9,8 @@ contains following menus:
 import importlib
 from typing import List
 
-from .cfg import cfg
-from .extension import extension
+from cfg import cfg
+from extension import extension
 
 
 class menu(extension, cfg):
@@ -23,7 +23,7 @@ class menu(extension, cfg):
         # Window properties shown by xprop menu.
         self.xprops_list = self.conf('xprops_list')
         for mod in self.cfg['modules']:
-            module = importlib.import_module('menu_mods.' + mod)
+            module = importlib.import_module('modules.menu_mods.' + mod)
             setattr(self, mod, getattr(module, mod)(self))
         self.i3_menu = getattr(self, 'i3menu').i3_menu
         self.xprop_show = getattr(self, 'xprop').xprop

@@ -3,7 +3,7 @@
 import subprocess
 from Xlib import display
 from Xlib.ext import randr
-from . misc import Misc
+from misc import Misc
 
 
 class Display():

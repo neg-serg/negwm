@@ -14,10 +14,10 @@ window with the correct fullscreen state, where normal i3 behaviour has a lot
 of issues here in detection of existing/visible windows, etc.
 """
 
-from . extension import extension
-from . matcher import Matcher
-from . cfg import cfg
-from . misc import Misc
+from extension import extension
+from matcher import Matcher
+from cfg import cfg
+from misc import Misc
 
 
 class circle(extension, cfg, Matcher):

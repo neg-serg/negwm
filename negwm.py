@@ -63,14 +63,10 @@ class negwm():
         super().__init__()
 
         self.loop, self.mods = loop, {}
-        blacklist = {
-            'cfg', 'checker', 'display', 'extension', 'geom', 'locker', 'misc',
-            'msgbroker', 'matcher', 'negewmh', 'reflection', 'standalone_cfg',
-            'sub', 'pub', 'rules', 'keymap', '__init__'
-        }
+        blacklist = {'__init__'}
         mods = map(
             pathlib.Path,
-            glob.glob(f"{os.path.dirname(sys.argv[0])}/lib/*.py")
+            glob.glob(f"{os.path.dirname(sys.argv[0])}/modules/*.py")
         )
         for mod in mods:
             if mod.is_file():
@@ -117,7 +113,7 @@ class negwm():
         mod_startup_times = []
         for mod in self.mods:
             start_time = timeit.default_timer()
-            i3mod = importlib.import_module('lib.' + mod)
+            i3mod = importlib.import_module('modules.' + mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3)
             try:
                 self.mods[mod].asyncio_init(self.loop)

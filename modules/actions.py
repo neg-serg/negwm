@@ -10,9 +10,9 @@ import collections
 from typing import Mapping
 import logging
 
-from . display import Display
-from . cfg import cfg
-from . extension import extension
+from display import Display
+from cfg import cfg
+from extension import extension
 
 
 class actions(extension, cfg):

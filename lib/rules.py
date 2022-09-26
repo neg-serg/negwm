@@ -1,6 +1,6 @@
 from typing import List
-from . extension import extension
-from . misc import Misc
+from extension import extension
+from misc import Misc
 
 class Rules():
     @staticmethod

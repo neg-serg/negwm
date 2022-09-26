@@ -5,7 +5,7 @@ import subprocess
 import shutil
 import logging
 from extension import extension
-from . cfg import cfg
+from cfg import cfg
 
 class fullscreen(extension, cfg):
     def __init__(self, i3conn):

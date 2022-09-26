@@ -14,9 +14,9 @@ import yaml
 import yamlloader
 import logging
 
-from . extension import extension
-from . cfg import cfg
-from . misc import Misc
+from extension import extension
+from cfg import cfg
+from misc import Misc
 
 
 class env():
