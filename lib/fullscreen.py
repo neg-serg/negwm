@@ -14,13 +14,14 @@ class fullscreen(extension, cfg):
         self.panel_should_be_restored = False
         cfg.__init__(self, i3conn) # Initialize modcfg.
         # Default panel classes
-        self.panel_classes = self.cfg.get("panel_classes", [])
+        self.cfg.setdefault('panel_classes', [])
+        self.panel_classes = self.cfg['panel_classes']
         # Fullscreened workspaces
-        self.ws_fullscreen = self.cfg.get("ws_fullscreen", [])
+        self.cfg.setdefault('ws_fullscreen', [])
+        self.ws_fullscreen = self.cfg['ws_fullscreen']
         # for which windows we shoudn't show panel
-        self.classes_to_hide_panel = self.cfg.get(
-            "classes_to_hide_panel", []
-        )
+        self.cfg.setdefault('classes_to_hide_panel', [])
+        self.classes_to_hide_panel = self.cfg['classes_to_hide_panel']
         self.show_panel_on_close = False
         self.i3ipc.on('window::close', self.on_window_close)
         self.i3ipc.on('workspace::focus', self.on_workspace_focus)

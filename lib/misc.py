@@ -127,10 +127,11 @@ class Misc():
         """
         if conf_part is None:
             return ""
+        conf_part.setdefault(prog_field, '')
         if exe_file:
             return re.sub(
                 "~",
                 os.path.realpath(os.path.expandvars("$HOME")),
-                conf_part.get(prog_field, "")
+                conf_part[prog_field]
             )
-        return conf_part.get(prog_field, "")
+        return conf_part[prog_field]

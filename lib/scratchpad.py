@@ -62,7 +62,7 @@ class scratchpad(extension, cfg, Matcher):
 
     def rules(self, cmd_dict) -> str:
         """ Create i3 match rules for all tags. """
-        ret = ''
+        ret: str = ''
         for tag in cmd_dict:
             if tag in {'transients'}:
                 geom = self.nsgeom.get_geom(tag)
@@ -136,7 +136,8 @@ class scratchpad(extension, cfg, Matcher):
     def toggle(self, tag: str) -> None:
         """ Toggle scratchpad with given [tag].
             tag (str): denotes the target tag. """
-        if not self.marked.get(tag, []):
+        self.marked.setdefault(tag, [])
+        if not self.marked[tag]:
             target_tag = self.conf(tag)
             if not target_tag:
                 return
@@ -150,7 +151,7 @@ class scratchpad(extension, cfg, Matcher):
                 if spawn_str:
                     mods = extension.get_mods()
                     if mods:
-                        executor = mods.get('executor')
+                        executor = mods['executor']
                         if executor is not None:
                             executor.run(spawn_str)
         if self.visible_window_with_tag(tag):
@@ -159,7 +160,8 @@ class scratchpad(extension, cfg, Matcher):
         # We need to hide scratchpad it is visible,
         # regardless it focused or not
         focused = self.i3ipc.get_tree().find_focused()
-        if self.marked.get(tag, []):
+        self.marked.setdefault(tag, [])
+        if self.marked[tag]:
             self.toggle_fs(focused)
             self.show(tag)
 
@@ -226,7 +228,6 @@ class scratchpad(extension, cfg, Matcher):
             for i in self.marked[tag]:
                 if focused.id == i.id:
                     return tag
-
         return ''
 
     def apply_to_current_tag(self, func: Callable) -> bool:

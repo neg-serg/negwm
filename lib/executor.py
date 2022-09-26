@@ -40,17 +40,22 @@ class env():
         for dir in env.tmux_socket_dir, env.alacritty_cfg_dir, env.dtach_session_dir:
             Misc.create_dir(dir)
 
-        self.exec_tmux = self.cfg_block().get("exec_tmux", [])
+        blk = self.cfg_block()
+        term = self.term()
+        blk.setdefault('exec_tmux', [])
+        blk.setdefault('exec_dtach', [])
+        blk.setdefault('exec', [])
+        self.exec_tmux = blk['exec_tmux']
         if not self.exec_tmux:
-            exec_dtach = self.cfg_block().get('exec_dtach', '')
+            exec_dtach = blk['exec_dtach']
             if not exec_dtach:
-                self.exec = self.cfg_block().get('exec', '')
+                self.exec = blk['exec']
             else:
                 self.exec = f'dtach -A {env.dtach_session_dir}' \
                             f'/{name}.session {exec_dtach}'
-
-        self.wclass = self.cfg_block().get("classw", self.term())
-        self.opts = getattr(self, self.term())()
+        blk.setdefault('classw', term)
+        self.wclass = blk['classw']
+        self.opts = getattr(self, term)()
 
         def join_processes():
             for prc in multiprocessing.active_children():
