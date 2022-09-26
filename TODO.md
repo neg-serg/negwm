@@ -29,14 +29,14 @@
     - Better attach circle/scratchpad menu
 
 # Experiments
+    - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
     - Cpu load, gpu load, vnstat or network for some period, cava integration
-    - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Importlib vs __import__
     - PDB integration
     - Python reload dynamic
-    - Python setdefault
     - Review rust i3 modules
     - Some module compilation
+    - Use ppt, not pixels
 
     - docs.python.org/3/tutorial/modules.html
