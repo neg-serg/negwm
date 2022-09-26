@@ -132,7 +132,6 @@ class conf_gen(extension, cfg):
             bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
             for keybind in bindings:
                 ret = f'{ret}\tbindsym {keybind}, {conf_gen.mode_exit}\n'
-
             return ret + '}\n'
 
     def bind(self, mod) -> str:
@@ -165,7 +164,5 @@ class conf_gen(extension, cfg):
                             format = kmap.fmt
                             format = format.replace('{cmd}', key)
                             ret += f'{prefix} {b} {format}{end}\n'
-
         ret += f'{conf_gen.module_binds(mod)}{self.mode(mod, end=True)}'
-
         return ret
