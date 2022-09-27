@@ -78,21 +78,6 @@ class conf_gen(Enum):
         ' μ:wine'
     ]
 
-    workspaces_alternative = [
-        '︁ ➊:term',
-        ' :web',
-        ' ➌:dev',
-        ' ➍:doc',
-        ' ➎:draw',
-        '߷ ➏:gfx',
-        '✽ ➐:obs',
-        ' ➑:pic',
-        ' ➒:steam',
-        ' ➓:sys',
-        ' ➊➊:vm',
-        ' ➊➋:wine'
-    ]
-
     mode_default = Δ([
         λ({
             f'{M4}+4': '~/bin/screenshot',
