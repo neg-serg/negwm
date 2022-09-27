@@ -31,6 +31,7 @@ from docopt import docopt
 import i3ipc
 import psutil
 from rich.traceback import install
+from rich.console import Console
 
 from lib.checker import checker
 from lib.locker import get_lock
@@ -38,6 +39,7 @@ from lib.misc import Misc
 from lib.msgbroker import MsgBroker
 
 install(show_locals=True)
+console = Console(log_time=True)
 
 class negwm():
     def __init__(self):
@@ -46,8 +48,9 @@ class negwm():
             Using of self.intern for better performance, create i3ipc
             connection, connects to the asyncio eventloop.
         """
+        logging.getLogger().setLevel(logging.INFO)
         loop = asyncio.new_event_loop()
-        self.show_load_time = False
+        self.show_load_time = True
 
         def loop_exit(signame):
             logging.info(f"Got signal {signame}: exit")
@@ -111,6 +114,7 @@ class negwm():
             benchmarks.
         """
         mod_startup_times = []
+        console.status("[bold green]Loading...")
         for mod in self.mods:
             start_time = timeit.default_timer()
             i3mod = importlib.import_module('modules.' + mod)
@@ -119,11 +123,15 @@ class negwm():
                 self.mods[mod].asyncio_init(self.loop)
             except Exception:
                 pass
-            mod_startup_times.append(timeit.default_timer() - start_time)
+            dt = timeit.default_timer() - start_time
+            mod_startup_times.append(dt)
+            logging.debug(f'{mod}: {round(dt,4)}')
+            console.log(f"{mod}: {round(dt,5)}")
         total_startup_time = str(round(sum(mod_startup_times), 6))
-        loading_time_msg = f'[ok], load time {total_startup_time}'
-        if self.show_load_time:
-            logging.info(loading_time_msg)
+        loading_time_msg = f'Total {total_startup_time}'
+        logging.debug(loading_time_msg)
+        console.log(loading_time_msg)
+
 
     async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
