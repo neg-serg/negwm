@@ -10,8 +10,6 @@ import shlex
 import shutil
 import threading
 import multiprocessing
-import yaml
-import yamlloader
 import logging
 
 from extension import extension
@@ -118,9 +116,11 @@ class env():
                 'italic': self.cfg_block().get('font_italic', 'Italic')
             }
 
-    def yaml_config_create(self, custom_config: str) -> None:
+    def alacritty_yml_create(self, custom_config: str) -> None:
         ''' Create config for alacritty
         custom_config(str): config name to create '''
+        import yaml
+        import yamlloader
         conf = None
         with open(custom_config, 'r', encoding='utf-8') as cfg_file:
             try:
@@ -177,7 +177,7 @@ class env():
         self.title = self.cfg_block().get("title", self.wclass)
         custom_config = self.create_alacritty_cfg(self.name)
         multiprocessing.Process(
-            target=self.yaml_config_create, args=(custom_config,),
+            target=self.alacritty_yml_create, args=(custom_config,),
             daemon=True
         ).start()
 
