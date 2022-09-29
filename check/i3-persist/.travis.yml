@@ -1,0 +1,5 @@
+install:
+  - sudo apt-get install jq shunit2
+
+script:
+  - ./run_tests.sh
