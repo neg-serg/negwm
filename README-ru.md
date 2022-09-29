@@ -109,27 +109,24 @@ Negwm можно запускать например с помощью systemd:
 exec_always systemctl --user restart --no-block negwm.service
 ```
 
-To restart negwm after i3 reload, `negwm.py` should close file automatically, after i3 reload/restart so you can simply run it after
-restart.
+Предлагаемый конфиг устроен таким образом, что можно можно сделать `i3-msg reload` и `negwm` будет перезагружен автоматически.
 
 # Описание модулей
 
+Как известно в X11 у окон есть разные атрибуты, такие как `WM_CLASS`, `WM_NAME` и др. В конфигах используется "class", "instance", "role"
+для обычных строковых атрибутов, "class_r", "instance_r", "name_r", "role_r" для regex'ов и match_all псевдоатрибут, который просто матчит всё подряд.
+
 ## Scratchpad
 
-Named ion3-like scratchpads with a whistles and fakes.
+Именованные скратчпады как в ion3, со свистелками и перделками.
 
-Named scratchpad is something like tabs for windows. You can create scratchpad with several rules like `im`, `player`, etc and attach
-windows to it. Then it make some magic to support some kind of "next tab" for this group, etc.
+Именованные скратчпады это по смыслу как что-то типа вкладок для окон. Можно создавать скратчпад, которые представляют собой плавающие группы
+окон, например `im`, `player`, etc и правила для них, чтобы окна на них привязывались. Тогда появляется всякая магия, которая позволяет делать
+что-то типа "next tab" для этой группы окон и др.
 
-Look at `cfg/scratchpad.py` for the more info.
+Модуль находится в `modules/scratchpad.py`, можно посмотреть как устроен.
 
-Possible matching rules are:
-"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
-
-It supports both strings and regexes and also need geom to create virtual placeholder for this windows, where all matched windows are
-attached to.
-
-Some interesting commands:
+Некоторые интересные команды для скратчпадов:
 
 ```cfg
     dialog: toggle dialogs
@@ -141,19 +138,18 @@ Some interesting commands:
     toggle: show/hide this named scratchpad, very useful
 ```
 
-Interesting parts here:
+Наиболее интересные функции тут это:
 
-Use `toggle` to toggle this specific scratchpad on / off. It saves current selected window after hiding.
+`toggle` используется чтобы включить/выключить скратчпад. Также оно умеет сохранять текущее выбранное окно.
 
-Use `next` to go to the next of opened named scratchpad window for the current scratchpad. for example with im case you will iterate over
-`telegram` and `skype` windows if they are opened
+`next` используется чтобы перейти к следующему окну в группе. Например для группы im которая приведена как пример это приведет к прыжкам между telegram и skype если они запущены.
 
-Use `hide_current` to hide any scratchpad with one hotkey.
+`hide_current` используется чтобы спрятать любой скратчпад. Это нужно чтобы не думать какой из них конкретно открыт, а можно было всё это делать одной и той же кнопкой.
 
-Use `subtag` if you want to iterate over subset of named scratchpad or run command for a subset of scratchpad. For example use `subtag im
-tel` if you want to run telegram or go to the window of telegram if it's opened despite of another im windows like skype opened or not.
+`subtag` используется когда одну группу нужно разбить на подмножество и итерироваться по подмножеству для данного именованного скратчпада или запускать что-то из этой подгруппы.
+Например для im можно добавить подгруппу tel, которая будет итерироваться по всем telegram или запускать их, при этом другие окна в основной группе будут игнорироваться.
 
-Use `dialog` to show dialog window. I have placed it in the separated scratchpad for convenience.
+`dialog` чтобы показать диалоговое окно из разных приложений, оно кладется в скратчпад для удобства.
 
 ## Circle
 
