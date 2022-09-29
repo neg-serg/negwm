@@ -153,17 +153,17 @@ exec_always systemctl --user restart --no-block negwm.service
 
 ## Circle
 
-Better run-or-raise, with jump in a circle, subtags, priorities and more. Run-or-raise is the following:
+Улучшенная версия run-or-raise(см. например https://vickychijwani.me/blazing-fast-application-switching-in-linux/), с прыжками по кругу, поддержкой подгрупп, приоритетов и др.
 
-If there is no window with such rules then start `prog` Otherwise go to the window.
+Идея работы этой штуки такая:
 
-More of simple going to window you can **iterate** over them. So it's something like workspaces, where workspace is not about view, but
-about semantics. This works despite of current monitor / workspace and you can iterate over them with ease.
+Если нет окна, которое соответствует правилам из списка, тогда запускается `prog`, в противном случае приложение запускается.
 
-Possible matching rules are:
-"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
+Также подгруппами подходящих под правила окон можно итерироваться. Так что об этом можно думать как о чем-то вроде рабочего стола, только не
+в смысле визуального расположения, а в смысле группировки окон по некому признаку. Это переключение работает всегда вне зависимости
+от текущего рабочего стола или монитора. 
 
-circle config example:
+Пример конфига:
 ```python3
 
 Δ = dict
@@ -186,11 +186,11 @@ class circle(Enum):
     )
 ```
 
-For this example if you press `mod4+w` then `firefox` starts if it's not started, otherwise you jump to it, because of priority. Let's
-consider then that `tor-browser` is opened, then you can iterate over two of them with `mod4+w`. Also you can use subtags, for example
-`mod1+e -> 5` to run / goto window of tor-browser.
+В этом примере если нажать `mod4+w` тогда `firefox` стартует, если он не был запущен ранее, в противном случае выполняется прыжок к нему согласно приоритету.
+Для этого примера представим, что `tor-browser` уже был запущен, тогда можно будет прыгать между всеми перечисленными браузерами через `mod4+w`, а с помощью
+`mod1+e -> 5` можно будет перейти на `tor-browser`.
 
-Some useful commands:
+Некоторые полезные функции:
 
 ```cfg
     next: go to the next window
@@ -199,17 +199,17 @@ Some useful commands:
 
 ## Remember focused
 
-Goto to the previous window, not the workspace. Default i3 alt-tab cannot to remember from what window alt-tab have been done, this mod fix
-at by storing history of last selected windows.
+Штука которая запоминает предыдущее окно и позволяет прыгнуть на него вне зависимости от того какой рабочий стол используется.
+Это нужно потому что в i3 alt-tab по-умолчанию не запоминает какое окно было предыдущим, а тут есть прямое сохранение истории.
 
-config_example:
+Пример конфига:
 
 ```cfg
 class RememberFocused(Enum):
     autoback = ['pic', 'gfx', 'vm']
 ```
 
-remember_focused commands:
+Некоторые полезные функции:
 
 ```cfg
     switch: go to previous window
@@ -221,10 +221,9 @@ remember_focused commands:
 
 ## Menu
 
-Menu module including i3-menu with hackish autocompletion, menu to attach window to window group(circled) or target named scratchpad(nsd)
-and more.
+Модуль меню позволяет создавать разные меню, например меню команд i3-msg с автокомплитом, способность добавить окно на группу, перейти к окну из выбранных и так далее.
 
-It consists of main `menu.py` with the bindings to the menu modules, for example:
+Он состоит из `menu.py` и различных модулей для него, например:
 
 ```cfg
     attach
@@ -243,9 +242,10 @@ It consists of main `menu.py` with the bindings to the menu modules, for example
     xrandr_resolution
 ```
 
-It loads appropriate modules dynamically, to handle it please edit `cfg/menu.py` Too many of options to document it properly.
+Список загружаемых модулей можно менять, чтобы управлять этим редактируйте `cfg/menu.py`, опций довольно много чтобы их документировать,
+но идея была в том что можно использовать из коробки.
 
-menu cfg example:
+Пример конфига:
 
 ```python3
 class menu(Enum):
@@ -264,22 +264,22 @@ class menu(Enum):
     right_bracket = '⟭'
 ```
 
-Also it contains some settings for menus.
-
 ## Actions
 
-Various stuff to emulate some 2bwm UX. I do not use it actively for now, so too lazy to write good documentation for it but if you are
-interested you are free to look at `lib/actions.py` source code.
+Разные приколы чтобы эмулировать UX(поведение) из 2bwm. Оно активно не используется, что там есть можно посмотреть в исходниках `lib/actions.py`.
+Желания поддерживать это и документировать большого нет, но оно работает.
 
 ## Executor
 
-Module to create various terminal windows with custom config and/or tmux session handling. Supports a lot of terminal emulators, but for now
-only `alacritty` has nice support, because of I think it's the best terminal emulator for X11 for now.
+Модуль который позволяет создавать терминалы с заданными свойствами и некоторыми дополнительными фишками, вроде автоматического создания
+tmux-session специально для этого окна. Поддерживает несколько эмуляторов терминала, нормально работают `kitty` и `alacritty`, другие
+эмуляторы терминала я не рекомендую на текущий момент.
 
-i3 config example: _nothing_
+Никаких используемых функций для i3 нет, это вспомогательный модуль. Например можно использовать функцию `spawn` в модулях `circle` и
+`scratchpad` например вот что есть в конфиге circle, где `swawn` это поле, которое позволяет запустить именно эмулятор терминала с помощью
+executor.
 
-For now I have no any executor bindings in the i3 config, instead I use it as helper for another modules. For example you can use spawn
-argument for `circle` or `scratchpad`. Let's look at `cfg/circle.py` It contains:
+Вот пример описания окна с tmux и шрифтом `Iosevka:size=19`:
 
 ```python3
 Δ = dict
@@ -295,9 +295,7 @@ class executor(Enum):
     )
 ```
 
-Where spawn is special way to create terminal window with help of executor.
-
-So it create tmuxed window with alacritty(default) config with Iosevka:18 font. Another examples:
+Создает окно с neovim, без tmux, без отступов, со шрифтом Iosevka и statusline tmux который не спрятан.
 
 ```python3
 nwim = Δ(
@@ -311,11 +309,8 @@ nwim = Δ(
 )
 ```
 
-Creates neovim window without tmux, without padding, with Iosevka 17 sized font and alacritty-specific feature of using Iosevka Medium for
-the regular font.
-
-Look at the `lib/executor.py` to learn more.
+Смотрите на `lib/executor.py` чтобы узнать больше.
 
 ## fs
 
-Fullscreen panel hacking.
+Специальный модуль, который нужен для хакинга панели polybar для некоторых перечисленных рабочих столов.
