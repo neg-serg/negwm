@@ -1,0 +1,120 @@
+/*
+  License: GPL-3.0
+  Copyright (C) 2020 Sai Valla
+  URL: https://github.com/justahuman1/i3-grid
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+// Documentation: https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown
+// This is the rasi frontend for rofi dmenu.
+// Dynamic Grid sizing [WIP]
+// For now, only certain matrices are supported (custom shapes
+// can be made with the 'X' and inputting custom otf grids)
+
+configuration {
+  display-drun: "i3-grid";
+  show-icons: true;
+  location: 2;
+  sidebar-mode: true;
+  kb-remove-to-sol: "";
+  kb-remove-to-eol: "";
+  /* Vim Shortcuts - Feel free to delete.
+  You can still search for the key using
+  a capital letter!  */
+  kb-row-left: "h";
+  kb-row-down: "j,Down";
+  kb-row-up: "k,Up,ISO_Left_Tab";
+  kb-row-right: "l";
+  kb-clear-line: "c";
+  kb-accept-entry: "m,Return,KP_Enter";
+  kb-remove-char-back: "b,BackSpace";
+  kb-cancel: "e,Escape";
+  kb-move-char-back: "Left";
+  kb-move-char-forward: "Right,Control+f";
+  kb-accept-alt: "n,Shift+Return";
+}
+* {
+  // Change background here
+  bg: ${BG};
+  item: ${TXT};
+  txt: #d1d5da;
+  anchor: east;
+  location: east;
+}
+* {
+  background-color: rgba(0,0,0,0);
+  font: "Iosevka 13";
+}
+window {
+  fullscreen: false;
+  // We can make this dynamic for different sized grids
+  // via dynamic env vars. Might be pushing the limits of Rofi..
+  width: 240px;
+  x-offset: -0.5%;
+  padding: 0 0 0 40;
+}
+mainbox {
+  children: [ inputbar, listview ];
+  y-offset: 0%;
+  border: 0px;
+  border-radius: 12px;
+  background-color: @bg;
+  padding: 7 5 4 5;
+}
+listview {
+  columns: ${COLS};
+  lines: ${LINES};
+  padding: 10 0 0 0;
+  spacing: 0;
+}
+element {
+  border: 1;
+  text-color: @item;
+  orientation: vertical;
+  padding: 0 0 3 0;
+  border-radius: 6;
+}
+element selected {
+  background-color: ${ACTIVE};
+  border-color: #ffffff0A;
+  transition: 20;
+}
+element-icon,
+element-text,
+element-icon {
+  size: 0;
+  horizontal-align: 0.5;
+  text-color: inherit;
+  vertical-align: 0.5;
+}
+inputbar {
+  children: [prompt,entry];
+  padding: 3 3 3 3;
+  background-color: ${SBAR};
+  border: 0 0 1 0;
+  border-color: #ffffff0A;
+  border-radius: 5;
+}
+prompt {
+  enabled: true;
+  color: #5e7797;
+  padding: 0 0 0 2;
+}
+entry {
+  text-color: @txt;
+  size: 4px;
+  padding: 3 10 3 2;
+  font: "Iosevka 11";
+}

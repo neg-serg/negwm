@@ -1,0 +1,62 @@
+{
+  // Filetype: jsonc
+  // **No inline comments allowed
+
+  // Grid attributes that define the default rows and columns
+  // when running a command without additional cli arguments
+  // (Recommended range: 2-4 for laptops, 2-8 for monitors)
+  // {int}
+  "defaultGrid":{
+    "rows":4,
+    "columns":4
+  },
+
+  // Offset from screen borders (useful for polybar, etc.)
+  // Order matters here.
+  // Offset from top, right, bottom, left (in order)
+  // This format is similar to CSS
+  // Units: pixels
+  // {int}: Range(0, 0.5*monitor size)
+  "gridOffset": [20, 0, 20, 0],
+
+  // Default location to snap window to (if not given on the fly)
+  // The grid is read from top to bottom and left to right.
+  // 0 is center of the whole screen (no resizing)
+  // Every other number is auto-resized, unless auto-resize is also
+  // off
+  // Example: When Rows = 3 and Columns = 3, the
+  // snap locations in the grid are as follows:
+  //     1  |  2  |  3
+  //     --------------
+  //     4  |  5  |  6
+  //     --------------
+  //     7  |  8  |  9
+  // {int}: Range(0, Rows*Columns)
+  "snapLocation": 0,
+
+  // The percentage of screen the
+  // reset function will default the terminal to.
+  // {int}: Range(1, 100)
+  "defaultResetPercentage": 75,
+
+  // If you run i3-grid on a non-floating window,
+  // it can either throw an error, or automatically
+  // convert to float without prompt.
+  // {boolean}: true/false
+  "autoConvertToFloat": true,
+
+  // If auto resize is true, snapping a window to
+  // the target value in the grid will resize it
+  // to fit proportional to the grid quadrant.
+  // Can be overridden on the fly (call resize
+  // function manually)
+  // {boolean}: true/false
+  "autoResize": true,
+
+  // Default port for listenening and sending
+  // i3-grid data. Can be used for additional scripting
+  // Ex: Call a script when the socket sends a specific message.
+  // Default if not specifed: 65433
+  // {int}: Range(49152, 65535)
+  "socketPort": 65433
+}
