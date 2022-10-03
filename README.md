@@ -1,38 +1,14 @@
 ![banner](https://i.imgur.com/fgmuilL.png)
 
-* [Screenshots](#screenshots)
-* [What is it?](#what-is-it)
-* [Why](#why)
-* [Help](#help)
-* [Installation](#installation)
-* [General](#general)
-* [Modules](#modules)
-    * [Scratchpad](#scratchpad)
-    * [Circle](#circle)
-    * [Remember focused](#remember-focused)
-    * [Menu](#menu)
-    * [Actions](#actions)
-    * [Executor](#executor)
-    * [fs](#fs)
-
-# Screenshots
+# Скриншоты
 
 ![terminal_shot](https://i.imgur.com/O08SzU3.png)
 ![nvim_shot](https://i.imgur.com/Tqfu65R.png)
 ![unixporn_like_shot](https://i.imgur.com/z1arTLh.png)
 
-# What is it?
+# Что это
 
-For now this collection of modules for i3 includes
-
-_negwm_ : application that run all modules and handle configuration of i3 and modules on python. Also handles config updating.
-
-# Why
-
-It is only my attempt to port the best UX parts from ion3/notion and also improve it when possible. But if you try I may find that things,
-like better scratchpad or navigation very useful.
-
-# Help
+Это порт лучших фич UX из ion3/notion, а также некоторые его улучшения с максимальным акцентом на circle и bscratch.
 
 ```man
 i3 negwm daemon script.
@@ -44,79 +20,113 @@ Usage:
     ./negwm.py
 ```
 
-# Installation
+# Установка
 
-Negwm suggests that your main i3 config directory is `$XDG_CONFIG_HOME/i3`, so you need to set up your `$XDG_CONFIG_HOME` variable before
-install, via `/etc/profile`, some kind of `.zshenv` or smth else depending or your environment, it is mandatory to install.
+## Переменные окружения
 
-Before install make sure to backup your i3 configuration, install script should do it automatically, but it's better to do it by hand for
-the reliability reasons.
+- Для корректной работы перед установкой необходимо установить переменную окружения `XDG_CONFIG_HOME`, например через `.zshenv` или `/etc/profile`
 
-The most simple way to install it for now is to use install from repo:
+## Автоматическая установка при помощи скрипта
 
 `curl https://raw.githubusercontent.com/neg-serg/negwm/master/bin/install | sh`
 
-Also you can clone this to any dir and run `<negwm_dir>/bin/install`
+## Альтернативная установка
 
-After install check it via smth like:
+Осуществляется путем запуска сценария `<negwm_dir>/bin/install`
+
+## Проверка после установки
 
 ```
 cd $XDG_CONFIG_HOME/negwm
 ./bin/run
 ```
 
-If everything is ok then you can use new i3 config example, where `Mod4- Shift + '`
-is i3wm reloading, after reload you should get i3 with `negwm` plugins on the board.
+Если запуск прошел успешно, то будет сгенерен конфиг для i3, а negwm можно порелоадить с помощью `Mod4- Shift + '`,
+после реалоада все модули должны работать.
 
-# General
+# После установки
 
-Some general notes:
+## Опциональные зависимости
 
-`negwm` works as a server in port 15555. It splited by various modules.
-You can call any function of any module with something like this:
+'alacritty: terminal emulator'
+'dunst: x11 notification daemon'
+'kitty: terminal emulator'
+'libxrandr: xrandr support'
+'picom: X11 compositing support'
+'pulseaudio: general-purpose sound server'
+'rofi: x11 menu'
+'tmux: terminal multiplexor'
+'xdo: x11 window manipulation tools'
+'zsh: better shell'
+
+## Хранимая конфигурация
+
+Конфигурация хранится в директории `$XDG_CONFIG_HOME/negwm/cfg`. Каждый файл с расширенрием `.py` соответствует своему модулю.
+
+## Генератор конфига
+
+Генератор конфига был сделан для того, чтобы изменения в конфиге, которые относятся к модулям, можно было писать в них самих. Также есть
+генерилка для конфига самого i3.
+
+Как его следует читать: в `cfg/conf_gen.py` есть набор полей, с синтаксисом как в python enum(https://docs.python.org/3/library/enum.html).
+Каждому полю может соответствовать функция, которая на основе шаблона генерит конфиг.
+
+## Модули
+
+Есть два варианта вызова функций в модулях. Используется обычный async event loop, который вычитывает строки по одной, сплитит их с помощью
+.split() и потом отсылает "сообщение" туда куда следует.
+
+Любые функции модулей можно вызывать либо `send_msg` внутри самого `negwm`, либо отправлять сообщения на порт `15555` в таком формате,     :
+например как `<имя модуля>` `<команда>` `<параметры через пробел>`, например                                                                     :
+
+```
+circle next term.
+```
+
+С точки зрения вызова это может выглядеть например так:
+
+`echo 'circle next term' | /usr/bin/nc localhost 15555 -w 0`
+
+# Главное
+
+`negwm` это сервис, который поднят на порту 15555, в который можно писать команды с предложенным выше форматом, например:
 
 ```
 echo 'scratchpad toggle ncmpcpp'|nc localhost 15555 -v -w 0
 ```
 
-Where 1st argument is module, 2nd is function and another is parameters.
-
-Most of modules supports dynamic reloading of configs as you save the file, so there is no need to manually reload them. Anyway you can
-reload negwm manually, for example to reload `executor`:
+Большинство модулей поддерживают автоматический reload конфигов, как только файл с ними сохраняется. Создается кэш с расширением `.pickle` в
+`<negwm_dir>/cache/cfg`, так что обычно нет необходимости перегружать их руками. Тем не менее это можно сделать с помощью команды `reload`.
+Пример для модуля `executor`:
 
 ```
 echo 'executor reload'|nc localhost 15555 -v -w 0
 ```
 
-At first you need to add something in run and add it to config:
-
-Start it via systemd user service:
+Negwm можно запускать например с помощью systemd:
 
 ```cfg
 exec_always systemctl --user restart --no-block negwm.service
 ```
 
-To restart negwm after i3 reload, `negwm.py` should close file automatically, after i3 reload/restart so you can simply run it after
-restart.
+Предлагаемый конфиг устроен таким образом, что можно можно сделать `i3-msg reload` и `negwm` будет перезагружен автоматически.
 
-# Modules
+# Описание модулей
+
+Как известно в X11 у окон есть разные атрибуты, такие как `WM_CLASS`, `WM_NAME` и др. В конфигах используется "class", "instance", "role"
+для обычных строковых атрибутов, "class_r", "instance_r", "name_r", "role_r" для regex'ов и match_all псевдоатрибут, который просто матчит всё подряд.
 
 ## Scratchpad
 
-Named ion3-like scratchpads with a whistles and fakes.
+Именованные скратчпады как в ion3, со свистелками и перделками.
 
-Named scratchpad is something like tabs for windows. You can create scratchpad with several rules like `im`, `player`, etc and attach
-windows to it. Then it make some magic to support some kind of "next tab" for this group, etc.
+Именованные скратчпады это по смыслу как что-то типа вкладок для окон. Можно создавать скратчпад, которые представляют собой плавающие группы
+окон, например `im`, `player`, etc и правила для них, чтобы окна на них привязывались. Тогда появляется всякая магия, которая позволяет делать
+что-то типа "next tab" для этой группы окон и др.
 
-Look at `cfg/scratchpad.py` for the more info.
+Модуль находится в `modules/scratchpad.py`, можно посмотреть как устроен.
 
-Possible matching rules are:
-"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
-
-It supports both strings and regexes and also need geom to create virtual placeholder for this windows, where all matched windows are
-attached to.
-
-Some interesting commands:
+Некоторые интересные команды для скратчпадов:
 
 ```cfg
     dialog: toggle dialogs
@@ -128,33 +138,32 @@ Some interesting commands:
     toggle: show/hide this named scratchpad, very useful
 ```
 
-Interesting parts here:
+Наиболее интересные функции тут это:
 
-Use `toggle` to toggle this specific scratchpad on / off. It saves current selected window after hiding.
+`toggle` используется чтобы включить/выключить скратчпад. Также оно умеет сохранять текущее выбранное окно.
 
-Use `next` to go to the next of opened named scratchpad window for the current scratchpad. for example with im case you will iterate over
-`telegram` and `skype` windows if they are opened
+`next` используется чтобы перейти к следующему окну в группе. Например для группы im которая приведена как пример это приведет к прыжкам между telegram и skype если они запущены.
 
-Use `hide_current` to hide any scratchpad with one hotkey.
+`hide_current` используется чтобы спрятать любой скратчпад. Это нужно чтобы не думать какой из них конкретно открыт, а можно было всё это делать одной и той же кнопкой.
 
-Use `subtag` if you want to iterate over subset of named scratchpad or run command for a subset of scratchpad. For example use `subtag im
-tel` if you want to run telegram or go to the window of telegram if it's opened despite of another im windows like skype opened or not.
+`subtag` используется когда одну группу нужно разбить на подмножество и итерироваться по подмножеству для данного именованного скратчпада или запускать что-то из этой подгруппы.
+Например для im можно добавить подгруппу tel, которая будет итерироваться по всем telegram или запускать их, при этом другие окна в основной группе будут игнорироваться.
 
-Use `dialog` to show dialog window. I have placed it in the separated scratchpad for convenience.
+`dialog` чтобы показать диалоговое окно из разных приложений, оно кладется в скратчпад для удобства.
 
 ## Circle
 
-Better run-or-raise, with jump in a circle, subtags, priorities and more. Run-or-raise is the following:
+Улучшенная версия run-or-raise(см. например https://vickychijwani.me/blazing-fast-application-switching-in-linux/), с прыжками по кругу, поддержкой подгрупп, приоритетов и др.
 
-If there is no window with such rules then start `prog` Otherwise go to the window.
+Идея работы этой штуки такая:
 
-More of simple going to window you can **iterate** over them. So it's something like workspaces, where workspace is not about view, but
-about semantics. This works despite of current monitor / workspace and you can iterate over them with ease.
+Если нет окна, которое соответствует правилам из списка, тогда запускается `prog`, в противном случае приложение запускается.
 
-Possible matching rules are:
-"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
+Также подгруппами подходящих под правила окон можно итерироваться. Так что об этом можно думать как о чем-то вроде рабочего стола, только не
+в смысле визуального расположения, а в смысле группировки окон по некому признаку. Это переключение работает всегда вне зависимости
+от текущего рабочего стола или монитора. 
 
-circle config example:
+Пример конфига:
 ```python3
 
 Δ = dict
@@ -177,11 +186,11 @@ class circle(Enum):
     )
 ```
 
-For this example if you press `mod4+w` then `firefox` starts if it's not started, otherwise you jump to it, because of priority. Let's
-consider then that `tor-browser` is opened, then you can iterate over two of them with `mod4+w`. Also you can use subtags, for example
-`mod1+e -> 5` to run / goto window of tor-browser.
+В этом примере если нажать `mod4+w` тогда `firefox` стартует, если он не был запущен ранее, в противном случае выполняется прыжок к нему согласно приоритету.
+Для этого примера представим, что `tor-browser` уже был запущен, тогда можно будет прыгать между всеми перечисленными браузерами через `mod4+w`, а с помощью
+`mod1+e -> 5` можно будет перейти на `tor-browser`.
 
-Some useful commands:
+Некоторые полезные функции:
 
 ```cfg
     next: go to the next window
@@ -190,17 +199,19 @@ Some useful commands:
 
 ## Remember focused
 
-Goto to the previous window, not the workspace. Default i3 alt-tab cannot to remember from what window alt-tab have been done, this mod fix
-at by storing history of last selected windows.
+Штука которая запоминает предыдущее окно и позволяет прыгнуть на него вне зависимости от того какой рабочий стол используется.
+Это нужно потому что в i3 alt-tab по-умолчанию не запоминает какое окно было предыдущим, а тут есть прямое сохранение истории.
 
-config_example:
+Пример конфига:
 
 ```cfg
 class RememberFocused(Enum):
     autoback = ['pic', 'gfx', 'vm']
 ```
 
-remember_focused commands:
+autoback это список рабочих столов, которой означает, что если на этом столе нет ни одного окна, то выполняется прыжок на предыдущее окно.
+
+Некоторые полезные функции:
 
 ```cfg
     switch: go to previous window
@@ -212,10 +223,9 @@ remember_focused commands:
 
 ## Menu
 
-Menu module including i3-menu with hackish autocompletion, menu to attach window to window group(circled) or target named scratchpad(nsd)
-and more.
+Модуль меню позволяет создавать разные меню, например меню команд i3-msg с автокомплитом, способность добавить окно на группу, перейти к окну из выбранных и так далее.
 
-It consists of main `menu.py` with the bindings to the menu modules, for example:
+Он состоит из `menu.py` и различных модулей для него, например:
 
 ```cfg
     attach
@@ -234,9 +244,10 @@ It consists of main `menu.py` with the bindings to the menu modules, for example
     xrandr_resolution
 ```
 
-It loads appropriate modules dynamically, to handle it please edit `cfg/menu.py` Too many of options to document it properly.
+Список загружаемых модулей можно менять, чтобы управлять этим редактируйте `cfg/menu.py`, опций довольно много чтобы их документировать,
+но идея была в том что можно использовать из коробки.
 
-menu cfg example:
+Пример конфига:
 
 ```python3
 class menu(Enum):
@@ -255,22 +266,22 @@ class menu(Enum):
     right_bracket = '⟭'
 ```
 
-Also it contains some settings for menus.
-
 ## Actions
 
-Various stuff to emulate some 2bwm UX. I do not use it actively for now, so too lazy to write good documentation for it but if you are
-interested you are free to look at `lib/actions.py` source code.
+Разные приколы чтобы эмулировать UX(поведение) из 2bwm(https://github.com/venam/2bwm). Оно активно не используется, что там есть можно     .
+посмотреть в исходниках `lib/actions.py` Желания поддерживать это и документировать большого нет, но оно работает                          .
 
 ## Executor
 
-Module to create various terminal windows with custom config and/or tmux session handling. Supports a lot of terminal emulators, but for now
-only `alacritty` has nice support, because of I think it's the best terminal emulator for X11 for now.
+Модуль который позволяет создавать терминалы с заданными свойствами и некоторыми дополнительными фишками, вроде автоматического создания
+tmux-session специально для этого окна. Поддерживает несколько эмуляторов терминала, нормально работают `kitty` и `alacritty`, другие
+эмуляторы терминала я не рекомендую на текущий момент.
 
-i3 config example: _nothing_
+Никаких используемых функций для i3 нет, это вспомогательный модуль. Например можно использовать функцию `spawn` в модулях `circle` и
+`scratchpad` например вот что есть в конфиге circle, где `swawn` это поле, которое позволяет запустить именно эмулятор терминала с помощью
+executor.
 
-For now I have no any executor bindings in the i3 config, instead I use it as helper for another modules. For example you can use spawn
-argument for `circle` or `scratchpad`. Let's look at `cfg/circle.py` It contains:
+Вот пример описания окна с tmux и шрифтом `Iosevka:size=19`:
 
 ```python3
 Δ = dict
@@ -286,9 +297,7 @@ class executor(Enum):
     )
 ```
 
-Where spawn is special way to create terminal window with help of executor.
-
-So it create tmuxed window with alacritty(default) config with Iosevka:18 font. Another examples:
+Создает окно с neovim, без tmux, без отступов, со шрифтом Iosevka и statusline tmux который не спрятан.
 
 ```python3
 nwim = Δ(
@@ -302,11 +311,8 @@ nwim = Δ(
 )
 ```
 
-Creates neovim window without tmux, without padding, with Iosevka 17 sized font and alacritty-specific feature of using Iosevka Medium for
-the regular font.
-
-Look at the `lib/executor.py` to learn more.
+Смотрите на `lib/executor.py` чтобы узнать больше.
 
 ## fs
 
-Fullscreen panel hacking.
+Специальный модуль, который нужен для хакинга панели polybar для некоторых перечисленных рабочих столов.
