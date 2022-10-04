@@ -1,49 +1,54 @@
 from enum import Enum
 Δ = dict
 
-
-class circle(Enum):
-    bitwig = Δ(
+def bitwig():
+    return Δ(
         classw = ['Bitwig Studio'],
         keybind_next = ['Mod4+Control+b'],
         prog = 'bitwig-studio',
         ws = 'sound'
     )
 
-    doc = Δ(
+def doc():
+    return Δ(
         classw = ['Zathura', 'cr3'],
         keybind_next = ['Mod4+o'],
         ws = 'doc'
     )
 
-    nwim = Δ(
+def nwim():
+    return Δ(
         classw = ['nwim'],
         keybind_next = ['Mod4+1'],
         spawn = 'nwim',
         ws = 'dev'
     )
 
-    obs = Δ(
+def obs():
+    return Δ(
         classw = ['obs'],
         keybind_toggle = ['Mod4+Shift+o'],
         prog = 'obs',
         ws = 'obs'
     )
 
-    remote = Δ(
+def remote():
+    return Δ(
         classw = ['xfreerdp', 'reminna', 'org.remmina.Remmina'],
         keybind_toggle = ['Mod4+Control+5'],
         ws = 'remote'
     )
 
-    steam = Δ(
+def steam():
+    return Δ(
         classw = ['Steam', 'steam'],
         keybind_next = ['Mod4+Shift+e'],
         prog = 'zsh -c "flatpak run com.valvesoftware.Steam"',
         ws = 'steam'
     )
 
-    nsxiv = Δ(
+def nsxiv():
+    return Δ(
         classw = ['Nsxiv'],
         keybind_next = ['Mod4+Control+c'],
         prog = "~/bin/sx ~/dw/ ~/tmp/shots/",
@@ -51,14 +56,16 @@ class circle(Enum):
         ws = 'gfx'
     )
 
-    term = Δ(
+def term():
+    return Δ(
         instance = ['term'],
         keybind_next = ['Mod4+x'],
         spawn = 'term',
         ws = 'term'
     )
 
-    vid = Δ(
+def vid():
+    return Δ(
         classw = ['mpv'],
         keybind_next = ['Mod4+b'],
         mpd_shut = 0,
@@ -66,14 +73,16 @@ class circle(Enum):
         ws = 'gfx'
     )
 
-    vm = Δ(
+def vm():
+    return Δ(
         classw = ['spicy'],
         class_r = ['^[Qq]emu-.*$'],
         keybind_next = ['Mod4+Control+v'],
         ws = 'vm'
     )
 
-    web = Δ(
+def web():
+    return Δ(
         classw = ['firefox', 'firefoxdeveloperedition', 'Tor Browser', 'Chromium'],
         keybind_next = ['Mod4+w'],
         prog = 'firefox',
@@ -89,3 +98,17 @@ class circle(Enum):
         ),
         ws = 'web'
     )
+
+
+class circle(Enum):
+    bitwig = bitwig()
+    doc = doc()
+    nsxiv = nsxiv()
+    nwim = nvim()
+    obs = obs()
+    remote = remote()
+    steam = steam()
+    term = term()
+    vid = vid()
+    vm = vm()
+    web = web()
