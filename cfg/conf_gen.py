@@ -97,7 +97,7 @@ def mode_default(): return Δ([
             f'{M4}+{Sh}+6': '~/bin/wl',
             f'{M4}+{Sh}+9': 'dunstctl history-pop',
             f'{M4}+{Sh}+l': '~/bin/rofi-lutris',
-            f'{M4}+{Sh}+m': '~/bin/rofi-audio',
+            f'{M4}+{Sh}+m': '~/bin/main-menu',
             f'{M4}+{Sh}+y': '~/bin/clip youtube-dw-list',
             f'{M4}+space': 'dunstctl close-all',
             'XF86Sleep': 'systemctl suspend',
