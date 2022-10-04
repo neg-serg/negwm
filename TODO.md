@@ -13,12 +13,7 @@
     - Better generator(fancy output, etc)
 
 # Bin
-    - Create wallpaper setter with rating
     - Move tmux status to polybar
-
-# Executor
-    - Add executor run check via something like dash -c
-    - Replace alacritty config generators with options
 
 # Scratchpad
     - Add ability to set geometry with mouse
@@ -31,12 +26,8 @@
 # Experiments
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
-    - Cpu load, gpu load, vnstat or network for some period
     - Importlib vs __import__
     - PDB integration
     - Python reload dynamic
-    - Review rust i3 modules
-    - Some module compilation
-    - Use ppt, not pixels
 
     - docs.python.org/3/tutorial/modules.html
