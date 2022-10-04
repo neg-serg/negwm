@@ -1,16 +1,16 @@
 from enum import Enum
 Δ = dict
 
-
-class scratchpad(Enum):
-    discord = Δ(
+def discord():
+    return Δ(
         classw = ['discord'],
         geom = '1898x1273+1936+825',
         keybind_toggle = ['Mod4+v'],
         prog = 'discord'
     )
 
-    im = Δ(
+def im():
+    return Δ(
         classw = ['KotatogramDesktop', 'vkteams', 'Skype', 'Slack', 'TelegramDesktop', 'zoom'],
         geom = '1304x2109+2536+2',
         keybind_toggle = ['Mod4+e'],
@@ -21,14 +21,16 @@ class scratchpad(Enum):
         )
     )
 
-    ncmpcpp = Δ(
+def ncmpcpp():
+    return Δ(
         geom = '2251x828+753+1205',
         classw = ['ncmpcpp'],
         keybind_toggle = ['Mod4+f'],
         spawn = 'ncmpcpp',
     )
 
-    neomutt = Δ(
+def neomutt():
+    return Δ(
         classw = ['mutterfox'],
         geom = '3670x2228+104+0',
         instance = ['mutterfox', 'neomutt'],
@@ -36,30 +38,46 @@ class scratchpad(Enum):
         spawn = 'neomutt',
     )
 
-    teardrop = Δ(
+def teardrop():
+    return Δ(
         geom = '3840x1300+0+0',
         instance = ['teardrop'],
         keybind_toggle = ['Mod4+d'],
         spawn = 'teardrop'
     )
 
-    torrment = Δ(
+def torrment():
+    return Δ(
         geom = '3840x1300+0+0',
         instance = ['torrment'],
         keybind_toggle = ['Mod4+t'],
         spawn = 'torrment'
     )
 
-    transients = Δ(
+def transients():
+    return Δ(
         geom = '1812x797+693+1310',
         match_all = ['True'],
         keybind_spec_toggle = ['a'],
         role = ['GtkFileChooserDialog', 'Organizer', 'Manager']
     )
 
-    webcam = Δ(
+
+def webcam():
+    return Δ(
         geom = '2463x1880+1368+268',
         instance = ['webcam'],
         keybind_spec_toggle = ['w'],
         prog = '~/bin/webcam'
     )
+
+
+class scratchpad(Enum):
+    discord = discord()
+    im = im()
+    ncmpcpp = ncmpcpp()
+    neomutt = neomutt()
+    teardrop = teardrop()
+    torrment = torrment()
+    transients = transients()
+    webcam = webcam()
