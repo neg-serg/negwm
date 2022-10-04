@@ -1,9 +1,8 @@
 from enum import Enum
 Δ = dict
 
-
-class executor(Enum):
-    term = Δ(
+def term():
+    return Δ(
         term = 'kitty',
         classw = 'term',
         exec_tmux = [['zsh', 'zsh']],
@@ -13,7 +12,8 @@ class executor(Enum):
         statusline = 1
     )
 
-    ncmpcpp = Δ(
+def ncmpcpp():
+    return Δ(
         term = 'kitty',
         classw = 'ncmpcpp',
         exec = 'ncmpcpp',
@@ -24,7 +24,8 @@ class executor(Enum):
         padding = [4, 4],
     )
 
-    nwim = Δ(
+def nwim():
+    return Δ(
         term = 'kitty',
         classw = 'nwim',
         exec = '/usr/bin/nvim --listen localhost:7777',
@@ -36,7 +37,9 @@ class executor(Enum):
         padding = [4, 4],
     )
 
-    teardrop = Δ(
+
+def teardrop():
+    return Δ(
         term = 'kitty',
         classw = 'teardrop',
         exec = '/usr/bin/btop',
@@ -47,7 +50,9 @@ class executor(Enum):
         padding = [8, 8],
     )
 
-    torrment = Δ(
+
+def torrment():
+    return Δ(
         term = 'kitty',
         classw = 'torrment',
         exec_tmux = [['stig', '/usr/bin/stig']],
@@ -57,10 +62,20 @@ class executor(Enum):
         padding = [8, 8],
     )
 
-    neomutt = Δ(
+def neomutt():
+    return Δ(
         term = 'kitty',
         classw = 'neomutt',
         exec_dtach = 'neomutt',
         font = 'Iosevka',
         font_size = 17,
     )
+
+
+class executor(Enum):
+    ncmpcpp = ncmpcpp()
+    neomutt = neomutt()
+    nwim = nwim()
+    teardrop = teardrop()
+    term = term()
+    torrment = torrment()
