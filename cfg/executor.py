@@ -1,8 +1,7 @@
 from enum import Enum
 Δ = dict
 
-def term():
-    return Δ(
+def term(): return Δ(
         term = 'kitty',
         classw = 'term',
         exec_tmux = [['zsh', 'zsh']],
@@ -12,8 +11,7 @@ def term():
         statusline = 1
     )
 
-def ncmpcpp():
-    return Δ(
+def ncmpcpp(): return Δ(
         term = 'kitty',
         classw = 'ncmpcpp',
         exec = 'ncmpcpp',
@@ -24,8 +22,7 @@ def ncmpcpp():
         padding = [4, 4],
     )
 
-def nwim():
-    return Δ(
+def nwim(): return Δ(
         term = 'kitty',
         classw = 'nwim',
         exec = '/usr/bin/nvim --listen localhost:7777',
@@ -38,8 +35,7 @@ def nwim():
     )
 
 
-def teardrop():
-    return Δ(
+def teardrop(): return Δ(
         term = 'kitty',
         classw = 'teardrop',
         exec = '/usr/bin/btop',
@@ -51,8 +47,7 @@ def teardrop():
     )
 
 
-def torrment():
-    return Δ(
+def torrment(): return Δ(
         term = 'kitty',
         classw = 'torrment',
         exec_tmux = [['stig', '/usr/bin/stig']],
@@ -62,8 +57,7 @@ def torrment():
         padding = [8, 8],
     )
 
-def neomutt():
-    return Δ(
+def neomutt(): return Δ(
         term = 'kitty',
         classw = 'neomutt',
         exec_dtach = 'neomutt',
