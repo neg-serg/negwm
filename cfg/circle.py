@@ -93,7 +93,7 @@ class circle(Enum):
     bitwig = bitwig()
     doc = doc()
     nsxiv = nsxiv()
-    nwim = nvim()
+    nwim = nwim()
     obs = obs()
     remote = remote()
     steam = steam()
