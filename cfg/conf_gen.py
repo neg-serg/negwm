@@ -35,19 +35,16 @@ def plain():
         '''
 )
 
-def exec():
-    return (
+def exec(): return (
         'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
         'systemctl --user start --no-block i3-session.target'
     )
 
-def exec_always():
-    return (
+def exec_always(): return (
         'systemctl --user restart --no-block negwm.service',
     )
 
-def rules():
-    return inspect.cleandoc(f'''
+def rules(): return inspect.cleandoc(f'''
         for_window [class=".*"] title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 2
 
         for_window [class="(?i)(alacr|k)itty"] border none
@@ -85,8 +82,7 @@ def workspaces():
             ' ᚾ:sys', ' ᛁ:vm', ' ᛃ:wine'
         ]
 
-def mode_default():
-    return Δ([
+def mode_default(): return Δ([
         λ({
             f'{M4}+4': '~/bin/screenshot',
             f'{M4}+{Ct}+4': '~/bin/screenshot -r',
@@ -171,8 +167,7 @@ def mode_default():
     ])
 
 
-def mode_resize():
-    return Δ([
+def mode_resize(): return Δ([
         λ({
             'bottom': ['j', 's'],
             'left': ['h', 'a'],
@@ -188,8 +183,7 @@ def mode_resize():
         ], bind=f'{M4}+r', name='%{T4}%{T-}'
      )
 
-def mode_spec():
-    return Δ([
+def mode_spec(): return Δ([
         λ({
             'e': '[urgent=latest] focus',
             'l': 'exec ~/bin/x11lock',
@@ -205,8 +199,7 @@ def mode_spec():
         ], bind=f'{M1}+e', name='%{T4}%{T-}'
     )
 
-def mode_wm():
-    return Δ([
+def mode_wm(): return Δ([
         λ({
             f'grave': 'default',
             f'minus': 'splith',
