@@ -10,8 +10,7 @@ Sh, Ct = 'Shift', 'Control'
 Font = 'Iosevka Bold 12'
 Exec = 'exec --no-startup-id'
 
-def plain():
-    return inspect.cleandoc(f'''
+def plain(): return inspect.cleandoc(f'''
         floating_modifier {M4}
         focus_follows_mouse no
         font pango: {Font}
