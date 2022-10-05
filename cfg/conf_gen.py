@@ -66,8 +66,9 @@ def rules(): return inspect.cleandoc(f'''
 )
 
 def workspaces():
-    use_greek: bool = True
+    use_greek: bool = False
     use_runes: bool = False
+    use_gothic: bool = True
     if use_greek:
         return [
             '︁ α:term', ' β:web', ' δ:dev',
@@ -81,6 +82,13 @@ def workspaces():
             ' ᚨ:doc', ' ᚱ:draw', '߷ ᚲ:gfx',
             '✽ ᚷ:obs', ' ᚹ:pic', ' ᚺ:steam',
             ' ᚾ:sys', ' ᛁ:vm', ' ᛃ:wine'
+        ]
+    if use_gothic:
+        return [
+            '︁ 𐌰:term', ' 𐌱:web',  ' 𐌲:dev',
+            ' 𐌳:doc',  ' 𐌴:draw', '߷ 𐌵:gfx',
+            '✽ 𐌶:obs',  ' 𐌷:pic',  ' 𐌸:steam',
+            ' 𐌹:sys',  ' 𐌺:vm',   ' 𐌻:wine'
         ]
 
 def mode_default(): return Δ([
