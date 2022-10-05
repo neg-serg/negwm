@@ -1,4 +1,8 @@
 #!/usr/bin/env dash
 cp -vn /etc/i3/config $XDG_CONFIG_HOME/i3/config
 i3-msg reload
-$(dirname $0)/../negwm.py
+if [ $1 = '-d' ]; then
+    python -m pdb -c c $(dirname $0)/../negwm.py
+else
+    $(dirname $0)/../negwm.py
+fi
