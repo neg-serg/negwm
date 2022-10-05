@@ -34,14 +34,16 @@ def plain(): return inspect.cleandoc(f'''
     '''
 )
 
-def exec(): return (
-    'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
-    'systemctl --user start --no-block i3-session.target'
-)
-
-def exec_always(): return (
-    'systemctl --user restart --no-block negwm.service',
-)
+def exec_binds(always=False):
+    if always:
+        return (
+            'dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK',
+            'systemctl --user start --no-block i3-session.target'
+        )
+    else:
+        return (
+            'systemctl --user restart --no-block negwm.service',
+        )
 
 def rules(): return inspect.cleandoc(f'''
     for_window [class=".*"] title_format "<span foreground=\'#395573\'> >_ </span> %title", border pixel 2
@@ -173,25 +175,22 @@ def mode_wallpaper(): return Δ([
         f'r': '~/bin/wl-convert retro',
         f'n': '~/bin/wl-convert normal',
     }, fmt=f'{Exec} {{cmd}}'),
-    λ({
-        'q': '',
-        'Space': '',
-    }, exit=True),
+    λ({'': ['Space','q']}, exit=True),
     ], bind=f'{M4}+{Sh}+6', name='%{T4}'
 )
 
 def mode_resize(): return Δ([
     λ({
-        'bottom': ['j', 's'],
-        'left': ['h', 'a'],
-        'right': ['l', 'd'],
-        'top': ['k', 'w'],
+        'bottom': ['j','s'],
+        'left': ['h','a'],
+        'right': ['l','d'],
+        'top': ['k','w'],
     }, fmt='$actions resize {cmd} 4'),
     λ({
-        'bottom': [f'{Sh}+j', f'{Sh}+s'],
-        'left': [f'{Sh}+h', f'{Sh}+a'],
-        'right': [f'{Sh}+l', f'{Sh}+d'],
-        'top': [f'{Sh}+k', f'{Sh}+w'],
+        'bottom': [f'{Sh}+j',f'{Sh}+s'],
+        'left': [f'{Sh}+h',f'{Sh}+a'],
+        'right': [f'{Sh}+l',f'{Sh}+d'],
+        'top': [f'{Sh}+k',f'{Sh}+w'],
     }, fmt='$actions resize {cmd} -4'),
     ], bind=f'{M4}+r', name='%{T4}%{T-}'
  )
@@ -221,8 +220,8 @@ def mode_wm(): return Δ([
     }, fmt='layout {cmd}', exit=True),
     λ({f'Tab': 'toggle'}, fmt='layout {cmd}', exit=False),
     λ({
-        'horizontal': [f'{Sh}+h', f'{Sh}+l'],
-        'vertical': [f'{Sh}+j', f'{Sh}+k'],
+        'horizontal': [f'{Sh}+h',f'{Sh}+l'],
+        'vertical': [f'{Sh}+j',f'{Sh}+k'],
     }, fmt='split', exit=True),
     λ({
         'w': 'up',
@@ -237,7 +236,7 @@ def mode_wm(): return Δ([
         'y': 'maxvert',
         'c': 'none',
         f'{Sh}+c': 'resize',
-        'revert_maximize': [f'{Sh}+m', f'{Sh}+x', f'{Sh}+y'],
+        'revert_maximize': [f'{Sh}+m',f'{Sh}+x',f'{Sh}+y'],
         'shrink': [f'{Sh}+minus'],
     }, fmt='$actions'),
     λ({
@@ -251,8 +250,8 @@ def mode_wm(): return Δ([
 
 class conf_gen(Enum):
     plain = plain()
-    exec = exec()
-    exec_always = exec_always()
+    exec = exec_binds()
+    exec_always = exec_binds(always=True)
     rules = rules()
     workspaces = workspaces()
     mode_default = mode_default()
