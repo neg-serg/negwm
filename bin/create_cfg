@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-import importlib
 import pickle
 import glob
 import pathlib
@@ -20,7 +19,7 @@ class Configs():
             if conf.is_file():
                 conf_name = conf.name.removesuffix(f'.{extension}')
                 self.config[conf_name] = getattr(
-                    importlib.import_module(conf_name),
+                    __import__(conf_name),
                     conf_name
                 )
 

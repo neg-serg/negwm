@@ -26,7 +26,6 @@
 # Experiments
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
-    - Importlib vs __import__
     - PDB integration
     - Python reload dynamic
 
