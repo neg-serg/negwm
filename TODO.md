@@ -12,9 +12,6 @@
 # Config
     - Better generator(fancy output, etc)
 
-# Bin
-    - Move tmux status to polybar
-
 # Scratchpad
     - Add ability to set geometry with mouse
     - Add labels support print scratchpad names
@@ -26,7 +23,6 @@
 # Experiments
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
-    - PDB integration
     - Python reload dynamic
 
     - docs.python.org/3/tutorial/modules.html
