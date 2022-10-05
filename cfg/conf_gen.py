@@ -9,6 +9,7 @@ M1, M4 = 'Mod1', 'Mod4'
 Sh, Ct = 'Shift', 'Control'
 Font = 'Iosevka Bold 12'
 Exec = 'exec --no-startup-id'
+e = enumerate
 
 def plain(): return inspect.cleandoc(f'''
     floating_modifier {M4}
@@ -66,29 +67,29 @@ def rules(): return inspect.cleandoc(f'''
 )
 
 def workspaces():
-    use_greek: bool = False
-    use_runes: bool = False
-    use_gothic: bool = True
+    use_greek: bool=False
+    use_runes: bool=False
+    use_gothic: bool=True
     if use_greek:
         return [
-            '︁ α:term', ' β:web', ' δ:dev',
-            ' γ:doc', ' ζ:draw', '߷ θ:gfx',
-            '✽ ρ:obs', ' ξ:pic', ' ι:steam',
-            ' η:sys', ' λ:vm', ' μ:wine'
+            '︁  α:term',  '  β:web',   '  δ:dev',
+            '  γ:doc',   '  ζ:draw',  '߷  θ:gfx',
+            '✽  ρ:obs',   '  ξ:pic',   '  ι:steam',
+            '  η:sys',   '  λ:vm',    '  μ:wine'
         ]
     if use_runes:
         return [
-            '︁ ᚠ:term', ' ᚢ:web', ' ᚦ:dev',
-            ' ᚨ:doc', ' ᚱ:draw', '߷ ᚲ:gfx',
-            '✽ ᚷ:obs', ' ᚹ:pic', ' ᚺ:steam',
-            ' ᚾ:sys', ' ᛁ:vm', ' ᛃ:wine'
+            '︁  ᚠ:term',  '  ᚢ:web',   '  ᚦ:dev',
+            '  ᚨ:doc',   '  ᚱ:draw',  '߷  ᚲ:gfx',
+            '✽  ᚷ:obs',   '  ᚹ:pic',   '  ᚺ:steam',
+            '  ᚾ:sys',   '  ᛁ:vm',    '  ᛃ:wine'
         ]
     if use_gothic:
         return [
-            '︁ 𐌰:term', ' 𐌱:web',  ' 𐌲:dev',
-            ' 𐌳:doc',  ' 𐌴:draw', '߷ 𐌵:gfx',
-            '✽ 𐌶:obs',  ' 𐌷:pic',  ' 𐌸:steam',
-            ' 𐌹:sys',  ' 𐌺:vm',   ' 𐌻:wine'
+            '︁  𐌰:term',  '  𐌱:web',   '  𐌲:dev',
+            '  𐌳:doc',   '  𐌴:draw',  '߷  𐌵:gfx',
+            '✽  𐌶:obs',   '  𐌷:pic',   '  𐌸:steam',
+            '  𐌹:sys',   '  𐌺:vm',    '  𐌻:wine'
         ]
 
 def mode_default(): return Δ([
@@ -112,13 +113,9 @@ def mode_default(): return Δ([
         f'{M4}+8': '~/bin/pl vol mute',
         f'{M4}+{Sh}+8': '~/bin/pl vol unmute',
     }, fmt=f'{Exec} {{cmd}}'),
-    λ({
-        f'{M4}+j': 'down',
-        f'{M4}+h': 'left',
-        f'{M4}+l': 'right',
-        f'{M4}+k': 'up',
-        f'{M4}+7': 'parent',
-        f'{M4}+2': 'child',
+    λ(
+        {f'{M4}+{key}': ['left','down','up','right'][n] for n,key in e('hjkl')} |
+        {f'{M4}+{key}': ['parent','child'][n] for n,key in e('27')
     }, fmt='focus {cmd}'),
     # move workspace to left and right monitors
     λ({
@@ -150,12 +147,9 @@ def mode_default(): return Δ([
         'XF86AudioLowerVolume': 'vol down',
         'XF86AudioRaiseVolume': 'vol up',
     }, fmt=f'{Exec} ~/bin/pl {{cmd}}'),
-    λ({
-        'XF86AudioNext': 'cmd next',
-        'XF86AudioPlay': 'cmd play',
-        'XF86AudioPrev': 'cmd previous',
-        'XF86AudioStop': 'cmd stop',
-    }, fmt=f'{Exec} ~/bin/pl {{cmd}}'),
+    λ({key: ['next','play','previous','stop'][n]
+       for n,key in e(['XF86AudioNext','XF86AudioPlay','XF86AudioPrev','XF86AudioStop'])}
+    , fmt=f'{Exec} ~/bin/pl cmd {{cmd}}'),
     λ({
         f'{M4}+{Sh}+a': 'attach',
         f'{M4}+{Sh}+s': 'move_window',
@@ -231,12 +225,7 @@ def mode_wm(): return Δ([
         'horizontal': [f'{Sh}+h',f'{Sh}+l'],
         'vertical': [f'{Sh}+j',f'{Sh}+k'],
     }, fmt='split', exit=True),
-    λ({
-        'w': 'up',
-        'a': 'left',
-        's': 'down',
-        'd': 'right',
-    }, fmt='move {cmd}'),
+    λ({act: ['up','left','down','right'][n] for n,act in e('wasd')}, fmt='move {cmd}'),
     λ({
         f'{Sh}+plus': 'grow',
         'x': 'maxhor',
