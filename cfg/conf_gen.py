@@ -93,7 +93,6 @@ def mode_default(): return Δ([
         f'{M4}+m': 'zsh -c "~/bin/music-rename current"',
         f'{M4}+p': '~/bin/rofi-tmux-urls',
         f'{M4}+{Sh}+p': 'zsh -c /usr/bin/rofi-pass',
-        f'{M4}+{Sh}+6': '~/bin/wl',
         f'{M4}+{Sh}+9': 'dunstctl history-pop',
         f'{M4}+{Sh}+l': '~/bin/rofi-lutris',
         f'{M4}+{Sh}+m': '~/bin/main-menu',
@@ -113,8 +112,8 @@ def mode_default(): return Δ([
     }, fmt='focus {cmd}'),
     # move workspace to left and right monitors
     λ({
-        f'{M4}+Shift+bracketleft': 'left',
-        f'{M4}+Shift+bracketright': 'right',
+        f'{M4}+{Sh}+bracketleft': 'left',
+        f'{M4}+{Sh}+bracketright': 'right',
     }, fmt='move workspace to output {cmd}'),
     λ({
         f'{M4}+apostrophe': f'reload; {Exec} systemctl --user restart negwm',
@@ -165,6 +164,21 @@ def mode_default(): return Δ([
     }),
 ])
 
+def mode_wallpaper(): return Δ([
+    λ({
+        f'6': '~/bin/wl',
+        f'{Sh}+6': '~/bin/wl',
+        f'{M4}+{Sh}+6': '~/bin/wl',
+        f'm': '~/bin/wl-convert mono',
+        f'r': '~/bin/wl-convert retro',
+        f'n': '~/bin/wl-convert normal',
+    }, fmt=f'{Exec} {{cmd}}'),
+    λ({
+        'q': '',
+        'Space': '',
+    }, exit=True),
+    ], bind=f'{M4}+{Sh}+6', name='%{T4}'
+)
 
 def mode_resize(): return Δ([
     λ({
@@ -245,3 +259,4 @@ class conf_gen(Enum):
     mode_resize = mode_resize()
     mode_spec = mode_spec()
     mode_wm = mode_wm()
+    mode_wallpaper = mode_wallpaper()
