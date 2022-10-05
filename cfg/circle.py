@@ -44,8 +44,14 @@ def steam(): return Δ(
 def nsxiv(): return Δ(
     classw = ['Nsxiv'],
     keybind_next = ['Mod4+Control+c'],
+    keybind_wallpaper_next = ['c'],
     prog = "~/bin/sx ~/dw/ ~/tmp/shots/",
-    wallpaper = {'classw': ['Nsxiv'], 'keybind_subtag': ['Mod4+Shift+c'], 'prog': '~/bin/wl --show'},
+    wallpaper = Δ(
+        classw = ['Nsxiv'],
+        keybind_subtag = ['Mod4+Shift+c'],
+        keybind_wallpaper_subtag = ['Shift+c'],
+        prog = '~/bin/wl --show',
+    ),
     ws = 'gfx'
 )
 
