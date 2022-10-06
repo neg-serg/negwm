@@ -7,7 +7,6 @@
     - Make post on usability porn reddit
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     - Remove all default parameters and add config validation
-    - github.com/bakkeby/patches/wiki/riodraw
 
 # Config
     - Better generator(fancy output, etc)
