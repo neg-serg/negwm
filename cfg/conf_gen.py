@@ -72,24 +72,24 @@ def workspaces():
     use_gothic: bool=True
     if use_greek:
         return [
-            '︁  α:term',  '  β:web',   '  δ:dev',
-            '  γ:doc',   '  ζ:draw',  '߷  θ:gfx',
-            '✽  ρ:obs',   '  ξ:pic',   '  ι:steam',
-            '  η:sys',   '  λ:vm',    '  μ:wine'
+            '︁ α:term',  ' β:web',   ' δ:dev',
+            ' γ:doc',   ' ζ:draw',  '߷ θ:gfx',
+            '✽ ρ:obs',   ' ξ:pic',   ' ι:steam',
+            ' η:sys',   ' λ:vm',    ' μ:wine'
         ]
     if use_runes:
         return [
-            '︁  ᚠ:term',  '  ᚢ:web',   '  ᚦ:dev',
-            '  ᚨ:doc',   '  ᚱ:draw',  '߷  ᚲ:gfx',
-            '✽  ᚷ:obs',   '  ᚹ:pic',   '  ᚺ:steam',
-            '  ᚾ:sys',   '  ᛁ:vm',    '  ᛃ:wine'
+            '︁ ᚠ:term',  ' ᚢ:web',   ' ᚦ:dev',
+            ' ᚨ:doc',   ' ᚱ:draw',  '߷ ᚲ:gfx',
+            '✽ ᚷ:obs',   ' ᚹ:pic',   ' ᚺ:steam',
+            ' ᚾ:sys',   ' ᛁ:vm',    ' ᛃ:wine'
         ]
     if use_gothic:
         return [
-            '︁  𐌰:term',  '  𐌱:web',   '  𐌲:dev',
-            '  𐌳:doc',   '  𐌴:draw',  '߷  𐌵:gfx',
-            '✽  𐌶:obs',   '  𐌷:pic',   '  𐌸:steam',
-            '  𐌹:sys',   '  𐌺:vm',    '  𐌻:wine'
+            '︁ 𐌰:term',  ' 𐌱:web',   ' 𐌲:dev',
+            ' 𐌳:doc',   ' 𐌴:draw',  '߷ 𐌵:gfx',
+            '✽ 𐌶:obs',   ' 𐌷:pic',   ' 𐌸:steam',
+            ' 𐌹:sys',   ' 𐌺:vm',    ' 𐌻:wine'
         ]
 
 def mode_default(): return Δ([
