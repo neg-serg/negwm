@@ -136,7 +136,7 @@ class negwm():
     async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
             watcher: watcher for cfg. """
-        config_extension = '.py'
+        config_extension = '.cfg'
         while True:
             with Inotify() as inotify:
                 inotify.add_watch(
