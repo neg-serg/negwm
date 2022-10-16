@@ -2,7 +2,7 @@
 import pickle
 import glob
 import pathlib
-from lib import misc
+from lib.misc import Misc
 
 from importlib.util import spec_from_loader, module_from_spec
 from importlib.machinery import SourceFileLoader
@@ -12,7 +12,7 @@ class Configs():
     def __init__(self):
         self.config={}
         extension='cfg'
-        config_list=map(pathlib.Path, glob.glob(f"{misc.Misc.cfg_path()}/*.{extension}"))
+        config_list=map(pathlib.Path, glob.glob(f"{Misc.cfg_path()}/*.{extension}"))
         for conf in config_list:
             if conf.is_file():
                 conf_name=conf.name.removesuffix(f'.{extension}')
@@ -27,7 +27,7 @@ class Configs():
             mod_config={}
             for elem in raw_config:
                 mod_config.update({elem.name: elem.value})
-            i3_cfg_mod_path=f'{misc.Misc.cache_path()}cfg/{mod_name}.pickle'
+            i3_cfg_mod_path=f'{Misc.cache_path()}cfg/{mod_name}.pickle'
             with open(i3_cfg_mod_path, "wb") as mod_cfg:
                 pickle.dump(mod_config, mod_cfg)
 
