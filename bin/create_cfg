@@ -1,2 +1,2 @@
 #!/usr/bin/env dash
-PYTHONPATH=~/.config/negwm python -m lib.dump_config
+PYTHONPATH="$XDG_CONFIG_HOME/negwm" python -m lib.dump_config
