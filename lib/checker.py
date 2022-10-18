@@ -45,7 +45,7 @@ class checker():
             return (s.split(start))[1].split(end)[0]
 
         logging.info('Check for i3 config consistency')
-        output = subprocess.check_output("i3-config-wizard")
+        output = subprocess.check_output(["i3-config-wizard", "-m", "win"])
         current_i3_config = find_between(str(output), 'file "', '" already')
 
         if not (os.path.isfile(current_i3_config) and \
