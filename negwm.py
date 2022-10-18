@@ -205,7 +205,7 @@ def main():
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
-    docopt(str(__doc__), version='0.9')
+    docopt(str(__doc__), version='0.9.1')
     wm = negwm()
     wm.run()
 
