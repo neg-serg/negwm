@@ -40,27 +40,28 @@ class checker():
                 checker.which(exe, description, kind)
 
     @staticmethod
-    def check_i3_config(cfg='config'):
+    def check_i3_config(cfg='config') -> bool:
         def find_between(s, start, end):
             return (s.split(start))[1].split(end)[0]
 
         logging.info('Check for i3 config consistency')
         output = subprocess.check_output("i3-config-wizard")
-        i3_cfg = find_between(str(output), 'file "', '" already')
+        current_i3_config = find_between(str(output), 'file "', '" already')
 
-        if not (os.path.isfile(i3_cfg) and \
-                os.path.getsize(i3_cfg) > 0):
-            logging.error(f'There is no target i3 config file in {i3_cfg}, fail')
-            os._exit(1)
+        if not (os.path.isfile(current_i3_config) and \
+                os.path.getsize(current_i3_config) > 0):
+            logging.error(f'There is no target i3 config file in {current_i3_config}, fail')
+            return False
 
-        i3_check = Misc.validate_i3_config(i3_cfg)
+        cfg_to_check = f'{os.path.dirname(current_i3_config)}/{cfg}'
+        i3_check = Misc.validate_i3_config(cfg_to_check)
         if i3_check:
             logging.info('i3 config is valid [OK]')
         else:
             logging.error('i3 config is invalid [FAIL]'
-                f'please run i3 -C {Misc.negwm_path()}/{cfg} to check it'
+                f'please run i3 -c {Misc.negwm_path()}/{cfg} -C to check it'
             )
-            os._exit(1)
+            return False
         return True
 
     @staticmethod
