@@ -189,7 +189,7 @@ class negwm():
                 cwd=binpath, check=False)
             mod, mod_cmd = 'conf_gen', 'write'
             getattr(self.mods[mod], mod_cmd)()
-            subprocess.run(['i3-msg', 'restart'])
+            subprocess.run(['i3-msg', 'reload'])
 
         try:
             self.i3.main()
