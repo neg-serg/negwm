@@ -181,6 +181,16 @@ class negwm():
         )
         start((mainloop).start)
 
+        if Misc.i3_cfg_need_dump():
+            binpath = f'{Misc.negwm_path()}/bin/'
+            subprocess.run(
+                [f'{binpath}/create_cfg', '-d'],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                cwd=binpath, check=False)
+            mod, mod_cmd = 'conf_gen', 'write'
+            getattr(self.mods[mod], mod_cmd)()
+            subprocess.run(['i3-msg', 'restart'])
+
         try:
             self.i3.main()
         except KeyboardInterrupt:

@@ -41,15 +41,10 @@ class checker():
 
     @staticmethod
     def check_i3_config(cfg='config') -> bool:
-        def find_between(s, start, end):
-            return (s.split(start))[1].split(end)[0]
-
         logging.info('Check for i3 config consistency')
         
-        output = subprocess.check_output(["i3-config-wizard", "-m", "win"])
-        output = subprocess.check_output(["i3-config-wizard", "-m", "win"])
-
-        current_i3_config = find_between(str(output), 'file "', '" already')
+        subprocess.check_output(["i3-config-wizard", "-m", "win"])
+        current_i3_config = Misc.current_i3_cfg()
         if not (os.path.isfile(current_i3_config) and \
                 os.path.getsize(current_i3_config) > 0):
             logging.error(f'There is no target i3 config file in {current_i3_config}, fail')

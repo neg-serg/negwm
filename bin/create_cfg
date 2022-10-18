@@ -1,3 +1,5 @@
 #!/usr/bin/env dash
 PYTHONPATH="$XDG_CONFIG_HOME/negwm" python -m lib.dump_config
-send conf_gen write || $XDG_CONFIG_HOME/negwm/bin/send conf_gen write
+if [ $1 != '-d' ]; then
+    send conf_gen write || $XDG_CONFIG_HOME/negwm/bin/send conf_gen write
+fi
