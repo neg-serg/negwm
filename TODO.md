@@ -25,5 +25,3 @@
     - Python reload dynamic
 
     - docs.python.org/3/tutorial/modules.html
-
-    - If there is no config create it with config wizard, start, write_cfg and autoload
