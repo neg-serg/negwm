@@ -48,6 +48,7 @@ cd $XDG_CONFIG_HOME/negwm
 
 ## Опциональные зависимости
 
+```
 'alacritty: terminal emulator'
 'dunst: x11 notification daemon'
 'kitty: terminal emulator'
@@ -58,6 +59,13 @@ cd $XDG_CONFIG_HOME/negwm
 'tmux: terminal multiplexor'
 'xdo: x11 window manipulation tools'
 'zsh: better shell'
+```
+
+Если у вас arch linux быстро поставить это можно так:
+
+```
+pacman -Syu alacritty dunst kitty libxrandr picom pulseaudio rofi tmux xdo zsh --noconfirm
+```
 
 ## Хранимая конфигурация
 
@@ -107,8 +115,10 @@ Negwm можно запускать например с помощью systemd:
 
 ```cfg
 exec_always systemctl --user restart --no-block negwm.service
+```
 
 Пример сервиса:
+
 ```
 [Unit]
 Description=negwm window manager mod for i3wm
