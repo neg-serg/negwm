@@ -21,6 +21,7 @@
 
 # Experiments
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
+    - Add healthcheck
     - Better dynamic config architecture
     - Python reload dynamic
 
