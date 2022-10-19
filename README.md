@@ -107,6 +107,82 @@ Negwm можно запускать например с помощью systemd:
 
 ```cfg
 exec_always systemctl --user restart --no-block negwm.service
+
+Пример сервиса:
+```
+[Unit]
+Description=negwm window manager mod for i3wm
+PartOf=graphical-session.target
+StartLimitBurst=5
+StartLimitIntervalSec=1
+Requires=xsettingsd.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env dash %E/negwm/bin/run
+Restart=on-failure
+```
+
+Тут ожидается что есть `graphical-session.target` работающий и требуется xsettingsd, это нужно для того чтобы всё что запускает negwm как
+дочерние процессы учитывало настройки из xsettingsd, хотя вообще в принципе это можно опустить просто удалив эту строку.
+
+В моём случае autorun выглядит следующим образом:
+
+```
+[Unit]
+Description=i3 session
+BindsTo=graphical-session.target
+
+Wants=xsettingsd.service
+Wants=dpms-off.service
+Wants=kdb-conf.service
+Wants=negwm.service
+Wants=picom.service
+Wants=policykit-agent.service
+Wants=polybar.service
+Wants=pulseaudio.socket
+Wants=ssh-agent.service
+Wants=wallpaper.service
+Wants=xiccd.service
+Wants=xss-lock.service
+Wants=negwm-autostart.service
+```
+
+Пример сервиса для запуска i3, то есть xorg с ними.
+
+```
+[Unit]
+Description=Xorg
+Documentation=man:Xorg(1)
+Requires=x11.socket
+After=x11.socket
+Before=x11.target
+
+[Service]
+Environment=XDG_SESSION_TYPE=x11
+Environment="XSERVERRC=%E/xinit/xserverrc"
+ExecStartPre=/usr/bin/dbus-update-activation-environment --all
+ExecStart=/usr/bin/xinit /usr/bin/i3 -- :0 -nolisten tcp vt1
+SuccessExitStatus=0 1
+
+[Install]
+Alias=x11.service
+Also=x11.socket x11.target
+WantedBy=default.target
+```    
+
+x11.socket для активации:
+
+```
+[Unit]
+Description=X11 Server Socket
+Before=x11.target
+
+[Socket]
+ListenStream=/tmp/.X11-unix/X0
+
+[Install]
+WantedBy=sockets.target
 ```
 
 Предлагаемый конфиг устроен таким образом, что можно можно сделать `i3-msg reload` и `negwm` будет перезагружен автоматически.
