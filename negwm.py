@@ -160,6 +160,16 @@ class negwm():
         """ Start all watchers in background via ensure_future """
         self.loop.create_task(self.cfg_mods_worker())
 
+    def create_config(self):
+        binpath = f'{Misc.negwm_path()}/bin/'
+        subprocess.run(
+            [f'{binpath}/create_cfg', '-d'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            cwd=binpath, check=False)
+        mod, mod_cmd = 'conf_gen', 'write'
+        getattr(self.mods[mod], mod_cmd)()
+        subprocess.run(['i3-msg', 'reload'])
+
     def run(self):
         """ Run negwm here. """
         def start(func, args=None):
@@ -182,20 +192,12 @@ class negwm():
         start((mainloop).start)
 
         if Misc.i3_cfg_need_dump():
-            binpath = f'{Misc.negwm_path()}/bin/'
-            subprocess.run(
-                [f'{binpath}/create_cfg', '-d'],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                cwd=binpath, check=False)
-            mod, mod_cmd = 'conf_gen', 'write'
-            getattr(self.mods[mod], mod_cmd)()
-            subprocess.run(['i3-msg', 'reload'])
+            self.create_config()
 
         try:
             self.i3.main()
         except KeyboardInterrupt:
             self.i3.main_quit()
-
 
 def cleanup():
     negwm.kill_proctree(os.getpid())
