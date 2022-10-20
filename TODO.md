@@ -23,6 +23,7 @@
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Add healthcheck
     - Better dynamic config architecture
+    - Move cache to xdg cache
     - Python reload dynamic
 
     - docs.python.org/3/tutorial/modules.html
