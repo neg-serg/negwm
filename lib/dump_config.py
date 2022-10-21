@@ -23,11 +23,13 @@ class Configs():
                     self.config[conf_name]=getattr(cfg,conf_name)
 
     def dump(self):
+        cfg_dir=f'{Misc.cache_path()}/cfg'
+        Misc.create_dir(cfg_dir)
         for mod_name, raw_config in self.config.items():
             mod_config={}
             for elem in raw_config:
                 mod_config.update({elem.name: elem.value})
-            i3_cfg_mod_path=f'{Misc.cache_path()}cfg/{mod_name}.pickle'
+            i3_cfg_mod_path=f'{cfg_dir}/{mod_name}.pickle'
             with open(i3_cfg_mod_path, "wb") as mod_cfg:
                 pickle.dump(mod_config, mod_cfg)
 

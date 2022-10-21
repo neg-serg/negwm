@@ -20,7 +20,10 @@ class Misc():
     def create_dir(dirname) -> None:
         """ Helper function to create directory
             dirname(str): directory name to create """
+        if os.path.isdir(dirname):
+            return
         try:
+            logging.info(f'Creating dir {dirname}')
             os.makedirs(dirname)
         except OSError as oserr:
             if oserr.errno != errno.EEXIST:
@@ -40,7 +43,7 @@ class Misc():
     def lib_path() -> str:
         """ Easy way to return negwm library path. """
         current_dir=os.path.dirname(__file__)
-        libdir_env=os.environ.get("NEGWM_LIB", '')
+        libdir_env=os.environ.get('NEGWM_LIB', '')
         if libdir_env:
             return libdir_env
         else:
@@ -50,7 +53,7 @@ class Misc():
     def cfg_path() -> str:
         """ Easy way to return negwm configurations path. """
         current_dir=os.path.dirname(__file__)
-        cfgdir_env=os.environ.get("NEGWM_CFG", '')
+        cfgdir_env=os.environ.get('NEGWM_CFG', '')
         if cfgdir_env:
             return cfgdir_env
         else:
@@ -58,20 +61,26 @@ class Misc():
 
     @staticmethod
     def cache_path() -> str:
-        """ Easy way to return negwm cache path. """
+        ''' Easy way to return negwm cache path. '''
         current_dir=os.path.dirname(__file__)
-        cfgdir_env=os.environ.get("NEGWM_CACHE", '')
-        if cfgdir_env:
+        cfgdir_env=os.environ.get('NEGWM_CACHE', '')
+        cache_home=os.environ.get('XDG_CACHE_HOME', '')
+        fallback_cache_path=f'{current_dir}/../cache/'
+        if cache_home:
+            Misc.create_dir(cache_home)
+            return f'{cache_home}/negwm'
+        elif cfgdir_env:
+            Misc.create_dir(cfgdir_env)
             return cfgdir_env
         else:
-            return f'{current_dir}/../cache/'
+            Misc.create_dir(fallback_cache_path)
+            return fallback_cache_path
 
     @staticmethod
     def i3path() -> str:
         """ Easy way to return i3 config path. """
         cfg_home = Misc.xdg_config_home()
-        if not os.path.exists(f"{cfg_home}/i3"):
-            os.makedirs(cfg_home)
+        Misc.create_dir(f'{cfg_home}/i3')
         return os.path.expanduser(f"{cfg_home}/i3")
 
     @staticmethod
