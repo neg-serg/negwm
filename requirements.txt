@@ -1,11 +1,1 @@
-asyncinotify
-docopt
-ewmh
-i3ipc
-inotipy
-psutil
-psutil
-pulsectl
-rich
-Xlib
-yamlloader
+.
