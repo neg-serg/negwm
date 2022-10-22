@@ -15,12 +15,12 @@ window when needed.
 
 import uuid
 from typing import List, Callable, Set
-import geom
-from cfg import cfg
-from matcher import Matcher
-from negewmh import NegEWMH
-from extension import extension
-from misc import Misc
+import negwm.lib.geom as geom
+from negwm.lib.cfg import cfg
+from negwm.lib.matcher import Matcher
+from negwm.lib.negewmh import NegEWMH
+from negwm.lib.extension import extension
+from negwm.lib.misc import Misc
 
 class scratchpad(extension, cfg, Matcher):
     """ Named scratchpad class

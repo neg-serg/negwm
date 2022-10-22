@@ -5,7 +5,7 @@ configuration spawned here, to use it just start it from any place without param
 several times.
 
 Usage:
-    ./negwm.py
+    ./run.py
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -33,15 +33,16 @@ import psutil
 from rich.traceback import install
 from rich.console import Console
 
-from lib.checker import checker
-from lib.locker import get_lock
-from lib.misc import Misc
-from lib.msgbroker import MsgBroker
+import negwm
+from negwm.lib.checker import checker
+from negwm.lib.locker import get_lock
+from negwm.lib.misc import Misc
+from negwm.lib.msgbroker import MsgBroker
 
 install(show_locals=True)
 console = Console(log_time=True)
 
-class negwm():
+class NegWM():
     def __init__(self):
         """ Init function
 
@@ -69,7 +70,7 @@ class negwm():
         blacklist = {'__init__'}
         mods = map(
             pathlib.Path,
-            glob.glob(f"{os.path.dirname(sys.argv[0])}/modules/*.py")
+            glob.glob(f"{os.path.dirname(os.path.dirname(negwm.__file__))}/negwm/modules/*.py")
         )
         for mod in mods:
             if mod.is_file():
@@ -101,7 +102,7 @@ class negwm():
     def kill_proctree(pid, including_parent=True):
         parent = psutil.Process(pid)
         for child in parent.children(recursive=True):
-            if child.name() == 'negwm.py':
+            if child.name() == 'run.py':
                 child.kill()
                 logging.info(f'killed {child}')
         if including_parent:
@@ -117,7 +118,7 @@ class negwm():
         console.status("[bold green]Loading...")
         for mod in self.mods:
             start_time = timeit.default_timer()
-            i3mod = importlib.import_module('modules.' + mod)
+            i3mod = importlib.import_module('negwm.modules.' + mod)
             self.mods[mod] = getattr(i3mod, mod)(self.i3)
             try:
                 self.mods[mod].asyncio_init(self.loop)
@@ -200,7 +201,7 @@ class negwm():
             self.i3.main_quit()
 
 def cleanup():
-    negwm.kill_proctree(os.getpid())
+    NegWM.kill_proctree(os.getpid())
 
 def main():
     """ Run negwm from here """
@@ -208,7 +209,7 @@ def main():
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
     docopt(str(__doc__), version='0.9.1')
-    wm = negwm()
+    wm = NegWM()
     wm.run()
 
 def run():

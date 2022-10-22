@@ -2,7 +2,7 @@ import os
 import subprocess
 import shutil
 import logging
-from lib.misc import Misc
+from negwm.lib.misc import Misc
 
 class checker():
     @staticmethod

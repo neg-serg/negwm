@@ -4,8 +4,8 @@ xset here. There is better solution possible, for example wayland-friendly. """
 import subprocess
 import shutil
 import logging
-from extension import extension
-from cfg import cfg
+from negwm.lib.extension import extension
+from negwm.lib.cfg import cfg
 
 class fullscreen(extension, cfg):
     def __init__(self, i3conn):

@@ -8,10 +8,10 @@ readme = ['README.md', 'README-en.md']
 homepage = "https://github.com/neg-serg/negwm"
 repository = "https://github.com/neg-serg/negwm"
 packages = [
-    { include = 'lib/*.py' },
-    { include = 'modules/*.py'},
-    { include = 'modules/menu_mods/*.py'},
-    { include = 'negwm.py'},
+    { include = 'negwm/*.py' },
+    { include = 'negwm/lib/*.py' },
+    { include = 'negwm/modules/*.py'},
+    { include = 'negwm/modules/menu_mods/*.py'},
 ]
 
 [tool.poetry.dependencies]

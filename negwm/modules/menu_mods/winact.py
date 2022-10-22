@@ -1,7 +1,7 @@
 import subprocess
 from functools import partial
 from typing import Callable
-from lib.extension import extension
+from negwm.lib.extension import extension
 
 
 class winact():

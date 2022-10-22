@@ -3,7 +3,7 @@ import re
 import socket
 import logging
 from typing import List
-from extension import extension
+from negwm.lib.extension import extension
 
 
 class props():

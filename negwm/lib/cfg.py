@@ -10,7 +10,7 @@ import pickle
 import traceback
 import logging
 from typing import Set, Any
-from lib.misc import Misc
+from negwm.lib.misc import Misc
 
 
 class cfg():

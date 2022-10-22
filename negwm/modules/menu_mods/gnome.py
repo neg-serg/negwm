@@ -4,7 +4,7 @@ import configparser
 import subprocess
 import pathlib
 
-from misc import Misc
+from negwm.lib.misc import Misc
 
 
 class gnome():

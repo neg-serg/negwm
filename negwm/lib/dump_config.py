@@ -2,7 +2,7 @@
 import pickle
 import glob
 import pathlib
-from lib.misc import Misc
+from negwm.lib.misc import Misc
 
 from importlib.util import spec_from_loader, module_from_spec
 from importlib.machinery import SourceFileLoader

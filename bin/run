@@ -4,5 +4,5 @@ i3-msg reload
 if [ "$1" = '-d' ]; then
     python -m pdb -c c $(dirname $0)/../negwm.py
 else
-    $(dirname $0)/../negwm.py
+    $(dirname $0)/../negwm/run.py
 fi

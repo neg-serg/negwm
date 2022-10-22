@@ -1,6 +1,6 @@
 """ Static functions for negwm reflection """
 from typing import Dict
-from lib.msgbroker import MsgBroker
+from negwm.lib.msgbroker import MsgBroker
 
 class Reflection():
     """ Implements various reflection functions """

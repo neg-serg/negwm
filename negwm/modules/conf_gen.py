@@ -1,11 +1,11 @@
 import os
 
-from lib.misc import Misc
-from lib.cfg import cfg
-from lib.extension import extension
-from lib.checker import checker
-from lib.rules import Rules
-from lib.keymap import bindmap as Bindmap
+from negwm.lib.misc import Misc
+from negwm.lib.cfg import cfg
+from negwm.lib.extension import extension
+from negwm.lib.checker import checker
+from negwm.lib.rules import Rules
+from negwm.lib.keymap import bindmap as Bindmap
 
 
 class conf_gen(extension, cfg):

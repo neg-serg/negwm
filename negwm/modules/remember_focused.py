@@ -8,9 +8,9 @@ window may be closed, and then you cannot focus it.
 
 from typing import Iterator
 from itertools import cycle
-from cfg import cfg
-from negewmh import NegEWMH
-from extension import extension
+from negwm.lib.cfg import cfg
+from negwm.lib.negewmh import NegEWMH
+from negwm.lib.extension import extension
 
 class remember_focused(extension, cfg):
     """ Advanced alt-tab class. """

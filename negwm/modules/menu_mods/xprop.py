@@ -1,5 +1,5 @@
 import subprocess
-from misc import Misc
+from negwm.lib.misc import Misc
 
 
 class xprop():

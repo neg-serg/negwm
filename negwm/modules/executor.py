@@ -12,9 +12,9 @@ import threading
 import multiprocessing
 import logging
 
-from extension import extension
-from cfg import cfg
-from misc import Misc
+from negwm.lib.extension import extension
+from negwm.lib.cfg import cfg
+from negwm.lib.misc import Misc
 
 
 class env():
