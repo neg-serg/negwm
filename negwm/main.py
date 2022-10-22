@@ -6,6 +6,7 @@ several times.
 
 Usage:
     ./main.py
+    ./main.py -d
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
