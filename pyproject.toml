@@ -4,18 +4,14 @@ version = "0.9.1"
 description = "negwm - brings a lot of unique UX features inspired by notion/ion3"
 authors = ["Neg <serg.zorg@gmail.com>"]
 license = "LGPL-3.0 License"
-readme = "README.md"
+readme = ['README.md', 'README-en.md']
 homepage = "https://github.com/neg-serg/negwm"
 repository = "https://github.com/neg-serg/negwm"
-include = [
-    'LICENSE',
-    'README-en.md',
-    'README.md',
-    'bin',
-    'cfg',
-    'lib',
-    'modules',
-    'negwm.py',
+packages = [
+    { include = 'lib/*.py' },
+    { include = 'modules/*.py'},
+    { include = 'modules/menu_mods/*.py'},
+    { include = 'negwm.py'},
 ]
 
 [tool.poetry.dependencies]
