@@ -211,6 +211,9 @@ def main():
     wm = negwm()
     wm.run()
 
-if __name__ == '__main__':
+def run():
     checker().check()
     main()
+
+if __name__ == '__main__':
+    run()
