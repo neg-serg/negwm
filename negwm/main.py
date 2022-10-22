@@ -5,7 +5,7 @@ configuration spawned here, to use it just start it from any place without param
 several times.
 
 Usage:
-    ./run.py
+    ./main.py
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
