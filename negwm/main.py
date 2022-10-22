@@ -134,6 +134,13 @@ class NegWM():
         logging.debug(loading_time_msg)
         console.log(loading_time_msg)
 
+    def create_config_cache(self):
+        binpath = f'{Misc.negwm_path()}/bin/'
+        subprocess.run(
+            [f'{binpath}/create_cfg'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            cwd=binpath, check=False
+        )
 
     async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
@@ -146,12 +153,7 @@ class NegWM():
                 async for event in inotify:
                     changed_mod = str(event.name).removesuffix(config_extension)
                     if changed_mod in self.mods:
-                        binpath = f'{Misc.negwm_path()}/bin/'
-                        subprocess.run(
-                            [f'{binpath}/create_cfg'],
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            cwd=binpath, check=False
-                        )
+                        self.create_config_cache()
                         if reload_one:
                             self.mods[changed_mod].reload()
                         else:
@@ -211,6 +213,7 @@ def main():
     atexit.register(cleanup)
     docopt(str(__doc__), version='0.9.2')
     wm = NegWM()
+    wm.create_config_cache()
     wm.run()
 
 def run():
