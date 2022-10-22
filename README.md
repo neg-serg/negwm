@@ -72,6 +72,7 @@ pacman -Syu alacritty dunst kitty libxrandr picom pulseaudio rofi tmux xdo zsh -
 ## Хранимая конфигурация
 
 Конфигурация хранится в директории `$XDG_CONFIG_HOME/negwm`. Каждый файл с расширенрием `.cfg` соответствует своему модулю.
+Примеры конфига есть в `example`.
 
 ## Генератор конфига
 
