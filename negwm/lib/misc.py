@@ -7,13 +7,6 @@ import re
 import logging
 from typing import List
 
-try:
-    from xdg import xdg_config_home
-    xdg_config_home = str(xdg_config_home())
-except ImportError:
-    from xdg.BaseDirectory import xdg_config_home
-
-
 class Misc():
     ''' Implements various helper functions '''
     @staticmethod
@@ -28,10 +21,6 @@ class Misc():
         except OSError as oserr:
             if oserr.errno != errno.EEXIST:
                 raise
-
-    @staticmethod
-    def xdg_config_home() -> str:
-        return xdg_config_home
 
     @staticmethod
     def negwm_path() -> str:
@@ -52,35 +41,45 @@ class Misc():
     @staticmethod
     def cfg_path() -> str:
         ''' Easy way to return negwm configurations path. '''
-        current_dir=os.path.dirname(__file__)
         cfgdir_env=os.environ.get('NEGWM_CFG', '')
         cfg_home=os.environ.get('XDG_CONFIG_HOME', '')
-        fallback_cfg_path=f'{current_dir}/../cfg/'
-        if cfg_home:
-            Misc.create_dir(f'{cfg_home}/negwm')
-            return f'{cfg_home}/negwm'
         if cfgdir_env:
             Misc.create_dir(cfgdir_env)
             return cfgdir_env
+        elif cfg_home:
+            Misc.create_dir(f'{cfg_home}/negwm')
+            return f'{cfg_home}/negwm'
         else:
-            return fallback_cfg_path
+            home=os.environ.get('HOME', '')
+            if not home:
+                logging.error(f'Fatal! HOME env is not set')
+                return ''
+            else:
+                default_cfg_dir=f'{home}/.config/negwm'
+                Misc.create_dir(default_cfg_dir)
+                return default_cfg_dir
+
 
     @staticmethod
     def cache_path() -> str:
         ''' Easy way to return negwm cache path. '''
-        current_dir=os.path.dirname(__file__)
         cachedir_env=os.environ.get('NEGWM_CACHE', '')
         cache_home=os.environ.get('XDG_CACHE_HOME', '')
-        fallback_cache_path=f'{current_dir}/../cache/'
-        if cache_home:
-            Misc.create_dir(f'{cache_home}/negwm')
-            return f'{cache_home}/negwm'
-        elif cachedir_env:
+        if cachedir_env:
             Misc.create_dir(cachedir_env)
             return cachedir_env
+        elif cache_home:
+            Misc.create_dir(f'{cache_home}/negwm')
+            return f'{cache_home}/negwm'
         else:
-            Misc.create_dir(fallback_cache_path)
-            return fallback_cache_path
+            home=os.environ.get('HOME', '')
+            if not home:
+                logging.error(f'Fatal! HOME env is not set')
+                return ''
+            else:
+                default_cfg_dir=f'{home}/.cache/negwm'
+                Misc.create_dir(default_cfg_dir)
+                return default_cfg_dir
 
     @staticmethod
     def i3path() -> str:
