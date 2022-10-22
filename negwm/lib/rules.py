@@ -1,6 +1,7 @@
 from typing import List
-from extension import extension
-from misc import Misc
+
+from negwm.lib.extension import extension
+from negwm.lib.misc import Misc
 
 class Rules():
     @staticmethod

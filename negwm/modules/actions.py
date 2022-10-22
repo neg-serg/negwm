@@ -10,9 +10,9 @@ import collections
 from typing import Mapping
 import logging
 
-from display import Display
-from cfg import cfg
-from extension import extension
+from negwm.lib.display import Display
+from negwm.lib.cfg import cfg
+from negwm.lib.extension import extension
 
 
 class actions(extension, cfg):

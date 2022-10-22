@@ -135,7 +135,7 @@ class NegWM():
         console.log(loading_time_msg)
 
     def create_config_cache(self):
-        binpath = f'{Misc.negwm_path()}/bin/'
+        binpath = f'{os.path.dirname(negwm.__file__)}/bin/'
         subprocess.run(
             [f'{binpath}/create_cfg'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -165,7 +165,7 @@ class NegWM():
         self.loop.create_task(self.cfg_mods_worker())
 
     def create_config(self):
-        binpath = f'{Misc.negwm_path()}/bin/'
+        binpath = f'{os.path.dirname(negwm.__file__)}/bin/'
         subprocess.run(
             [f'{binpath}/create_cfg', '-d'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,

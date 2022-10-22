@@ -36,8 +36,6 @@ class menu(extension, cfg):
         self.goto_win = getattr(self, 'winact').goto_win
         self.attach = getattr(self, 'winact').attach_win
         self.movews = getattr(self, 'winact').move_to_ws
-        self.gtk_theme = getattr(self, 'gnome').change_gtk_theme
-        self.icon_theme = getattr(self, 'gnome').change_icon_theme
         self.xrandr_resolution = getattr(self, 'xrandr').change_resolution_xrandr
         self.reload = self.reload
 

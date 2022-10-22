@@ -4,7 +4,7 @@ in this module geometry is parsed from config X11 internal format to the i3
 commands. """
 
 import re
-from display import Display
+from negwm.lib.display import Display
 
 class geom():
     def __init__(self, cfg: dict) -> None:

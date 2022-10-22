@@ -23,26 +23,13 @@ class Misc():
                 raise
 
     @staticmethod
-    def negwm_path() -> str:
-        ''' Easy way to return negwm config path. '''
-        current_dir=os.path.dirname(__file__)
-        return f'{current_dir}/../'
-
-    @staticmethod
-    def lib_path() -> str:
-        ''' Easy way to return negwm library path. '''
-        current_dir=os.path.dirname(__file__)
-        libdir_env=os.environ.get('NEGWM_LIB', '')
-        if libdir_env:
-            return libdir_env
-        else:
-            return current_dir
+    def xdg_config_home() -> str: return os.environ.get('XDG_CONFIG_HOME', '')
 
     @staticmethod
     def cfg_path() -> str:
         ''' Easy way to return negwm configurations path. '''
         cfgdir_env=os.environ.get('NEGWM_CFG', '')
-        cfg_home=os.environ.get('XDG_CONFIG_HOME', '')
+        cfg_home=Misc.xdg_config_home()
         if cfgdir_env:
             Misc.create_dir(cfgdir_env)
             return cfgdir_env
@@ -58,7 +45,6 @@ class Misc():
                 default_cfg_dir=f'{home}/.config/negwm'
                 Misc.create_dir(default_cfg_dir)
                 return default_cfg_dir
-
 
     @staticmethod
     def cache_path() -> str:
