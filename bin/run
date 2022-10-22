@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/usr/bin/env sh
 cp -vn /etc/i3/config $XDG_CONFIG_HOME/i3/config
 i3-msg reload
 if [ "$1" = '-d' ]; then

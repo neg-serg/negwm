@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/usr/bin/env sh
 
 if ! which git > /dev/null; then
     echo "You need install git to continue"
