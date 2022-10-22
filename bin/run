@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-i3-msg reload
-$(dirname $0)/../negwm/main.py
