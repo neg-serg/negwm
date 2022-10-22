@@ -1,28 +1,16 @@
 #!/usr/bin/env dash
 
-negwm_prepare() {
-    if [ -z "$XDG_CONFIG_HOME" ]; then
-        echo "\$XDG_CONFIG_HOME should be set to install"
-        exit 1
-    fi
-
-    if [ -d "$XDG_CONFIG_HOME/negwm" ]; then
-        echo "create backup of current i3 config directory..."
-        mv -v "$XDG_CONFIG_HOME/negwm" "$XDG_CONFIG_HOME/negwm_backup_$(date --rfc-3339=seconds|tr ' ' '-')"
-    fi
-}
-
 negwm_git_clone() {
     if ! which git > /dev/null; then
         echo "You need install git to continue"
         exit 1
     fi
-    git clone https://github.com/neg-serg/negwm "$XDG_CONFIG_HOME/negwm"
+    git clone https://github.com/neg-serg/negwm
 }
 
 deps_install() {
-    echo "install python dependencies..."
-    pip3 install -r "$XDG_CONFIG_HOME/negwm/requirements.txt" --upgrade
+    echo "Install..."
+    pip install .
 }
 
 negwm_install() {
@@ -33,6 +21,5 @@ negwm_install() {
     fi
 }
 
-negwm_prepare
 negwm_git_clone
 negwm_install
