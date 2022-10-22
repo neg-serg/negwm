@@ -4,10 +4,9 @@ if ! which git > /dev/null; then
     echo "You need install git to continue"
     exit 1
 fi
-git clone https://github.com/neg-serg/negwm
-
 if which pip3 > /dev/null; then
-    echo "Install..."; pip install ./negwm
+    echo "Install..."
+    pip install git+https://github.com/neg-serg/negwm
 else
     echo 'You need pip for python3 to install negwm'
 fi
