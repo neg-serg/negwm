@@ -54,24 +54,30 @@ class Misc():
         ''' Easy way to return negwm configurations path. '''
         current_dir=os.path.dirname(__file__)
         cfgdir_env=os.environ.get('NEGWM_CFG', '')
+        cfg_home=os.environ.get('XDG_CONFIG_HOME', '')
+        fallback_cfg_path=f'{current_dir}/../cfg/'
+        if cfg_home:
+            Misc.create_dir(f'{cfg_home}/negwm')
+            return f'{cfg_home}/negwm'
         if cfgdir_env:
+            Misc.create_dir(cfgdir_env)
             return cfgdir_env
         else:
-            return f'{current_dir}/../cfg/'
+            return fallback_cfg_path
 
     @staticmethod
     def cache_path() -> str:
         ''' Easy way to return negwm cache path. '''
         current_dir=os.path.dirname(__file__)
-        cfgdir_env=os.environ.get('NEGWM_CACHE', '')
+        cachedir_env=os.environ.get('NEGWM_CACHE', '')
         cache_home=os.environ.get('XDG_CACHE_HOME', '')
         fallback_cache_path=f'{current_dir}/../cache/'
         if cache_home:
-            Misc.create_dir(cache_home)
+            Misc.create_dir(f'{cache_home}/negwm')
             return f'{cache_home}/negwm'
-        elif cfgdir_env:
-            Misc.create_dir(cfgdir_env)
-            return cfgdir_env
+        elif cachedir_env:
+            Misc.create_dir(cachedir_env)
+            return cachedir_env
         else:
             Misc.create_dir(fallback_cache_path)
             return fallback_cache_path

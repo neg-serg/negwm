@@ -24,7 +24,7 @@ class cfg():
     def __init__(self, i3) -> None:
         self.mod = self.__class__.__name__ # detect current extension
         # extension config path
-        self.i3_cfg_mod_path = f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
+        self.negwm_mod_cfg_cache_path = f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
         if not self.cfg:
@@ -79,14 +79,14 @@ class cfg():
         """ Reload config itself and convert lists in it to sets for the better
         performance. """
         try:
-            with open(self.i3_cfg_mod_path, "rb") as mod_cfg:
+            with open(self.negwm_mod_cfg_cache_path, "rb") as mod_cfg:
                 self.cfg = pickle.load(mod_cfg)
         except FileNotFoundError:
-            logging.error(f'file {self.i3_cfg_mod_path} not exists')
+            logging.error(f'file {self.negwm_mod_cfg_cache_path} not exists')
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
-        with open(self.i3_cfg_mod_path, "wb") as mod_cfg:
+        with open(self.negwm_mod_cfg_cache_path, "wb") as mod_cfg:
             pickle.dump(self.cfg, mod_cfg)
 
     def property_to_winattrib(self, prop_str: str) -> None:
