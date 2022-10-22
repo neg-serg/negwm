@@ -10,6 +10,7 @@ repository = "https://github.com/neg-serg/negwm"
 packages = [
     { include = 'negwm/*.py' },
     { include = 'negwm/lib/*.py' },
+    { include = 'negwm/bin/create_cfg' },
     { include = 'negwm/modules/*.py'},
     { include = 'negwm/modules/menu_mods/*.py'},
 ]
