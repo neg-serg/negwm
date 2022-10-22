@@ -16,7 +16,6 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-Xlib = '*'
 asyncinotify = '*'
 docopt = '*'
 ewmh = '*'
@@ -28,6 +27,7 @@ python = '*'
 python3-xlib = '*'
 rich = '*'
 xdg = '*'
+Xlib = '*'
 yamlloader = '*'
 
 [tool.poetry.dev-dependencies]
