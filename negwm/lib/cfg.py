@@ -11,6 +11,7 @@ import traceback
 import logging
 from typing import Set, Any
 from negwm.lib.misc import Misc
+from negwm.lib.extension import extension
 
 
 class cfg():
@@ -65,8 +66,9 @@ class cfg():
         try:
             self.load_config()
             self.__init__(self.i3ipc)
-            if self.mod == 'conf_gen':
-                getattr(self, 'write')()
+            extensions=extension.get_mods()
+            if 'conf_gen' in extensions:
+                getattr(extensions['conf_gen'], 'write')()
             logging.info(f"[{self.mod}] config reloaded")
             print(f"[{self.mod}] config reloaded")
         except Exception:
