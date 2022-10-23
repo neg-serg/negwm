@@ -1,4 +1,4 @@
-""" Named scratchpad i3 module
+""" Named scratchpad i3 modulec
 
 This is a module about ion3/notion-like named scratchpad implementation.
 You can think about it as floating "tabs" for windows, which can be
@@ -44,7 +44,8 @@ class scratchpad(extension, cfg, Matcher):
         self.nsgeom = geom.geom(self.cfg)
         # marked used to get the list of current tagged windows
         # with the given tag
-        self.marked = {l: [] for l in self.cfg}
+        if not 'transients' in self.cfg.keys(): self.cfg.update({'transients':{}})
+        self.marked = {l: [] for l in self.cfg.keys()}
         self.mark_all_tags(hide=True) # Mark all tags from the start
         self.auto_save_geom(False) # Do not autosave geometry by default
         # focus_win_flag is a helper to perform attach/detach window to the
