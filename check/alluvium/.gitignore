@@ -1,0 +1,5 @@
+# Build artifacts
+*.egg-info
+*.pyc
+dist
+build
