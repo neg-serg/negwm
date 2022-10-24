@@ -139,7 +139,7 @@ class NegWM():
         subprocess.run(
             [f'{binpath}/create_cfg'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            cwd=binpath, check=False
+            cwd=binpath, check=True
         )
 
     async def cfg_mods_worker(self, reload_one=True):
@@ -169,7 +169,7 @@ class NegWM():
         subprocess.run(
             [f'{binpath}/create_cfg', '-d'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            cwd=binpath, check=False)
+            cwd=binpath, check=True)
         mod, mod_cmd = 'conf_gen', 'write'
         getattr(self.mods[mod], mod_cmd)()
         subprocess.run(['i3-msg', 'reload'])
