@@ -7,7 +7,7 @@ import asyncio
 from typing import Dict
 
 class MsgBroker():
-    lock = asyncio.Lock()
+    lock=asyncio.Lock()
 
     @classmethod
     def get_mods(cls) -> Dict:
@@ -16,7 +16,7 @@ class MsgBroker():
     @classmethod
     def mainloop(cls, loop, mods, port) -> None:
         """ Mainloop by loop create task """
-        cls.mods = mods
+        cls.mods=mods
         loop.create_task(asyncio.start_server(
             cls.handle_client, 'localhost', port))
         loop.run_forever()
@@ -26,8 +26,8 @@ class MsgBroker():
         """ Proceed client message here """
         async with cls.lock:
             while True:
-                response = (await reader.readline()).decode('utf8').split()
+                response=(await reader.readline()).decode('utf8').split()
                 if not response:
                     return
-                name = response[0]
+                name=response[0]
                 cls.mods[name].send_msg(response[1:])
