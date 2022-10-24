@@ -22,12 +22,17 @@ class MsgBroker():
         loop.run_forever()
 
     @classmethod
-    async def handle_client(cls, reader, _) -> None:
+    async def handle_client(cls, reader, writer) -> None:
         """ Proceed client message here """
         async with cls.lock:
+            counter=0
             while True:
                 response=(await reader.readline()).decode('utf8').split()
                 if not response:
                     return
+                counter+=1
+                writer.write(str(f'GET[{counter}] {response}').encode())
+                await writer.drain()
+
                 name=response[0]
                 cls.mods[name].send_msg(response[1:])
