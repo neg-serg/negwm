@@ -103,7 +103,7 @@ class NegWM():
     def kill_proctree(pid, including_parent=True):
         parent = psutil.Process(pid)
         for child in parent.children(recursive=True):
-            if child.name() == 'run.py':
+            if child.name() == os.path.basename(__file__):
                 child.kill()
                 logging.info(f'killed {child}')
         if including_parent:
