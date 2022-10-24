@@ -46,7 +46,6 @@ console = Console(log_time=True)
 class NegWM():
     def __init__(self):
         """ Init function
-
             Using of self.intern for better performance, create i3ipc
             connection, connects to the asyncio eventloop.
         """
