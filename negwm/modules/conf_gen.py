@@ -84,6 +84,10 @@ class conf_gen(extension, cfg):
 
     @staticmethod
     def generate_bindsym(mode, tag, settings, p, subtag='', mod='') -> str:
+        def bind_fmt():
+            return f'{pref}bindsym {keybind.strip()} ' + \
+                f' ${mod} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
+            
         ret, pref, postfix = '', '', ''
         mode = mode.removeprefix('mode_')
         bind_data = p.split('_')[1:]
@@ -92,15 +96,21 @@ class conf_gen(extension, cfg):
         if mode != 'default' and bind_data[0] == mode:
             pref, postfix = '\t', f', {conf_gen.mode_exit}'
             cmd = bind_data[1]
-            for keybind in settings[p]:
-                ret += f'{pref}bindsym {keybind.strip()} ' + \
-                    f' ${mod} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
+            if isinstance(settings[p], str):
+                keybind = settings[p]
+                ret += bind_fmt()
+            elif isinstance(settings[p], list):
+                for keybind in settings[p]:
+                    ret += bind_fmt()
         else:
             if len(bind_data) == 1 and mode == 'default':
                 cmd = bind_data[0]
-                for keybind in settings[p]:
-                    ret += f'bindsym {keybind.strip()} ' + \
-                        f' ${mod} {cmd.strip()} {tag}{subtag}'.strip() + '\n'
+                if isinstance(settings[p], str):
+                    keybind = settings[p]
+                    ret += bind_fmt()
+                elif isinstance(settings[p], list):
+                    for keybind in settings[p]:
+                        ret += bind_fmt()
         return ret
 
     @staticmethod
