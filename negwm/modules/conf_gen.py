@@ -20,7 +20,7 @@ class conf_gen(extension, cfg):
 
     def print(self) -> None: print(self.generate_config())
 
-    def write(self) -> None:
+    def write(self) -> str:
         cfg, test_cfg = 'config', '.config_test'
         generated_cfg = self.generate_config()
         with open(f'{Misc.i3path()}/{test_cfg}', 'w', encoding='utf8') as fp:
