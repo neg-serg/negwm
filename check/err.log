@@ -1,0 +1,370 @@
+<class 'Xlib.error.BadWindow'>: code = 3, resource_id = <class 'Xlib.xobject.resource.Resource'>(0x02a00006), sequence_number = 668, major_opcode = 20, minor_opcode = 0
+╭─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
+│ /home/neg/src/negwm/./negwm/main.py:223 in <module>                                              │
+│                                                                                                  │
+│   220 │   main()                                                                                 │
+│   221                                                                                            │
+│   222 if __name__ == '__main__':                                                                 │
+│ ❱ 223 │   run()                                                                                  │
+│   224                                                                                            │
+│                                                                                                  │
+│ ╭─────────────────────────────────────────── locals ───────────────────────────────────────────╮ │
+│ │ __annotations__ = {}                                                                         │ │
+│ │    __builtins__ = <module 'builtins' (built-in)>                                             │ │
+│ │      __cached__ = None                                                                       │ │
+│ │         __doc__ = " negwm daemon script.\nThis module loads all negwm an start it via main's │ │
+│ │                   manager"+378                                                               │ │
+│ │        __file__ = '/home/neg/src/negwm/./negwm/main.py'                                      │ │
+│ │      __loader__ = <_frozen_importlib_external.SourceFileLoader object at 0x7fa0f8be9f60>     │ │
+│ │        __name__ = '__main__'                                                                 │ │
+│ │     __package__ = None                                                                       │ │
+│ │        __spec__ = None                                                                       │ │
+│ │         asyncio = <module 'asyncio' from '/usr/lib/python3.10/asyncio/__init__.py'>          │ │
+│ │          atexit = <module 'atexit' (built-in)>                                               │ │
+│ │         checker = <class 'negwm.lib.checker.checker'>                                        │ │
+│ │         cleanup = <function cleanup at 0x7fa0f7adcee0>                                       │ │
+│ │         Console = <class 'rich.console.Console'>                                             │ │
+│ │         console = <console width=174 ColorSystem.TRUECOLOR>                                  │ │
+│ │          docopt = <function docopt at 0x7fa0f8432c20>                                        │ │
+│ │       functools = <module 'functools' from '/usr/lib/python3.10/functools.py'>               │ │
+│ │        get_lock = <function get_lock at 0x7fa0f7adcd30>                                      │ │
+│ │            glob = <module 'glob' from '/usr/lib/python3.10/glob.py'>                         │ │
+│ │           i3ipc = <module 'i3ipc' from                                                       │ │
+│ │                   '/home/neg/.local/lib/python3.10/site-packages/i3ipc/__init__.py'>         │ │
+│ │       importlib = <module 'importlib' from '/usr/lib/python3.10/importlib/__init__.py'>      │ │
+│ │         Inotify = <class 'asyncinotify.Inotify'>                                             │ │
+│ │         install = <function install at 0x7fa0f7f1e710>                                       │ │
+│ │         logging = <module 'logging' from '/usr/lib/python3.10/logging/__init__.py'>          │ │
+│ │            main = <function main at 0x7fa0f7add630>                                          │ │
+│ │            Mask = <enum 'Mask'>                                                              │ │
+│ │            Misc = <class 'negwm.lib.misc.Misc'>                                              │ │
+│ │       MsgBroker = <class 'negwm.lib.msgbroker.MsgBroker'>                                    │ │
+│ │           negwm = <module 'negwm' from                                                       │ │
+│ │                   '/home/neg/.local/lib/python3.10/site-packages/negwm/__init__.py'>         │ │
+│ │           NegWM = <class '__main__.NegWM'>                                                   │ │
+│ │              os = <module 'os' from '/usr/lib/python3.10/os.py'>                             │ │
+│ │         pathlib = <module 'pathlib' from '/usr/lib/python3.10/pathlib.py'>                   │ │
+│ │          psutil = <module 'psutil' from                                                      │ │
+│ │                   '/home/neg/.local/lib/python3.10/site-packages/psutil/__init__.py'>        │ │
+│ │             run = <function run at 0x7fa0f7add6c0>                                           │ │
+│ │          signal = <module 'signal' from '/usr/lib/python3.10/signal.py'>                     │ │
+│ │      subprocess = <module 'subprocess' from '/usr/lib/python3.10/subprocess.py'>             │ │
+│ │             sys = <module 'sys' (built-in)>                                                  │ │
+│ │          Thread = <class 'threading.Thread'>                                                 │ │
+│ │          timeit = <module 'timeit' from '/usr/lib/python3.10/timeit.py'>                     │ │
+│ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ │
+│                                                                                                  │
+│ /home/neg/src/negwm/./negwm/main.py:220 in run                                                   │
+│                                                                                                  │
+│   217                                                                                            │
+│   218 def run():                                                                                 │
+│   219 │   checker().check()                                                                      │
+│ ❱ 220 │   main()                                                                                 │
+│   221                                                                                            │
+│   222 if __name__ == '__main__':                                                                 │
+│   223 │   run()                                                                                  │
+│                                                                                                  │
+│ /home/neg/src/negwm/./negwm/main.py:216 in main                                                  │
+│                                                                                                  │
+│   213 │   docopt(str(__doc__), version='0.9.2')                                                  │
+│   214 │   wm = NegWM()                                                                           │
+│   215 │   wm.create_config_cache()                                                               │
+│ ❱ 216 │   wm.run()                                                                               │
+│   217                                                                                            │
+│   218 def run():                                                                                 │
+│   219 │   checker().check()                                                                      │
+│                                                                                                  │
+│ ╭──────────────────── locals ────────────────────╮                                               │
+│ │ wm = <__main__.NegWM object at 0x7fa0f7c46cb0> │                                               │
+│ ╰────────────────────────────────────────────────╯                                               │
+│                                                                                                  │
+│ /home/neg/src/negwm/./negwm/main.py:201 in run                                                   │
+│                                                                                                  │
+│   198 │   │   │   self.create_config()                                                           │
+│   199 │   │                                                                                      │
+│   200 │   │   try:                                                                               │
+│ ❱ 201 │   │   │   self.i3.main()                                                                 │
+│   202 │   │   except KeyboardInterrupt:                                                          │
+│   203 │   │   │   self.i3.main_quit()                                                            │
+│   204                                                                                            │
+│                                                                                                  │
+│ ╭───────────────────────────────── locals ─────────────────────────────────╮                     │
+│ │ mainloop = <Thread(Thread-7 (mainloop), started daemon 140329324250816)> │                     │
+│ │     self = <__main__.NegWM object at 0x7fa0f7c46cb0>                     │                     │
+│ │    start = <function NegWM.run.<locals>.start at 0x7fa0f7add900>         │                     │
+│ ╰──────────────────────────────────────────────────────────────────────────╯                     │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/i3ipc/connection.py:514 in main                    │
+│                                                                                                  │
+│   511 │   │   │   │   │   break                                                                  │
+│   512 │   │                                                                                      │
+│   513 │   │   if loop_exception:                                                                 │
+│ ❱ 514 │   │   │   raise loop_exception                                                           │
+│   515 │                                                                                          │
+│   516 │   def main_quit(self):                                                                   │
+│   517 │   │   """Quits the running main loop for this connection."""                             │
+│                                                                                                  │
+│ ╭─────────────────────────────────────────── locals ───────────────────────────────────────────╮ │
+│ │ loop_exception = BadWindow(<Xlib.display._BaseDisplay object at 0x7fa0f6fead10>,             │ │
+│ │                  b'\x00\x03\x9c\x02\x06\x00\xa0\x02\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00… │ │
+│ │           self = <i3ipc.connection.Connection object at 0x7fa0f7c45f90>                      │ │
+│ │        timeout = 0.0                                                                         │ │
+│ │          timer = None                                                                        │ │
+│ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/i3ipc/connection.py:497 in main                    │
+│                                                                                                  │
+│   494 │   │   │   │   │   timer = Timer(timeout, self.main_quit)                                 │
+│   495 │   │   │   │   │   timer.start()                                                          │
+│   496 │   │   │   │                                                                              │
+│ ❱ 497 │   │   │   │   while not self._event_socket_poll():                                       │
+│   498 │   │   │   │   │   pass                                                                   │
+│   499 │   │   │   except Exception as e:                                                         │
+│   500 │   │   │   │   loop_exception = e                                                         │
+│                                                                                                  │
+│ ╭─────────────────────────────────────────── locals ───────────────────────────────────────────╮ │
+│ │ loop_exception = BadWindow(<Xlib.display._BaseDisplay object at 0x7fa0f6fead10>,             │ │
+│ │                  b'\x00\x03\x9c\x02\x06\x00\xa0\x02\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00… │ │
+│ │           self = <i3ipc.connection.Connection object at 0x7fa0f7c45f90>                      │ │
+│ │        timeout = 0.0                                                                         │ │
+│ │          timer = None                                                                        │ │
+│ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/i3ipc/connection.py:477 in _event_socket_poll      │
+│                                                                                                  │
+│   474 │   │   │   self._pubsub.emit(event_name, event)                                           │
+│   475 │   │   except Exception as e:                                                             │
+│   476 │   │   │   print(e)                                                                       │
+│ ❱ 477 │   │   │   raise e                                                                        │
+│   478 │                                                                                          │
+│   479 │   def main(self, timeout: float = 0.0):                                                  │
+│   480 │   │   """Starts the main loop for this connection to start handling events.              │
+│                                                                                                  │
+│ ╭────────────────────────────── locals ───────────────────────────────╮                          │
+│ │       data = {                                                      │                          │
+│ │              │   'change': 'new',                                   │                          │
+│ │              │   'container': {                                     │                          │
+│ │              │   │   'id': 94199645699488,                          │                          │
+│ │              │   │   'type': 'con',                                 │                          │
+│ │              │   │   'orientation': 'none',                         │                          │
+│ │              │   │   'scratchpad_state': 'none',                    │                          │
+│ │              │   │   'percent': 0.5,                                │                          │
+│ │              │   │   'urgent': False,                               │                          │
+│ │              │   │   'marks': [],                                   │                          │
+│ │              │   │   'focused': False,                              │                          │
+│ │              │   │   'output': 'DP-0',                              │                          │
+│ │              │   │   'layout': 'splith',                            │                          │
+│ │              │   │   ... +21                                        │                          │
+│ │              │   }                                                  │                          │
+│ │              }                                                      │                          │
+│ │      event = <i3ipc.events.WindowEvent object at 0x7fa0f5db3490>    │                          │
+│ │ event_name = 'window'                                               │                          │
+│ │   msg_type = 8                                                      │                          │
+│ │       self = <i3ipc.connection.Connection object at 0x7fa0f7c45f90> │                          │
+│ ╰─────────────────────────────────────────────────────────────────────╯                          │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/i3ipc/connection.py:474 in _event_socket_poll      │
+│                                                                                                  │
+│   471 │   │   │   return                                                                         │
+│   472 │   │                                                                                      │
+│   473 │   │   try:                                                                               │
+│ ❱ 474 │   │   │   self._pubsub.emit(event_name, event)                                           │
+│   475 │   │   except Exception as e:                                                             │
+│   476 │   │   │   print(e)                                                                       │
+│   477 │   │   │   raise e                                                                        │
+│                                                                                                  │
+│ ╭────────────────────────────── locals ───────────────────────────────╮                          │
+│ │       data = {                                                      │                          │
+│ │              │   'change': 'new',                                   │                          │
+│ │              │   'container': {                                     │                          │
+│ │              │   │   'id': 94199645699488,                          │                          │
+│ │              │   │   'type': 'con',                                 │                          │
+│ │              │   │   'orientation': 'none',                         │                          │
+│ │              │   │   'scratchpad_state': 'none',                    │                          │
+│ │              │   │   'percent': 0.5,                                │                          │
+│ │              │   │   'urgent': False,                               │                          │
+│ │              │   │   'marks': [],                                   │                          │
+│ │              │   │   'focused': False,                              │                          │
+│ │              │   │   'output': 'DP-0',                              │                          │
+│ │              │   │   'layout': 'splith',                            │                          │
+│ │              │   │   ... +21                                        │                          │
+│ │              │   }                                                  │                          │
+│ │              }                                                      │                          │
+│ │      event = <i3ipc.events.WindowEvent object at 0x7fa0f5db3490>    │                          │
+│ │ event_name = 'window'                                               │                          │
+│ │   msg_type = 8                                                      │                          │
+│ │       self = <i3ipc.connection.Connection object at 0x7fa0f7c45f90> │                          │
+│ ╰─────────────────────────────────────────────────────────────────────╯                          │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/i3ipc/_private/pubsub.py:28 in emit                │
+│                                                                                                  │
+│   25 │   │   │   if s['event'] == event:                                                         │
+│   26 │   │   │   │   if not s['detail'] or s['detail'] == detail:                                │
+│   27 │   │   │   │   │   if data:                                                                │
+│ ❱ 28 │   │   │   │   │   │   s['handler'](self.conn, data)                                       │
+│   29 │   │   │   │   │   else:                                                                   │
+│   30 │   │   │   │   │   │   s['handler'](self.conn)                                             │
+│   31                                                                                             │
+│                                                                                                  │
+│ ╭─────────────────────────────────────────── locals ───────────────────────────────────────────╮ │
+│ │   data = <i3ipc.events.WindowEvent object at 0x7fa0f5db3490>                                 │ │
+│ │ detail = 'new'                                                                               │ │
+│ │  event = 'window'                                                                            │ │
+│ │      s = {                                                                                   │ │
+│ │          │   'event': 'window',                                                              │ │
+│ │          │   'detail': 'new',                                                                │ │
+│ │          │   'handler': <bound method scratchpad.mark_tag of                                 │ │
+│ │          <negwm.modules.scratchpad.scratchpad object at 0x7fa0f6fea650>>                     │ │
+│ │          }                                                                                   │ │
+│ │   self = <i3ipc._private.pubsub.PubSub object at 0x7fa0f7c44df0>                             │ │
+│ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/negwm/modules/scratchpad.py:369 in mark_tag        │
+│                                                                                                  │
+│   366 │   │   │   event: i3ipc event. We can extract window from it using                        │
+│   367 │   │   │   event.container. """                                                           │
+│   368 │   │   win = event.container                                                              │
+│ ❱ 369 │   │   is_dialog_win = NegEWMH.is_dialog_win(win)                                         │
+│   370 │   │                                                                                      │
+│   371 │   │   self.win = win                                                                     │
+│   372 │   │   for tag in self.cfg:                                                               │
+│                                                                                                  │
+│ ╭──────────────────────────────── locals ────────────────────────────────╮                       │
+│ │     _ = <i3ipc.connection.Connection object at 0x7fa0f7c45f90>         │                       │
+│ │ event = <i3ipc.events.WindowEvent object at 0x7fa0f5db3490>            │                       │
+│ │  self = <negwm.modules.scratchpad.scratchpad object at 0x7fa0f6fea650> │                       │
+│ │   win = <i3ipc.con.Con object at 0x7fa0f5ac5510>                       │                       │
+│ ╰────────────────────────────────────────────────────────────────────────╯                       │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/negwm/lib/negewmh.py:47 in is_dialog_win           │
+│                                                                                                  │
+│   44 │   │   │   win_type = NegEWMH.ewmh.getWmWindowType(win_obj, str=True)                      │
+│   45 │   │   │   if '_NET_WM_WINDOW_TYPE_DIALOG' in win_type:                                    │
+│   46 │   │   │   │   return True                                                                 │
+│ ❱ 47 │   │   │   win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)                          │
+│   48 │   │   │   if '_NET_WM_STATE_MODAL' in win_state:                                          │
+│   49 │   │   │   │   return True                                                                 │
+│   50 │   │   │   return False                                                                    │
+│                                                                                                  │
+│ ╭─────────────────────── locals ────────────────────────╮                                        │
+│ │      win = <i3ipc.con.Con object at 0x7fa0f5ac5510>   │                                        │
+│ │  win_obj = <<class 'Xlib.display.Window'> 0x02a00006> │                                        │
+│ │ win_type = ['_NET_WM_WINDOW_TYPE_NORMAL']             │                                        │
+│ ╰───────────────────────────────────────────────────────╯                                        │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/ewmh/ewmh.py:373 in getWmState                     │
+│                                                                                                  │
+│   370 │   │   :param str: True to get a list of string states instead of int                     │
+│   371 │   │   :return: list of (int|str)                                                         │
+│   372 │   │   """                                                                                │
+│ ❱ 373 │   │   states = self._getProperty('_NET_WM_STATE', win) or []                             │
+│   374 │   │   if not str:                                                                        │
+│   375 │   │   │   return states                                                                  │
+│   376 │   │   return [self._getAtomName(s) for s in states]                                      │
+│                                                                                                  │
+│ ╭───────────────────── locals ──────────────────────╮                                            │
+│ │ self = <ewmh.ewmh.EWMH object at 0x7fa0f6febb50>  │                                            │
+│ │  str = True                                       │                                            │
+│ │  win = <<class 'Xlib.display.Window'> 0x02a00006> │                                            │
+│ ╰───────────────────────────────────────────────────╯                                            │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/ewmh/ewmh.py:405 in _getProperty                   │
+│                                                                                                  │
+│   402 │   def _getProperty(self, _type, win=None):                                               │
+│   403 │   │   if not win:                                                                        │
+│   404 │   │   │   win = self.root                                                                │
+│ ❱ 405 │   │   atom = win.get_full_property(self.display.get_atom(_type),                         │
+│   406 │   │   │   │   │   │   │   │   │    X.AnyPropertyType)                                    │
+│   407 │   │   if atom:                                                                           │
+│   408 │   │   │   return atom.value                                                              │
+│                                                                                                  │
+│ ╭────────────────────── locals ──────────────────────╮                                           │
+│ │ _type = '_NET_WM_STATE'                            │                                           │
+│ │  self = <ewmh.ewmh.EWMH object at 0x7fa0f6febb50>  │                                           │
+│ │   win = <<class 'Xlib.display.Window'> 0x02a00006> │                                           │
+│ ╰────────────────────────────────────────────────────╯                                           │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/Xlib/xobject/drawable.py:472 in get_full_property  │
+│                                                                                                  │
+│   469 │   │   │   return None                                                                    │
+│   470 │                                                                                          │
+│   471 │   def get_full_property(self, property, property_type, sizehint = 10):                   │
+│ ❱ 472 │   │   prop = self.get_property(property, property_type, 0, sizehint)                     │
+│   473 │   │   if prop:                                                                           │
+│   474 │   │   │   val = prop.value                                                               │
+│   475 │   │   │   if prop.bytes_after:                                                           │
+│                                                                                                  │
+│ ╭────────────────────────── locals ──────────────────────────╮                                   │
+│ │      property = 323                                        │                                   │
+│ │ property_type = 0                                          │                                   │
+│ │          self = <<class 'Xlib.display.Window'> 0x02a00006> │                                   │
+│ │      sizehint = 10                                         │                                   │
+│ ╰────────────────────────────────────────────────────────────╯                                   │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/Xlib/xobject/drawable.py:455 in get_property       │
+│                                                                                                  │
+│   452 │   │   │   │   │   │   │      property = property)                                        │
+│   453 │                                                                                          │
+│   454 │   def get_property(self, property, property_type, offset, length, delete = 0):           │
+│ ❱ 455 │   │   r = request.GetProperty(display = self.display,                                    │
+│   456 │   │   │   │   │   │   │   │   delete = delete,                                           │
+│   457 │   │   │   │   │   │   │   │   window = self.id,                                          │
+│   458 │   │   │   │   │   │   │   │   property = property,                                       │
+│                                                                                                  │
+│ ╭────────────────────────── locals ──────────────────────────╮                                   │
+│ │        delete = 0                                          │                                   │
+│ │        length = 10                                         │                                   │
+│ │        offset = 0                                          │                                   │
+│ │      property = 323                                        │                                   │
+│ │ property_type = 0                                          │                                   │
+│ │          self = <<class 'Xlib.display.Window'> 0x02a00006> │                                   │
+│ ╰────────────────────────────────────────────────────────────╯                                   │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/Xlib/protocol/rq.py:1369 in __init__               │
+│                                                                                                  │
+│   1366 │   │                                                                                     │
+│   1367 │   │   self._display.send_request(self, 1)                                               │
+│   1368 │   │   if not defer:                                                                     │
+│ ❱ 1369 │   │   │   self.reply()                                                                  │
+│   1370 │                                                                                         │
+│   1371 │   def reply(self):                                                                      │
+│   1372 │   │   # Send request and wait for reply if we hasn't                                    │
+│                                                                                                  │
+│ ╭─────────────────────────────────────────── locals ───────────────────────────────────────────╮ │
+│ │    args = ()                                                                                 │ │
+│ │   defer = 0                                                                                  │ │
+│ │ display = <Xlib.display._BaseDisplay object at 0x7fa0f6fead10>                               │ │
+│ │    keys = {                                                                                  │ │
+│ │           │   'delete': 0,                                                                   │ │
+│ │           │   'window': 44040198,                                                            │ │
+│ │           │   'property': 323,                                                               │ │
+│ │           │   'type': 0,                                                                     │ │
+│ │           │   'long_offset': 0,                                                              │ │
+│ │           │   'long_length': 10                                                              │ │
+│ │           }                                                                                  │ │
+│ │    self = <<class 'Xlib.protocol.request.GetProperty'> serial = 668, data = None, error =    │ │
+│ │           <class 'Xlib.error.BadWindow'>: code = 3, resource_id = <class                     │ │
+│ │           'Xlib.xobject.resource.Resource'>(0x02a00006), sequence_number = 668, major_opcode │ │
+│ │           = 20, minor_opcode = 0>                                                            │ │
+│ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ │
+│                                                                                                  │
+│ /home/neg/.local/lib/python3.10/site-packages/Xlib/protocol/rq.py:1389 in reply                  │
+│                                                                                                  │
+│   1386 │   │                                                                                     │
+│   1387 │   │   # If error has been set, raise it                                                 │
+│   1388 │   │   if self._error:                                                                   │
+│ ❱ 1389 │   │   │   raise self._error                                                             │
+│   1390 │                                                                                         │
+│   1391 │   def _parse_response(self, data):                                                      │
+│   1392 │   │   self._response_lock.acquire()                                                     │
+│                                                                                                  │
+│ ╭─────────────────────────────────────────── locals ───────────────────────────────────────────╮ │
+│ │ self = <<class 'Xlib.protocol.request.GetProperty'> serial = 668, data = None, error =       │ │
+│ │        <class 'Xlib.error.BadWindow'>: code = 3, resource_id = <class                        │ │
+│ │        'Xlib.xobject.resource.Resource'>(0x02a00006), sequence_number = 668, major_opcode =  │ │
+│ │        20, minor_opcode = 0>                                                                 │ │
+│ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+BadWindow: <class 'Xlib.error.BadWindow'>: code = 3, resource_id = <class 'Xlib.xobject.resource.Resource'>(0x02a00006), sequence_number = 668, major_opcode = 20,
+minor_opcode = 0
+
