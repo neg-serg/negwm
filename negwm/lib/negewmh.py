@@ -3,6 +3,7 @@ etc using python-xlib and python-ewmh. """
 from typing import List
 from contextlib import contextmanager
 
+import logging
 import Xlib
 import Xlib.display
 import Xlib.error
@@ -41,7 +42,11 @@ class NegEWMH():
                 or win.window_class == "Dialog":
             return True
         with NegEWMH.window_obj(NegEWMH.disp, win.window) as win_obj:
-            win_type = NegEWMH.ewmh.getWmWindowType(win_obj, str=True)
+            try:
+                win_type = NegEWMH.ewmh.getWmWindowType(win_obj, str=True)
+            except Xlib.error.BadWindow:
+                logging.error(f'Get bad window {win.__dict__}')
+                return False
             if '_NET_WM_WINDOW_TYPE_DIALOG' in win_type:
                 return True
             win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)
