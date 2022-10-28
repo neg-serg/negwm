@@ -96,7 +96,7 @@ class NegWM():
                     try:
                         getattr(self.mods[mod], mod_cmd)(*args)
                     except TypeError:
-                        print(f'Cannot call mod={self.mods[mod]} cmd={mod_cmd} args=({args})')
+                        logging.info(f'Cannot call mod={self.mods[mod]} cmd={mod_cmd} args=({args})')
 
     @staticmethod
     def kill_proctree(pid, including_parent=True):
