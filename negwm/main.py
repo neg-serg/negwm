@@ -1,12 +1,16 @@
 #!/usr/bin/python3
-""" negwm daemon script.
+""" 
+NegWM daemon script.
 This module loads all negwm an start it via main's manager mailoop. Inotify-based watchers for all negwm S-expression-based
 configuration spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running
 several times.
 
 Usage:
-    ./main.py
-    ./main.py -d
+    main.py
+    main.py -d, --debug     enable debug mode with debug logging
+    main.py -i, --info      info logging
+    main.py -q, --quiet     quiet, no logging
+    main.py -v, --verbose   more verbose logging
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -41,7 +45,7 @@ from negwm.lib.misc import Misc
 from negwm.lib.msgbroker import MsgBroker
 
 install(show_locals=True)
-console = Console(log_time=True)
+console=Console(log_time=True)
 
 class NegWM():
     def __init__(self):
@@ -50,8 +54,7 @@ class NegWM():
             connection, connects to the asyncio eventloop.
         """
         logging.getLogger().setLevel(logging.INFO)
-        loop = asyncio.new_event_loop()
-        self.show_load_time = True
+        loop=asyncio.new_event_loop()
 
         def loop_exit(signame):
             logging.info(f"Got signal {signame}: exit")
@@ -66,33 +69,34 @@ class NegWM():
 
         super().__init__()
 
-        self.loop, self.mods = loop, {}
-        blacklist = {'__init__'}
-        mods = map(
+        self.loop, self.mods=loop, {}
+        blacklist={'__init__'}
+        dirname=os.path.dirname
+        mods=map(
             pathlib.Path,
-            glob.glob(f"{os.path.dirname(os.path.dirname(negwm.__file__))}/negwm/modules/*.py")
+            glob.glob(f"{dirname(dirname(negwm.__file__))}/negwm/modules/*.py")
         )
         for mod in mods:
             if mod.is_file():
-                name = str(mod.name).removesuffix('.py')
+                name=str(mod.name).removesuffix('.py')
                 if name not in blacklist:
-                    self.mods[sys.intern(name)] = None
-        self.port = 15555
+                    self.mods[sys.intern(name)]=None
+        self.port=15555
         # main i3ipc connection created here and can be bypassed to the most of
         # modules here.
-        self.i3 = i3ipc.Connection()
+        self.i3=i3ipc.Connection()
         self.i3.on('binding', self.handle_bindings)
 
     def handle_bindings(self, _, event):
-        data = event.ipc_data
+        data=event.ipc_data
         if data:
-            cmd_str = data['binding']['command']
+            cmd_str=data['binding']['command']
             if cmd_str[:3] == 'nop':
-                cmd = cmd_str.split(',')[0].split()[1:]
-                mod = cmd[0]
+                cmd=cmd_str.split(',')[0].split()[1:]
+                mod=cmd[0]
                 if mod in self.mods:
-                    args = ' '.join(cmd[2:]).split(',')[0].split()
-                    mod_cmd = cmd[1]
+                    args=' '.join(cmd[2:]).split(',')[0].split()
+                    mod_cmd=cmd[1]
                     try:
                         getattr(self.mods[mod], mod_cmd)(*args)
                     except TypeError:
@@ -100,7 +104,7 @@ class NegWM():
 
     @staticmethod
     def kill_proctree(pid, including_parent=True):
-        parent = psutil.Process(pid)
+        parent=psutil.Process(pid)
         for child in parent.children(recursive=True):
             if child.name() == os.path.basename(__file__):
                 child.kill()
@@ -114,27 +118,27 @@ class NegWM():
             stuff, then add_ipc and update notification with startup
             benchmarks.
         """
-        mod_startup_times = []
+        mod_startup_times=[]
         console.status("[bold green]Loading...")
         for mod in self.mods:
-            start_time = timeit.default_timer()
-            i3mod = importlib.import_module('negwm.modules.' + mod)
-            self.mods[mod] = getattr(i3mod, mod)(self.i3)
+            start_time=timeit.default_timer()
+            i3mod=importlib.import_module('negwm.modules.' + mod)
+            self.mods[mod]=getattr(i3mod, mod)(self.i3)
             try:
                 self.mods[mod].asyncio_init(self.loop)
             except Exception:
                 pass
-            dt = timeit.default_timer() - start_time
+            dt=timeit.default_timer() - start_time
             mod_startup_times.append(dt)
             logging.debug(f'{mod}: {round(dt,4)}')
             console.log(f"{mod}: {round(dt,5)}")
-        total_startup_time = str(round(sum(mod_startup_times), 6))
-        loading_time_msg = f'Total {total_startup_time}'
+        total_startup_time=str(round(sum(mod_startup_times), 6))
+        loading_time_msg=f'Total {total_startup_time}'
         logging.debug(loading_time_msg)
         console.log(loading_time_msg)
 
     def create_config_cache(self):
-        binpath = f'{os.path.dirname(negwm.__file__)}/bin/'
+        binpath=f'{os.path.dirname(negwm.__file__)}/bin/'
         subprocess.run(
             [f'{binpath}/create_cfg'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -144,13 +148,13 @@ class NegWM():
     async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
             watcher: watcher for cfg. """
-        config_extension = '.cfg'
+        config_extension='.cfg'
         while True:
             with Inotify() as inotify:
                 inotify.add_watch(
                     f'{Misc.cfg_path()}/', Mask.MODIFY)
                 async for event in inotify:
-                    changed_mod = str(event.name).removesuffix(config_extension)
+                    changed_mod=str(event.name).removesuffix(config_extension)
                     if changed_mod in self.mods:
                         self.create_config_cache()
                         if reload_one:
@@ -164,12 +168,12 @@ class NegWM():
         self.loop.create_task(self.cfg_mods_worker())
 
     def create_config(self):
-        binpath = f'{os.path.dirname(negwm.__file__)}/bin/'
+        binpath=f'{os.path.dirname(negwm.__file__)}/bin/'
         subprocess.run(
             [f'{binpath}/create_cfg', '-d'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             cwd=binpath, check=True)
-        mod, mod_cmd = 'conf_gen', 'write'
+        mod, mod_cmd='conf_gen', 'write'
         getattr(self.mods[mod], mod_cmd)()
         subprocess.run(['i3-msg', 'reload'])
 
@@ -187,7 +191,7 @@ class NegWM():
         start(self.load_modules)
         start(self.run_config_watchers)
         # Start modules mainloop.
-        mainloop = Thread(
+        mainloop=Thread(
             target=MsgBroker.mainloop,
             args=(self.loop, self.mods, self.port,),
             daemon=True
@@ -211,7 +215,7 @@ def main():
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
     docopt(str(__doc__), version='0.9.2')
-    wm = NegWM()
+    wm=NegWM()
     wm.create_config_cache()
     wm.run()
 
