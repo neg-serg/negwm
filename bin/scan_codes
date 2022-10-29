@@ -9,17 +9,18 @@ import argparse
 import errno
 import string
 
+from rich.console import Console
+from rich.table import Table
+
 # Hardcoded default variable for the primary modifier key,
 # can be changed with --modvar
 modVariable = "Mod4"
 
 def getKeyCodes():
     """Get keycodes from xmodmap with the corresponding keysym
-
     :return: A dictionary with keycode as key and keysym as value
     :rtype: dict or False
     """
-
     keycodes = {}
     reKeycode = re.compile(
         r"^keycode\s*(\d+?)\s*=\s*(?:NoSymbol\s?)*(.+?)(?:\s+|$)")
@@ -38,18 +39,14 @@ def getKeyCodes():
 
 
 class Path:
-    """Holds a path to an i3 configuration file and checks if it exists
-    """
-
+    """ Holds a path to an i3 configuration file and checks if it exists """
     def __init__(self, path, env=""):
-        """Init path
-
+        """ Init path
         :param path: path to i3 config
         :type path: str
         :param env: environment variable that prepends path e.g. "XDG_CONFIG_HOME", defaults to ""
         :param env: str, optional
         """
-
         if env == "":
             self.path = self.getPath(path)
             self.exists = self.checkPath()
@@ -61,8 +58,7 @@ class Path:
             self.exists = False
 
     def getPath(self, path):
-        """Expands tilde to home path
-
+        """ Expands tilde to home path
         :param path: path to config
         :type path: str
         :return: expanded path
@@ -71,28 +67,23 @@ class Path:
         return os.path.expanduser(path)
 
     def checkPath(self):
-        """Check if the file exists and if we can read it
+        """ Check if the file exists and if we can read it
 
         :return: bool
         :rtype: bool
         """
-
         if os.path.isfile(self.path) and os.access(self.path, os.R_OK):
             return True
         return False
 
 
 class Config:
-    """Holds a configuration file and the keybindings in it
-    """
-
+    """ Holds a configuration file and the keybindings in it """
     def __init__(self, path):
-        """Init config
-
+        """ Init config
         :param path: path to configuration file
         :type path: str
         """
-
         self.path = path
         self.variables = self.parseVariables()
         self.bindings = self.parseBindings()
@@ -105,11 +96,9 @@ class Config:
 
     def parseVariables(self):
         """Parses variables that are set in the config and saves them
-
         :return: A dict with varName: value
         :rtype: dict
         """
-
         reSet = re.compile(r"^set\s+(\$.+?)\s+(.+?)$")
         variables = {}
         for line in self.readConfig():
@@ -119,15 +108,12 @@ class Config:
         return variables
 
     def parseBindings(self):
-        """Gets keybindings from configuration file
-
+        """ Gets keybindings from configuration file
         :return: a list of keybindings, [Binding, ...]
         :rtype: list
         """
-
         reBinding = re.compile(r"^bind(sym|code)\s(.+?)\s")
         bindings = []
-
         for line in self.readConfig():
             matches = reBinding.match(line)
             if matches:
@@ -139,8 +125,7 @@ class Config:
         return bindings
 
     def availableBindings(self, keys, combination):
-        """Check which keybindings that aren't used for selected modifiers
-
+        """ Check which keybindings that aren't used for selected modifiers
         :param keys: list of keys e.g. ["a","1","Escape"]
         :type keys: list
         :param combination: dict of modifiers to compare with
@@ -149,34 +134,27 @@ class Config:
         :rtype: list
         """
         newComb = set()
-
         for c in combination:
             # if variable, replace it with the right value
             if c in self.variables:
                 newComb.add(self.variables[c])
             else:
                 newComb.add(c)
-
         used = [x.sym.lower()
                 for x in self.bindings if set(x.modifiers) == newComb and x.sym != None]
         return [x for x in keys if x.lower() not in used]
 
 
 class Binding:
-    """Holds a keybinding
-    """
-
+    """ Holds a keybinding """
     def __init__(self, bindtype, keys, variables):
-        """Init Binding
-
+        """ Init Binding
         :param bindtype: either sym or code
         :type bindtype: str
         :param keys: string of keys, e.g. "$mod+Shift+a"
         :type keys: str
         :param variables: a dict with variables
-        :type variables: dict
-        """
-
+        :type variables: dict """
         self.type = bindtype
         self.sym = None
         self.code = None
@@ -193,16 +171,13 @@ class Binding:
             self.sym = self.getKeySym(self.code)
 
     def expandVars(self, keys, variables):
-        """Expands variable to their corresponding value
-
+        """ Expands variable to their corresponding value
         :param keys: a list of keys
         :type keys: list
         :param variables: a dict with variables
         :type variables: dict
         :return: a list with keys, expanded variables
-        :rtype: list
-        """
-
+        :rtype: list """
         r = []
         for k in keys:
             if k in variables:
@@ -212,44 +187,33 @@ class Binding:
         return r
 
     def splitKeys(self, keys):
-        """Splits a string of keys to a list
-
+        """ Splits a string of keys to a list
         :param keys: string of keys, e.g. "$mod+Shift+a"
         :type keys: str
         :return: returns a list of keys, e.g. ["$mod", "Shift", "a"]
-        :rtype: list
-        """
-
+        :rtype: list """
         return [x for x in keys.split("+")]
 
     def setModifiers(self):
-        """Adds all modifiers to a list
-        """
-
+        """ Adds all modifiers to a list """
         for k in self.keys[:-1]:
             self.modifiers.append(k)
 
     def getKeySym(self, code):
-        """Keycode to keysym
-
+        """ Keycode to keysym
         :param code: Keycode
         :type code: str
         :return: Keysym
-        :rtype: str or None
-        """
-
+        :rtype: str or None """
         if keycodes != False and code in keycodes:
             return keycodes[code]
         else:
             return None
 
     def __str__(self):
-        """String representation of object
-
+        """ String representation of object
         :return: a string of the keybinding
-        :rtype: str
-        """
-
+        :rtype: str """
         v = []
         for m in self.modifiers:
             v.append(m)
@@ -285,7 +249,6 @@ class Keys():
     @staticmethod
     def getKeys(names):
         """Returns keysyms for selected keys
-
         :param names: a list of categories, e.g. ["0-9", "a-z", "nordic"]
         :type names: list
         :return: a list of keysyms
@@ -302,17 +265,17 @@ keys = Keys.getKeys(
     ["0-9", "a-z", "nordic", "arrow", "common", "function"])
 
 def printAvailable(modifier, available):
-    """Prints available keys and their modifiers
-
+    """ Prints available keys and their modifiers
     :param modifier: list of modifiers
     :type modifier: dict
     :param available: list of available keys, see Config.availableBindings()
-    :type available: list
-    """
-
+    :type available: list """
+    table = Table()
     mods = "+".join([m for m in modifier])
-    print("\nAvailable " + mods + ":")
-    print(", ".join(available))
+    table.add_column(f'{mods}', style="cyan", no_wrap=False)
+    table.add_row(", ".join(available))
+    console = Console()
+    console.print(table, justify="center")
 
 # Init argparse
 parser = argparse.ArgumentParser(
@@ -391,93 +354,3 @@ for attr in combinations:
         continue
     available = c.availableBindings(keys, combinations[attr])
     printAvailable(combinations[attr], available)
-
-# # I recommend you check out my new program [i3keys](https://github.com/RasmusLindroth/i3keys) instead
-#
-# You are still free to use i3av if you like, but I will prioritize i3keys.
-#
-# # i3av(ailable)
-#
-# This Python3 script list keys that isn't being used by i3 as keybindings so you
-# easier can find available keys.
-# You can limit the listing to selected modifier keys and
-# specify the path to the configuration file, see [help](#help).
-#
-# * [Getting started](#getting-started)
-#   * [Change keys to list as available](#change-keys-to-list-as-available)
-#   * [Change primary modifier key](#change-primary-modifier-key)
-#   * [Custom bindings](#custom-bindings)
-# * [Example](#example)
-# * [Help](#help)
-#
-# ### Getting started
-# ````bash
-# # Clone this repo and go to the directory
-# git clone https://github.com/RasmusLindroth/i3av.git
-# cd i3av/
-#
-# # Run the program
-# ./i3av.py
-# ````
-#
-# #### Change keys to list as available
-#
-# If you would like to change which keys that get listed you can
-# edit [i3av.py](./i3av.py) and [lib/keys.py](./lib/keys.py).
-#
-# In [i3av.py](./i3av.py) you have a line like this:
-#
-# ````Python
-# keys = lib.keys.getKeys(
-#     ["0-9", "a-z", "nordic", "arrow", "common", "function"])
-# ````
-#
-# Current possible keys are `0-9, a-z, nordic, arrow, common, uncommon, function,
-# numpad, numpad_other`
-#
-# If you want to add more keys, just add your keys in the dict `keys = {...}`
-# located in [lib/keys.py](./lib/keys.py).
-#
-# #### Change primary modifier key
-#
-# This script defaults to `$mod` as the modifier key. You can change this with
-# adding the argument `--modvar '$m'` or change `modVariable` in [i3av.py](./i3av.py).
-#
-# #### Custom bindings
-#
-# If the modifiers provided isn't enough you can add your own with `--bindings`,
-# e.g. `./i3av.py --bindings '$mod+Mod2' '$mod+Mod4'`. You can also change the
-# code, take a look at the dict `combinations` in [i3av.py](./i3av.py).
-#
-# ### Example
-#
-# ````bash
-# $ ./i3av.py -m
-# Reading from /home/rasmus/.i3/config
-#
-# Available $mod:
-# g, i, o, p, x, oslash, ae, BackSpace, Tab, Pause, Scroll_Lock, Escape, Delete,
-# Prior, Next, End, Insert, Menu, Break, comma, period, slash, semicolon,
-# backslash, bracketleft, bracketright, plus, equal, less, greater, apostrophe,
-# asterisk, grave, section, F1, F4, F6, F7, F8, F9, F10, F11, F12
-# ````
-#
-# ### Help
-# ````bash
-# ./i3av.py --help
-# usage: i3av.py [-h] [--modvar MODVAR] [--config CONFIG] [-m] [-s] [-c] [-t]
-#                [-b BINDINGS [BINDINGS ...]]
-#
-# Lists available bindings for i3.
-#
-# optional arguments:
-#   -h, --help            show this help message and exit
-#   --modvar MODVAR       variable name of modkey, e.g. '$m', defaults to $mod
-#   --config CONFIG       path to configuration file. Otherwise it searches in
-#                         default locations.
-#   -m, --mod             available $mod bindings
-#   -s, --shift           available $mod+Shift bindings
-#   -c, --ctrl            available $mod+Ctrl bindings
-#   -t, --triplet         available $mod+Ctrl+Shift bindings
-#   -b BINDINGS [BINDINGS ...], --bindings BINDINGS [BINDINGS ...]
-#                         custom binding(s), e.g. '$mod+Mod2'
