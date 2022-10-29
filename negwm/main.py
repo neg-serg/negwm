@@ -6,11 +6,19 @@ configuration spawned here, to use it just start it from any place without param
 several times.
 
 Usage:
-    main.py
-    main.py -d, --debug     enable debug mode with debug logging
-    main.py -i, --info      info logging
-    main.py -q, --quiet     quiet, no logging
-    main.py -v, --verbose   more verbose logging
+    main.py [-diqv] [--systemd]
+    main.py -d, --debug
+    main.py -i, --info
+    main.py -q, --quiet
+    main.py -v, --verbose
+    main.py --systemd
+
+Options:
+    -d, --debug       Enable debug mode with debug logging
+    -i, --info        Info logging
+    -q, --quiet       Quiet, no logging
+    -v, --verbose     More verbose logging
+    --systemd         Use systemd for logging
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -53,7 +61,6 @@ class NegWM():
             Using of self.intern for better performance, create i3ipc
             connection, connects to the asyncio eventloop.
         """
-        logging.getLogger().setLevel(logging.INFO)
         loop=asyncio.new_event_loop()
 
         def loop_exit(signame):
@@ -177,7 +184,7 @@ class NegWM():
         getattr(self.mods[mod], mod_cmd)()
         subprocess.run(['i3-msg', 'reload'])
 
-    def run(self):
+    def startup(self):
         """ Run negwm here. """
         def start(func, args=None):
             """ Helper for pretty-printing of loading process.
@@ -214,10 +221,23 @@ def main():
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
-    docopt(str(__doc__), version='0.9.2')
+    arguments=docopt(str(__doc__), version='0.9.2')
+    log=logging.getLogger()
+    if arguments['--systemd']:
+        from systemd import journal
+        log.addHandler(journal.JournalHandler())
+    loglevel=logging.INFO
+    if arguments['--debug'] or arguments['--verbose']:
+        loglevel=logging.DEBUG
+    elif arguments['--info']:
+        loglevel=logging.INFO
+    elif arguments['--quiet']:
+        loglevel=logging.CRITICAL
+    else:
+        log.setLevel(loglevel)
     wm=NegWM()
     wm.create_config_cache()
-    wm.run()
+    wm.startup()
 
 def run():
     checker().check()
