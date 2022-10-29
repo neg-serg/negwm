@@ -231,7 +231,7 @@ def main():
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
-    arguments=docopt(str(__doc__), version='0.9.2')
+    arguments=docopt(str(__doc__), version='0.9.3')
     log=logging.getLogger()
     if arguments['--systemd']:
         from systemd import journal
