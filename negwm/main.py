@@ -146,11 +146,21 @@ class NegWM():
 
     def create_config_cache(self):
         binpath=f'{os.path.dirname(negwm.__file__)}/bin/'
-        subprocess.run(
+        proc=subprocess.Popen(
             [f'{binpath}/create_cfg'],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            cwd=binpath, check=True
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
+        try:
+            out,err=proc.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            out,err=proc.communicate()
+        for fd in out,err:
+            if fd:
+                for line in fd.splitlines():
+                    if line:
+                        logging.info(line.decode())
 
     async def cfg_mods_worker(self, reload_one=True):
         """ Reloading configs on change. Reload only appropriate config by default.
