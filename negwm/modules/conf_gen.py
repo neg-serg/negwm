@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from negwm.lib.misc import Misc
 from negwm.lib.cfg import cfg
@@ -20,15 +21,22 @@ class conf_gen(extension, cfg):
 
     def print(self) -> None: print(self.generate_config())
 
-    def write(self):
+    def write(self, preserve_history=False):
         cfg, test_cfg = 'config', '.config_test'
         generated_cfg = self.generate_config()
-        with open(f'{Misc.i3path()}/{test_cfg}', 'w', encoding='utf8') as fp:
-            fp.write(generated_cfg)
+        i3_cfg_dir = Misc.i3path()
+
+        with open(f'{i3_cfg_dir}/{test_cfg}', 'w', encoding='utf8') as testi3:
+            testi3.write(generated_cfg)
         if checker.check_i3_config(cfg=test_cfg):
-            with open(f'{Misc.i3path()}/{cfg}', 'w', encoding='utf8') as fp:
-                fp.write(generated_cfg)
-            os.remove(f'{Misc.i3path()}/{test_cfg}')
+            with open(f'{i3_cfg_dir}/{cfg}', 'w', encoding='utf8') as i3cfg:
+                i3cfg.write(generated_cfg)
+                self.i3ipc.command('reload')
+        if os.path.isfile(f'{i3_cfg_dir}/{test_cfg}'):
+            if preserve_history:
+                os.replace(f'{i3_cfg_dir}/{test_cfg}', f'{i3_cfg_dir}/{test_cfg}_{datetime.today().strftime("%Y-%m-%d-%H-%M-%S")}')
+            else:
+                os.remove(f'{i3_cfg_dir}/{test_cfg}')
 
     @staticmethod
     def text_section(text: str):
