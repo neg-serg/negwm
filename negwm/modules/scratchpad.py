@@ -64,8 +64,7 @@ class scratchpad(extension, cfg, Matcher):
         ret: str = ''
         for tag in cmd_dict:
             geom = self.nsgeom.get_geom(tag)
-            ret += f'for_window $scratchpad-{tag}' + \
-                f' move scratchpad, {geom}\n'
+            ret += f'for_window $scratchpad-{tag} floating enable, resize set {geom}\n'
         return ret
 
     @staticmethod
@@ -252,19 +251,12 @@ class scratchpad(extension, cfg, Matcher):
             that can appear after i3 (re)start, etc. Because of I've think that
             is't better to make screen clear after (re)start. """
         def next_win(tag: str) -> None:
-            self.show(tag, hide_)
-            for idx, win in enumerate(self.marked[tag]):
+            marks_for_tag=self.marked[tag]
+            for idx, win in enumerate(marks_for_tag):
                 if focused_win.id != win.id:
-                    self.marked[tag][idx].command(
-                        'move window to workspace current'
-                    )
-                    self.marked[tag].insert(
-                        len(self.marked[tag]),
-                        self.marked[tag].pop(idx)
-                    )
-                    win.command('move scratchpad')
+                    win.command('move window to workspace current, move scratchpad')
+                    marks_for_tag.insert(len(marks_for_tag), marks_for_tag.pop(idx))
             self.show(tag, hide_)
-
         hide_ = hide
         focused_win = self.i3ipc.get_tree().find_focused()
         self.apply_to_current_tag(next_win)
@@ -372,6 +364,14 @@ class scratchpad(extension, cfg, Matcher):
         if show:
             self.show(tag, hide=hide)
 
+    def invalidate_after_subtag_restart(self) -> None:
+        if self.focus_win_flag[0]:
+            special_tag = self.focus_win_flag[1]
+            if special_tag in self.cfg:
+                self.show(special_tag, hide=True)
+            self.focus_win_flag[0] = False
+            self.focus_win_flag[1] = ""
+    
     def mark_tag(self, _, event) -> None:
         """ Add unique mark to the new window.
             _: i3ipc connection.
@@ -392,12 +392,7 @@ class scratchpad(extension, cfg, Matcher):
                 if self.match(win, tag):
                     self.scratchpad_move(win, tag, show=True)
             # Special hack to invalidate windows after subtag start
-            if self.focus_win_flag[0]:
-                special_tag = self.focus_win_flag[1]
-                if special_tag in self.cfg:
-                    self.show(special_tag, hide=True)
-                self.focus_win_flag[0] = False
-                self.focus_win_flag[1] = ""
+            self.invalidate_after_subtag_restart()
 
     def unmark_tag(self, _, event) -> None:
         """ Delete unique mark from the closed window.
@@ -444,8 +439,7 @@ class scratchpad(extension, cfg, Matcher):
             else:
                 for tag in self.cfg:
                     if self.match(win, tag):
-                        if hide:
-                            hide_cmd = '[con_id=__focused__] scratchpad show'
+                        if hide: hide_cmd = '[con_id=__focused__] scratchpad show'
                         self.scratchpad_move(win ,tag)
                         win.command(hide_cmd)
             self.win = win
