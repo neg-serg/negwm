@@ -5,6 +5,7 @@ run-or-raise, etc. """
 import sys
 import re
 from typing import List, Iterator
+import logging
 
 class Matcher():
     """ Generic matcher class
@@ -25,13 +26,11 @@ class Matcher():
         sys.intern("instance_r"),
         sys.intern("name_r"),
         sys.intern("role_r"),
-        sys.intern('match_all')
     ]
 
     def __init__(self):
-        self.matched_list = []
         self.win = None
-
+        self.matched_list = []
         self.match_dict = {
             sys.intern("classw"): lambda: self.win.window_class in self.matched_list,
             sys.intern("instance"): lambda: self.win.window_instance in self.matched_list,
@@ -40,7 +39,6 @@ class Matcher():
             sys.intern("instance_r"): self.instance_r,
             sys.intern("role_r"): self.role_r,
             sys.intern("name_r"): self.name_r,
-            sys.intern("match_all"): Matcher.match_all
         }
 
     @staticmethod
@@ -105,11 +103,6 @@ class Matcher():
                     if self.win.name == name_regex.name:
                         return True
         return False
-
-    @staticmethod
-    def match_all() -> bool:
-        """ Match every possible window """
-        return True
 
     def match(self, win, tag: str) -> bool:
         """ Check that window matches to the config rules """

@@ -25,10 +25,15 @@ class Rules():
         if mod is None:
             return ''
         cmd_dict = Rules.fill_rules_dict(mod, {})
+        empty_rules = []
         for tag in cmd_dict:
             rules = list(filter(lambda str: str != '', cmd_dict[tag]))
             if rules:
                 ret += f'set ${modname}-{tag} [' + ' '.join(rules) + ']\n'
+            else:
+                empty_rules.append(tag)
+        for tag in empty_rules:
+            cmd_dict.pop(tag)
         return ret + mod.rules(cmd_dict)
 
     @staticmethod

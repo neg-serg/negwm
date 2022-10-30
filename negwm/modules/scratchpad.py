@@ -44,7 +44,6 @@ class scratchpad(extension, cfg, Matcher):
         self.nsgeom = geom.geom(self.cfg)
         # marked used to get the list of current tagged windows
         # with the given tag
-        if not 'transients' in self.cfg.keys(): self.cfg.update({'transients':{}})
         self.marked = {l: [] for l in self.cfg.keys()}
         self.mark_all_tags(hide=True) # Mark all tags from the start
         self.auto_save_geom(False) # Do not autosave geometry by default
@@ -56,28 +55,32 @@ class scratchpad(extension, cfg, Matcher):
         i3.on('window::close', self.unmark_tag)
 
     def taglist(self) -> List:
-        """ Returns list of tags without transients windows. """
+        """ Returns list of tags windows. """
         tag_list = list(self.cfg.keys())
-        tag_list.remove('transients')
         return tag_list
 
     def rules(self, cmd_dict) -> str:
         """ Create i3 match rules for all tags. """
         ret: str = ''
         for tag in cmd_dict:
-            if tag in {'transients'}:
-                geom = self.nsgeom.get_geom(tag)
-                ret += f'for_window $scratchpad-{tag}' + \
-                    f' move scratchpad, {geom}\n'
-            else:
-                ret += f'for_window $scratchpad-{tag} floating enable\n'
+            geom = self.nsgeom.get_geom(tag)
+            ret += f'for_window $scratchpad-{tag}' + \
+                f' move scratchpad, {geom}\n'
         return ret
 
     @staticmethod
     def mark_uuid_tag(tag: str) -> str:
         """ Generate unique mark for the given [tag]
             tag: tag string """
-        return f'mark {tag}-{str(str(uuid.uuid4().fields[-1]))}'
+        return f'mark --replace {tag}-{str(str(uuid.uuid4().fields[-1]))}'
+
+    def focus_transient_parent(self, tag, window_data):
+        if tag == 'transients' and 'ipc_data' in window_data:
+            props = window_data['ipc_data'].get('window_properties')
+            if props is not None and props:
+                if 'transient_for' in props is not None:
+                    parent_for_transient = props['transient_for']
+                    self.i3ipc.command(f'[id={parent_for_transient}] focus')
 
     def show(self, tag: str, hide: bool = True) -> None:
         """ Show given [tag]
@@ -87,9 +90,10 @@ class scratchpad(extension, cfg, Matcher):
             neatness """
         win_to_focus = None
         for win in self.marked[tag]:
+            self.focus_transient_parent(tag, win.__dict__)
             win.command('move window to workspace current')
             win_to_focus = win
-        if hide and tag != 'transients':
+        if hide:
             self.hide(tag, win_to_focus)
         if win_to_focus is not None:
             win_to_focus.command('focus')
@@ -360,39 +364,40 @@ class scratchpad(extension, cfg, Matcher):
         """
         self.del_props(tag, prop_str)
 
+    def scratchpad_move(self, win, tag, show=False, hide=True):
+        win.command(
+            f"{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
+            {self.nsgeom.get_geom(tag)}")
+        self.marked[tag].append(win)
+        if show:
+            self.show(tag, hide=hide)
+
     def mark_tag(self, _, event) -> None:
         """ Add unique mark to the new window.
             _: i3ipc connection.
             event: i3ipc event. We can extract window from it using
             event.container. """
         win = event.container
-        is_dialog_win = NegEWMH.is_dialog_win(win)
-
         self.win = win
-        for tag in self.cfg:
-            if not is_dialog_win and tag != "transients":
+        if NegEWMH.is_window_modal(win):
+            if 'transients' in self.cfg:
+                if not self.match(win, 'transients'):
+                    win.command('focus; floating disable; floating enable')
+                else:
+                    self.make_transient(win)
+        elif NegEWMH.is_dialog_win(win):
+            self.make_transient(win)
+        else:
+            for tag in self.cfg:
                 if self.match(win, tag):
-                    # scratch_move
-                    win.command(
-                        f"{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
-                        {self.nsgeom.get_geom(tag)}")
-                    self.marked[tag].append(win)
-                    self.show(tag, hide=True)
-            elif is_dialog_win and tag == "transients":
-                win.command(
-                    f"{scratchpad.mark_uuid_tag('transients')}, \
-                    move scratchpad")
-                self.marked["transients"].append(win)
-
-        # Special hack to invalidate windows after subtag start
-        if self.focus_win_flag[0]:
-            special_tag = self.focus_win_flag[1]
-            if special_tag in self.cfg:
-                self.show(special_tag, hide=True)
-            self.focus_win_flag[0] = False
-            self.focus_win_flag[1] = ""
-
-        self.dialog()
+                    self.scratchpad_move(win, tag, show=True)
+            # Special hack to invalidate windows after subtag start
+            if self.focus_win_flag[0]:
+                special_tag = self.focus_win_flag[1]
+                if special_tag in self.cfg:
+                    self.show(special_tag, hide=True)
+                self.focus_win_flag[0] = False
+                self.focus_win_flag[1] = ""
 
     def unmark_tag(self, _, event) -> None:
         """ Delete unique mark from the closed window.
@@ -409,9 +414,15 @@ class scratchpad(extension, cfg, Matcher):
                     break
         if win_ev.fullscreen_mode:
             self.apply_to_current_tag(self.hide_scratchpad)
-        for transient in self.marked["transients"]:
-            if transient.id == win_ev.id:
-                self.marked["transients"].remove(transient)
+
+    def make_transient(self, win, show=True):
+        transient_geom = self.nsgeom.get_geom('transients') or ''
+        win_cmd = f"{scratchpad.mark_uuid_tag('transients')}, \
+            move scratchpad {transient_geom}"
+        win.command(win_cmd)
+        self.marked['transients'].append(win)
+        if show:
+            self.show('transients', hide=False)
 
     def mark_all_tags(self, hide: bool = True) -> None:
         """ Add marks to the all tags.
@@ -421,20 +432,20 @@ class scratchpad(extension, cfg, Matcher):
         winlist = self.i3ipc.get_tree().leaves()
         hide_cmd = ''
         for win in winlist:
-            is_dialog_win = NegEWMH.is_dialog_win(win)
-            for tag in self.cfg:
-                if not is_dialog_win and tag != "transients":
+            self.win = win
+            if NegEWMH.is_window_modal(win):
+                if 'transients' in self.cfg:
+                    if not self.match(win, 'transients'):
+                        win.command('focus; floating disable; floating enable')
+                    else:
+                        self.make_transient(win)
+            elif NegEWMH.is_dialog_win(win):
+                self.make_transient(win)
+            else:
+                for tag in self.cfg:
                     if self.match(win, tag):
                         if hide:
                             hide_cmd = '[con_id=__focused__] scratchpad show'
-                        win_cmd = f"{scratchpad.mark_uuid_tag(tag)}, \
-                            move scratchpad, \
-                            {self.nsgeom.get_geom(tag)}, {hide_cmd}"
-                        win.command(win_cmd)
-                        self.marked[tag].append(win)
-                if is_dialog_win:
-                    win_cmd = f"{scratchpad.mark_uuid_tag('transients')}, \
-                        move scratchpad"
-                    win.command(win_cmd)
-                    self.marked["transients"].append(win)
+                        self.scratchpad_move(win ,tag)
+                        win.command(hide_cmd)
             self.win = win

@@ -3,7 +3,6 @@ etc using python-xlib and python-ewmh. """
 from typing import List
 from contextlib import contextmanager
 
-import logging
 import Xlib
 import Xlib.display
 import Xlib.error
@@ -34,25 +33,20 @@ class NegEWMH():
         fast, then using python EWMH module to detect dialog window type or
         modal state of window.
         win : target window to check """
-        if win.window_instance == "Places" \
-                or win.window_role in {
-                        "GtkFileChooserDialog",
-                        "confirmEx",
-                        "gimp-file-open"} \
-                or win.window_class == "Dialog":
-            return True
         with NegEWMH.window_obj(NegEWMH.disp, win.window) as win_obj:
             try:
                 win_type = NegEWMH.ewmh.getWmWindowType(win_obj, str=True)
             except Xlib.error.BadWindow:
-                logging.error(f'Get bad window {win.__dict__}')
                 return False
             if '_NET_WM_WINDOW_TYPE_DIALOG' in win_type:
                 return True
-            win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)
-            if '_NET_WM_STATE_MODAL' in win_state:
-                return True
             return False
+
+    @staticmethod
+    def is_window_modal(win) -> bool:
+        with NegEWMH.window_obj(NegEWMH.disp, win.window) as win_obj:
+            win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)
+            return bool('_NET_WM_STATE_MODAL' in win_state)
 
     @staticmethod
     def find_visible_windows(windows_on_ws: List) -> List:
