@@ -193,10 +193,8 @@ class scratchpad(extension, cfg, Matcher):
             return
         if subtag in target_tag:
             class_list = [win.window_class for win in self.marked[tag]]
-            subtag_classes_set = self.conf(tag, subtag, "classw")
-            subtag_classes_matched = [
-                w for w in class_list if w in subtag_classes_set
-            ]
+            subtag_classes_set = self.cfg[tag][subtag]['classw']
+            subtag_classes_matched = [w for w in class_list if w in subtag_classes_set]
             if not subtag_classes_matched:
                 target_subtag = self.conf(tag, subtag)
                 if not target_subtag:
@@ -207,7 +205,7 @@ class scratchpad(extension, cfg, Matcher):
             else:
                 self.focus_sub_tag(tag, subtag_classes_set)
         else:
-            self.toggle(tag)
+            self.show(tag)
 
     def restore_fullscreens(self) -> None:
         """ Restore all fullscreen windows """
