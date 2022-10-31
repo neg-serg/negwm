@@ -19,7 +19,7 @@
 # Menu
     - Better attach circle/scratchpad menu
     - Fix ex-gnome module
-    - More clean menu modules architecture
+    - Add stuff for marks add del to attach to ws, etc
 
 # Experiments
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'

@@ -9,7 +9,7 @@ import sys
 import pickle
 import traceback
 import logging
-from typing import Set, Any
+from typing import Set, Any, Dict, List
 from negwm.lib.misc import Misc
 from negwm.lib.extension import extension
 
@@ -28,9 +28,16 @@ class cfg():
         self.negwm_mod_cfg_cache_path = f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
+        self.additional_props = [()] # used to store add_prop history
         if not self.cfg:
             self.cfg = {}
         self.i3ipc = i3
+
+    def get_config(self) -> Dict:
+        return self.cfg
+
+    def get_added_props(self) -> List:
+        return self.additional_props
 
     def conf(self, *conf_path) -> Any:
         """ Helper to extract config for current tag. conf_path: path of config
@@ -127,6 +134,7 @@ class cfg():
                     # fix for the case where attr is just attr not {attr}
                     if isinstance(self.conf(tag, tok), str):
                         self.cfg[tag][tok] = {self.win_attrs[tok]}
+            self.additional_props.append((tag, prop_str))
 
     def del_direct_props(self, target_tag: str) -> None:
         """ Remove basic(non-regex) properties of window from target tag.
@@ -150,7 +158,6 @@ class cfg():
             role_r_check = (prop == "role_r" and winattr == win.window_role)
             if class_r_check or instance_r_check or role_r_check:
                 self.cfg[target_tag][prop].remove(target_tag)
-
         lst_by_reg = []
         # Delete appropriate regexes
         for prop in self.cfg[target_tag].copy():

@@ -4,7 +4,8 @@ Daemon manager and mod daemon: Mod daemon creates appropriate files in the
 based API with help of asyncio. """
 
 import asyncio
-from typing import Dict
+import pickle
+from typing import Dict, List
 
 class MsgBroker():
     lock=asyncio.Lock()
@@ -12,6 +13,10 @@ class MsgBroker():
     @classmethod
     def get_mods(cls) -> Dict:
         return cls.mods
+
+    @classmethod
+    def get_mods_list(cls) -> List:
+        return cls.mods.keys()
 
     @classmethod
     def mainloop(cls, loop, mods, port) -> None:
@@ -32,5 +37,5 @@ class MsgBroker():
                 name=response[0]
                 ret = cls.mods[name].send_msg(response[1:])
                 if ret:
-                    writer.write(str(ret).encode())
+                    writer.write(pickle.dumps(ret))
                     await writer.drain()

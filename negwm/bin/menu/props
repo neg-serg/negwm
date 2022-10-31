@@ -1,14 +1,22 @@
+#!/usr/bin/env python
+
 import subprocess
 import re
 import socket
 import logging
+import asyncio
 from typing import List
-from negwm.lib.extension import extension
+import pickle
+import sys
+import i3ipc
+import i3ipc.con
+
+from negwm.modules.reflection import reflection
+from negwm.lib.menu import menu
 
 
 class props():
-    def __init__(self, menu):
-        self.menu = menu
+    def __init__(self):
         self.delim = "@" # Magic delimiter used by add_prop / del_prop routines.
         # create echo server socket
         self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
@@ -17,17 +25,25 @@ class props():
         # to / from named scratchpad.
         self.possible_mods = ['scratchpad', 'circle']
         # Window properties used by i3 to match windows.
-        self.i3rules_xprop = set(self.menu.conf("rules_xprop"))
+        rules_xprop=['WM_CLASS', 'WM_WINDOW_ROLE', 'WM_NAME', '_NET_WM_NAME']
+        self.prompt='❯>'
+        self.matching='fuzzy'
+        self.xprops_list=[
+            'WM_CLASS', 'WM_NAME', 'WM_WINDOW_ROLE', 'WM_TRANSIENT_FOR',
+            '_NET_WM_WINDOW_TYPE', '_NET_WM_STATE', '_NET_WM_PID'
+        ]
+        self.i3rules_xprop = set(rules_xprop)
+        self.left_bracket='⟬'
+        self.right_bracket='⟭'
+        self.i3=i3ipc.Connection()
 
     def tag_name(self, mod: str, lst: List[str]) -> str:
         """ Returns tag name, selected by menu.
             mod (str): module name string.
             lst (List[str]): list of menu input. """
-        menu_params = {
-            'prompt': f'{self.menu.wrap_str(mod)} {self.menu.conf("prompt")}',
-        }
+        params = {'prompt': f'{menu.wrap_str(mod)} {self.prompt}'}
         menu_tag = subprocess.run(
-            self.menu.args(menu_params),
+            menu.args(params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(lst), 'UTF-8'),
             check=False
@@ -37,34 +53,52 @@ class props():
 
         return ""
 
-    def move_window(self) -> None:
+    async def move_window(self):
         """ Start autoprop menu to move current module to smth. """
         mod = self.get_mod()
         if mod is None or not mod:
             return
-
         aprop_str = self.get_autoprop_as_str(with_title=False)
-        tag_name = self.tag_name(mod, props.mod_data_list(mod))
+        echo = reflection.echo
+        tag_name = self.tag_name(
+            mod,
+            pickle.loads(await echo(f'{mod} get_config\n'))
+        )
         if tag_name is not None and tag_name:
-            extension.get_mods()[mod].add_prop(tag_name, aprop_str)
+            await reflection.run(f'{mod} add_prop {tag_name} {aprop_str}')
         else:
             logging.error(f'No tag name specified for props {aprop_str}')
 
+    async def unmove_window(self):
+        """ Start autoprop menu to move current module to smth. """
+        mod = self.get_mod()
+        if mod is None or not mod:
+            return
+        echo = reflection.echo
+        print(pickle.loads(await echo(f'{mod} get_added_props\n')))
+        # mod = 'circle'
+        # stuff = pickle.loads(await echo(f'{mod} get_additional_props\n'))
+        # tag_name = self.tag_name(
+        #     mod,
+        #     pickle.loads(await echo(f'{mod} get_additional_props\n'))
+        # )
+        # print(tag_name)
+        # if tag_name is not None and tag_name:
+        #     await reflection.run(f'{mod} del_prop {tag_name} {aprop_str}')
+        # else:
+        #     logging.error(f'No tag name specified for props {aprop_str}')
+
     def get_mod(self) -> str:
         """ Select extension for add_prop by menu. """
-        menu_params = {
-            'prompt': f'{self.menu.wrap_str("selmod")}' \
-            f'{self.menu.conf("prompt")}'
-        }
+        menu_params = {'prompt': f'{menu.wrap_str("selmod")}' f'{self.prompt}'}
         mod = subprocess.run(
-            self.menu.args(menu_params),
+            menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(self.possible_mods), 'UTF-8'),
             check=False
         ).stdout
         if mod is not None and mod:
             return mod.decode('UTF-8').strip()
-
         return ""
 
     def show_props(self) -> None:
@@ -80,9 +114,9 @@ class props():
             with_role (bool): add WM_WINDOW_ROLE attribute to the list,
             optional. """
         xprops = []
-        win = self.menu.i3ipc.get_tree().find_focused()
+        win = self.i3.get_tree().find_focused()
         xprop = subprocess.run(
-            ['xprop', '-id', str(win.window)] + self.menu.xprops_list,
+            ['xprop', '-id', str(win.window)] + self.xprops_list,
             stdout=subprocess.PIPE,
             check=False
         ).stdout
@@ -106,9 +140,11 @@ class props():
                         ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
-    @staticmethod
-    def mod_data_list(mod: str) -> List[str]:
-        """ Extract list of module tags. Used by add_prop menus.
-            mod (str): extension name. """
-        return extension.get_mods()[mod].cfg.keys()
-
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        asyncio.run(props().move_window())
+    else:
+        if sys.argv[1] == 'show':
+            props().show_props()
+        if sys.argv[1] == 'del':
+            asyncio.run(props().unmove_window())

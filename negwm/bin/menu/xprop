@@ -1,20 +1,31 @@
+#!/usr/bin/env python
 import subprocess
+import i3ipc
+import i3ipc.con
+from typing import List
 from negwm.lib.misc import Misc
-
+from negwm.lib.menu import menu
 
 class xprop():
     """ Setup screen resolution """
-    def __init__(self, menu):
-        self.menu = menu
+    def __init__(self):
+        self.xprops_list=[
+            'WM_CLASS', 'WM_NAME', 'WM_WINDOW_ROLE', 'WM_TRANSIENT_FOR',
+            '_NET_WM_WINDOW_TYPE', '_NET_WM_STATE', '_NET_WM_PID'
+        ]
+        self.matching='fuzzy'
+        self.prompt='❯>'
+        self.left_bracket,self.right_bracket='⟬','⟭'
+        self.i3ipc=i3ipc.Connection()
 
     def xprop(self) -> None:
         """ Menu to show X11 atom attributes for current window. """
         xprops = []
-        target_win = self.menu.i3ipc.get_tree().find_focused()
+        target_win = self.i3ipc.get_tree().find_focused()
         try:
             xprop_ret = subprocess.run(
                 ['xprop', '-id', str(target_win.window)] +
-                self.menu.xprops_list,
+                self.xprops_list,
                 stdout=subprocess.PIPE,
                 check=True
             ).stdout
@@ -25,11 +36,11 @@ class xprop():
                         xprops.append(line)
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
-        menu_params = {'prompt': f'{self.menu.wrap_str("xprop")} {self.menu.conf("prompt")}'}
+        menu_params = {'prompt': f'{menu.wrap_str("xprop")} {self.prompt}'}
         ret = ""
         try:
             xprop_sel = subprocess.run(
-                self.menu.args(menu_params),
+                menu.args(menu_params),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(xprops), 'UTF-8'),
                 check=True
@@ -45,3 +56,6 @@ class xprop():
                 subprocess.run(['xsel', '-i'], input=bytes(ret.strip(), 'UTF-8'), check=True)
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
+
+if __name__ == '__main__':
+    xprop().xprop()
