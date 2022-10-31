@@ -8,6 +8,7 @@ readme = ['README.md', 'README-en.md']
 homepage = "https://github.com/neg-serg/negwm"
 repository = "https://github.com/neg-serg/negwm"
 packages = [
+    { include = 'negwm/__main__.py' },
     { include = 'negwm/*.py' },
     { include = 'negwm/lib/*.py' },
     { include = 'negwm/bin/create_cfg' },
