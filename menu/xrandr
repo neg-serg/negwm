@@ -2,17 +2,14 @@
 
 import subprocess
 import logging
-from typing import List
 from negwm.lib.display import Display
 from negwm.lib.menu import menu
 
 
 class xrandr():
     def __init__(self) -> None:
-        self.matching='fuzzy'
-        self.prompt='❯>'
-        self.left_bracket='⟬'
-        self.right_bracket='⟭'
+        self.matching,self.prompt='fuzzy','❯>'
+        self.left_bracket,self.right_bracket='⟬','⟭'
 
     def xrandr(self):
         ret = ''

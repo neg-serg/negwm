@@ -13,7 +13,6 @@ packages = [
     { include = 'negwm/lib/*.py' },
     { include = 'negwm/bin/create_cfg' },
     { include = 'negwm/modules/*.py'},
-    { include = 'negwm/modules/menu_mods/*.py'},
 ]
 
 [tool.poetry.dependencies]

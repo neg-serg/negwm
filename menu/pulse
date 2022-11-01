@@ -36,8 +36,7 @@ class pulse_menu():
             return
         self.pulse_data_init()
         for app in self.pulse_data["pulse_app_list"]:
-            app_name = app.proplist["media.name"] + ' -- ' + \
-                app.proplist["application.name"]
+            app_name = app.proplist["media.name"] + ' -- ' + app.proplist["application.name"]
             self.pulse_data["app_list"] += [app_name]
             self.pulse_data["app_props"][app_name] = app
         if self.pulse_data["app_list"]:
@@ -110,7 +109,6 @@ class pulse_menu():
         """ Create params for pulseaudio selector """
         if self.pulse is None:
             return None
-
         menu_params = {
             'auto-select': '-auto-select',
             'prompt': f'{menu.wrap_str("pulse output")}{self.prompt}'
@@ -144,6 +142,6 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == 'output': p.pulseaudio_output()
         if sys.argv[1] == 'input': p.pulseaudio_input()
-        if sys.argv[1] == 'menu': p.pulseaudio_mute(True)
+        if sys.argv[1] == 'mute': p.pulseaudio_mute(True)
     else:
         p.pulseaudio_output()

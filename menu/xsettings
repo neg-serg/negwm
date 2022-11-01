@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ Change gtk / icons themes """
 import os
 import subprocess
@@ -6,6 +7,7 @@ import logging
 import sys
 
 from negwm.lib.misc import Misc
+from negwm.lib.menu import menu
 
 xdg_data_home=os.environ.get('XDG_DATA_HOME', '')
 if not xdg_data_home:
@@ -15,13 +17,15 @@ if not xdg_data_home:
 
 class xsettings():
     """ Change gtk / icons themes xsettingsd. """
-    def __init__(self, menu):
-        self.menu=menu
+    def __init__(self):
+        self.prompt='❯>'
+        self.left_bracket,self.right_bracket='⟬','⟭'
+        self.matching='fuzzy'
         self.xsettings_reload=os.path.expanduser('~/bin/xsettingsd-setup')
 
     def menu_params(self, prompt):
         """ Set menu params """
-        return {'prompt': f'{self.menu.wrap_str(prompt)} {self.menu.conf("prompt")}'}
+        return {'prompt': f'{menu.wrap_str(prompt)} {self.prompt}'}
 
     def apply_settings(self):
         """ Apply selected gnome settings """
@@ -46,7 +50,7 @@ class xsettings():
         else:
             try:
                 selection=subprocess.run(
-                    self.menu.args(menu_params),
+                    menu.args(menu_params),
                     stdout=subprocess.PIPE,
                     input=bytes('\n'.join(icon_dirs), 'UTF-8'),
                     check=True
@@ -67,13 +71,12 @@ class xsettings():
         selection=''
         if not theme_dirs:
             return
-
         if len(theme_dirs) == 1:
             selection=theme_dirs[0]
         else:
             try:
                 selection=subprocess.run(
-                    self.menu.args(menu_params),
+                    menu.args(menu_params),
                     stdout=subprocess.PIPE,
                     input=bytes('\n'.join(theme_dirs), 'UTF-8'),
                     check=True
@@ -82,3 +85,12 @@ class xsettings():
                 Misc.print_run_exception_info(proc_err)
         if selection:
             self.apply_settings()
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'gtk':
+            xsettings().change_gtk_theme()
+        if sys.argv[1] == 'icon':
+            xsettings().change_icon_theme()
+    else:
+        xsettings().change_gtk_theme()

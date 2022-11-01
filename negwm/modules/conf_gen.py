@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from typing import List
 
 from negwm.lib.misc import Misc
 from negwm.lib.cfg import cfg
@@ -140,6 +141,9 @@ class conf_gen(extension, cfg):
                     elif param.startswith('keybind_'):
                         ret += conf_gen.generate_bindsym(mode, tag, settings, param, mod=mod_name)
         return ret
+
+    def raw_ws(self) -> List:
+        return self.cfg.get('workspaces', [])
 
     def workspaces(self) -> str:
         ret = ''

@@ -81,7 +81,7 @@ class NegWM():
         dirname=os.path.dirname
         mods=map(
             pathlib.Path,
-            glob.glob(f"{dirname(dirname(negwm.__file__))}/negwm/modules/*.py")
+            glob.glob(f"{dirname(dirname(__file__))}/negwm/modules/*.py")
         )
         for mod in mods:
             if mod.is_file():
@@ -145,7 +145,7 @@ class NegWM():
         console.log(loading_time_msg)
 
     def create_config_cache(self):
-        binpath=f'{os.path.dirname(negwm.__file__)}/bin/'
+        binpath=f'{os.path.dirname(__file__)}/bin/'
         proc=subprocess.Popen(
             [f'{binpath}/create_cfg'],
             stdout=subprocess.PIPE,
@@ -185,7 +185,7 @@ class NegWM():
         self.loop.create_task(self.cfg_mods_worker())
 
     def create_config(self):
-        binpath=f'{os.path.dirname(negwm.__file__)}/bin/'
+        binpath=f'{os.path.dirname(__file__)}/bin/'
         subprocess.run(
             [f'{binpath}/create_cfg', '-d'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
