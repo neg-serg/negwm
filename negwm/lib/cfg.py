@@ -17,37 +17,31 @@ from negwm.lib.extension import extension
 class cfg():
     @staticmethod
     def props(prop):
-        if prop == 'title':
-            return 'name'
-        else:
-            return prop
+        if prop == 'title': return 'name'
+        else: return prop
 
     def __init__(self, i3) -> None:
-        self.mod = self.__class__.__name__ # detect current extension
+        self.mod=self.__class__.__name__ # detect current extension
         # extension config path
-        self.negwm_mod_cfg_cache_path = f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
+        self.negwm_mod_cfg_cache_path=f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
         self.load_config() # load current config
-        self.win_attrs = {} # used for props add / del hacks
-        self.additional_props = [dict()] # used to store add_prop history
-        if not self.cfg:
-            self.cfg = {}
-        self.i3ipc = i3
+        self.win_attrs={} # used for props add / del hacks
+        self.additional_props=[dict()] # used to store add_prop history
+        if not self.cfg: self.cfg={}
+        self.i3ipc=i3
 
-    def get_config(self) -> Dict:
-        return self.cfg
-
-    def get_added_props(self) -> List:
-        return self.additional_props
+    def get_config(self) -> Dict: return self.cfg
+    def get_added_props(self) -> List: return self.additional_props
 
     def conf(self, *conf_path) -> Any:
         """ Helper to extract config for current tag. conf_path: path of config
         from where extract. """
-        ret = {}
+        ret={}
         for part in conf_path:
             if not ret:
-                ret = self.cfg.get(part)
+                ret=self.cfg.get(part)
             else:
-                ret = ret.get(part)
+                ret=ret.get(part)
                 return ret
         return ret
 
@@ -69,7 +63,7 @@ class cfg():
     def reload(self, *_) -> None:
         """ Reload config for current selected module. Call load_config, print
         debug messages and reinit all stuff. """
-        prev_conf = self.cfg
+        prev_conf=self.cfg
         try:
             self.load_config()
             self.__init__(self.i3ipc)
@@ -81,7 +75,7 @@ class cfg():
         except Exception:
             logging.info(f"[{self.mod}] config reload failed")
             traceback.print_exc(file=sys.stdout)
-            self.cfg = prev_conf
+            self.cfg=prev_conf
             self.__init__(*_)
 
     def load_config(self) -> None:
@@ -89,7 +83,7 @@ class cfg():
         performance. """
         try:
             with open(self.negwm_mod_cfg_cache_path, "rb") as mod_cfg:
-                self.cfg = pickle.load(mod_cfg)
+                self.cfg=pickle.load(mod_cfg)
         except FileNotFoundError:
             logging.error(f'file {self.negwm_mod_cfg_cache_path} not exists')
 
@@ -101,81 +95,78 @@ class cfg():
     def property_to_winattrib(self, prop_str: str) -> None:
         """ Parse property string to create win_attrs dict.
             prop_str (str): property string in special format. """
-        self.win_attrs = {}
-        prop_str = prop_str[1:-1]
+        self.win_attrs={}
+        prop_str=prop_str[1:-1]
         for token in prop_str.split('@'):
             if token:
-                toks = token.split('=')
-                attr, value = toks[0], toks[1]
+                toks=token.split('=')
+                attr, value=toks[0], toks[1]
                 if value[0] == value[-1] and value[0] in {'"', "'"}:
-                    value = value[1:-1]
+                    value=value[1:-1]
                 if attr in cfg.subtag_attr_list():
-                    self.win_attrs[cfg.props(attr)] = value
+                    self.win_attrs[cfg.props(attr)]=value
 
     def add_props(self, tag: str, prop_str: str) -> None:
         """ Move window to some tag.
             tag (str): target tag
             prop_str (str): property string in special format. """
         self.property_to_winattrib(prop_str)
-        ftors = self.cfg_props() & set(self.win_attrs.keys())
-        if tag in self.cfg:
+        config=self.cfg
+        ftors=cfg.cfg_props() & set(self.win_attrs.keys())
+        if tag in config:
             for tok in ftors:
-                if self.win_attrs[tok] not in self.cfg.get(tag, {}).get(tok, {}):
-                    if tok in self.cfg[tag]:
-                        if isinstance(self.cfg[tag][tok], str):
-                            self.cfg[tag][tok] = {self.win_attrs[tok]}
-                        elif isinstance(self.cfg[tag][tok], list):
-                            self.cfg[tag][tok].append(self.win_attrs[tok])
-                            self.cfg[tag][tok] = list(
-                                dict.fromkeys(self.cfg[tag][tok])
-                            )
+                if self.win_attrs[tok] not in config.get(tag, {}).get(tok, {}):
+                    if tok in config[tag]:
+                        if isinstance(config[tag][tok], str):
+                            config[tag][tok]={self.win_attrs[tok]}
+                        elif isinstance(config[tag][tok], list):
+                            config[tag][tok].append(self.win_attrs[tok])
+                            config[tag][tok]=list(dict.fromkeys(config[tag][tok]))
                     else:
-                        self.cfg[tag].update({tok: self.win_attrs[tok]})
+                        config[tag].update({tok: self.win_attrs[tok]})
                     # fix for the case where attr is just attr not {attr}
                     if isinstance(self.conf(tag, tok), str):
-                        self.cfg[tag][tok] = {self.win_attrs[tok]}
+                        config[tag][tok]={self.win_attrs[tok]}
             self.additional_props.append({
                 'mod': self.__class__.__name__,
                 'tag': tag,
                 'prop': prop_str})
-            self.additional_props = list(filter(len, self.additional_props))
+            self.additional_props=list(filter(len, self.additional_props))
 
     def del_direct_props(self, target_tag: str) -> None:
         """ Remove basic(non-regex) properties of window from target tag.
             tag (str): target tag """
-        # Delete 'direct' props:
-        for prop in self.cfg[target_tag].copy():
-            if prop in self.cfg_props():
+        config=self.cfg
+        for prop in config[target_tag].copy():
+            if prop in cfg.cfg_props():
                 if isinstance(self.conf(target_tag, prop), str):
-                    del self.cfg[target_tag][prop]
+                    del config[target_tag][prop]
                 elif isinstance(self.conf(target_tag, prop), set):
-                    for tok in self.cfg[target_tag][prop].copy():
+                    for tok in config[target_tag][prop].copy():
                         if self.win_attrs[prop] == tok:
-                            self.cfg[target_tag][prop].remove(tok)
+                            config[target_tag][prop].remove(tok)
 
     def del_regex_props(self, target_tag: str) -> None:
         """ Remove regex properties of window from target tag.
             target_tag (str): target tag """
+        config=self.cfg
         def check_for_win_attrs(win, prop):
-            class_r_check = (prop == "class_r" and winattr == win.window_class)
-            instance_r_check = (prop == "instance_r" and winattr == win.window_instance)
-            role_r_check = (prop == "role_r" and winattr == win.window_role)
+            class_r_check=(prop == "class_r" and winattr == win.window_class)
+            instance_r_check=(prop == "instance_r" and winattr == win.window_instance)
+            role_r_check=(prop == "role_r" and winattr == win.window_role)
             if class_r_check or instance_r_check or role_r_check:
-                self.cfg[target_tag][prop].remove(target_tag)
-        lst_by_reg = []
+                config[target_tag][prop].remove(target_tag)
+        lst_by_reg=[]
         # Delete appropriate regexes
-        for prop in self.cfg[target_tag].copy():
+        tree=self.i3ipc.get_tree()
+        for prop in config[target_tag].copy():
             if prop in cfg.cfg_regex_props():
-                for reg in self.cfg[target_tag][prop].copy():
-                    if prop == "class_r":
-                        lst_by_reg = self.i3ipc.get_tree().find_classed(reg)
-                    if prop == "instance_r":
-                        lst_by_reg = self.i3ipc.get_tree().find_instanced(reg)
-                    if prop == "role_r":
-                        lst_by_reg = self.i3ipc.get_tree().find_by_role(reg)
-                    winattr = self.win_attrs[prop[:-2]]
-                    for win in lst_by_reg:
-                        check_for_win_attrs(win, prop)
+                for reg in config[target_tag][prop].copy():
+                    if prop == "class_r": lst_by_reg=tree.find_classed(reg)
+                    if prop == "instance_r": lst_by_reg=tree.find_instanced(reg)
+                    if prop == "role_r": lst_by_reg=tree.find_by_role(reg)
+                    winattr=self.win_attrs[prop[:-2]]
+                    for win in lst_by_reg: check_for_win_attrs(win, prop)
 
     def del_props(self, tag: str, prop_str: str) -> None:
         """ Remove window from some tag.
@@ -184,7 +175,8 @@ class cfg():
         self.property_to_winattrib(prop_str)
         self.del_direct_props(tag)
         self.del_regex_props(tag)
+        config=self.cfg
         # Cleanup
-        for prop in self.cfg_regex_props() | self.cfg_props():
+        for prop in cfg.cfg_regex_props() | self.cfg_props():
             if prop in self.conf(tag) and self.conf(tag, prop) == set():
-                del self.cfg[tag][prop]
+                del config[tag][prop]
