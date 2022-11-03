@@ -15,8 +15,6 @@ from negwm.lib.menu import menu
 class winact():
     def __init__(self):
         self.prompt='❯>'
-        self.matching='fuzzy'
-        self.left_bracket,self.right_bracket='⟬','⟭'
         self.i3ipc=i3ipc.Connection()
 
     def win_act_simple(self, cmd: str, prompt: str) -> None:

@@ -13,9 +13,7 @@ class xprop():
             'WM_CLASS', 'WM_NAME', 'WM_WINDOW_ROLE', 'WM_TRANSIENT_FOR',
             '_NET_WM_WINDOW_TYPE', '_NET_WM_STATE', '_NET_WM_PID'
         ]
-        self.matching='fuzzy'
         self.prompt='❯>'
-        self.left_bracket,self.right_bracket='⟬','⟭'
         self.i3ipc=i3ipc.Connection()
 
     def xprop(self) -> None:

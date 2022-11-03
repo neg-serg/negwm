@@ -8,8 +8,7 @@ from negwm.lib.menu import menu
 
 class pulse_menu():
     def __init__(self):
-        self.prompt,self.matching='❯>','fuzzy'
-        self.left_bracket,self.right_bracket='⟬','⟭'
+        self.prompt='❯>'
         try:
             self.pulse = pulsectl.Pulse('neg-pulse-selector')
         except Exception:

@@ -6,33 +6,13 @@ import subprocess
 import sys
 
 from typing import List
+from negwm.lib.menu import menu as Menu
 
 
 class i3menu():
     def __init__(self):
         self.i3cmd = 'i3-msg'
-        self.left_bracket='⟬'
         self.prompt='❯>'
-        self.right_bracket='⟭'
-
-    def args(self, params: dict) -> List[str]:
-        """ Create run parameters to spawn rofi process from dict
-            params(dict): parameters for rofi
-            List(str) to do rofi subprocessing """
-        matching='fuzzy'
-
-        params['prompt'] = self.prompt
-        params['markup_rows'] = params.get('markup_rows', '-no-markup-rows')
-        params['auto-select'] = \
-            params.get('auto-select', "-no-auto-select")
-        return [
-            'rofi', '-show', '-dmenu', '-disable-history',
-            params['auto-select'], params['markup_rows'],
-            '-p', params['prompt'], '-i', '-matching', f'{matching}']
-
-    def wrap_str(self, string: str) -> str:
-        """ String wrapper to make it beautiful """
-        return self.left_bracket + string + self.right_bracket
 
     def i3_cmds(self) -> List[str]:
         """ Return the list of i3 commands with magic_pie hack autocompletion. """
@@ -47,9 +27,7 @@ class i3menu():
             return []
         lst = [
             t.replace("'", '')
-            for t in re.split('\\s*,\\s*', json.loads(
-                out.decode('UTF-8')
-            )[0]['error'])[2:]
+            for t in re.split('\\s*,\\s*', json.loads(out.decode('UTF-8'))[0]['error'])[2:]
         ]
         lst.remove('nop')
         lst.extend(['splitv', 'splith'])
@@ -82,7 +60,7 @@ class i3menu():
         cmd = ''
         try:
             menu = subprocess.run(
-                self.args({}),
+                Menu.args({}),
                 stdout=subprocess.PIPE,
                 input=bytes('\n'.join(self.i3_cmds()), 'UTF-8'),
                 check=True
@@ -99,8 +77,7 @@ class i3menu():
         debug, ok, notify_msg = False, False, ""
         args, prev_args = None, None
         menu_params = {
-            'prompt': f"{self.wrap_str('i3cmd')} \
-                {self.prompt} " + cmd,
+            'prompt': f"{Menu.wrap_str('i3cmd')} {self.prompt} {cmd}",
         }
         while not (ok or args == ['<end>'] or args == []):
             if debug:
@@ -123,7 +100,7 @@ class i3menu():
                         if args == prev_args:
                             return 0
                         cmd_rerun = subprocess.run(
-                            self.args(menu_params),
+                            Menu.args(menu_params),
                             stdout=subprocess.PIPE,
                             input=bytes('\n'.join(args), 'UTF-8'),
                             check=False
@@ -132,7 +109,6 @@ class i3menu():
                         prev_args = args
                     except subprocess.CalledProcessError as call_e:
                         return call_e.returncode
-
         if not ok:
             subprocess.run(notify_msg, check=False)
 

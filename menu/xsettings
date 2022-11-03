@@ -19,8 +19,6 @@ class xsettings():
     """ Change gtk / icons themes xsettingsd. """
     def __init__(self):
         self.prompt='❯>'
-        self.left_bracket,self.right_bracket='⟬','⟭'
-        self.matching='fuzzy'
         self.xsettings_reload=os.path.expanduser('~/bin/xsettingsd-setup')
 
     def menu_params(self, prompt):
