@@ -46,7 +46,6 @@ import psutil
 from rich.traceback import install
 from rich.console import Console
 
-import negwm
 from negwm.lib.checker import checker
 from negwm.lib.locker import get_lock
 from negwm.lib.misc import Misc
@@ -231,7 +230,7 @@ def main():
     get_lock(os.path.basename(__file__))
     # We need it because of thread_wait on Ctrl-C.
     atexit.register(cleanup)
-    arguments=docopt(str(__doc__), version='0.9.4')
+    arguments=docopt(str(__doc__), version='0.9.5')
     log=logging.getLogger()
     if arguments['--systemd']:
         from systemd import journal
