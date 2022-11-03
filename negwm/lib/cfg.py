@@ -16,18 +16,13 @@ from negwm.lib.extension import extension
 
 
 class cfg():
-    @staticmethod
-    def props(prop):
-        if prop == 'title': return 'name'
-        else: return prop
-
     def __init__(self, i3) -> None:
-        self.mod=self.__class__.__name__ # detect current extension
+        self.mod=self.__class__.__name__    # detect current extension
         # extension config path
         self.negwm_mod_cfg_cache_path=f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
-        self.load_config() # load current config
-        self.win_attrs={} # used for props add / del hacks
-        self.additional_props=[dict()] # used to store add_prop history
+        self.load_config()                  # load current config
+        self.win_attrs={}                   # used for props add / del hacks
+        self.additional_props=[dict()]      # used to store add_prop history
         if not self.cfg: self.cfg={}
         self.i3ipc=i3
 
@@ -82,24 +77,25 @@ class cfg():
         """ Move window to some tag.
             tag (str): target tag
             prop_str (str): property string in special format. """
-        props.property_to_winattrib(self.win_attrs, prop_str)
         config=self.cfg
-        ftors=props.cfg_props() & set(self.win_attrs.keys())
+        props.str_to_winattr(self.win_attrs, prop_str)
+        factors=props.cfg_props() & set(self.win_attrs.keys())
         if not tag in config:
             return
-        for tok in ftors:
-            if self.win_attrs[tok] not in config.get(tag, {}).get(tok, {}):
-                if tok in config[tag]:
-                    if isinstance(config[tag][tok], str):
-                        config[tag][tok]={self.win_attrs[tok]}
-                    elif isinstance(config[tag][tok], list):
-                        config[tag][tok].append(self.win_attrs[tok])
-                        config[tag][tok]=list(dict.fromkeys(config[tag][tok]))
+        tagcfg=config[tag]
+        for tok in factors:
+            if self.win_attrs[tok] not in tagcfg.get(tok, {}):
+                if tok in tagcfg:
+                    if isinstance(tagcfg[tok], str):
+                        tagcfg[tok]={self.win_attrs[tok]}
+                    elif isinstance(tagcfg[tok], list):
+                        tagcfg[tok].append(self.win_attrs[tok])
+                        tagcfg[tok]=list(dict.fromkeys(tagcfg[tok]))
                 else:
-                    config[tag].update({tok: self.win_attrs[tok]})
+                    tagcfg.update({tok: self.win_attrs[tok]})
                 # fix for the case where attr is just attr not {attr}
                 if isinstance(self.conf(tag, tok), str):
-                    config[tag][tok]={self.win_attrs[tok]}
+                    tagcfg[tok]={self.win_attrs[tok]}
         self.additional_props.append({
             'mod': self.__class__.__name__,
             'tag': tag,
@@ -110,11 +106,12 @@ class cfg():
         """ Remove window from some tag.
         tag (str): target tag
         prop_str (str): property string in special format. """
-        tree=self.i3ipc.get_tree()
-        props.property_to_winattrib(self.win_attrs, prop_str)
-        props.del_direct_props(self.cfg, self.win_attrs, tag)
-        props.del_regex_props(self.cfg, tree, self.win_attrs, tag)
         config=self.cfg
+        tree=self.i3ipc.get_tree()
+        props.str_to_winattr(self.win_attrs, prop_str)
+
+        props.del_direct_props(config, self.win_attrs, tag)
+        props.del_regex_props(config, tree, self.win_attrs, tag)
         for prop in props.cfg_regex_props() | props.cfg_props():
             if prop in self.conf(tag) and self.conf(tag, prop) == set():
                 del config[tag][prop]

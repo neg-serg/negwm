@@ -1,6 +1,11 @@
-from typing import Set
+from typing import Set, Dict
 
 class props:
+    @staticmethod
+    def pname(prop):
+        if prop == 'title': return 'name'
+        else: return prop
+
     @staticmethod
     def cfg_regex_props() -> Set[str]:
         """ Props with regexes """
@@ -53,10 +58,9 @@ class props:
 
 
     @staticmethod
-    def property_to_winattrib(win_attrs, prop_str: str) -> None:
+    def str_to_winattr(win_attrs: Dict, prop_str: str) -> None:
         """ Parse property string to create win_attrs dict.
             prop_str (str): property string in special format. """
-        win_attrs={}
         prop_str=prop_str[1:-1]
         for token in prop_str.split('@'):
             if token:
@@ -65,4 +69,4 @@ class props:
                 if value[0] == value[-1] and value[0] in {'"', "'"}:
                     value=value[1:-1]
                 if attr in props.subtag_attr_list():
-                    win_attrs[props.props(attr)]=value
+                    win_attrs[props.pname(attr)]=value
