@@ -17,7 +17,6 @@
     - Set geometry for scratchpad windows(optional)
 
 # Menu
-    - Better attach circle/scratchpad menu
     - Fix ex-gnome module
     - Add stuff for marks add del to attach to ws, etc
 
