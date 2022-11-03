@@ -233,8 +233,7 @@ class circle(extension, cfg, Matcher):
             tag (str): denotes the target tag.
             prop_str (str): string in i3-match format used to add/delete target
             window in/from scratchpad. """
-        if tag_to_add in self.cfg:
-            self.add_props(tag_to_add, prop_str)
+        if tag_to_add in self.cfg: self.add_props(tag_to_add, prop_str)
         for tag in self.cfg:
             if tag != tag_to_add:
                 self.del_props(tag, prop_str)
@@ -246,6 +245,7 @@ class circle(extension, cfg, Matcher):
             prop_str (str): string in i3-match format used to add/delete target
             window in/from scratchpad. """
         self.del_props(tag, prop_str)
+        self.initialize(self.i3ipc)
 
     def tag_windows(self, invalidate_winlist=True) -> None:
         """ Find acceptable windows for the all tags and add it to the
@@ -276,9 +276,7 @@ class circle(extension, cfg, Matcher):
                 for container_win in tagged_win.parent:
                     if container_win in self.tagged[tag]:
                         oldidx = self.tagged[tag].index(container_win)
-                        self.tagged[tag].insert(
-                            i, self.tagged[tag].pop(oldidx)
-                        )
+                        self.tagged[tag].insert(i, self.tagged[tag].pop(oldidx))
                         i += 1
         except TypeError:
             pass

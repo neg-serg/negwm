@@ -5,7 +5,6 @@ import re
 import socket
 import logging
 import asyncio
-from typing import List
 import pickle
 import sys
 import i3ipc
@@ -34,52 +33,64 @@ class props():
         self.i3rules_xprop=set(rules_xprop)
         self.i3=i3ipc.Connection()
 
-    def tag_name(self, mod: str, lst: List[str]) -> str:
-        """ Returns tag name, selected by menu.
-            mod (str): module name string.
-            lst (List[str]): list of menu input. """
-        params={'prompt': f'{menu.wrap_str(mod)} {self.prompt}'}
-        menu_tag=subprocess.run(
-            menu.args(params),
+    def select(self, name, lst) -> str:
+        """ Select extension for add_prop by menu. """
+        menu_params = {'prompt': f'{menu.wrap_str(name)}' f'{self.prompt}'}
+        prop = subprocess.run(
+            menu.args(menu_params),
             stdout=subprocess.PIPE,
             input=bytes('\n'.join(lst), 'UTF-8'),
             check=False
         ).stdout
-        if menu_tag is not None and menu_tag:
-            return menu_tag.decode('UTF-8').strip()
+        if prop is not None and prop:
+            return prop.decode('UTF-8').strip()
         return ""
 
     async def move_window(self):
         """ Start autoprop menu to move current module to smth. """
+        all_props = {}
         for mod in self.possible_mods:
             if mod is None or not mod:
                 return
-            aprop_str=self.get_autoprop_as_str(with_title=False)
             echo=reflection.echo
-            tag_name=self.tag_name(mod, pickle.loads(await echo(f'{mod} get_config\n')))
-            if tag_name is not None and tag_name:
-                await reflection.run(f'{mod} add_prop {tag_name} {aprop_str}')
-            else:
+            mod_cfg = pickle.loads(await echo(f'{mod} get_config\n'))
+            if mod_cfg is not None and mod_cfg:
+                all_props |= {k: f'{mod}@{k}' for (k,_) in mod_cfg.items()}
+        prop = self.select('props', all_props.values())
+        aprop_str=self.get_autoprop_as_str(with_title=False)
+        if prop is not None and prop:
+            try:
+                p=prop.split('@')
+                await reflection.run(f'{p[0]} add_prop {p[1]} {aprop_str}')
+            except:
                 logging.error(f'No tag name specified for props {aprop_str}')
 
     async def unmove_window(self):
         """ Start autoprop menu to move current module to smth. """
+        all_added_props = []
         for mod in self.possible_mods:
             if mod is None or not mod:
                 return
             echo=reflection.echo
-            print(pickle.loads(await echo(f'{mod} get_added_props\n')))
-            # mod='circle'
-            # stuff=pickle.loads(await echo(f'{mod} get_additional_props\n'))
-            # tag_name=self.tag_name(
-            #     mod,
-            #     pickle.loads(await echo(f'{mod} get_additional_props\n'))
-            # )
-            # print(tag_name)
-            # if tag_name is not None and tag_name:
-            #     await reflection.run(f'{mod} del_prop {tag_name} {aprop_str}')
-            # else:
-            #     logging.error(f'No tag name specified for props {aprop_str}')
+            added_props = pickle.loads(await echo(f'{mod} get_added_props\n'))
+            if added_props is not None and added_props:
+                all_added_props.append(added_props)
+        aprop_str=self.get_autoprop_as_str(with_title=False)
+        drop_list = []
+
+        for prop_list in filter(len, all_added_props):
+            if prop_list and prop_list[0]:
+                for props in prop_list:
+                    if aprop_str == props['prop']:
+                        drop_list.append((props['mod'] + '###' + props['tag']))
+        if drop_list:
+            tag_to_remove = self.select('remove from', drop_list)
+            if tag_to_remove is not None and tag_to_remove:
+                p=tag_to_remove.split('###')
+                print(f'{p[0]} del_prop {p[1]} {aprop_str}')
+                await reflection.run(f'{p[0]} del_prop {p[1]} {aprop_str}')
+            else:
+                logging.error(f'No tag name specified for props {aprop_str}')
 
     def show_props(self) -> None:
         """ Send notify-osd message about current properties. """
@@ -110,10 +121,9 @@ class props():
                     founded_attr=re.search("[A-Z]+(.*)=", xattr).group(0)
                     xattr=re.sub("[A-Z]+(.*)=", '', xattr).split(', ')
                     if "WM_CLASS" in founded_attr:
-                        if xattr[0] is not None and xattr[0]:
-                            ret.append(f'instance={xattr[0]}{self.delim}')
-                        if xattr[1] is not None and xattr[1]:
-                            ret.append(f'class={xattr[1]}{self.delim}')
+                        for num, pr in enumerate(['instance', 'class']):
+                            if xattr[num] is not None and xattr[num]:
+                                ret.append(f'{pr}={xattr[num].strip()}{self.delim}')
                     if with_role and "WM_WINDOW_ROLE" in founded_attr:
                         ret.append(f'window_role={xattr[0]}{self.delim}')
                     if with_title and "WM_NAME" in founded_attr:

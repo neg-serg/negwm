@@ -353,6 +353,7 @@ class scratchpad(extension, cfg, Matcher):
             window in/from scratchpad.
         """
         self.del_props(tag, prop_str)
+        self.initialize(self.i3ipc)
 
     def scratchpad_move(self, win, tag, show=False, hide=True):
         win.command(

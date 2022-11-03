@@ -28,7 +28,7 @@ class cfg():
         self.negwm_mod_cfg_cache_path = f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
         self.load_config() # load current config
         self.win_attrs = {} # used for props add / del hacks
-        self.additional_props = [()] # used to store add_prop history
+        self.additional_props = [dict()] # used to store add_prop history
         if not self.cfg:
             self.cfg = {}
         self.i3ipc = i3
@@ -134,7 +134,11 @@ class cfg():
                     # fix for the case where attr is just attr not {attr}
                     if isinstance(self.conf(tag, tok), str):
                         self.cfg[tag][tok] = {self.win_attrs[tok]}
-            self.additional_props.append((tag, prop_str))
+            self.additional_props.append({
+                'mod': self.__class__.__name__,
+                'tag': tag,
+                'prop': prop_str})
+            self.additional_props = list(filter(len, self.additional_props))
 
     def del_direct_props(self, target_tag: str) -> None:
         """ Remove basic(non-regex) properties of window from target tag.
