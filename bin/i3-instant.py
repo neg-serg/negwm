@@ -1,4 +1,5 @@
-import asyncio
+#!/usr/bin/env python
+
 import i3ipc
 import datetime
 import json
@@ -7,14 +8,14 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from . import layouts, __version__
+from negwm.lib.layouts import layouts
 
 
 counter_file = Path("~/.local/share/i3-instant-layout/counter.json").expanduser()
 counter_file.parent.mkdir(exist_ok=True, parents=True)
 
 
-def append_layout(layout_dict, window_count):
+def append_layout(layout_dict, _):
     """Apply a layout from this layout class"""
     tf = tempfile.NamedTemporaryFile(suffix=".json")
     tf.write(json.dumps(layout_dict, indent=4).encode("utf-8"))
