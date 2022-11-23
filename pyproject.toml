@@ -1,36 +1,36 @@
 [tool.poetry]
-name = "negwm"
-version = "0.9.5"
-description = "negwm - brings a lot of unique UX features inspired by notion/ion3"
-authors = ["Neg <serg.zorg@gmail.com>"]
-license = "LGPL-3.0 License"
-readme = ['README.md', 'README-en.md']
-homepage = "https://github.com/neg-serg/negwm"
-repository = "https://github.com/neg-serg/negwm"
-packages = [
-    { include = 'negwm/__main__.py' },
-    { include = 'negwm/*.py' },
-    { include = 'negwm/lib/*.py' },
-    { include = 'negwm/bin/create_cfg' },
-    { include = 'negwm/modules/*.py'},
+name="negwm"
+version="0.9.5"
+description="negwm - brings a lot of unique UX features inspired by notion/ion3"
+authors=["Neg <serg.zorg@gmail.com>"]
+license="LGPL-3.0 License"
+readme=['README.md', 'README-en.md']
+homepage="https://github.com/neg-serg/negwm"
+repository="https://github.com/neg-serg/negwm"
+packages=[
+    {include='negwm/__main__.py'},
+    {include='negwm/*.py'},
+    {include='negwm/lib/*.py'},
+    {include='negwm/bin/create_cfg'},
+    {include='negwm/modules/*.py'},
 ]
 
 [tool.poetry.dependencies]
-asyncinotify = '*'
-docopt = '*'
-ewmh = '*'
-i3ipc = '*'
-inotipy = '*'
-psutil = '*'
-pulsectl = '*'
-python = '^3.10'
-python3-xlib = '*'
-rich = '*'
-Xlib = '*'
-yamlloader = '*'
+asyncinotify='*'
+docopt='*'
+ewmh='*'
+i3ipc='*'
+inotipy='*'
+psutil='*'
+pulsectl='*'
+python='^3.10'
+python3-xlib='*'
+rich='*'
+Xlib='*'
+yamlloader='*'
 
 [tool.poetry.dev-dependencies]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires=["poetry-core>=1.0.0"]
+build-backend="poetry.core.masonry.api"
