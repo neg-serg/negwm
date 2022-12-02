@@ -117,7 +117,7 @@ echo 'executor reload'|nc localhost 15555 -v -w 0
 # Описание модулей
 
 Как известно в X11 у окон есть разные атрибуты, такие как `WM_CLASS`, `WM_NAME` и др. В конфигах используется "class", "instance", "role"
-для обычных строковых атрибутов, "class_r", "instance_r", "name_r", "role_r" для regex'ов и match_all псевдоатрибут, который просто матчит всё подряд.
+для обычных строковых атрибутов, "class_r", "instance_r", "name_r", "role_r" для regex'ов.
 
 ## Scratchpad
 

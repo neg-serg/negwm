@@ -111,7 +111,7 @@ windows to it. Then it make some magic to support some kind of "next tab" for th
 Look at `cfg/scratchpad.py` for the more info.
 
 Possible matching rules are:
-"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
+"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r"
 
 It supports both strings and regexes and also need geom to create virtual placeholder for this windows, where all matched windows are
 attached to.
@@ -152,7 +152,7 @@ More of simple going to window you can **iterate** over them. So it's something 
 about semantics. This works despite of current monitor / workspace and you can iterate over them with ease.
 
 Possible matching rules are:
-"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r", 'match_all'
+"class", "instance", "role", "class_r", "instance_r", "name_r", "role_r"
 
 circle config example:
 ```python3
