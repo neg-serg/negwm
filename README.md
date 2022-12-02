@@ -224,51 +224,6 @@ autoback это список рабочих столов, которой озн�
     focus_prev_visible: focus previous visible window
 ```
 
-## Menu
-
-Модуль меню позволяет создавать разные меню, например меню команд i3-msg с автокомплитом, способность добавить окно на группу, перейти к окну из выбранных и так далее.
-
-Он состоит из `menu.py` и различных модулей для него, например:
-
-```cfg
-    attach
-    autoprop 
-    goto_win 
-    gtk_theme
-    i3_menu 
-    icon_theme
-    movews 
-    pulse_input 
-    pulse_mute 
-    pulse_output 
-    show_props 
-    ws 
-    xprop_show
-    xrandr_resolution
-```
-
-Список загружаемых модулей можно менять, чтобы управлять этим редактируйте `$XDG_CONFIG_HOME/negwm/menu.cfg`, опций довольно много чтобы их документировать,
-но идея была в том что можно использовать из коробки.
-
-Пример конфига:
-
-```python3
-class menu(Enum):
-    gap = '38'
-    host = '::'
-    i3cmd = 'i3-msg'
-    matching = 'fuzzy'
-    modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'xrandr']
-    port = 31888
-    use_default_width = '3840'
-    rules_xprop = ['WM_CLASS', 'WM_WINDOW_ROLE', 'WM_NAME', '_NET_WM_NAME']
-    xprops_list = ['WM_CLASS', 'WM_NAME', 'WM_WINDOW_ROLE', 'WM_TRANSIENT_FOR', '_NET_WM_WINDOW_TYPE', '_NET_WM_STATE', '_NET_WM_PID']
-
-    prompt = '❯>'
-    left_bracket = '⟬'
-    right_bracket = '⟭'
-```
-
 ## Actions
 
 Разные приколы чтобы эмулировать UX(поведение) из 2bwm(https://github.com/venam/2bwm). Оно активно не используется, что там есть можно

@@ -210,53 +210,6 @@ remember_focused commands:
     focus_prev_visible: focus previous visible window
 ```
 
-## Menu
-
-Menu module including i3-menu with hackish autocompletion, menu to attach window to window group(circled) or target named scratchpad(nsd)
-and more.
-
-It consists of main `menu.py` with the bindings to the menu modules, for example:
-
-```cfg
-    attach
-    autoprop 
-    goto_win 
-    gtk_theme
-    i3_menu 
-    icon_theme
-    movews 
-    pulse_input 
-    pulse_mute 
-    pulse_output 
-    show_props 
-    ws 
-    xprop_show
-    xrandr_resolution
-```
-
-It loads appropriate modules dynamically, to handle it please edit `cfg/menu.py` Too many of options to document it properly.
-
-menu cfg example:
-
-```python3
-class menu(Enum):
-    gap = '38'
-    host = '::'
-    i3cmd = 'i3-msg'
-    matching = 'fuzzy'
-    modules = ['i3menu', 'winact', 'pulse_menu', 'xprop', 'props', 'xrandr']
-    port = 31888
-    use_default_width = '3840'
-    rules_xprop = ['WM_CLASS', 'WM_WINDOW_ROLE', 'WM_NAME', '_NET_WM_NAME']
-    xprops_list = ['WM_CLASS', 'WM_NAME', 'WM_WINDOW_ROLE', 'WM_TRANSIENT_FOR', '_NET_WM_WINDOW_TYPE', '_NET_WM_STATE', '_NET_WM_PID']
-
-    prompt = '❯>'
-    left_bracket = '⟬'
-    right_bracket = '⟭'
-```
-
-Also it contains some settings for menus.
-
 ## Actions
 
 Various stuff to emulate some 2bwm UX. I do not use it actively for now, so too lazy to write good documentation for it but if you are
