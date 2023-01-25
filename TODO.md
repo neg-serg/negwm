@@ -24,7 +24,5 @@
     - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
     - Python reload dynamic
-    - wiki.archlinux.org/index.php/XDG_Autostart
-    • default config: use dex for XDG autostart
     • docs/ipc: document scratchpad_state
     • ipc: the GET_CONFIG request now returns all included files and their details
