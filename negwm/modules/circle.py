@@ -328,11 +328,9 @@ class circle(extension, cfg, Matcher):
         win = event.container
         self.fullscreened = self.i3ipc.get_tree().find_fullscreen()
 
-        if win.fullscreen_mode:
-            if win.id not in self.restore_fullscreen:
-                self.restore_fullscreen.append(win.id)
-                return
-        else:
-            if win.id in self.restore_fullscreen:
-                self.restore_fullscreen.remove(win.id)
-                return
+        if win.fullscreen_mode and (win.id not in self.restore_fullscreen):
+            self.restore_fullscreen.append(win.id)
+            return
+        if not win.fullscreen_mode and (win.id in self.restore_fullscreen):
+            self.restore_fullscreen.remove(win.id)
+            return
