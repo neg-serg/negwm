@@ -124,25 +124,25 @@ class circle(extension, cfg, Matcher):
 
     def focus_next(self, tag: str, idx: int,
                    inc_counter: bool = True,
-                   fullscreen_handler: bool = True,
+                   need_handle_fullscreen: bool = True,
                    subtagged: bool = False) -> None:
         """ Focus next window. Used by next function. Tag list is a list of
         windows by some factor, which determined by config settings.
         tag (str): target tag.
         idx (int): index inside tag list.
         inc_counter (bool): increase counter or not.
-        fullscreen_handler (bool): for manual set / unset fullscreen, because
+        need_handle_fullscreen (bool): for manual set / unset fullscreen, because
         of i3 is not perfect in it. For example you need it for different
         workspaces.
         subtagged (bool): this flag denotes to subtag using. """
-        if fullscreen_handler:
+        if need_handle_fullscreen:
             self.prefullscreen(tag)
         self.twin(tag, idx, subtagged).command('focus')
         if inc_counter:
             self.current_position[tag] += 1
-        if fullscreen_handler:
+        if need_handle_fullscreen:
             self.postfullscreen(tag, idx)
-        self.need_handle_fullscreen = True
+        self.need_need_handle_fullscreen = True
         self.focus_driven_actions(tag)
 
     def focus_driven_actions(self, tag):
@@ -195,7 +195,7 @@ class circle(extension, cfg, Matcher):
             self.run_prog(tag)
         elif len(self.tagged[tag]) == 1:
             idx = 0
-            self.focus_next(tag, idx, fullscreen_handler=False)
+            self.focus_next(tag, idx, need_handle_fullscreen=False)
         else:
             idx = self.current_position[tag] % len(self.tagged[tag])
             if self.need_priority_check(tag):
@@ -299,12 +299,9 @@ class circle(extension, cfg, Matcher):
             event.container. """
         win_con = event.container
         for tag in self.cfg:
-            if self.match(win_con, tag):
-                for win in self.tagged[tag]:
-                    if win.id in self.restore_fullscreen:
-                        self.restore_fullscreen.remove(win.id)
-        for tag in self.cfg:
             for win in self.tagged[tag]:
+                if self.match(win_con, tag) and win.id in self.restore_fullscreen:
+                    self.restore_fullscreen.remove(win.id)
                 if win.id == win_con.id:
                     self.tagged[tag].remove(win)
         self.subtag_info = {}
