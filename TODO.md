@@ -25,5 +25,4 @@
     - Better dynamic config architecture
     - Black/light background for mpd status
     - Python reload dynamic
-    • docs/ipc: document scratchpad_state
     • ipc: the GET_CONFIG request now returns all included files and their details

@@ -64,7 +64,7 @@ class scratchpad(extension, cfg, Matcher):
         ret: str = ''
         for tag in cmd_dict:
             geom = self.nsgeom.get_geom(tag)
-            ret += f'for_window $scratchpad-{tag} floating enable, {geom}\n'
+            ret = f'{ret}for_window $scratchpad-{tag} floating enable, {geom}\n'
         return ret
 
     @staticmethod
@@ -150,7 +150,7 @@ class scratchpad(extension, cfg, Matcher):
                 self.i3ipc.command(f'exec {prog_str}')
             else:
                 spawn_str = Misc.extract_prog_str(
-                    target_tag, "spawn", exe_file=False
+                    target_tag, 'spawn', exe_file=False
                 )
                 if spawn_str:
                     mods = extension.get_mods()
@@ -158,7 +158,7 @@ class scratchpad(extension, cfg, Matcher):
                         executor = mods['executor']
                         if executor is not None:
                             executor.run(spawn_str)
-        if self.visible_window_with_tag(tag):
+        if self.is_visible_window_with_tag(tag):
             self.hide_scratchpad(tag)
             return
         # We need to hide scratchpad it is visible,
@@ -213,8 +213,8 @@ class scratchpad(extension, cfg, Matcher):
             win.command('fullscreen toggle')
         self.fullscreen_list = []
 
-    def visible_window_with_tag(self, tag: str) -> bool:
-        """ Counts visible windows for given tag
+    def is_visible_window_with_tag(self, tag: str) -> bool:
+        """ Finds visible windows for given tag
             tag (str): denotes the target tag. """
         for win in self.find_visible_windows():
             for i in self.marked[tag]:
@@ -227,9 +227,8 @@ class scratchpad(extension, cfg, Matcher):
         the current tag.
         focused : focused window. """
         for tag in self.cfg:
-            for i in self.marked[tag]:
-                if focused.id == i.id:
-                    return tag
+            if focused.id in (win.id for win in self.marked[tag]):
+                return tag
         return ''
 
     def apply_to_current_tag(self, func: Callable) -> bool:
