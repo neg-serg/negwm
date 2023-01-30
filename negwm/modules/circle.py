@@ -3,10 +3,10 @@
 This is a module about better run-or-raise features like in ion3, stumpwm and
 others. As the result user can get not only the usual run the appropriate
 application if it is not started, but also create a list of application, which
-I call "tag" and then switch to the next of it, instead of just simple focus.
+I call 'tag' and then switch to the next of it, instead of just simple focus.
 
 The foundation of it is pretty complicated next function, which use counters
-with incrementing of the current "position" of the window in the tag list over
+with incrementing of the current 'position' of the window in the tag list over
 the finite field. As the result you get circle over all tagged windows.
 
 Also I've hacked fullscreen behaviour for it, so you can always switch to the
@@ -34,7 +34,7 @@ class circle(extension, cfg, Matcher):
     def initialize(self, i3):
         self.i3ipc = i3 # i3ipc connection, bypassed by negwm runner.
         self.tagged = {} # Map of tag to the tagged windows.
-        self.current_position = {} # Current_position for the tag [tag]
+        self.current_position = {} # Current position for the tag [tag]
         # List of windows which fullscreen state need to be restored.
         self.restore_fullscreen = []
         # is the current action caused by user actions or not? It's needed for
@@ -47,7 +47,7 @@ class circle(extension, cfg, Matcher):
         self.need_handle_fullscreen = True
         i3tree = self.i3ipc.get_tree()
         self.fullscreened = i3tree.find_fullscreen() # Prepare for prefullscreen
-        # Store the current window here to cache get_tree().find_focused value.
+        # Store the current window here to cache i3.get_tree().find_focused value.
         self.current_win = i3tree.find_focused()
         # Winlist is used to reduce calling i3.get_tree() too many times.
         self.winlist = i3tree.leaves()
@@ -58,8 +58,8 @@ class circle(extension, cfg, Matcher):
         self.tag_windows(invalidate_winlist=False)
         self.i3ipc.on('window::new', self.add_wins)
         self.i3ipc.on('window::close', self.del_wins)
-        self.i3ipc.on("window::focus", self.set_curr_win)
-        self.i3ipc.on("window::fullscreen_mode", self.handle_fullscreen)
+        self.i3ipc.on('window::focus', self.set_curr_win)
+        self.i3ipc.on('window::fullscreen_mode', self.handle_fullscreen)
 
     def rules(self, _):
         ret = ''
@@ -90,7 +90,7 @@ class circle(extension, cfg, Matcher):
                 self.i3ipc.command(f'exec {prog_str}')
             else:
                 spawn_str = Misc.extract_prog_str(
-                    self.conf(tag), "spawn", exe_file=False
+                    self.conf(tag), 'spawn', exe_file=False
                 )
                 if spawn_str:
                     executor = extension.get_mods().get('executor')
@@ -107,7 +107,7 @@ class circle(extension, cfg, Matcher):
     def prefullscreen(self, tag: str) -> None:
         """ Prepare to go fullscreen. """
         for win in self.fullscreened:
-            if self.current_win.window_class in set(self.conf(tag, "classw")) \
+            if self.current_win.window_class in set(self.conf(tag, 'classw')) \
                     and self.current_win.id == win.id:
                 self.need_handle_fullscreen = False
                 win.command('fullscreen disable')
@@ -147,7 +147,7 @@ class circle(extension, cfg, Matcher):
 
     def focus_driven_actions(self, tag):
         """ Make some actions after focus """
-        if self.conf(tag, "mpd_shut") == 1:
+        if self.conf(tag, 'mpd_shut') == 1:
             vol = extension.get_mods().get('vol')
             if vol is not None:
                 vol.mute()
@@ -169,22 +169,22 @@ class circle(extension, cfg, Matcher):
         """ Checks that priority string is defined, then thecks that currrent
         window not in class set.
         tag(str): target tag name """
-        return "priority" in self.conf(tag) and \
-            self.current_win.window_class not in set(self.conf(tag, "classw"))
+        return 'priority' in self.conf(tag) and \
+            self.current_win.window_class not in set(self.conf(tag, 'classw'))
 
     def not_priority_win_class(self, tag, win):
         """ Window class is not priority class for the given tag
             tag(str): target tag name
             win: window """
-        return win.window_class in self.conf(tag, "classw") and \
-            win.window_class != self.conf(tag, "priority")
+        return win.window_class in self.conf(tag, 'classw') and \
+            win.window_class != self.conf(tag, 'priority')
 
     def no_prioritized_wins(self, tag):
         """ Checks all tagged windows for the priority win.
             tag(str): target tag name """
         return not [
             win for win in self.tagged[tag]
-            if win.window_class == self.conf(tag, "priority")
+            if win.window_class == self.conf(tag, 'priority')
         ]
 
     def next(self, tag: str) -> None:
@@ -218,7 +218,7 @@ class circle(extension, cfg, Matcher):
         self.subtag_info = self.conf(tag, subtag)
         self.tag_windows()
         if self.subtag_info:
-            subtagged_class_set = set(self.subtag_info.get("classw", {}))
+            subtagged_class_set = set(self.subtag_info.get('classw', {}))
             tagged_win_classes = {
                 w.window_class for w in self.tagged.get(tag, {})
             }
@@ -325,14 +325,17 @@ class circle(extension, cfg, Matcher):
         _: i3ipc connection.
         event: i3ipc event. We can extract window from it using
         event.container. """
+        if not self.need_handle_fullscreen:
+            return
+
         win = event.container
         self.fullscreened = self.i3ipc.get_tree().find_fullscreen()
-        if self.need_handle_fullscreen:
-            if win.fullscreen_mode:
-                if win.id not in self.restore_fullscreen:
-                    self.restore_fullscreen.append(win.id)
-                    return
-            if not win.fullscreen_mode:
-                if win.id in self.restore_fullscreen:
-                    self.restore_fullscreen.remove(win.id)
-                    return
+
+        if win.fullscreen_mode:
+            if win.id not in self.restore_fullscreen:
+                self.restore_fullscreen.append(win.id)
+                return
+        else:
+            if win.id in self.restore_fullscreen:
+                self.restore_fullscreen.remove(win.id)
+                return
