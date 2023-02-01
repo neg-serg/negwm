@@ -541,7 +541,7 @@ class actions(extension, cfg):
             if ws.focused == True:
                 focused = ws
                 break
-        ws_index = None
+        ws_index = 0
         if focused is not None:
             for index, ws in enumerate(ws_list):
                 if ws.name == focused.name:
