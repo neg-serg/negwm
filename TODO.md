@@ -3,10 +3,13 @@
     - Mouse helper, for example get windows size and then click on x,y = 20px, 20px
 
 # General
+    - Actions refactoring and possibly merge with remember_focused
+    - Add i3-grid interface to actions
     - Create PKGBUILD
     - Make post on usability porn reddit
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     - Remove all default parameters and add config validation
+    - Rename conf_gen to configurator and remember_focused to something else
 
 # Config
     - Better generator(fancy output, etc)
@@ -21,7 +24,7 @@
     - Add stuff for marks add del to attach to ws, etc
 
 # Experiments
-    - ./bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
+    - bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
     - Black/light background for mpd status
     - Python reload dynamic
