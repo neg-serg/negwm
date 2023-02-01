@@ -10,7 +10,7 @@ from negwm.lib.rules import Rules
 from negwm.lib.keymap import bindmap as Bindmap
 
 
-class conf_gen(extension, cfg):
+class configurator(extension, cfg):
     self_configured_modules=['circle', 'scratchpad']
     mode_exit='mode "default"'
 
@@ -59,7 +59,7 @@ class conf_gen(extension, cfg):
             self.conf_data.append(self.bind(section))
             return
         if text:
-            self.conf_data.append(conf_gen.text_section(text))
+            self.conf_data.append(configurator.text_section(text))
             return
         if hasattr(self, section):
             section_handler=getattr(self, section)
@@ -103,7 +103,7 @@ class conf_gen(extension, cfg):
         if subtag:
             subtag = f' {subtag}'
         if mode != 'default' and bind_data[0] == mode:
-            pref, postfix = '\t', f', {conf_gen.mode_exit}'
+            pref, postfix = '\t', f', {configurator.mode_exit}'
             cmd = bind_data[1]
             if isinstance(settings[p], str):
                 keybind = settings[p]
@@ -128,18 +128,18 @@ class conf_gen(extension, cfg):
         mods = extension.get_mods()
         if mods is None or not mods:
             return ret
-        for mod_name in conf_gen.self_configured_modules:
+        for mod_name in configurator.self_configured_modules:
             mod = mods[mod_name]
             for tag, settings in mod.cfg.items():
                 for param in settings:
                     if isinstance(settings[param], dict):
                         for param_name in settings[param]:
                             if param_name.startswith('keybind_'):
-                                ret += conf_gen.generate_bindsym(
+                                ret += configurator.generate_bindsym(
                                     mode, tag, settings[param], param_name, subtag=param, mod=mod_name
                                 )
                     elif param.startswith('keybind_'):
-                        ret += conf_gen.generate_bindsym(mode, tag, settings, param, mod=mod_name)
+                        ret += configurator.generate_bindsym(mode, tag, settings, param, mod=mod_name)
         return ret
 
     def raw_ws(self) -> List:
@@ -155,9 +155,9 @@ class conf_gen(extension, cfg):
 
     def rules(self) -> str:
         ret=''
-        for m in conf_gen.self_configured_modules:
+        for m in configurator.self_configured_modules:
             ret+=Rules.rules_mod(m)
-        ret+=conf_gen.text_section(self.cfg.get('rules',''))
+        ret+=configurator.text_section(self.cfg.get('rules',''))
         return ret
 
     def mode(self, name, bind='', end=False) -> str:
@@ -172,7 +172,7 @@ class conf_gen(extension, cfg):
         else:
             bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
             for keybind in bindings:
-                ret = f'{ret}\tbindsym {keybind}, {conf_gen.mode_exit}\n'
+                ret = f'{ret}\tbindsym {keybind}, {configurator.mode_exit}\n'
             return ret + '}\n'
 
     def bind(self, mod) -> str:
@@ -187,7 +187,7 @@ class conf_gen(extension, cfg):
         prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
         for kmap in bindlist:
             ret += '\n'
-            end = f', {conf_gen.mode_exit}' if kmap.exit else ''
+            end = f', {configurator.mode_exit}' if kmap.exit else ''
             for key, val in kmap.items():
                 if isinstance(val, str) and isinstance(key, str):
                     # key: binding, val: action
@@ -205,5 +205,5 @@ class conf_gen(extension, cfg):
                             format = kmap.fmt
                             format = format.replace('{cmd}', key)
                             ret += f'{prefix} {b} {format}{end}\n'
-        ret += f'{conf_gen.module_binds(mod)}{self.mode(mod, end=True)}'
+        ret += f'{configurator.module_binds(mod)}{self.mode(mod, end=True)}'
         return ret

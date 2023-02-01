@@ -79,7 +79,7 @@ pacman -Syu alacritty dunst kitty libxrandr picom pulseaudio rofi tmux xdo zsh -
 Генератор конфига был сделан для того, чтобы изменения в конфиге, которые относятся к модулям, можно было писать в них самих. Также есть
 генерилка для конфига самого i3.
 
-Как его следует читать: в `conf_gen.cfg` есть набор полей, с синтаксисом как в python enum(https://docs.python.org/3/library/enum.html).
+Как его следует читать: в `configurator.cfg` есть набор полей, с синтаксисом как в python enum(https://docs.python.org/3/library/enum.html).
 Каждому полю может соответствовать функция, которая на основе шаблона генерит конфиг.
 
 ## Модули

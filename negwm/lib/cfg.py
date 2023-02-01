@@ -49,8 +49,8 @@ class cfg():
             self.load_config()
             self.__init__(self.i3ipc)
             extensions=extension.get_mods()
-            if 'conf_gen' in extensions:
-                getattr(extensions['conf_gen'], 'write')()
+            if 'configurator' in extensions:
+                getattr(extensions['configurator'], 'write')()
             logging.info(f"[{self.mod}] config reloaded")
             print(f"[{self.mod}] config reloaded")
         except Exception:

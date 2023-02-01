@@ -56,7 +56,7 @@ class winact():
     async def select_ws(self) -> str:
         """ Apply target function to workspace. """
         echo = reflection.echo
-        ws_list = pickle.loads(await echo(f'conf_gen raw_ws\n'))
+        ws_list = pickle.loads(await echo(f'configurator raw_ws\n'))
         menu_params = {'prompt': f'{menu.wrap_str("ws")} {self.prompt}'}
         try:
             workspace_name = subprocess.run(

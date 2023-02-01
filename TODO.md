@@ -9,7 +9,6 @@
     - Make post on usability porn reddit
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     - Remove all default parameters and add config validation
-    - Rename conf_gen to configurator and remember_focused to something else
 
 # Config
     - Better generator(fancy output, etc)
