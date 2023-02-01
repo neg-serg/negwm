@@ -260,6 +260,6 @@ the regular font.
 
 Look at the `lib/executor.py` to learn more.
 
-## fs
+## Fullscreen
 
 Fullscreen panel hacking.
