@@ -71,12 +71,6 @@ class actions(extension, cfg):
         # Coeff to shrink window in all dimensions
         self.shrink_coeff = self.conf("shrink_coeff")
 
-    def maxhor(self):
-        self.maximize(by='X')
-
-    def maxvert(self):
-         self.maximize(by='Y')
-
     def load_useless_gaps(self) -> None:
         """ Load useless gaps settings. """
         try:
@@ -88,46 +82,6 @@ class actions(extension, cfg):
                     self.useless_gaps[field] = abs(self.useless_gaps[field])
         except (KeyError, TypeError, AttributeError):
             self.useless_gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
-
-    def center_geom(self, win,
-                    change_geom: bool = False, degrade_coeff: float = 0.82):
-        """ Move window to the center with geometry optional changing.
-        win: target window.
-        change_geom (bool): predicate to change geom to the [degrade_coeff]
-        of the screen space in both dimenhions.
-        degrade_coeff (int): coefficient which denotes change geom of the
-        target window. """
-        geom, center = {}, {}
-        if degrade_coeff > 1.0:
-            degrade_coeff = 1.0
-        center['x'] = int(self.current_resolution['width'] / 2)
-        center['y'] = int(self.current_resolution['height'] / 2)
-        if not change_geom:
-            geom['width'] = int(win.rect.width)
-            geom['height'] = int(win.rect.height)
-        else:
-            geom['width'] = int(
-                self.current_resolution['width'] * degrade_coeff
-            )
-            geom['height'] = int(
-                self.current_resolution['height'] * degrade_coeff
-            )
-        geom['x'] = center['x'] - int(geom['width'] / 2)
-        geom['y'] = center['y'] - int(geom['height'] / 2)
-        return geom
-
-    def center(self, resize: str) -> None:
-        """ Move window to center
-        resize (str): predicate which shows resize target window or not. """
-        focused = self.i3ipc.get_tree().find_focused()
-        if resize in {"default", "none"}:
-            geom = self.center_geom(focused)
-            actions.set_geom(focused, geom)
-        elif resize in {"resize", "on", "yes"}:
-            geom = self.center_geom(focused, change_geom=True)
-            actions.set_geom(focused, geom)
-        else:
-            return
 
     def get_prev_geom(self):
         """ Get previous window geometry. """
@@ -220,71 +174,10 @@ class actions(extension, cfg):
                     geom = self.get_prev_geom()
             actions.set_geom(self.current_win, geom)
 
-    def x4(self, mode: int) -> None:
-        """ Move window to the 1,2,3,4 quad of 2D screen space
-            mode (1,2,3,4): defines 1,2,3 or 4 quad of
-                            screen space to move.
-        """
-        try:
-            mode = int(mode)
-        except TypeError:
-            logging.error("cannot convert mode={mode} to int")
-            return
-        curr_scr = self.current_resolution
-        self.current_win = self.i3ipc.get_tree().find_focused()
-        if self.quad_use_gaps:
-            gaps = self.useless_gaps
-        else:
-            gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
-        half_width = int(curr_scr['width'] / 2)
-        half_height = int(curr_scr['height'] / 2)
-        double_dgaps = int(gaps['d'] * 2)
-        double_sgaps = int(gaps['s'] * 2)
-        if mode == 1:
-            geom = {
-                'x': gaps['a'],
-                'y': gaps['w'],
-                'width': half_width - double_dgaps,
-                'height': half_height - double_sgaps,
-            }
-        elif mode == 2:
-            geom = {
-                'x': half_width + gaps['a'],
-                'y': gaps['w'],
-                'width': half_width - double_dgaps,
-                'height': half_height - double_sgaps,
-            }
-        elif mode == 3:
-            geom = {
-                'x': gaps['a'],
-                'y': gaps['w'] + half_height,
-                'width': half_width - double_dgaps,
-                'height': half_height - double_sgaps,
-            }
-        elif mode == 4:
-            geom = {
-                'x': gaps['a'] + half_width,
-                'y': gaps['w'] + half_height,
-                'width': half_width - double_dgaps,
-                'height': half_height - double_sgaps,
-            }
-        else:
-            return
-        if self.current_win is not None:
-            if not self.geom_list[-1]:
-                self.get_prev_geom()
-            elif self.geom_list[-1]:
-                prev = self.geom_list[-1].get('id', {})
-                if prev != self.current_win.id:
-                    geom = self.get_prev_geom()
-
-            actions.set_geom(self.current_win, geom)
-
     def maximize(self, by: str = 'XY') -> None:
         """ Maximize window by attribute.
         by (str): maximize by X, Y or XY. """
         geom = {}
-
         self.current_win = self.i3ipc.get_tree().find_focused()
         if self.current_win is not None:
             if not self.geom_list[-1]:
@@ -357,29 +250,6 @@ class actions(extension, cfg):
             amount = -amount
         else:
             mode = "minus"
-        return direction, mode, int(amount)
-
-    @staticmethod
-    def set_resize_params_multiple(direction, amount, vertical):
-        """ Set resize parameters for the block of windows """
-        mode = ""
-        if direction == "horizontal":
-            direction = "width"
-        elif direction == "vertical":
-            direction = "height"
-        elif direction == "natural":
-            direction = "height" if vertical else "width"
-        elif direction == "orthogonal":
-            direction = "width" if vertical else "height"
-        elif direction == "top":
-            direction = "up"
-        elif direction == "bottom":
-            direction = "down"
-        if int(amount) < 0:
-            mode = "shrink"
-            amount = -int(amount)
-        else:
-            mode = "grow"
         return direction, mode, int(amount)
 
     def resize(self, direction, amount):
