@@ -14,6 +14,36 @@ from negwm.lib.display import Display
 from negwm.lib.cfg import cfg
 from negwm.lib.extension import extension
 
+# # Grid floating windows
+# mode "i3grid" {
+#     bindsym q exec "python3 -m i3grid snap --cols 2 --rows 2 --target 1"
+#     bindsym e exec "python3 -m i3grid snap --cols 2 --rows 2 --target 2"
+#     bindsym z exec "python3 -m i3grid snap --cols 2 --rows 2 --target 3"
+#     bindsym c exec "python3 -m i3grid snap --cols 2 --rows 2 --target 4"
+#
+#     bindsym w exec "python3 -m i3grid snap --cols 1 --rows 2 --target 1"
+#     bindsym x exec "python3 -m i3grid snap --cols 1 --rows 2 --target 2"
+#
+#     bindsym a exec "python3 -m i3grid snap --cols 2 --rows 1 --target 1"
+#     bindsym d exec "python3 -m i3grid snap --cols 2 --rows 1 --target 2"
+#     bindsym s exec "python3 -m i3grid reset"
+#     bindsym f exec "python3 -m i3grid csize --perc 100"
+#
+#     bindsym g exec "python3 -m i3grid csize --perc 33"
+#     bindsym h exec "python3 -m i3grid csize --perc 50"
+#     bindsym j exec "python3 -m i3grid csize --perc 66"
+#     bindsym k exec "python3 -m i3grid csize --perc 85"
+#     bindsym l exec "python3 -m i3grid csize --perc 92"
+#     bindsym p exec "python3 -m i3grid snap --cols 3 --rows 3 --target 3"
+#     bindsym o exec "python3 -m i3grid snap --cols 3 --rows 3 --target 2"
+#     bindsym i exec "python3 -m i3grid snap --cols 3 --rows 3 --target 1"
+#
+#     bindsym Return mode "default"
+#     bindsym Escape mode "default"
+#     bindsym m mode "default"
+#     bindsym n mode "default"
+# }
+# bindsym $mod+shift+o mode "i3grid"
 
 class actions(extension, cfg):
     def __init__(self, i3) -> None:
