@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-port=15555
-echo "$@" | /usr/bin/nc localhost $port -w 0
