@@ -9,11 +9,11 @@
 * [Modules](#modules)
     * [Scratchpad](#scratchpad)
     * [Circle](#circle)
-    * [Remember focused](#remember-focused)
+    * [Lastgo](#lastgo)
     * [Menu](#menu)
     * [Actions](#actions)
     * [Executor](#executor)
-    * [fs](#fs)
+    * [Fullscreen](#fullscreen)
 
 # Screenshots
 
@@ -188,7 +188,7 @@ Some useful commands:
     subtag: go to the next subtag window
 ```
 
-## Remember focused
+## Lastgo
 
 Goto to the previous window, not the workspace. Default i3 alt-tab cannot to remember from what window alt-tab have been done, this mod fix
 at by storing history of last selected windows.
@@ -196,11 +196,11 @@ at by storing history of last selected windows.
 config_example:
 
 ```cfg
-class RememberFocused(Enum):
+class lastgo(Enum):
     autoback = ['pic', 'gfx', 'vm']
 ```
 
-remember_focused commands:
+lastgo commands:
 
 ```cfg
     switch: go to previous window

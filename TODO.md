@@ -3,7 +3,7 @@
     - Mouse helper, for example get windows size and then click on x,y = 20px, 20px
 
 # General
-    - Actions refactoring and possibly merge with remember_focused
+    - Actions refactoring
     - Add i3-grid interface to actions
     - Create PKGBUILD
     - Make post on usability porn reddit

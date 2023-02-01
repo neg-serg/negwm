@@ -200,7 +200,7 @@ class circle(Enum):
     subtag: go to the next subtag window
 ```
 
-## Remember focused
+## Lastgo
 
 Штука которая запоминает предыдущее окно и позволяет прыгнуть на него вне зависимости от того какой рабочий стол используется.
 Это нужно потому что в i3 alt-tab по-умолчанию не запоминает какое окно было предыдущим, а тут есть прямое сохранение истории.
@@ -208,7 +208,7 @@ class circle(Enum):
 Пример конфига:
 
 ```cfg
-class RememberFocused(Enum):
+class lastgo(Enum):
     autoback = ['pic', 'gfx', 'vm']
 ```
 

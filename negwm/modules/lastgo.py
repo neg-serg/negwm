@@ -12,7 +12,7 @@ from negwm.lib.cfg import cfg
 from negwm.lib.negewmh import NegEWMH
 from negwm.lib.extension import extension
 
-class remember_focused(extension, cfg):
+class lastgo(extension, cfg):
     """ Advanced alt-tab class. """
     def __init__(self, i3ipc) -> None:
         """ Init function
@@ -22,7 +22,7 @@ class remember_focused(extension, cfg):
         self.i3ipc = i3ipc # i3ipc connection, bypassed by negwm runner
         # previous / current window list
         self.focus_history = [] # depth of history list
-        self.max_remember_focused = 4 # workspaces with auto alt-tab when close
+        self.max_lastgo = 4 # workspaces with auto alt-tab when close
         self.autoback = self.conf('autoback')
         self.i3ipc.on('window::focus', self.on_window_focus)
         self.i3ipc.on('window::close', self.goto_nonempty_ws_on_close)
@@ -50,8 +50,8 @@ class remember_focused(extension, cfg):
         if wid in self.focus_history:
             self.focus_history.remove(wid)
         self.focus_history.insert(0, wid)
-        if len(self.focus_history) > self.max_remember_focused:
-            del self.focus_history[self.max_remember_focused:]
+        if len(self.focus_history) > self.max_lastgo:
+            del self.focus_history[self.max_lastgo:]
 
     def get_windows_on_ws(self) -> Iterator:
         """ Return iterator for windows on the current workspace. """
