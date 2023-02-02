@@ -45,6 +45,7 @@ from negwm.lib.extension import extension
 # }
 # bindsym $mod+shift+o mode "i3grid"
 
+
 class actions(extension, cfg):
     def __init__(self, i3) -> None:
         """ Main part is in self.initialize,
@@ -54,7 +55,7 @@ class actions(extension, cfg):
         cfg.__init__(self, i3)
         # i3ipc connection, bypassed by negwm runner.
         self.i3ipc = i3
-        maxlength = self.conf("cache_list_size") # cache list length
+        maxlength = self.conf("cache_list_size")  # cache list length
         # create list with the finite number of elements by the [None] * N hack
         self.geom_list = collections.deque([None] * maxlength, maxlen=maxlength)
         self.current_win = None
@@ -62,10 +63,6 @@ class actions(extension, cfg):
         self.current_resolution = Display.get_screen_resolution()
         # Here we load information about useless gaps
         self.load_useless_gaps()
-        # Config about useless gaps for quad splitting, True by default
-        self.quad_use_gaps = self.conf("quad_use_gaps")
-        # Config about useless gaps for half splitting, True by default
-        self.x2_use_gaps = self.conf("x2_use_gaps")
         # Coeff to grow window in all dimensions
         self.grow_coeff = self.conf("grow_coeff")
         # Coeff to shrink window in all dimensions
@@ -129,7 +126,8 @@ class actions(extension, cfg):
         half_width = int(curr_scr['width'] / 2)
         half_height = int(curr_scr['height'] / 2)
         self.current_win = self.i3ipc.get_tree().find_focused()
-        if self.x2_use_gaps:
+        # Config about useless gaps for half splitting, True by default
+        if self.conf("x2_use_gaps"):
             gaps = self.useless_gaps
         else:
             gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
@@ -190,17 +188,11 @@ class actions(extension, cfg):
                     # do nothing
                     return
             if by in {'XY', 'YX'}:
-                max_geom = self.maximized_geom(
-                    geom.copy(), gaps={}, byX=True, byY=True
-                )
+                max_geom = self.maximized_geom(geom.copy(), gaps={}, byX=True, byY=True)
             elif by == 'X':
-                max_geom = self.maximized_geom(
-                    geom.copy(), gaps={}, byX=True, byY=False
-                )
+                max_geom = self.maximized_geom(geom.copy(), gaps={}, byX=True, byY=False)
             elif by == 'Y':
-                max_geom = self.maximized_geom(
-                    geom.copy(), gaps={}, byX=False, byY=True
-                )
+                max_geom = self.maximized_geom(geom.copy(), gaps={}, byX=False, byY=True)
             actions.set_geom(self.current_win, max_geom)
 
     def revert_maximize(self) -> None:
@@ -241,10 +233,9 @@ class actions(extension, cfg):
     @staticmethod
     def set_resize_params_single(direction, amount):
         """ Set resize parameters for the single window """
-        if direction == "natural":
-            direction = "horizontal"
-        elif direction == "orthogonal":
-            direction = "vertical"
+        match direction:
+            case 'natural': direction = 'horizontal'
+            case 'orthogonal': direction = 'vertical'
         if int(amount) < 0:
             mode = "plus"
             amount = -amount
@@ -257,10 +248,11 @@ class actions(extension, cfg):
         is only a single container, resize by adjusting gaps. If the direction
         is "natural", resize vertically in a splitv container, else
         horizontally. If it is "orhtogonal", do the opposite. """
-        if direction not in [
-                "natural", "orthogonal", "horizontal", "vertical",
-                "top", "bottom", "left", "right",
-                ]:
+        possible_directions = [
+            "natural", "orthogonal", "horizontal", "vertical",
+            "top", "bottom", "left", "right"
+        ]
+        if direction not in possible_directions:
             try:
                 amount = int(amount)
             except ValueError:
@@ -302,12 +294,12 @@ class actions(extension, cfg):
     def create_geom_from_rect(rect) -> dict:
         """ Create geometry from the given rectangle.
             rect: rect to extract geometry from. """
-        geom = {}
-        geom['x'] = rect.x
-        geom['y'] = rect.y
-        geom['height'] = rect.height
-        geom['width'] = rect.width
-        return geom
+        return {
+            'x': rect.x,
+            'y': rect.y,
+            'height': rect.height,
+            'width': rect.width
+        }
 
     def save_geom(self, target_win=None) -> dict:
         """ Save geometry.
