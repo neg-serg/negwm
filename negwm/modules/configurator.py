@@ -66,6 +66,7 @@ class configurator(extension, cfg):
                 pass
             for mod in sorted(mods):
                 self.conf_data.append(f'set ${mod} nop {mod}')
+            self.conf_data.append('')
             return
         if section.startswith('mode_'):
             bind=True
@@ -83,11 +84,11 @@ class configurator(extension, cfg):
     def generate_config(self) -> str:
         self.config_data_cleanup()
         self.fill(text=configurator.header)
+        self.fill(module_bindings=True)
         for m in configurator.self_configured_modules:
             self.fill(text=Rules.rules_mod(m))
         for cfg_section in self.cfg.keys():
             self.fill(cfg_section)
-        self.fill(module_bindings=True)
         self.fill(text=configurator.ending)
         return '\n'.join(filter(None, self.conf_data))
 
