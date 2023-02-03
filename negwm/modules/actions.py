@@ -324,12 +324,12 @@ class actions(extension, cfg):
     def is_in_line(old, new, direction):
         """ Return true if container "new" can reasonably be considered to be
         in direction of container "old" """
-        if direction in {"up", "down"}:
+        if direction in {'up', 'down'}:
             return new.rect.x <= old.rect.x + old.rect.width*0.9 \
                 and new.rect.x + new.rect.width >= \
                 old.rect.x + old.rect.width * 0.1
 
-        if direction in {"left", "right"}:
+        if direction in {'left', 'right'}:
             return new.rect.y <= old.rect.y + old.rect.height*0.9 \
                 and new.rect.y + new.rect.height >= \
                 old.rect.y + old.rect.height * 0.1
@@ -396,6 +396,7 @@ class actions(extension, cfg):
         return result
 
     def next_ws(self):
+        ws_magic_pie = ' :: ws'
         focused = None
         ws_list = self.visible_ws()
         ws_numbers = []
@@ -416,18 +417,18 @@ class actions(extension, cfg):
                 ws_numbers.sort()
                 for i in range(focused.num + 1, ws_numbers[-1]):
                     if i not in ws_numbers:
-                        next_ws_name = str(i) + ' :: ws'
+                        next_ws_name = f'{str(i)} {ws_magic_pie}'
                         break
-                next_ws_name =  str(ws_numbers[-1] + 1) + ' :: ws'
+                next_ws_name = f'{str(ws_numbers[-1] + 1)} {ws_magic_pie}'
             else:
                 next_ws_name = ws_list[ws_index + 1]
-            self.i3ipc.command("workspace " + next_ws_name)
+            self.i3ipc.command(f'workspace {next_ws_name}')
 
     def move_tab(self, direction):
         """ Move the innermost stacked or tabbed ancestor container. """
-        if direction == "next":
+        if direction == 'next':
             delta = 1
-        elif direction == "prev":
+        elif direction == 'prev':
             delta = -1
         else:
             return
@@ -435,9 +436,9 @@ class actions(extension, cfg):
         # Find innermost tabbed or stacked container.
         while True:
             parent = node.parent
-            if not parent or node.type != "con":
+            if not parent or node.type != 'con':
                 return
-            if parent.layout in ["tabbed", "stacked"]:
+            if parent.layout in ['tabbed', 'stacked']:
                 break
             node = parent
         index = parent.nodes.index(node)
