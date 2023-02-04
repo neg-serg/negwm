@@ -96,10 +96,10 @@ class configurator(extension, cfg):
         self.conf_data=[]
 
     @staticmethod
-    def generate_bindsym(mode, tag, settings, p, subtag='', mod='') -> str:
+    def generate_bindsym(mode, tag, settings, p, subtag='', module='') -> str:
         def bind_fmt():
             return f'{pref}bindsym {keybind.strip()} ' + \
-                f' ${mod} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
+                f' ${module} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
             
         ret, pref, postfix = '', '', ''
         mode = mode.removeprefix('mode_')
@@ -140,10 +140,10 @@ class configurator(extension, cfg):
                         for param_name in settings[param]:
                             if param_name.startswith('keybind_'):
                                 ret += configurator.generate_bindsym(
-                                    mode, tag, settings[param], param_name, subtag=param, mod=mod_name
+                                    mode, tag, settings[param], param_name, subtag=param, module=mod_name
                                 )
                     elif param.startswith('keybind_'):
-                        ret += configurator.generate_bindsym(mode, tag, settings, param, mod=mod_name)
+                        ret += configurator.generate_bindsym(mode, tag, settings, param, module=mod_name)
         return ret
 
     def raw_ws(self) -> List:
@@ -167,8 +167,8 @@ class configurator(extension, cfg):
                 ret = f'{ret}bindsym {bind} mode "{name}"\n'
             return f'{ret}mode {name} {{'
         else:
-            bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
-            for keybind in bindings:
+            escape_bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
+            for keybind in escape_bindings:
                 ret = f'{ret}\tbindsym {keybind}, {configurator.mode_exit}\n'
             return ret + '}\n'
 
@@ -189,7 +189,11 @@ class configurator(extension, cfg):
                 if isinstance(val, str) and isinstance(key, str):
                     # key: binding, val: action
                     if '{cmd}' not in kmap.fmt:
-                        ret += f'{prefix} {key} {kmap.fmt} {val}{end}\n'
+                        if kmap.fmt:
+                            fmt = f'{kmap.fmt} '
+                        else:
+                            fmt = kmap.fmt
+                        ret += f'{prefix} {key} {fmt}{val}{end}\n'
                     else:
                         format = kmap.fmt
                         format = format.replace('{cmd}', val)
