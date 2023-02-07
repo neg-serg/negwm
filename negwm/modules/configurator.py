@@ -22,6 +22,13 @@ class configurator(extension, cfg):
         self.i3ipc=i3
         self.conf_data=[]
 
+    @staticmethod
+    def configured_internally(module):
+        if not isinstance(module, cfg):
+            return False
+        return 'configured_internally' in module.cfg and module.cfg['configured_internally']
+
+
     def print(self) -> None: print(self.generate_config())
 
     def write(self, preserve_history=False):
@@ -85,8 +92,11 @@ class configurator(extension, cfg):
         self.config_data_cleanup()
         self.fill(text=configurator.header)
         self.fill(module_bindings=True)
-        for m in configurator.self_configured_modules:
-            self.fill(text=Rules.rules_mod(m))
+        mods = extension.get_mods()
+        for m in mods:
+            module = mods[m]
+            if configurator.configured_internally(module):
+                self.fill(text=Rules.rules_mod(m))
         for cfg_section in self.cfg.keys():
             self.fill(cfg_section)
         self.fill(text=configurator.ending)
@@ -132,9 +142,13 @@ class configurator(extension, cfg):
         mods = extension.get_mods()
         if mods is None or not mods:
             return ret
-        for mod_name in configurator.self_configured_modules:
+        for mod_name in mods.keys():
             mod = mods[mod_name]
+            if not configurator.configured_internally(mod):
+                continue
             for tag, settings in mod.cfg.items():
+                if not isinstance(settings, dict):
+                    continue
                 for param in settings:
                     if isinstance(settings[param], dict):
                         for param_name in settings[param]:

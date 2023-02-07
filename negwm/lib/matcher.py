@@ -104,11 +104,13 @@ class Matcher():
                         return True
         return False
 
-    def match(self, win, tag: str) -> bool:
+    def match(self, win, tag_name: str) -> bool:
         """ Check that window matches to the config rules """
         self.win = win
         for f in Matcher.factors:
-            self.matched_list = self.cfg.get(tag, {}).get(f, {})
+            tag = self.cfg.get(tag_name)
+            if isinstance(tag, dict):
+                self.matched_list = tag.get(f, {})
             if self.matched_list and self.match_dict[f]():
                 return True
         return False

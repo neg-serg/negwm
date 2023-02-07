@@ -66,8 +66,11 @@ class circle(extension, cfg, Matcher):
         conf = self.cfg
         for tag in conf:
             focus_cmd = ''
-            ws = conf[tag].get('ws', '')
-            focus = bool(conf[tag].get('focus', True))
+            field = conf[tag]
+            if not isinstance(field, dict):
+                continue
+            ws = field.get('ws', '')
+            focus = bool(field.get('focus', True))
             if focus:
                 focus_cmd = ',focus'
             if ws:

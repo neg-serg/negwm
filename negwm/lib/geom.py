@@ -17,7 +17,8 @@ class geom():
         self.cfg = cfg # External config
         # Fill self.parsed_geom with self.parse_geom function.
         for tag in self.cfg:
-            self.parsed_geom[tag] = self.parse_geom(tag)
+            if isinstance(self.cfg[tag], dict):
+                self.parsed_geom[tag] = self.parse_geom(tag)
 
     # Scratchpad need this function
     def get_geom(self, tag: str) -> str:

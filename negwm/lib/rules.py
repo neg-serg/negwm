@@ -9,7 +9,10 @@ class Rules():
         config = mod.cfg
         for tag in config:
             cmd_dict[tag] = []
-            for attr in config[tag]:
+            field = config[tag]
+            if not isinstance(config[tag], dict):
+                return cmd_dict
+            for attr in field:
                 for fill in ['classw', 'instance', 'name', 'role']:
                     cmd_dict[tag].append(Rules.info(config, tag, attr, fill))
         return cmd_dict
