@@ -66,7 +66,7 @@ class configurator(extension, cfg):
             text=''
         return text
 
-    def fill(self, section='', bind=False, text='', module_bindings=False) -> None:
+    def fill(self, section='', text='', module_bindings=False) -> None:
         if module_bindings:
             mods=extension.get_mods()
             if mods is None or not mods:
@@ -75,11 +75,7 @@ class configurator(extension, cfg):
                 self.conf_data.append(f'set ${mod} nop {mod}')
             self.conf_data.append('')
             return
-        if section.startswith('mode_'):
-            bind=True
-        if bind:
-            self.conf_data.append(self.bind(section))
-            return
+        self.conf_data.append(self.bind(section))
         if text:
             self.conf_data.append(configurator.text_section(text))
             return
@@ -187,13 +183,19 @@ class configurator(extension, cfg):
             return ret + '}\n'
 
     def bind(self, mod) -> str:
+        if not mod:
+            return ''
         bindlist = self.cfg.get(mod, Bindmap())
+        try:
+            bind = getattr(bindlist, 'bind')
+        except AttributeError:
+            return ''
         name = getattr(bindlist, 'name', '')
         if not name:
             name = mod
         ret = self.mode(
             name,
-            bind=getattr(bindlist, "bind"),
+            bind=bind,
             end=False)
         prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
         for kmap in bindlist:
