@@ -108,7 +108,6 @@ class configurator(extension, cfg):
                 f' ${module} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
             
         ret, pref, postfix = '', '', ''
-        mode = mode.removeprefix('mode_')
         bind_data = p.split('_')[1:]
         if subtag:
             subtag = f' {subtag}'
@@ -122,7 +121,7 @@ class configurator(extension, cfg):
                 for keybind in settings[p]:
                     ret += bind_fmt()
         else:
-            if len(bind_data) == 1 and mode == 'default':
+            if mode == 'default' and len(bind_data) == 1:
                 cmd = bind_data[0]
                 if isinstance(settings[p], str):
                     keybind = settings[p]
@@ -197,7 +196,7 @@ class configurator(extension, cfg):
             name,
             bind=bind,
             end=False)
-        prefix = f'\tbindsym' if mod != 'mode_default' else 'bindsym'
+        prefix = f'\tbindsym' if mod != 'default' else 'bindsym'
         for kmap in bindlist:
             ret += '\n'
             end = f', {configurator.mode_exit}' if kmap.exit else ''
