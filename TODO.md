@@ -16,6 +16,7 @@
 # Scratchpad
     - Add ability to set geometry with mouse
     - Add labels support print scratchpad names
+    - Add option to run something on go next
     - Set geometry for scratchpad windows(optional)
 
 # Menu
