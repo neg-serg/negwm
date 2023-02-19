@@ -71,10 +71,11 @@ class actions(extension, cfg):
     def load_useless_gaps(self) -> None:
         """ Load useless gaps settings. """
         try:
-            self.useless_gaps = self.cfg.get("useless_gaps", {
-                "w": 12, "a": 12, "s": 12, "d": 12
-            })
-            for field in ["w", "a", "s", "d"]:
+            if not self.cfg['useless_gaps']:
+                self.useless_gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
+                return
+            self.useless_gaps = self.cfg['useless_gaps']
+            for field in ['w', 'a', 's', 'd']:
                 if self.useless_gaps[field] < 0:
                     self.useless_gaps[field] = abs(self.useless_gaps[field])
         except (KeyError, TypeError, AttributeError):
@@ -82,12 +83,10 @@ class actions(extension, cfg):
 
     def get_prev_geom(self):
         """ Get previous window geometry. """
-        self.geom_list.append(
-            {
-                'id': self.current_win.id,
-                'geom': self.save_geom()
-            }
-        )
+        self.geom_list.append({
+            'id': self.current_win.id,
+            'geom': self.save_geom()
+        })
         return self.geom_list[-1]['geom']
 
     @staticmethod

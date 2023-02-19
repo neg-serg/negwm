@@ -23,7 +23,7 @@ class lastgo(extension, cfg):
         # previous / current window list
         self.focus_history = [] # depth of history list
         self.max_lastgo = 4 # workspaces with auto alt-tab when close
-        self.autoback = self.conf('autoback')
+        self.autoback = self.cfg['autoback']
         self.i3ipc.on('window::focus', self.on_window_focus)
         self.i3ipc.on('window::close', self.goto_nonempty_ws_on_close)
 

@@ -56,15 +56,14 @@ class scratchpad(extension, cfg, Matcher):
 
     def taglist(self) -> List:
         """ Returns list of tags windows. """
-        tag_list = list(self.cfg.keys())
-        return tag_list
+        return list(self.cfg.keys())
 
     def rules(self, cmd_dict) -> str:
         """ Create i3 match rules for all tags. """
         ret: str = ''
         for tag in cmd_dict:
             geom = self.nsgeom.get_geom(tag)
-            ret = f'{ret}for_window $scratchpad-{tag} floating enable, {geom}\n'
+            ret = f'{ret}for_window $scratchpad-{tag} floating enable; {geom}\n'
         return ret
 
     @staticmethod
@@ -117,10 +116,8 @@ class scratchpad(extension, cfg, Matcher):
                     win.command('move window to workspace current')
 
     def find_visible_windows(self) -> List:
-        """ Find windows on the current workspace, which is enough for
-        scratchpads.
-        focused: denotes that [focused] window should be extracted from
-        i3.get_tree() or not """
+        """ Find windows on the current workspace, which is enough for scratchpads.
+        focused: denotes that [focused] window should be extracted from i3.get_tree() or not """
         focused = self.i3ipc.get_tree().find_focused()
         return NegEWMH.find_visible_windows(
             focused.workspace().leaves()
@@ -349,8 +346,7 @@ class scratchpad(extension, cfg, Matcher):
         """ Delete property via [prop_str] to the target [tag].
             tag (str): denotes the target tag.
             prop_str (str): string in i3-match format used to add/delete target
-            window in/from scratchpad.
-        """
+            window in/from scratchpad. """
         self.del_props(tag, prop_str)
         self.initialize(self.i3ipc)
 

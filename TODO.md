@@ -14,7 +14,6 @@
     - Add ability to set geometry with mouse
     - Add labels support print scratchpad names
     - Add option to run something on go next
-    - Set geometry for scratchpad windows(optional)
 
 # Menu
     - Fix ex-gnome module
@@ -23,6 +22,5 @@
 # Experiments
     - bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
-    - Black/light background for mpd status
     - Python reload dynamic
     • ipc: the GET_CONFIG request now returns all included files and their details
