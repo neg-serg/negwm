@@ -11,16 +11,17 @@
     - Remove all default parameters and add config validation
 
 # Scratchpad
-    - Add ability to set geometry with mouse
-    - Add labels support print scratchpad names
-    - Add option to run something on go next
+    - Ability to set geometry with mouse
+    - Labels support print scratchpad names
+    - Option to run something on go next
 
 # Menu
     - Fix ex-gnome module
     - Add stuff for marks add del to attach to ws, etc
 
 # Experiments
-    - bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - Better dynamic config architecture
     - Python reload dynamic
+    - Try: python-dynmen (Python wrappers for dynamic menus (dmenu, rofi, fzf, ...))
+    - bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     • ipc: the GET_CONFIG request now returns all included files and their details
