@@ -85,6 +85,7 @@ class configurator(extension, cfg):
     def generate_config(self) -> str:
         self.conf_data=[]
         self.fill(text=configurator.header)
+        self.fill(text=create_header('Module bindings'))
         self.fill(module_bindings=True)
         mods = extension.get_mods()
         for m in mods:
@@ -92,6 +93,7 @@ class configurator(extension, cfg):
             if configurator.configured_internally(module):
                 self.fill(text=Rules.rules_mod(m))
         for cfg_section in self.cfg.keys():
+            self.fill(text=create_header(f'Config section {cfg_section}'))
             self.fill(cfg_section)
         self.fill(text=configurator.ending)
         return '\n'.join(filter(None, self.conf_data))

@@ -10,9 +10,6 @@
     - Percent resize, move to some region subtle like semi-dynamic tiling / dwm-like tiling
     - Remove all default parameters and add config validation
 
-# Config
-    - Better generator(fancy output, etc)
-
 # Scratchpad
     - Add ability to set geometry with mouse
     - Add labels support print scratchpad names
