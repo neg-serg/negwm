@@ -14,7 +14,7 @@ class reflection(extension):
 
     @staticmethod
     async def echo(message):
-        host, port = "::1", 15555
+        host, port = '::1', 15555
         try:
             reader, writer = await asyncio.wait_for(asyncio.open_connection(host, port), timeout=1.0)
         except asyncio.TimeoutError:
@@ -29,7 +29,7 @@ class reflection(extension):
 
     @staticmethod
     async def run(message):
-        host, port = "::1", 15555
+        host, port = '::1', 15555
         try:
             _, writer = await asyncio.wait_for(asyncio.open_connection(host, port), timeout=2.0)
         except asyncio.TimeoutError:

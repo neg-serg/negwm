@@ -66,11 +66,11 @@ class env():
 
     @staticmethod
     def tmux_session_attach(name):
-        return f"tmux -S {env.tmux_socket_path(name)} a -t {name}"
+        return f'tmux -S {env.tmux_socket_path(name)} a -t {name}'
 
     @staticmethod
     def tmux_new_session(name):
-        return f"tmux -S {env.tmux_socket_path(name)} new-session -s {name}"
+        return f'tmux -S {env.tmux_socket_path(name)} new-session -s {name}'
 
     def cfg_block(self) -> dict:
         return self.config.get(self.name, {})
@@ -174,7 +174,7 @@ class env():
         return cfgname
 
     def alacritty(self) -> str:
-        self.title = self.cfg_block().get("title", self.wclass)
+        self.title = self.cfg_block().get('title', self.wclass)
         custom_config = self.create_alacritty_cfg(self.name)
         multiprocessing.Process(
             target=self.alacritty_yml_create, args=(custom_config,),
@@ -182,18 +182,18 @@ class env():
         ).start()
 
         return ' '.join([
-            f"{self.term()}",
-            f"--config-file {expanduser(custom_config)}",
-            f"--class {self.wclass},{self.wclass}",
-            f"-t {self.title} -e"])
+            f'{self.term()}',
+            f'--config-file {expanduser(custom_config)}',
+            f'--class {self.wclass},{self.wclass}',
+            f'-t {self.title} -e'])
 
     def st(self):
         return ' '.join([
-            f"{self.term()}",
-            f"-c {self.wclass}",
-            f"-t {self.name}",
+            f'{self.term()}',
+            f'-c {self.wclass}',
+            f'-t {self.name}',
             f"-f {self.font} :size={str(self.font_size())}:style={self.style()['normal']}",
-            "-e"])
+            '-e'])
 
     def kitty(self):
         cfg = self.cfg_block()
@@ -206,23 +206,23 @@ class env():
         else:
             style=f' {style}'
         font_settings=[
-            f"-o font_family=\'{self.font()}{style}\'",
-            f"-o font_size={str(self.font_size())}"
+            f'-o font_family=\'{self.font()}{style}\'',
+            f'-o font_size={str(self.font_size())}'
         ]
         return ' '.join([
-            f"{self.term()}",
-            "-1", f"--instance-group {instance_group}",
-            f"--class={self.wclass}",
-            f"--title={self.name}",
-            f"-o window_padding_width={padding}",
-            f"-o background_opacity={opacity}"] + font_settings)
+            f'{self.term()}',
+            '-1', f'--instance-group {instance_group}',
+            f'--class={self.wclass}',
+            f'--title={self.name}',
+            f'-o window_padding_width={padding}',
+            f'-o background_opacity={opacity}'] + font_settings)
 
     def zutty(self):
         return ' '.join([
-            f"{self.term()}",
-            f"-name {self.wclass}",
-            f"-font {self.font}",
-            f"-fontsize {str(self.font_size())}"])
+            f'{self.term()}',
+            f'-name {self.wclass}',
+            f'-font {self.font}',
+            f'-fontsize {str(self.font_size())}'])
 
 class executor(extension, cfg):
     ''' Tmux Manager class. Easy and consistent way to create tmux sessions on
@@ -294,5 +294,5 @@ class executor(extension, cfg):
             else:
                 self.create_new_session()
         else:
-            cmd = f"exec \"{self.env.opts} {self.env.exec}\""
+            cmd = f'exec \"{self.env.opts} {self.env.exec}\"'
             self.i3ipc.command(cmd)

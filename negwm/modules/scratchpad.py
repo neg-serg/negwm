@@ -1,8 +1,8 @@
 """ Named scratchpad i3 modulec
 
 This is a module about ion3/notion-like named scratchpad implementation.
-You can think about it as floating "tabs" for windows, which can be
-shown/hidden by request, with next "tab" navigation.
+You can think about it as floating 'tabs' for windows, which can be
+shown/hidden by request, with next 'tab' navigation.
 
 The foundation of it is a i3 mark function, you can create a mark with
 tag+'-'+uuid format. And then this imformation used to performs all
@@ -49,7 +49,7 @@ class scratchpad(extension, cfg, Matcher):
         self.auto_save_geom(False) # Do not autosave geometry by default
         # focus_win_flag is a helper to perform attach/detach window to the
         # named scratchpad with add_prop/del_prop routines
-        self.focus_win_flag = [False, ""]
+        self.focus_win_flag = [False, '']
         self.i3ipc = i3 # i3ipc connection, bypassed by negwm runner
         i3.on('window::new', self.mark_tag)
         i3.on('window::close', self.unmark_tag)
@@ -244,7 +244,7 @@ class scratchpad(extension, cfg, Matcher):
 
     def next(self, hide: bool = True) -> None:
         """ Show the next window for the currently selected tag.
-            hide (bool): hide window or not. Primarly used to cleanup "garbage"
+            hide (bool): hide window or not. Primarly used to cleanup 'garbage'
             that can appear after i3 (re)start, etc. Because of I've think that
             is't better to make screen clear after (re)start. """
         def next_win(tag: str) -> None:
@@ -269,8 +269,8 @@ class scratchpad(extension, cfg, Matcher):
             # delete previous mark
             del self.marked[tag][idx]
             # then make a new mark and move scratchpad
-            win_cmd = f"{scratchpad.mark_uuid_tag(tag)}, \
-                move scratchpad, {self.nsgeom.get_geom(tag)}"
+            win_cmd = f'{scratchpad.mark_uuid_tag(tag)}, \
+                move scratchpad, {self.nsgeom.get_geom(tag)}'
             win.command(win_cmd)
             self.marked[tag].append(win)
 
@@ -284,9 +284,9 @@ class scratchpad(extension, cfg, Matcher):
         focused = self.i3ipc.get_tree().find_focused()
         for win in self.marked[tag]:
             if win.id == focused.id:
-                focused_geom = f"{focused.rect.width}x{focused.rect.height}" \
-                    f"+{focused.rect.x}+{focused.rect.y}"
-                self.cfg[tag]["geom"] = focused_geom
+                focused_geom = f'{focused.rect.width}x{focused.rect.height}' \
+                    f'+{focused.rect.x}+{focused.rect.y}'
+                self.cfg[tag]['geom'] = focused_geom
                 self.dump_config()
                 break
 
@@ -296,9 +296,9 @@ class scratchpad(extension, cfg, Matcher):
         focused = self.i3ipc.get_tree().find_focused()
         for win in self.marked[tag]:
             if win.id == focused.id:
-                focused_geom = f"{focused.rect.width}x{focused.rect.height}" \
-                    f"+{focused.rect.x}+{focused.rect.y}"
-                self.cfg[tag]["geom"] = focused_geom
+                focused_geom = f'{focused.rect.width}x{focused.rect.height}' \
+                    f'+{focused.rect.x}+{focused.rect.y}'
+                self.cfg[tag]['geom'] = focused_geom
                 if win.rect.x != focused.rect.x \
                     or win.rect.y != focused.rect.y \
                     or win.rect.width != focused.rect.width \
@@ -356,8 +356,8 @@ class scratchpad(extension, cfg, Matcher):
 
     def scratchpad_move(self, win, tag, show=False, hide=True):
         win.command(
-            f"{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
-            {self.nsgeom.get_geom(tag)}")
+            f'{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
+            {self.nsgeom.get_geom(tag)}')
         self.marked[tag].append(win)
         if show:
             self.show(tag, hide=hide)
@@ -368,7 +368,7 @@ class scratchpad(extension, cfg, Matcher):
             if special_tag in self.cfg:
                 self.show(special_tag, hide=True)
             self.focus_win_flag[0] = False
-            self.focus_win_flag[1] = ""
+            self.focus_win_flag[1] = ''
     
     def mark_tag(self, _, event) -> None:
         """ Add unique mark to the new window.
@@ -419,7 +419,7 @@ class scratchpad(extension, cfg, Matcher):
 
     def mark_all_tags(self, hide: bool = True) -> None:
         """ Add marks to the all tags.
-            hide (bool): hide window or not. Primarly used to cleanup "garbage"
+            hide (bool): hide window or not. Primarly used to cleanup 'garbage'
             that can appear after i3 (re)start, etc. Because of I've think that
             is't better to make screen clear after (re)start. """
         winlist = self.i3ipc.get_tree().leaves()

@@ -55,7 +55,7 @@ class actions(extension, cfg):
         cfg.__init__(self, i3)
         # i3ipc connection, bypassed by negwm runner.
         self.i3ipc = i3
-        maxlength = self.conf("cache_list_size")  # cache list length
+        maxlength = self.conf('cache_list_size')  # cache list length
         # create list with the finite number of elements by the [None] * N hack
         self.geom_list = collections.deque([None] * maxlength, maxlen=maxlength)
         self.current_win = None
@@ -64,9 +64,9 @@ class actions(extension, cfg):
         # Here we load information about useless gaps
         self.load_useless_gaps()
         # Coeff to grow window in all dimensions
-        self.grow_coeff = self.conf("grow_coeff")
+        self.grow_coeff = self.conf('grow_coeff')
         # Coeff to shrink window in all dimensions
-        self.shrink_coeff = self.conf("shrink_coeff")
+        self.shrink_coeff = self.conf('shrink_coeff')
 
     def load_useless_gaps(self) -> None:
         """ Load useless gaps settings. """
@@ -84,11 +84,11 @@ class actions(extension, cfg):
         """ Get previous window geometry. """
         self.geom_list.append(
             {
-                "id": self.current_win.id,
-                "geom": self.save_geom()
+                'id': self.current_win.id,
+                'geom': self.save_geom()
             }
         )
-        return self.geom_list[-1]["geom"]
+        return self.geom_list[-1]['geom']
 
     @staticmethod
     def multiple_geom(win, coeff: float) -> Mapping[str, int]:
@@ -127,10 +127,10 @@ class actions(extension, cfg):
         half_height = int(curr_scr['height'] / 2)
         self.current_win = self.i3ipc.get_tree().find_focused()
         # Config about useless gaps for half splitting, True by default
-        if self.conf("x2_use_gaps"):
+        if self.conf('x2_use_gaps'):
             gaps = self.useless_gaps
         else:
-            gaps = {"w": 0, "a": 0, "s": 0, "d": 0}
+            gaps = {'w': 0, 'a': 0, 's': 0, 'd': 0}
         double_dgaps = int(gaps['d'] * 2)
         double_sgaps = int(gaps['s'] * 2)
         if mode in {'h1', 'hup'}:
@@ -199,8 +199,8 @@ class actions(extension, cfg):
         """ Revert changed window state. """
         try:
             focused = self.i3ipc.get_tree().find_focused()
-            if self.geom_list[-1].get("geom", {}):
-                actions.set_geom(focused, self.geom_list[-1]["geom"])
+            if self.geom_list[-1].get('geom', {}):
+                actions.set_geom(focused, self.geom_list[-1]['geom'])
             del self.geom_list[-1]
         except (KeyError, TypeError, AttributeError):
             pass
@@ -246,11 +246,11 @@ class actions(extension, cfg):
     def resize(self, direction, amount):
         """ Resize the current container along to the given direction. If there
         is only a single container, resize by adjusting gaps. If the direction
-        is "natural", resize vertically in a splitv container, else
-        horizontally. If it is "orhtogonal", do the opposite. """
+        is 'natural', resize vertically in a splitv container, else
+        horizontally. If it is 'orhtogonal', do the opposite. """
         possible_directions = [
-            "natural", "orthogonal", "horizontal", "vertical",
-            "top", "bottom", "left", "right"
+            'natural', 'orthogonal', 'horizontal', 'vertical',
+            'top', 'bottom', 'left', 'right'
         ]
         if direction not in possible_directions:
             try:
@@ -264,15 +264,15 @@ class actions(extension, cfg):
         # If not, check if the curent container is in a vertical split.
         while True:
             parent = node.parent
-            if node.type == "workspace" or not parent:
+            if node.type == 'workspace' or not parent:
                 break
-            if parent.type == "floating_con":
+            if parent.type == 'floating_con':
                 single = False
                 break
-            if len(parent.nodes) > 1 and parent.layout == "splith":
+            if len(parent.nodes) > 1 and parent.layout == 'splith':
                 single = False
                 break
-            if len(parent.nodes) > 1 and parent.layout == "splitv":
+            if len(parent.nodes) > 1 and parent.layout == 'splitv':
                 single = False
                 vertical = True
                 break
@@ -281,7 +281,7 @@ class actions(extension, cfg):
             direction, mode, amount = self.set_resize_params_single(
                 direction, amount
             )
-            self.i3ipc.command(f"gaps {direction} current {mode} {amount}")
+            self.i3ipc.command(f'gaps {direction} current {mode} {amount}')
         else:
             direction, mode, amount = self.set_resize_params_multiple(
                 direction, amount, vertical
@@ -310,56 +310,54 @@ class actions(extension, cfg):
 
     @staticmethod
     def focused_order(node):
-        """ Iterate through the children of "node" in most recently focused
+        """ Iterate through the children of 'node' in most recently focused
         order. """
         for focus_id in node.focus:
             return next(n for n in node.nodes if n.id == focus_id)
 
     @staticmethod
     def focused_child(node):
-        """Return the most recently focused child of "node"."""
+        """Return the most recently focused child of 'node'."""
         return next(actions.focused_order(node))
 
     @staticmethod
     def is_in_line(old, new, direction):
-        """ Return true if container "new" can reasonably be considered to be
-        in direction of container "old" """
+        """ Return true if container 'new' can reasonably be considered to be
+        in direction of container 'old' """
         if direction in {'up', 'down'}:
             return new.rect.x <= old.rect.x + old.rect.width*0.9 \
                 and new.rect.x + new.rect.width >= \
                 old.rect.x + old.rect.width * 0.1
-
         if direction in {'left', 'right'}:
             return new.rect.y <= old.rect.y + old.rect.height*0.9 \
                 and new.rect.y + new.rect.height >= \
                 old.rect.y + old.rect.height * 0.1
-
         return None
 
     def output_in_direction(self, output, window, direction):
-        """ Return the output in direction "direction" of window "window" on
+        """ Return the output in direction 'direction' of window 'window' on
         output """
         tree = self.i3ipc.get_tree().find_focused()
         for new in self.focused_order(tree):
-            if new.name == "__i3":
+            if new.name == '__i3':
                 continue
             if not self.is_in_line(window, new, direction):
                 continue
             orct = output.rect
             nrct = new.rect
-            if (direction == "left" and nrct.x + nrct.width == orct.x) \
-                or (direction == "right" and nrct.x == orct.x + orct.width) \
-                or (direction == "up" and nrct.y + nrct.height == orct.y) \
-                or (direction == "down" and nrct.y == orct.y + orct.height):
+            if (direction == 'left' and nrct.x + nrct.width == orct.x) \
+                or (direction == 'right' and nrct.x == orct.x + orct.width) \
+                or (direction == 'up' and nrct.y + nrct.height == orct.y) \
+                or (direction == 'down' and nrct.y == orct.y + orct.height):
                 return new
         return None
 
     def focus_tab(self, direction) -> None:
         """ Cycle through the innermost stacked or tabbed ancestor container,
         or through floating containers. """
-        if direction == "next":
+        if direction == 'next':
             delta = 1
-        elif direction == "prev":
+        elif direction == 'prev':
             delta = -1
         else:
             return
@@ -368,13 +366,13 @@ class actions(extension, cfg):
         # Find innermost tabbed or stacked container, or detect floating.
         while True:
             parent = node.parent
-            if not parent or node.type != "con":
+            if not parent or node.type != 'con':
                 return
-            if parent.layout in {"tabbed", "stacked"} \
-                    or parent.type == "floating_con":
+            if parent.layout in {'tabbed', 'stacked'} \
+                    or parent.type == 'floating_con':
                 break
             node = parent
-        if parent.type == "floating_con":
+        if parent.type == 'floating_con':
             node = parent
             parent = node.parent
             # The order of floating_nodes is not useful, sort it somehow.

@@ -162,7 +162,7 @@ class circle(extension, cfg, Matcher):
         with_subtag (bool): contains subtag, special behaviour then. """
         if not with_subtag:
             return self.tagged[tag][idx]
-        subtag_win_classes = self.subtag_info.get("classw", {})
+        subtag_win_classes = self.subtag_info.get('classw', {})
         for subidx, win in enumerate(self.tagged[tag]):
             if win.window_class in subtag_win_classes:
                 return self.tagged[tag][subidx]
@@ -191,7 +191,7 @@ class circle(extension, cfg, Matcher):
         ]
 
     def next(self, tag: str) -> None:
-        """ Circle over windows. Function "called" from the user-side.
+        """ Circle over windows. Function 'called' from the user-side.
             tag (str): denotes target [tag] """
         self.sort_by_parent(tag)
         if not self.tagged[tag]:
@@ -207,7 +207,7 @@ class circle(extension, cfg, Matcher):
                         self.run_prog(tag)
                         return
                 for idx, win in enumerate(self.tagged[tag]):
-                    if win.window_class == self.conf(tag, "priority"):
+                    if win.window_class == self.conf(tag, 'priority'):
                         self.focus_next(tag, idx, inc_counter=False)
             elif self.current_win.id == self.twin(tag, idx).id:
                 self.find_next_not_the_same_win(tag)
@@ -215,7 +215,7 @@ class circle(extension, cfg, Matcher):
                 self.focus_next(tag, idx)
 
     def subtag(self, tag: str, subtag: str) -> None:
-        """ Circle over subtag windows. Function "called" from the user-side.
+        """ Circle over subtag windows. Function 'called' from the user-side.
             tag (str): denotes target [tag]
             subtag (str): denotes the target [subtag]. """
         self.subtag_info = self.conf(tag, subtag)
