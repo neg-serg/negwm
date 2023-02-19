@@ -22,7 +22,7 @@ Options:
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
 github :: https://github.com/neg-serg?tab=repositories
-year :: 2022 """
+year :: 2023 """
 
 import asyncio
 import functools
