@@ -63,7 +63,7 @@ class scratchpad(extension, cfg, Matcher):
         ret: str = ''
         for tag in cmd_dict:
             geom = self.nsgeom.get_geom(tag)
-            ret = f'{ret}for_window $scratchpad-{tag} floating enable; {geom}\n'
+            ret = f'{ret}for_window $scratchpad-{tag} floating enable, {geom}\n'
         return ret
 
     @staticmethod
