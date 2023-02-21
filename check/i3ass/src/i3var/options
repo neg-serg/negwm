@@ -1,3 +1,0 @@
-    set VARNAME [VALUE] [--json JSON]
-    get VARNAME [--json JSON]
-    --help|-h --version|-v --verbose

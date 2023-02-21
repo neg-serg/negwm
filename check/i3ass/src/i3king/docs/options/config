@@ -1,5 +1,0 @@
-use FILE as config  
-
-Override the value of the Environment variable
-**I3_KING_RULE_FILE** . Or the default value:  
-`~/.config/i3king/rules`

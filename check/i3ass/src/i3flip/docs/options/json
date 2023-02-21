@@ -1,1 +1,0 @@
-use JSON instead of output of `i3-msg -t get_tree`  

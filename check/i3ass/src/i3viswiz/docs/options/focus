@@ -1,4 +1,0 @@
-focus target **visible** window  
-
-if this is not set, the CON_ID of target window will
-get printed to STDOUT.

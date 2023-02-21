@@ -1,5 +1,0 @@
-workspace name to use  
-
-If this option is not set the *zen container* will
-be created on a vacant workspace (the highest
-numbered workspace + 1).
