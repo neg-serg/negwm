@@ -242,6 +242,24 @@ class actions(extension, cfg):
             mode = "minus"
         return direction, mode, int(amount)
 
+    @staticmethod
+    def set_resize_params_multiple(direction, amount, vertical):
+        """ Set resize parameters for the block of windows """
+        mode = ''
+        match direction:
+            case 'horizontal': direction = 'width'
+            case 'vertical': direction = 'height'
+            case 'natural': direction = 'height' if vertical else 'width'
+            case 'orthogonal': direction = 'width' if vertical else 'height'
+            case 'top': direction = 'up'
+            case 'bottom': direction = 'down'
+        if int(amount) < 0:
+            mode = 'shrink'
+            amount = -int(amount)
+        else:
+            mode = 'grow'
+        return direction, mode, int(amount)
+
     def resize(self, direction, amount):
         """ Resize the current container along to the given direction. If there
         is only a single container, resize by adjusting gaps. If the direction
