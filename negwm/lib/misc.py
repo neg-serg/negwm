@@ -68,6 +68,12 @@ class Misc():
                 return default_cfg_dir
 
     @staticmethod
+    def create_header(head):
+        return '# ╒' + (len(head)+2) * '═' + '╕\n' \
+             + '# │' + f' {head} ' +         '│\n' \
+             + '# ╘' + (len(head)+2) * '═' + '╛'
+
+    @staticmethod
     def i3path() -> str:
         ''' Easy way to return i3 config path. '''
         cfg_home=Misc.xdg_config_home()
