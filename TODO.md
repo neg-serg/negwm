@@ -25,3 +25,4 @@
     - Try: python-dynmen (Python wrappers for dynamic menus (dmenu, rofi, fzf, ...))
     - bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     • ipc: the GET_CONFIG request now returns all included files and their details
+    - i3bang integration
