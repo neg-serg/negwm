@@ -75,7 +75,7 @@ class circle(extension, cfg, Matcher):
                 focus_cmd = ',focus'
             if ws:
                 ret += f'for_window $circle-{tag}' \
-                    f' move workspace ${ws}{focus_cmd}\n'
+                    f' move to workspace ${ws}{focus_cmd}\n'
         return ret
 
     def run_prog(self, tag: str, subtag: str = '') -> None:
