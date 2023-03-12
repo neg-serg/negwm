@@ -12,7 +12,7 @@ from negwm.lib.keymap import bindmap as Bindmap
 
 class configurator(extension, cfg):
     mode_exit='mode "default"'
-    header=Misc.create_header('NegWM')
+    header='# :>> NegWM :<<'
     ending='# vim:filetype=i3config\n'
 
     def __init__(self, i3) -> None:
