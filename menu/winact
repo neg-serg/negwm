@@ -68,7 +68,7 @@ class winact():
             selected_ws = workspace_name.decode('UTF-8').strip()
             if selected_ws:
                 num = ws_list.index(selected_ws) + 1
-                return str(f'{num} :: {selected_ws}')
+                return str(f'{num}::{selected_ws}')
         except Exception:
             return ''
         return ''

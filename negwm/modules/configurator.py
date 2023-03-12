@@ -154,7 +154,7 @@ class configurator(extension, cfg):
         workspaces = self.cfg.get('workspaces', [])
         if workspaces:
             for index, ws in enumerate(workspaces):
-                ret = f'{ret}set ${ws.split(":")[1]} "{index + 1} :: {ws}"\n'
+                ret = f'{ret}set ${ws.split(":")[1]} "{index + 1}::{ws}"\n'
         return ret
 
     def mode(self, name, bind='', end=False) -> str:

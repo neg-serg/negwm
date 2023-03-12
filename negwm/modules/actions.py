@@ -411,7 +411,7 @@ class actions(extension, cfg):
         return result
 
     def next_ws(self):
-        ws_magic_pie = ' :: ws'
+        ws_magic_pie = '::ws'
         focused = None
         ws_list = self.visible_ws()
         ws_numbers = []
