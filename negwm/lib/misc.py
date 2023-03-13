@@ -74,6 +74,10 @@ class Misc():
              + '# ╘' + (len(head)+2) * '═' + '╛'
 
     @staticmethod
+    def create_header_tiny(head):
+        return f'# :>> {head}'
+
+    @staticmethod
     def i3path() -> str:
         ''' Easy way to return i3 config path. '''
         cfg_home=Misc.xdg_config_home()

@@ -14,6 +14,7 @@ class configurator(extension, cfg):
     mode_exit='mode "default"'
     header='# :>> NegWM'
     ending='# vim:filetype=i3config\n'
+    create_header=Misc.create_header_tiny
 
     def __init__(self, i3) -> None:
         super().__init__()
@@ -79,7 +80,7 @@ class configurator(extension, cfg):
     def generate_config(self) -> str:
         self.conf_data=[]
         self.fill(text=configurator.header)
-        self.fill(text=Misc.create_header('Module bindings'))
+        self.fill(text=configurator.create_header('Module bindings'))
         self.fill(module_bindings=True)
         mods = extension.get_mods()
         for m in mods:
@@ -87,7 +88,7 @@ class configurator(extension, cfg):
             if configurator.configured_internally(module):
                 self.fill(text=Rules.rules_mod(m))
         for cfg_section in self.cfg.keys():
-            self.fill(text=Misc.create_header(f'Config section {cfg_section}'))
+            self.fill(text=configurator.create_header(f'Config section {cfg_section}'))
             self.fill(cfg_section)
         self.fill(text=configurator.ending)
         return '\n'.join(filter(None, self.conf_data))
