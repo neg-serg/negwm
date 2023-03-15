@@ -21,11 +21,14 @@
 
 # Experiments
     - Better dynamic config architecture
+    - Fix xsettingsd
+    - I3 resize 10 px or 10 ppt
     - Move config update to library
+    - New keybinding for nb
     - Python reload dynamic
+    - Scratchpad and circle: run several apps at once if not created
     - Try: python-dynmen (Python wrappers for dynamic menus (dmenu, rofi, fzf, ...))
     - bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - focus next sibling support (win+3 in context)
     - i3bang integration
     • ipc: the GET_CONFIG request now returns all included files and their details
-    - Scratchpad and circle: run several apps at once if not created
