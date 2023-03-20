@@ -5,6 +5,7 @@ import subprocess
 import pathlib
 import logging
 import sys
+import fileinput
 
 from negwm.lib.misc import Misc
 from negwm.lib.menu import menu
@@ -17,18 +18,29 @@ if not xdg_data_home:
 
 class xsettings():
     """ Change gtk / icons themes xsettingsd. """
+    setup=os.path.expanduser('~/bin/xsettingsd-setup').split()
     def __init__(self):
         self.prompt='❯>'
-        self.xsettings_reload=os.path.expanduser('~/bin/xsettingsd-setup')
 
-    def menu_params(self, prompt):
+    def menu_params(self, prompt: str):
         """ Set menu params """
         return {'prompt': f'{menu.wrap_str(prompt)} {self.prompt}'}
 
-    def apply_settings(self):
+    def apply_settings(self, param: str, selection: str):
         """ Apply selected gnome settings """
         try:
-            subprocess.Popen([self.xsettings_reload])
+            path=os.path.expanduser('~/bin/xsettingsd')
+            match param:
+                case 'theme': param='Net/ThemeName'
+                case 'icon': param='Net/IconThemeName'
+                case _: return 'Wrong param'
+            with fileinput.FileInput(path, inplace=True, backup='.bck') as settings:
+                for line in settings:
+                    if not param in line:
+                        print(line, end='')
+                    else:
+                        print(line.replace(line, f'{param} "{selection.strip()}"'), end='\n')
+            subprocess.Popen(xsettings.setup)
         except subprocess.CalledProcessError as proc_err:
             Misc.print_run_exception_info(proc_err)
 
@@ -56,7 +68,7 @@ class xsettings():
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
         if selection:
-            self.apply_settings()
+            self.apply_settings('icon', selection.decode('utf-8'))
 
     def change_gtk_theme(self):
         """ Changes gtk theme with help of gsd-xsettings """
@@ -82,7 +94,7 @@ class xsettings():
             except subprocess.CalledProcessError as proc_err:
                 Misc.print_run_exception_info(proc_err)
         if selection:
-            self.apply_settings()
+            self.apply_settings('theme', selection.decode('utf-8'))
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:

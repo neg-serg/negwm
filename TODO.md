@@ -16,12 +16,10 @@
     - Option to run something on go next
 
 # Menu
-    - Fix ex-gnome module
     - Add stuff for marks add del to attach to ws, etc
 
 # Experiments
     - Better dynamic config architecture
-    - Fix xsettingsd
     - I3 resize 10 px or 10 ppt
     - Move config update to library
     - New keybinding for nb
