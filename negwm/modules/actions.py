@@ -303,8 +303,11 @@ class actions(extension, cfg):
             direction, mode, amount = self.set_resize_params_multiple(
                 direction, amount, vertical
             )
+            amount_ppt = amount // 8
+            if amount < 10:
+                amount_ppt = amount // 4
             self.i3ipc.command(
-                f"resize {mode} {direction} {amount} px or {amount//16} ppt"
+                f"resize {mode} {direction} {amount} px or {amount_ppt} ppt"
             )
 
     @staticmethod
