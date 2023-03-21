@@ -19,14 +19,14 @@
     - Add stuff for marks add del to attach to ws, etc
 
 # Experiments
+    - Add negwm / i3msg / sway shell with commands like stumpish
     - Better dynamic config architecture
-    - I3 resize 10 px or 10 ppt
+    - Herbe notifications for keybindings
+    - Keyb support: https://github.com/kencx/keyb
     - Move config update to library
-    - New keybinding for nb
     - Python reload dynamic
     - Scratchpad and circle: run several apps at once if not created
     - Try: python-dynmen (Python wrappers for dynamic menus (dmenu, rofi, fzf, ...))
     - bin/i3gw top; i3-msg '[con_mark=top] resize set 30 ppt'
     - focus next sibling support (win+3 in context)
-    - i3bang integration
     • ipc: the GET_CONFIG request now returns all included files and their details
