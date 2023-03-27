@@ -134,5 +134,6 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         asyncio.run(props().move_window())
     else:
-        if sys.argv[1] == 'show': props().show_props()
-        if sys.argv[1] == 'del': asyncio.run(props().unmove_window())
+        match sys.argv[1]:
+            case 'show': props().show_props()
+            case 'del': asyncio.run(props().unmove_window())

@@ -99,7 +99,8 @@ class winact():
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        if sys.argv[1] == 'ws': asyncio.run(winact().goto_ws())
-        if sys.argv[1] == 'win': winact().goto_win()
-        if sys.argv[1] == 'attach': winact().attach_win()
-        if sys.argv[1] == 'move': asyncio.run(winact().move_to_ws())
+        match sys.argv[1]:
+            case 'ws': asyncio.run(winact().goto_ws())
+            case 'win': winact().goto_win()
+            case 'attach': winact().attach_win()
+            case 'move': asyncio.run(winact().move_to_ws())

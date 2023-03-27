@@ -139,8 +139,9 @@ class pulse_menu():
 if __name__ == '__main__':
     p = pulse_menu()
     if len(sys.argv) > 1:
-        if sys.argv[1] == 'output': p.pulseaudio_output()
-        if sys.argv[1] == 'input': p.pulseaudio_input()
-        if sys.argv[1] == 'mute': p.pulseaudio_mute(True)
+        match sys.argv[1]:
+            case 'output': p.pulseaudio_output()
+            case 'input': p.pulseaudio_input()
+            case 'mute': p.pulseaudio_mute(True)
     else:
         p.pulseaudio_output()
