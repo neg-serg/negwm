@@ -35,7 +35,6 @@ import subprocess
 import sys
 from threading import Thread
 import timeit
-import logging
 import atexit
 
 from docopt import docopt
