@@ -23,7 +23,7 @@ class configurator(extension, cfg):
         self.conf_data=[]
 
     @staticmethod
-    def configured_internally(module):
+    def configured_internally(module) -> bool:
         if not isinstance(module, cfg):
             return False
         return 'configured_internally' in module.cfg and module.cfg['configured_internally']
