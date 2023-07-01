@@ -274,3 +274,7 @@ nwim = Δ(
 ## Fullscreen
 
 Специальный модуль, который нужен для хакинга панели polybar для некоторых перечисленных рабочих столов.
+
+## Support
+
+If you like my stuff, you can [buy me a coffee](https://www.buymeacoffee.com/negserg).

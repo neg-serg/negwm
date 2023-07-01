@@ -263,3 +263,7 @@ Look at the `lib/executor.py` to learn more.
 ## Fullscreen
 
 Fullscreen panel hacking.
+
+## Support
+
+If you like my stuff, you can [buy me a coffee](https://www.buymeacoffee.com/negserg).
