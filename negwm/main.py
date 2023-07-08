@@ -104,7 +104,7 @@ class NegWM():
         get_lock(os.path.basename(__file__))
         # We need it because of thread_wait on Ctrl-C.
         atexit.register(NegWM.cleanup)
-        arguments=docopt(str(__doc__), version='0.9.5')
+        arguments=docopt(str(__doc__), version='0.9.6')
         log=logging.getLogger()
         if arguments['--systemd']:
             from systemd import journal
