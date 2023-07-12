@@ -19,7 +19,7 @@ class cfg():
     def __init__(self, i3) -> None:
         self.mod=self.__class__.__name__    # detect current extension
         # extension config path
-        self.negwm_mod_cfg_cache_path=f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
+        self.cfg_path=f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
         self.load_config()                  # load current config
         self.win_attrs={}                   # used for props add / del hacks
         self.additional_props=[dict()]      # used to store add_prop history
@@ -60,17 +60,16 @@ class cfg():
             self.__init__(*_)
 
     def load_config(self) -> None:
-        """ Reload config itself and convert lists in it to sets for the better
-        performance. """
+        """ Reload config """
         try:
-            with open(self.negwm_mod_cfg_cache_path, "rb") as mod_cfg:
+            with open(self.cfg_path, "rb") as mod_cfg:
                 self.cfg=pickle.load(mod_cfg)
         except FileNotFoundError:
-            logging.error(f'file {self.negwm_mod_cfg_cache_path} not exists')
+            logging.error(f'file {self.cfg_path} not exists')
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
-        with open(self.negwm_mod_cfg_cache_path, "wb") as mod_cfg:
+        with open(self.cfg_path, "wb") as mod_cfg:
             pickle.dump(self.cfg, mod_cfg)
 
     def add_props(self, tag: str, prop_str: str) -> None:
