@@ -116,68 +116,68 @@ class env():
                 'italic': self.cfg_block().get('font_italic', 'Italic')
             }
 
-    def alacritty_yml_create(self, custom_config: str) -> None:
-        ''' Create config for alacritty
-        custom_config(str): config name to create '''
-        import yaml
-        import yamlloader
-        conf = None
-        with open(custom_config, 'r', encoding='utf-8') as cfg_file:
-            try:
-                conf = yaml.load(
-                    cfg_file, Loader=yamlloader.ordereddict.CSafeLoader)
-                if conf is not None:
-                    if 'font' in conf:
-                        font = conf['font']
-                        for w in 'normal', 'bold', 'italic':
-                            font[w]['family'] = self.font()
-                            font[w]['style'] = self.style()[w]
-                        font['size'] = self.font_size()
-                    if 'window' in conf:
-                        window = conf['window']
-                        padding = self.cfg_block().get('padding', [2, 2])
-                        opacity = self.cfg_block().get('opacity', 0.88)
-                        window['opacity'] = opacity
-                        window['padding']['x'] = int(padding[0])
-                        window['padding']['y'] = int(padding[1])
-            except yaml.YAMLError as yamlerror:
-                logging.error(yamlerror)
+    def alacritty(self) -> str:
+        def create_alacritty_cfg(name: str) -> str:
+            ''' Config generator for alacritty. We need it because of alacritty
+            cannot bypass most of user parameters with command line now.
+            cfg_dir: alacritty config dir
+            config: config dirtionary
+            name(str): name of config to generate
+            cfgname(str): configname '''
+            app_name = self.config.get(name, {}).get('app_name', '')
+            if not app_name:
+                app_name = self.config.get(name, {}).get('classw')
+            app_name = f'{app_name}.yml'
+            cfgname = expanduser(f'{env.alacritty_cfg_dir}/{app_name}')
+            shutil.copyfile(env.alacritty_cfg, cfgname)
+            return cfgname
 
-        if conf is not None and conf:
-            with open(custom_config, 'w', encoding='utf8') as outfile:
+        def alacritty_yml_create(custom_config: str) -> None:
+            ''' Create config for alacritty
+            custom_config(str): config name to create '''
+            import yaml
+            import yamlloader
+            conf = None
+            with open(custom_config, 'r', encoding='utf-8') as cfg_file:
                 try:
-                    yaml.dump(
-                        conf,
-                        outfile,
-                        default_flow_style=False,
-                        allow_unicode=True,
-                        canonical=False,
-                        explicit_start=True,
-                        Dumper=yamlloader.ordereddict.CDumper
-                    )
+                    conf = yaml.load(
+                        cfg_file, Loader=yamlloader.ordereddict.CSafeLoader)
+                    if conf is not None:
+                        if 'font' in conf:
+                            font = conf['font']
+                            for w in 'normal', 'bold', 'italic':
+                                font[w]['family'] = self.font()
+                                font[w]['style'] = self.style()[w]
+                            font['size'] = self.font_size()
+                        if 'window' in conf:
+                            window = conf['window']
+                            padding = self.cfg_block().get('padding', [2, 2])
+                            opacity = self.cfg_block().get('opacity', 0.88)
+                            window['opacity'] = opacity
+                            window['padding']['x'] = int(padding[0])
+                            window['padding']['y'] = int(padding[1])
                 except yaml.YAMLError as yamlerror:
                     logging.error(yamlerror)
 
-    def create_alacritty_cfg(self, name: str) -> str:
-        ''' Config generator for alacritty. We need it because of alacritty
-        cannot bypass most of user parameters with command line now.
-        cfg_dir: alacritty config dir
-        config: config dirtionary
-        name(str): name of config to generate
-        cfgname(str): configname '''
-        app_name = self.config.get(name, {}).get('app_name', '')
-        if not app_name:
-            app_name = self.config.get(name, {}).get('classw')
-        app_name = f'{app_name}.yml'
-        cfgname = expanduser(f'{env.alacritty_cfg_dir}/{app_name}')
-        shutil.copyfile(env.alacritty_cfg, cfgname)
-        return cfgname
+            if conf is not None and conf:
+                with open(custom_config, 'w', encoding='utf8') as outfile:
+                    try:
+                        yaml.dump(
+                            conf,
+                            outfile,
+                            default_flow_style=False,
+                            allow_unicode=True,
+                            canonical=False,
+                            explicit_start=True,
+                            Dumper=yamlloader.ordereddict.CDumper
+                        )
+                    except yaml.YAMLError as yamlerror:
+                        logging.error(yamlerror)
 
-    def alacritty(self) -> str:
         self.title = self.cfg_block().get('title', self.wclass)
-        custom_config = self.create_alacritty_cfg(self.name)
+        custom_config = create_alacritty_cfg(self.name)
         multiprocessing.Process(
-            target=self.alacritty_yml_create, args=(custom_config,),
+            target=alacritty_yml_create, args=(custom_config,),
             daemon=True
         ).start()
 
@@ -257,7 +257,7 @@ class executor(extension, cfg):
             check=False
         ).stdout.decode()
 
-    def attach_to_session(self) -> None:
+    def tmux_attach(self) -> None:
         ''' Run tmux to attach to given socket. '''
         name = self.env.name
         cmd = f"exec \"{self.env.opts}" \
@@ -265,7 +265,7 @@ class executor(extension, cfg):
             f" \'{env.tmux_session_attach(name)}\'\""
         self.i3ipc.command(cmd)
 
-    def create_new_session(self) -> None:
+    def tmux_create_session(self) -> None:
         ''' Run tmux to create the new session on given socket. '''
         exec_cmd = ''
         for pos, token in enumerate(self.env.exec_tmux):
@@ -290,9 +290,9 @@ class executor(extension, cfg):
         if self.env.exec_tmux:
             if self.env.name in self.detect_session_bind(self.env.name):
                 if not self.i3ipc.get_tree().find_classed(self.env.wclass):
-                    self.attach_to_session()
+                    self.tmux_attach()
             else:
-                self.create_new_session()
+                self.tmux_create_session()
         else:
             cmd = f'exec \"{self.env.opts} {self.env.exec}\"'
             self.i3ipc.command(cmd)
