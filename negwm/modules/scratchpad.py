@@ -16,15 +16,15 @@ window when needed.
 import uuid
 from typing import List, Callable, Set
 import negwm.lib.geom as geom
-from negwm.lib.cfg import cfg
+from negwm.lib.dynamic_cfg import dynamic_cfg
 from negwm.lib.matcher import Matcher
 from negwm.lib.negewmh import NegEWMH
 from negwm.lib.extension import extension
 from negwm.lib.misc import Misc
 
-class scratchpad(extension, cfg, Matcher):
+class scratchpad(extension, dynamic_cfg, Matcher):
     """ Named scratchpad class
-        cfg: configuration manager to autosave/autoload
+        dynamic_cfg: configuration manager to autosave/autoload
         Matcher: class to check that window can be tagged with given tag by
                  WM_CLASS, WM_INSTANCE, regexes, etc
     """
@@ -32,7 +32,7 @@ class scratchpad(extension, cfg, Matcher):
         """ Init function
             i3: i3ipc connection """
         super().__init__()
-        cfg.__init__(self, i3)
+        dynamic_cfg.__init__(self, i3)
         Matcher.__init__(self)
         self.initialize(i3)
 

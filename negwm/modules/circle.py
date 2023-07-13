@@ -16,18 +16,18 @@ of issues here in detection of existing/visible windows, etc.
 
 from negwm.lib.extension import extension
 from negwm.lib.matcher import Matcher
-from negwm.lib.cfg import cfg
+from negwm.lib.dynamic_cfg import dynamic_cfg
 from negwm.lib.misc import Misc
 
 
-class circle(extension, cfg, Matcher):
+class circle(extension, dynamic_cfg, Matcher):
     """ Circle over windows class """
     def __init__(self, i3) -> None:
         """ Init function
         Main part is in self.initialize, which performs initialization itself.
         i3: i3ipc connection """
         extension.__init__(self)
-        cfg.__init__(self, i3)
+        dynamic_cfg.__init__(self, i3)
         Matcher.__init__(self)
         self.initialize(i3)
 
