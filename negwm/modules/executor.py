@@ -21,7 +21,6 @@ class env():
     ''' Environment class. It is a helper for tmux manager to store info about currently selected application. This class rules over
     parameters and settings of application, like used terminal enumator, fonts, all path settings, etc.
     config: manager to autosave/autoload configutation with inotify '''
-
     cache = Misc.cache_path()
     tmux_socket_dir = f'{cache}/tmux_sockets'
     dtach_session_dir = f'{cache}/dtach_sessions'
@@ -229,8 +228,7 @@ class executor(extension, cfg):
     dedicated sockets. Also it can run simply run applications without Tmux.
     The main advantage is dynamic config reloading and simplicity of adding or
     modifing of various parameters.
-    cfg: configuration manager to autosave/autoload configutation with
-    inotify '''
+    cfg: configuration manager to autosave/autoload configutation with inotify '''
     def __init__(self, i3) -> None:
         extension.__init__(self)
         cfg.__init__(self, i3)
