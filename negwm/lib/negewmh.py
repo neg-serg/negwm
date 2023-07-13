@@ -44,9 +44,12 @@ class NegEWMH():
 
     @staticmethod
     def is_window_modal(win) -> bool:
-        with NegEWMH.window_obj(NegEWMH.disp, win.window) as win_obj:
-            win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)
-            return bool('_NET_WM_STATE_MODAL' in win_state)
+        try:
+            with NegEWMH.window_obj(NegEWMH.disp, win.window) as win_obj:
+                win_state = NegEWMH.ewmh.getWmState(win_obj, str=True)
+                return bool('_NET_WM_STATE_MODAL' in win_state)
+        except:
+            return False
 
     @staticmethod
     def find_visible_windows(windows_on_ws: List) -> List:
