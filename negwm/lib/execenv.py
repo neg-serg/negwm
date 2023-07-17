@@ -1,15 +1,64 @@
+import os
+from os.path import expanduser
+import errno
 import shutil
 import threading
 import multiprocessing
 import logging
-from os.path import expanduser
-from negwm.lib.misc import Misc
+
+
+class utils():
+    @staticmethod
+    def xdg_config_home() -> str: return os.environ.get('XDG_CONFIG_HOME', '')
+
+    @staticmethod
+    def run_once(f):
+        def wrapper(*args, **kwargs):
+            if not wrapper.has_run:
+                wrapper.has_run = True
+                return f(*args, **kwargs)
+        wrapper.has_run = False
+        return wrapper
+
+    @staticmethod
+    def cache_path() -> str:
+        ''' Easy way to return negwm cache path. '''
+        cachedir_env=os.environ.get('NEGWM_CACHE', '')
+        cache_home=os.environ.get('XDG_CACHE_HOME', '')
+        if cachedir_env:
+            utils.create_dir(cachedir_env)
+            return cachedir_env
+        elif cache_home:
+            utils.create_dir(f'{cache_home}/negwm')
+            return f'{cache_home}/negwm'
+        else:
+            home=os.environ.get('HOME', '')
+            if not home:
+                logging.error(f'Fatal! HOME env is not set')
+                return ''
+            else:
+                default_cfg_dir=f'{home}/.cache/negwm'
+                utils.create_dir(default_cfg_dir)
+                return default_cfg_dir
+
+    @staticmethod
+    def create_dir(dirname) -> None:
+        ''' Helper function to create directory
+            dirname(str): directory name to create '''
+        if os.path.isdir(dirname):
+            return
+        try:
+            logging.info(f'Creating dir {dirname}')
+            os.makedirs(dirname)
+        except OSError as oserr:
+            if oserr.errno != errno.EEXIST:
+                raise
 
 class execenv():
     ''' Environment class. It is a helper for tmux manager to store info about currently selected application. This class rules over
     parameters and settings of application, like used terminal enumator, fonts, all path settings, etc.
     config: manager to autosave/autoload configutation with inotify '''
-    cache = Misc.cache_path()
+    cache = utils.cache_path()
     paths = {}
 
     def __init__(self, name: str, config) -> None:
@@ -17,7 +66,7 @@ class execenv():
         if not self.cfg_block():
             logging.error(f'Cannot create config for {name}, with config {config}')
             return
-        Misc.create_dir(Misc.cache_path())
+        utils.create_dir(utils.cache_path())
         blk = self.cfg_block()
         term = self.term()
         blk.setdefault('exec', [])
@@ -41,24 +90,24 @@ class execenv():
                 prc.join()
         threading.Thread(target=join_processes, args=(), daemon=True).start()
 
-    @Misc.run_once
+    @utils.run_once
     @staticmethod
     def prepare_alacritty():
         execenv.paths['alacritty_cfg_dir'] = f'{execenv.cache}/alacritty_cfg'
-        execenv.paths['alacritty_cfg'] = expanduser(f'{Misc.xdg_config_home()}/alacritty/alacritty.yml')
-        Misc.create_dir(execenv.paths['alacritty_cfg_dir'])
+        execenv.paths['alacritty_cfg'] = expanduser(f'{utils.xdg_config_home()}/alacritty/alacritty.yml')
+        utils.create_dir(execenv.paths['alacritty_cfg_dir'])
 
-    @Misc.run_once
+    @utils.run_once
     @staticmethod
     def prepare_tmux():
         execenv.paths['tmux_socket_dir'] = f'{execenv.cache}/tmux_sockets'
-        Misc.create_dir(execenv.paths['tmux_socket_dir'])
+        utils.create_dir(execenv.paths['tmux_socket_dir'])
 
-    @Misc.run_once
+    @utils.run_once
     @staticmethod
     def prepare_dtach():
         execenv.paths['dtach_session_dir'] = f'{execenv.cache}/dtach_sessions'
-        Misc.create_dir(execenv.paths['dtach_session_dir'])
+        utils.create_dir(execenv.paths['dtach_session_dir'])
 
     @staticmethod
     def tmux_socket_path(name):

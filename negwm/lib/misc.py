@@ -166,12 +166,3 @@ class Misc():
                 conf_part[prog_field]
             )
         return conf_part[prog_field]
-
-    @staticmethod
-    def run_once(f):
-        def wrapper(*args, **kwargs):
-            if not wrapper.has_run:
-                wrapper.has_run = True
-                return f(*args, **kwargs)
-        wrapper.has_run = False
-        return wrapper
