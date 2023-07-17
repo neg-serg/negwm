@@ -29,8 +29,8 @@ class execenv():
             if not exec_dtach:
                 self.exec = blk['exec']
             else:
-                env.prepare_dtach()
-                self.exec = f'dtach -A {env.paths["dtach_session_dir"]}' \
+                execenv.prepare_dtach()
+                self.exec = f'dtach -A {execenv.paths["dtach_session_dir"]}' \
                             f'/{name}.session {exec_dtach}'
         blk.setdefault('classw', term)
         self.wclass = blk['classw']
@@ -44,33 +44,33 @@ class execenv():
     @Misc.run_once
     @staticmethod
     def prepare_alacritty():
-        env.paths['alacritty_cfg_dir'] = f'{env.cache}/alacritty_cfg'
-        env.paths['alacritty_cfg'] = expanduser(f'{Misc.xdg_config_home()}/alacritty/alacritty.yml')
-        Misc.create_dir(env.paths['alacritty_cfg_dir'])
+        execenv.paths['alacritty_cfg_dir'] = f'{execenv.cache}/alacritty_cfg'
+        execenv.paths['alacritty_cfg'] = expanduser(f'{Misc.xdg_config_home()}/alacritty/alacritty.yml')
+        Misc.create_dir(execenv.paths['alacritty_cfg_dir'])
 
     @Misc.run_once
     @staticmethod
     def prepare_tmux():
-        env.paths['tmux_socket_dir'] = f'{env.cache}/tmux_sockets'
-        Misc.create_dir(env.paths['tmux_socket_dir'])
+        execenv.paths['tmux_socket_dir'] = f'{execenv.cache}/tmux_sockets'
+        Misc.create_dir(execenv.paths['tmux_socket_dir'])
 
     @Misc.run_once
     @staticmethod
     def prepare_dtach():
-        env.paths['dtach_session_dir'] = f'{env.cache}/dtach_sessions'
-        Misc.create_dir(env.paths['dtach_session_dir'])
+        execenv.paths['dtach_session_dir'] = f'{execenv.cache}/dtach_sessions'
+        Misc.create_dir(execenv.paths['dtach_session_dir'])
 
     @staticmethod
     def tmux_socket_path(name):
-        return expanduser(f'{env.paths["tmux_socket_dir"]}/{name}.socket')
+        return expanduser(f'{execenv.paths["tmux_socket_dir"]}/{name}.socket')
 
     @staticmethod
     def tmux_session_attach(name):
-        return f'tmux -S {env.tmux_socket_path(name)} a -t {name}'
+        return f'tmux -S {execenv.tmux_socket_path(name)} a -t {name}'
 
     @staticmethod
     def tmux_new_session(name):
-        return f'tmux -S {env.tmux_socket_path(name)} new-session -s {name}'
+        return f'tmux -S {execenv.tmux_socket_path(name)} new-session -s {name}'
 
     def cfg_block(self) -> dict:
         return self.config.get(self.name, {})
@@ -117,7 +117,7 @@ class execenv():
             }
 
     def alacritty(self) -> str:
-        env.prepare_alacritty()
+        execenv.prepare_alacritty()
 
         def create_alacritty_cfg(name: str) -> str:
             ''' Config generator for alacritty. We need it because of alacritty
@@ -130,8 +130,8 @@ class execenv():
             if not app_name:
                 app_name = self.config.get(name, {}).get('classw')
             app_name = f'{app_name}.yml'
-            cfgname = expanduser(f'{env.paths["alacritty_cfg_dir"]}/{app_name}')
-            shutil.copyfile(env.paths["alacritty_cfg"], cfgname)
+            cfgname = expanduser(f'{execenv.paths["alacritty_cfg_dir"]}/{app_name}')
+            shutil.copyfile(execenv.paths["alacritty_cfg"], cfgname)
             return cfgname
 
         def alacritty_yml_create(custom_config: str) -> None:
