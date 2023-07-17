@@ -141,7 +141,7 @@ class execenv():
         if term:
             return term
         # Detect fallback terminal
-        for t in ['alacritty', 'kitty', 'st', 'zutty']:
+        for t in ['kitty', 'alacritty', 'st', 'zutty']:
             if shutil.which(t):
                 return t
         logging.error('No supported terminal installed, fail :(')
