@@ -91,14 +91,6 @@ class circle(extension, dynamic_cfg, Matcher):
                 )
             if prog_str:
                 self.i3ipc.command(f'exec {prog_str}')
-            else:
-                spawn_str = Misc.extract_prog_str(
-                    self.conf(tag), 'spawn', exe_file=False
-                )
-                if spawn_str:
-                    executor = extension.get_mods().get('executor')
-                    if executor is not None:
-                        executor.run(spawn_str)
 
     def find_next_not_the_same_win(self, tag: str) -> None:
         """ It was used as the guard to infinite loop in the past.

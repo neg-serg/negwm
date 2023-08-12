@@ -145,16 +145,6 @@ class scratchpad(extension, dynamic_cfg, Matcher):
             prog_str = Misc.extract_prog_str(target_tag)
             if prog_str:
                 self.i3ipc.command(f'exec {prog_str}')
-            else:
-                spawn_str = Misc.extract_prog_str(
-                    target_tag, 'spawn', exe_file=False
-                )
-                if spawn_str:
-                    mods = extension.get_mods()
-                    if mods:
-                        executor = mods['executor']
-                        if executor is not None:
-                            executor.run(spawn_str)
         if self.is_visible_window_with_tag(tag):
             self.hide_scratchpad(tag)
             return

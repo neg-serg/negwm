@@ -12,7 +12,6 @@
     * [Lastgo](#lastgo)
     * [Menu](#menu)
     * [Actions](#actions)
-    * [Executor](#executor)
     * [Fullscreen](#fullscreen)
 
 # Screenshots
@@ -82,10 +81,10 @@ echo 'scratchpad toggle ncmpcpp'|nc localhost 15555 -v -w 0
 Where 1st argument is module, 2nd is function and another is parameters.
 
 Most of modules supports dynamic reloading of configs as you save the file, so there is no need to manually reload them. Anyway you can
-reload negwm manually, for example to reload `executor`:
+reload negwm manually, for example to reload `circle`:
 
 ```
-echo 'executor reload'|nc localhost 15555 -v -w 0
+echo 'circle reload'|nc localhost 15555 -v -w 0
 ```
 
 At first you need to add something in run and add it to config:
@@ -214,51 +213,6 @@ lastgo commands:
 
 Various stuff to emulate some 2bwm UX. I do not use it actively for now, so too lazy to write good documentation for it but if you are
 interested you are free to look at `lib/actions.py` source code.
-
-## Executor
-
-Module to create various terminal windows with custom config and/or tmux session handling. Supports a lot of terminal emulators, but for now
-only `alacritty` has nice support, because of I think it's the best terminal emulator for X11 for now.
-
-i3 config example: _nothing_
-
-For now I have no any executor bindings in the i3 config, instead I use it as helper for another modules. For example you can use spawn
-argument for `circle` or `scratchpad`. Let's look at `cfg/circle.py` It contains:
-
-```python3
-Δ = dict
-
-class executor(Enum):
-    term = Δ(
-        classw = 'term',
-        exec_tmux = [['zsh', 'zsh']],
-        font = 'Iosevka',
-        font_size = 19,
-        padding = [8, 8],
-        statusline = 1
-    )
-```
-
-Where spawn is special way to create terminal window with help of executor.
-
-So it create tmuxed window with alacritty(default) config with Iosevka:18 font. Another examples:
-
-```python3
-nwim = Δ(
-    classw = 'nwim',
-    exec = '/usr/bin/nvim --listen localhost:7777',
-    font = 'Iosevka',
-    font_normal = 'Medium',
-    font_size = 17,
-    opacity = 0.95,
-    padding = [8, 8],
-)
-```
-
-Creates neovim window without tmux, without padding, with Iosevka 17 sized font and alacritty-specific feature of using Iosevka Medium for
-the regular font.
-
-Look at the `lib/executor.py` to learn more.
 
 ## Fullscreen
 
