@@ -17,7 +17,7 @@ from negwm.lib.extension import extension
 class cfg():
     def __init__(self, i3) -> None:
         self.mod=self.__class__.__name__    # detect current extension
-        self.cfg_path=f'{Misc.cache_path()}/cfg/{self.mod}.pickle'
+        self.cfg_path=f'{Misc.cache_path()}/{self.mod}.pickle'
         self.load_config()                  # load current config
         self.win_attrs={}                   # used for props add / del hacks
         self.additional_props=[dict()]      # used to store add_prop history
