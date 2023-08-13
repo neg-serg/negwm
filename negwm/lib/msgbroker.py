@@ -39,3 +39,5 @@ class MsgBroker():
                 if ret:
                     writer.write(pickle.dumps(ret))
                     await writer.drain()
+                    writer.close()
+                    await writer.wait_closed()
