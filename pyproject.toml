@@ -14,6 +14,7 @@ packages=[
     {include='negwm/bin/create_cfg'},
     {include='negwm/modules/*.py'},
 ]
+keywords = ["negwm", "i3", "i3ipc"]
 
 [tool.poetry.dependencies]
 asyncinotify='*'
@@ -30,6 +31,9 @@ Xlib='*'
 yamlloader='*'
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+negwm = "negwm.main:NegWM.main"
 
 [build-system]
 requires=["poetry-core>=1.0.0"]
