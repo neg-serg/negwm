@@ -27,7 +27,6 @@ pulsectl='*'
 python3-xlib='*'
 python='^3.10'
 rich='*'
-systemd='*'
 Xlib='*'
 yamlloader='*'
 
