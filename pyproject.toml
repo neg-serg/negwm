@@ -27,8 +27,9 @@ pulsectl='*'
 python3-xlib='*'
 python='^3.10'
 rich='*'
-Xlib='*'
+systemd='*'
 yamlloader='*'
+Xlib='*'
 
 [tool.poetry.dev-dependencies]
 
