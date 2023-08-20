@@ -107,8 +107,11 @@ class NegWM():
         arguments=docopt(str(__doc__), version='0.9.7')
         log=logging.getLogger()
         if arguments['--systemd']:
-            from systemd import journal
-            log.addHandler(journal.JournalHandler())
+            try:
+                from systemd import journal
+                log.addHandler(journal.JournaldLogHandler())
+            except:
+                log.error('Cannot setup systemd log')
         loglevel=logging.INFO
         if arguments['--debug'] or arguments['--verbose']:
             loglevel=logging.DEBUG
