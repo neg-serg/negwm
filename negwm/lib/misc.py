@@ -47,33 +47,6 @@ class Misc():
                 return default_cfg_dir
 
     @staticmethod
-    def cache_path() -> str:
-        ''' Easy way to return negwm cache path. '''
-        cachedir_env=os.environ.get('NEGWM_CACHE', '')
-        cache_home=os.environ.get('XDG_CACHE_HOME', '')
-        if cachedir_env:
-            Misc.create_dir(cachedir_env)
-            return cachedir_env
-        elif cache_home:
-            Misc.create_dir(f'{cache_home}/negwm')
-            return f'{cache_home}/negwm'
-        else:
-            home=os.environ.get('HOME', '')
-            if not home:
-                logging.error(f'Fatal! HOME env is not set')
-                return ''
-            else:
-                default_cfg_dir=f'{home}/.cache/negwm'
-                Misc.create_dir(default_cfg_dir)
-                return default_cfg_dir
-
-    @staticmethod
-    def create_header(head):
-        return '# ╒' + (len(head)+2) * '═' + '╕\n' \
-             + '# │' + f' {head} ' +         '│\n' \
-             + '# ╘' + (len(head)+2) * '═' + '╛'
-
-    @staticmethod
     def create_header_tiny(head):
         return f'# :>> {head}'
 

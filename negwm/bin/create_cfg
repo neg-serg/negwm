@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 NEGWM_PATH=~/src/negwm
-python -m negwm.lib.dump_config
 if [ ! "$1" = '-d' ]; then
-    negwm send configurator write || "$NEGWM_PATH/bin/negwm" configurator write
+    negwm send configurator write || \
+    "$NEGWM_PATH/bin/negwm" configurator write
 fi

@@ -122,7 +122,7 @@ class NegWM():
         else:
             log.setLevel(loglevel)
         wm=NegWM()
-        wm.create_config_cache()
+        wm.update_i3_config()
         wm.startup()
 
     def handle_bindings(self, _, event):
@@ -175,7 +175,7 @@ class NegWM():
         logging.debug(loading_time_msg)
         console.log(loading_time_msg)
 
-    def create_config_cache(self):
+    def update_i3_config(self):
         binpath=f'{os.path.dirname(__file__)}/bin/'
         proc=subprocess.Popen(
             [f'{binpath}/create_cfg'],
@@ -204,7 +204,7 @@ class NegWM():
                 async for event in inotify:
                     changed_mod=str(event.name).removesuffix(config_extension)
                     if changed_mod in self.mods:
-                        self.create_config_cache()
+                        self.update_i3_config()
                         if reload_one:
                             self.mods[changed_mod].reload()
                         else:
@@ -215,14 +215,8 @@ class NegWM():
         """ Start all watchers in background via ensure_future """
         self.loop.create_task(self.cfg_mods_worker())
 
-    def create_config(self):
-        binpath=f'{os.path.dirname(__file__)}/bin/'
-        subprocess.run(
-            [f'{binpath}/create_cfg', '-d'],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            cwd=binpath, check=True)
-        mod, mod_cmd='configurator', 'write'
-        getattr(self.mods[mod], mod_cmd)()
+    def dump_i3_config(self):
+        getattr(self.mods['configurator'], 'write')()
         subprocess.run(['i3-msg', 'reload'])
 
     def startup(self):
@@ -247,7 +241,7 @@ class NegWM():
         start((mainloop).start)
 
         if Misc.i3_cfg_need_dump():
-            self.create_config()
+            self.dump_i3_config()
 
         try:
             self.i3.main()

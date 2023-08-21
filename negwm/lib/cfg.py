@@ -6,18 +6,27 @@ pretty simple API. I've considered that inheritance here is good idea.
 """
 
 import sys
-import pickle
 import traceback
 import logging
 from typing import Any, Dict, List
+import ruamel.yaml as yaml
 from negwm.lib.misc import Misc
 from negwm.lib.extension import extension
+
+
+class NewLineDumper(yaml.Dumper):
+    # HACK: insert blank lines between top-level objects
+    # inspired by https://stackoverflow.com/a/44284819/3786245
+    def write_line_break(self, data=None):
+        super().write_line_break(data)
+        if len(self.indents) == 1:
+            super().write_line_break()
 
 
 class cfg():
     def __init__(self, i3) -> None:
         self.mod=self.__class__.__name__    # detect current extension
-        self.cfg_path=f'{Misc.cache_path()}/{self.mod}.pickle'
+        self.cfg_path=f'{Misc.cfg_path()}/{self.mod}.cfg'
         self.load_config()                  # load current config
         self.win_attrs={}                   # used for props add / del hacks
         self.additional_props=[dict()]      # used to store add_prop history
@@ -60,12 +69,12 @@ class cfg():
     def load_config(self) -> None:
         """ Reload config """
         try:
-            with open(self.cfg_path, "rb") as mod_cfg:
-                self.cfg=pickle.load(mod_cfg)
+            with open(self.cfg_path, "r") as mod_cfg:
+                self.cfg=yaml.load(mod_cfg, preserve_quotes=True, Loader=yaml.Loader)
         except FileNotFoundError:
             logging.error(f'file {self.cfg_path} not exists')
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
-        with open(self.cfg_path, "wb") as mod_cfg:
-            pickle.dump(self.cfg, mod_cfg)
+        with open(self.cfg_path, "w+") as mod_cfg:
+            yaml.dump(self.cfg, mod_cfg, allow_unicode=True, Dumper=NewLineDumper, width=140)
