@@ -23,12 +23,11 @@ ewmh='*'
 i3ipc='*'
 inotipy='*'
 psutil='*'
-pulsectl='*'
 python3-xlib='*'
 python='^3.10'
 rich='*'
+ruamel-yaml='*'
 systemd='*'
-yamlloader='*'
 Xlib='*'
 
 [tool.poetry.dev-dependencies]
