@@ -173,45 +173,45 @@ class configurator(extension, cfg):
                 ret = f'{ret}\tbindsym {keybind}, {configurator.mode_exit}\n'
             return ret + '}\n'
 
-    def bind(self, mod) -> str:
-        if not mod:
+    def bind(self, section) -> str:
+        if not section:
             return ''
-        bindlist = self.cfg.get(mod, Bindmap())
+        bindlist = self.cfg.get(section, Bindmap())
         try:
             bind = getattr(bindlist, 'bind')
         except AttributeError:
             return ''
         name = getattr(bindlist, 'name', '')
         if not name:
-            name = mod
-        ret = self.mode(
-            name,
-            bind=bind,
-            end=False)
-        prefix = f'\tbindsym' if mod != 'default' else 'bindsym'
+            name = section
+        ret = self.mode(name, bind=bind, end=False)
+        prefix = f'\tbindsym' if section != 'default' else 'bindsym'
         for kmap in bindlist:
             ret += '\n'
-            end = f', {configurator.mode_exit}' if kmap.exit else ''
+            Exit = kmap.get('exit', False)
+            Fmt = kmap.get('fmt', '')
+            end = f', {configurator.mode_exit}' if Exit else ''
             for key, val in kmap.items():
+                if key in {'exit', 'fmt'}: continue
                 if isinstance(val, str) and isinstance(key, str):
                     # key: binding, val: action
-                    if '{cmd}' not in kmap.fmt:
-                        if kmap.fmt:
-                            fmt = f'{kmap.fmt} '
+                    if '{cmd}' not in Fmt:
+                        if Fmt:
+                            fmt = f'{Fmt} '
                         else:
-                            fmt = kmap.fmt
+                            fmt = Fmt
                         ret += f'{prefix} {key} {fmt}{val}{end}\n'
                     else:
-                        format = kmap.fmt
+                        format = Fmt
                         format = format.replace('{cmd}', val)
                         ret += f'{prefix} {key} {format}{end}\n'
                 if isinstance(val, list) and not isinstance(key, tuple):
                     for b in val:
-                        if '{cmd}' not in kmap.fmt:
-                            ret += f'{prefix} {b} {kmap.fmt} {key}{end}\n'
+                        if '{cmd}' not in Fmt:
+                            ret += f'{prefix} {b} {Fmt} {key}{end}\n'
                         else:
-                            format = kmap.fmt
+                            format = Fmt
                             format = format.replace('{cmd}', key)
                             ret += f'{prefix} {b} {format}{end}\n'
-        ret += f'{configurator.module_binds(mod)}{self.mode(mod, end=True)}'
+        ret += f'{configurator.module_binds(section)}{self.mode(section, end=True)}'
         return ret
