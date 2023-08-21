@@ -180,7 +180,7 @@ class configurator(extension, cfg):
             return ''
         try:
             bind = bindlist['state'].get('bind', {})
-        except AttributeError:
+        except:
             return ''
         if 'state' not in bindlist:
             name = ''
