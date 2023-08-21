@@ -193,6 +193,8 @@ class configurator(extension, cfg):
         for kmap in bindlist['binds']:
             ret += '\n'
             Exit = kmap.get('exit', False)
+            if not isinstance(Exit, bool):
+                Exit = False
             Fmt = kmap.get('fmt', '')
             end = f', {configurator.mode_exit}' if Exit else ''
             for key, val in kmap.items():
