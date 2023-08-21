@@ -7,7 +7,6 @@ from negwm.lib.cfg import cfg
 from negwm.lib.extension import extension
 from negwm.lib.checker import checker
 from negwm.lib.rules import Rules
-from negwm.lib.keymap import bindmap as Bindmap
 
 
 class configurator(extension, cfg):
@@ -176,17 +175,22 @@ class configurator(extension, cfg):
     def bind(self, section) -> str:
         if not section:
             return ''
-        bindlist = self.cfg.get(section, Bindmap())
+        bindlist = self.cfg.get(section, {})
+        if 'binds' not in bindlist:
+            return ''
         try:
-            bind = getattr(bindlist, 'bind')
+            bind = bindlist['state'].get('bind', {})
         except AttributeError:
             return ''
-        name = getattr(bindlist, 'name', '')
+        if 'state' not in bindlist:
+            name = ''
+        else:
+            name = bindlist['state'].get('name', '')
         if not name:
             name = section
         ret = self.mode(name, bind=bind, end=False)
         prefix = f'\tbindsym' if section != 'default' else 'bindsym'
-        for kmap in bindlist:
+        for kmap in bindlist['binds']:
             ret += '\n'
             Exit = kmap.get('exit', False)
             Fmt = kmap.get('fmt', '')
