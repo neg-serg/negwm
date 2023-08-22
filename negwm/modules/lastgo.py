@@ -1,9 +1,8 @@
-""" Advanced alt-tab module.
+""" Alt-tab to any window
 
-This module allows you to focus previous window a-la 'alt-tab' not by workspace
-but by window itself. To achieve that I am using self.focus_history to store
-information about previous windows. We need this because previously selected
-window may be closed, and then you cannot focus it.
+This module allows you to focus previous window a-la 'alt-tab' not by workspace but by window itself. To achieve that I am using
+self.focus_history to store information about previous windows. We need this because previously selected window may be closed, and then you
+cannot focus it.
 """
 
 from typing import Iterator

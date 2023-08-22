@@ -1,5 +1,4 @@
-""" Module to set / unset dpms while fullscreen is toggled on. I am simply use
-xset here. There is better solution possible, for example wayland-friendly. """
+""" Autohide panel for some windows via xdo """
 
 import subprocess
 import shutil

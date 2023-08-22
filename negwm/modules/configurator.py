@@ -1,3 +1,4 @@
+""" i3 config generator """
 import os
 from datetime import datetime
 from typing import List

@@ -1,9 +1,7 @@
-""" 2bwm-like features module.
-There are a lot of various actions over the floating windows in this module,
-which may reminds you 2bwm, subtle, or another similar window managers. You can
-change window geometry, move it to the half or quad size of the screen space,
-etc. Partially code is taken from https://github.com/miseran/i3-tools, thanks
-to you, miseran(https://github.com/miseran)
+""" 2bwm-like features.
+There are a lot of various actions over the floating windows in this module, which may reminds you 2bwm, subtle, or another similar
+window managers. You can change window geometry, move it to the half or quad size of the screen space, etc. Partially code is taken from
+https://github.com/miseran/i3-tools, thanks to you, miseran(https://github.com/miseran)
 """
 
 import collections

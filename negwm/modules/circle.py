@@ -1,17 +1,12 @@
-""" Circle over windows module.
+""" This is a module about better run-or-raise features like in ion3, stumpwm and others. As the result user can get not only the usual run
+the appropriate application if it is not started, but also create a list of application, which I call 'tag' and then switch to the next of
+it, instead of just simple focus.
 
-This is a module about better run-or-raise features like in ion3, stumpwm and
-others. As the result user can get not only the usual run the appropriate
-application if it is not started, but also create a list of application, which
-I call 'tag' and then switch to the next of it, instead of just simple focus.
+The foundation of it is pretty complicated next function, which use counters with incrementing of the current 'position' of the window in
+the tag list over the finite field. As the result you get circle over all tagged windows.
 
-The foundation of it is pretty complicated next function, which use counters
-with incrementing of the current 'position' of the window in the tag list over
-the finite field. As the result you get circle over all tagged windows.
-
-Also I've hacked fullscreen behaviour for it, so you can always switch to the
-window with the correct fullscreen state, where normal i3 behaviour has a lot
-of issues here in detection of existing/visible windows, etc.
+Also I've hacked fullscreen behaviour for it, so you can always switch to the window with the correct fullscreen state, where normal i3
+behaviour has a lot of issues here in detection of existing/visible windows, etc.
 """
 
 from negwm.lib.extension import extension

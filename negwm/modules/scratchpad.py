@@ -1,16 +1,9 @@
-""" Named scratchpad i3 modulec
+""" Named scratchpads for i3
 
-This is a module about ion3/notion-like named scratchpad implementation.
-You can think about it as floating 'tabs' for windows, which can be
-shown/hidden by request, with next 'tab' navigation.
-
-The foundation of it is a i3 mark function, you can create a mark with
-tag+'-'+uuid format. And then this imformation used to performs all
-actions.
-
-Also I've hacked fullscreen behaviour for it, so you can always get
-your scratchpad from fullscreen and also restore fullsreen state of the
-window when needed.
+This mod add ion3/notion-like named scratchpad implementation. You can think about it as floating 'tabs' for windows, which can be
+shown/hidden by request, with next 'tab' navigation. The foundation of it is a i3 mark function, you can create a mark with tag+'-'+uuid
+format. And then this imformation used to performs all actions. Also I've hacked fullscreen behaviour for it, so you can always get your
+scratchpad from fullscreen and also restore fullsreen state of the window when needed.
 """
 
 import uuid
