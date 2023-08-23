@@ -1,9 +1,6 @@
-""" Dynamic S-expressions based config for negwm.
-
-This is a superclass for negwm which want to store configuration via hy
-files. It supports inotify-based updating of self.cfg dynamically and has
-pretty simple API. I've considered that inheritance here is good idea.
-"""
+""" Config for NegWM modules
+This is a superclass for negwm which want to store configuration via hy files. It supports inotify-based updating of self.cfg dynamically
+and has pretty simple API. I've considered that inheritance here is good idea. """
 
 import sys
 import traceback

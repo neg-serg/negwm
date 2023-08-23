@@ -1,11 +1,9 @@
-""" Matcher checking that window can be tagged with given tag by WM_CLASS,
-WM_INSTANCE, regexes, etc. It can be used by named scrachpad, circle
-run-or-raise, etc. """
+""" Matcher checking that window can be tagged with given tag by WM_CLASS, WM_INSTANCE, regexes, etc. It can be used by named scrachpad,
+circle run-or-raise, etc. """
 
 import sys
 import re
 from typing import List, Iterator
-import logging
 
 class Matcher():
     """ Generic matcher class

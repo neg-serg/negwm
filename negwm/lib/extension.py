@@ -1,3 +1,4 @@
+""" All extensions cat send messages :) """
 from typing import List
 from typing import Dict
 from negwm.lib.msgbroker import MsgBroker

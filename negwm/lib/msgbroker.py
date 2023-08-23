@@ -1,7 +1,7 @@
-""" Module contains routines used by several another modules.
-Daemon manager and mod daemon: Mod daemon creates appropriate files in the
-/dev/shm directory. Daemon manager handles all requests to this named pipe
-based API with help of asyncio. """
+""" MsgBroker handles all requests to mods in format like this:
+    <mod> <cmd> <arguments>
+    To use it you can run smth like this for example:
+    echo 'circle next web' | nc localhost 15555 -N """
 
 import asyncio
 import pickle

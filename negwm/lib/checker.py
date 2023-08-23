@@ -1,3 +1,4 @@
+""" NegWM health-checker """
 import os
 import subprocess
 import shutil

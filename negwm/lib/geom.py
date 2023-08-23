@@ -1,7 +1,5 @@
-""" Module to convert from 16:10 1080p geometry to target screen geometry.
-This module contains geometry converter and also i3-rules generator. Also
-in this module geometry is parsed from config X11 internal format to the i3
-commands. """
+""" Module to convert some screen geometry to target screen geometry. This module contains geometry converter and also i3-rules generator.
+"""
 
 import re
 from negwm.lib.display import Display

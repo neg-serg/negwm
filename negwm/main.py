@@ -1,8 +1,5 @@
-""" 
-NegWM daemon script.
-This module loads all negwm an start it via main's manager mailoop. Inotify-based watchers for all negwm S-expression-based
-configuration spawned here, to use it just start it from any place without parameters. Moreover it contains pid-lock which prevents running
-several times.
+""" Entry point for negwm. It start mailloop, inotify-based watchers for configs in based in $XDG_CONFIG_HOME/negwm. Prevents multiple
+instances via pid-log.
 
 Usage:
     ./main.py [-diqv] [--systemd]

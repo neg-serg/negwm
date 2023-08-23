@@ -1,3 +1,4 @@
+""" Stuff for dynamic config change on the fly """
 from negwm.lib.cfg import cfg
 from negwm.lib.props import props
 

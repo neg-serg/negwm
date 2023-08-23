@@ -1,3 +1,4 @@
+""" Rules lib to generate i3 for_window expressions from yaml configs """
 from typing import List
 
 from negwm.lib.extension import extension

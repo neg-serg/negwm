@@ -1,5 +1,4 @@
-""" In this module we have EWMH routines to detect dialog windows, visible windows,
-etc using python-xlib and python-ewmh. """
+""" In this module we have EWMH routines to detect dialog windows, visible windows, etc using python-xlib and python-ewmh. """
 from typing import List
 from contextlib import contextmanager
 

@@ -1,5 +1,4 @@
 """ Handle X11 screen tasks with randr extension """
-
 import subprocess
 from Xlib import display
 from Xlib.ext import randr

@@ -1,3 +1,4 @@
+""" Properties lib to manipulate properties """
 from typing import Set, Dict
 
 class props:
