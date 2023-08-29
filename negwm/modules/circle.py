@@ -34,8 +34,6 @@ class circle(extension, dynamic_cfg, Matcher):
         self.restore_fullscreen = []
         # is the current action caused by user actions or not? It's needed for
         # corrent fullscreen on/off behaviour.
-        self.interactive = True
-        self.repeats = 0 # How many attempts taken to find window with priority
         self.win = None # Win cache for the fast matching
         self.subtag_info = {} # Used for subtag info caching
         # Should the special fullscreen-related actions to be performed or not.
