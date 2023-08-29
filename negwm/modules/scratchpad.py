@@ -34,9 +34,9 @@ class scratchpad(extension, dynamic_cfg, Matcher):
         self.fullscreen_list = [] # performing fullscreen hacks
         self.configured_internally = self.cfg['configured_internally']
         del self.cfg['configured_internally']
-        # nsgeom used to respect current screen resolution in the geometry
+        # scrathpad_geom used to respect current screen resolution in the geometry
         # settings and scale it
-        self.nsgeom = geom.geom(self.cfg)
+        self.scrathpad_geom = geom.geom(self.cfg)
         # marked used to get the list of current tagged windows
         # with the given tag
         self.marked = {l: [] for l in self.cfg.keys()}
@@ -57,7 +57,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
         """ Create i3 match rules for all tags. """
         ret: str = ''
         for tag in cmd_dict:
-            geom = self.nsgeom.get_geom(tag)
+            geom = self.scrathpad_geom.get_geom(tag)
             ret = f'{ret}for_window $scratchpad-{tag} floating enable, {geom}\n'
         return ret
 
@@ -252,7 +252,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
             del self.marked[tag][idx]
             # then make a new mark and move scratchpad
             win_cmd = f'{scratchpad.mark_uuid_tag(tag)}, \
-                move scratchpad, {self.nsgeom.get_geom(tag)}'
+                move scratchpad, {self.scrathpad_geom.get_geom(tag)}'
             win.command(win_cmd)
             self.marked[tag].append(win)
 
@@ -285,7 +285,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
                     or win.rect.y != focused.rect.y \
                     or win.rect.width != focused.rect.width \
                         or win.rect.height != focused.rect.height:
-                    self.nsgeom = geom.geom(self.cfg)
+                    self.scrathpad_geom = geom.geom(self.cfg)
                     win.rect.x = focused.rect.x
                     win.rect.y = focused.rect.y
                     win.rect.width = focused.rect.width
@@ -338,7 +338,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
     def scratchpad_move(self, win, tag, show=False, hide=True):
         win.command(
             f'{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
-            {self.nsgeom.get_geom(tag)}')
+            {self.scrathpad_geom.get_geom(tag)}')
         self.marked[tag].append(win)
         if show:
             self.show(tag, hide=hide)
@@ -390,7 +390,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
             self.apply_to_current_tag(self.hide_scratchpad)
 
     def make_transient(self, win, show=True):
-        transient_geom = self.nsgeom.get_geom('transients') or ''
+        transient_geom = self.scrathpad_geom.get_geom('transients') or ''
         win_cmd = f"{scratchpad.mark_uuid_tag('transients')}, \
             move scratchpad {transient_geom}"
         win.command(win_cmd)
