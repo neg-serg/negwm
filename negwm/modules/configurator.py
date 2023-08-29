@@ -26,7 +26,11 @@ class configurator(extension, cfg):
     def configured_internally(module) -> bool:
         if not isinstance(module, cfg):
             return False
-        return 'configured_internally' in module.cfg and module.cfg['configured_internally']
+        if not hasattr(module, 'configured_internally'):
+            return False
+        if not isinstance(module.configured_internally, bool):
+            return False
+        return bool(module.configured_internally)
 
 
     def print(self) -> None: print(self.generate_config())

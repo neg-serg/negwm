@@ -32,6 +32,8 @@ class scratchpad(extension, dynamic_cfg, Matcher):
     def initialize(self, i3):
         self.win = None # reducing  calling i3.get_tree() too many times.
         self.fullscreen_list = [] # performing fullscreen hacks
+        self.configured_internally = self.cfg['configured_internally']
+        del self.cfg['configured_internally']
         # nsgeom used to respect current screen resolution in the geometry
         # settings and scale it
         self.nsgeom = geom.geom(self.cfg)
