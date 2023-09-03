@@ -1,3 +1,4 @@
+""" Menu helper library """
 from typing import List
 
 class menu():

@@ -1,4 +1,4 @@
-""" All extensions cat send messages :) """
+""" All extensions can send messages :) """
 from typing import List
 from typing import Dict
 from negwm.lib.msgbroker import MsgBroker
