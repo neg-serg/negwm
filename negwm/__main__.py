@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 from negwm.main import NegWM
 
 if __name__ == '__main__':
