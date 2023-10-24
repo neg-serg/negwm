@@ -22,12 +22,14 @@ docopt='*'
 ewmh='*'
 i3ipc='*'
 inotipy='*'
+promptx='*'
 psutil='*'
 python3-xlib='*'
 python='^3.10'
 rich='*'
 ruamel-yaml='*'
 systemd='*'
+
 Xlib='*'
 
 [tool.poetry.dev-dependencies]

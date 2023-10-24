@@ -1,10 +1,39 @@
 #!/usr/bin/env python
 import subprocess
+import logging
 import i3ipc
 import i3ipc.con
 from typing import List
-from negwm.lib.misc import Misc
-from negwm.lib.menu import menu
+
+class menu():
+    @staticmethod
+    def args(P: dict, prompt='❯>', matching='fuzzy') -> List[str]:
+        """ Create run parameters to spawn menu process from dict
+            P(dict): parameters for menu
+            List(str) to do menu subprocessing """
+        return [
+            'rofi', 
+            '-show',
+            '-dmenu',
+            '-disable-history',
+            P.get('auto-select', '-no-auto-select'),
+            P.get('markup_rows', '-no-markup-rows'),
+            P.get('matching', '-no-markup-rows'),
+            '-p', P.get('prompt', prompt),
+            '-i',
+            '-matching', f'{matching}'
+        ]
+
+    @staticmethod
+    def wrap_str(s: str, lfs='⟬', rhs='⟭') -> str:
+        """ String wrapper to make it beautiful """
+        return f'{lfs}{s}{rhs}'
+
+@staticmethod
+def print_run_exception_info(proc_err):
+    logging.info(f'returncode={proc_err.returncode}, \
+                    cmd={proc_err.cmd}, \
+                    output={proc_err.output}')
 
 class xprop():
     """ Setup screen resolution """
@@ -33,7 +62,7 @@ class xprop():
                     if 'not found' not in line:
                         xprops.append(line)
         except subprocess.CalledProcessError as proc_err:
-            Misc.print_run_exception_info(proc_err)
+            print_run_exception_info(proc_err)
         menu_params = {'prompt': f'{menu.wrap_str("xprop")} {self.prompt}'}
         ret = ""
         try:
@@ -47,13 +76,13 @@ class xprop():
             if xprop_sel is not None:
                 ret = xprop_sel.decode('UTF-8').strip()
         except subprocess.CalledProcessError as proc_err:
-            Misc.print_run_exception_info(proc_err)
+            print_run_exception_info(proc_err)
         if ret is not None and ret != '':
             try:
                 # Copy to the clipboard
                 subprocess.run(['xsel', '-i'], input=bytes(ret.strip(), 'UTF-8'), check=True)
             except subprocess.CalledProcessError as proc_err:
-                Misc.print_run_exception_info(proc_err)
+                print_run_exception_info(proc_err)
 
 if __name__ == '__main__':
     xprop().xprop()

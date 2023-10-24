@@ -6,15 +6,43 @@ import pathlib
 import logging
 import sys
 import fileinput
+from typing import List
 
-from negwm.lib.misc import Misc
-from negwm.lib.menu import menu
+class menu():
+    @staticmethod
+    def args(P: dict, prompt='❯>', matching='fuzzy') -> List[str]:
+        """ Create run parameters to spawn menu process from dict
+            P(dict): parameters for menu
+            List(str) to do menu subprocessing """
+        return [
+            'rofi', 
+            '-show',
+            '-dmenu',
+            '-disable-history',
+            P.get('auto-select', '-no-auto-select'),
+            P.get('markup_rows', '-no-markup-rows'),
+            P.get('matching', '-no-markup-rows'),
+            '-p', P.get('prompt', prompt),
+            '-i',
+            '-matching', f'{matching}'
+        ]
+
+    @staticmethod
+    def wrap_str(s: str, lfs='⟬', rhs='⟭') -> str:
+        """ String wrapper to make it beautiful """
+        return f'{lfs}{s}{rhs}'
 
 xdg_data_home=os.environ.get('XDG_DATA_HOME', '')
 if not xdg_data_home:
     logging.error('Fatal! XDG_DATA_HOME is not set')
     sys.exit(1)
 
+
+@staticmethod
+def print_run_exception_info(proc_err):
+    logging.info(f'returncode={proc_err.returncode}, \
+                    cmd={proc_err.cmd}, \
+                    output={proc_err.output}')
 
 class xsettings():
     """ Change gtk / icons themes xsettingsd. """
@@ -42,7 +70,7 @@ class xsettings():
                         print(line.replace(line, f'{param} "{selection.strip()}"'), end='\n')
             subprocess.Popen(xsettings.setup)
         except subprocess.CalledProcessError as proc_err:
-            Misc.print_run_exception_info(proc_err)
+            print_run_exception_info(proc_err)
 
     def change_icon_theme(self):
         """ Changes icon theme with help of gsd-xsettings """
@@ -66,7 +94,7 @@ class xsettings():
                     check=True
                 ).stdout
             except subprocess.CalledProcessError as proc_err:
-                Misc.print_run_exception_info(proc_err)
+                print_run_exception_info(proc_err)
         if selection:
             self.apply_settings('icon', selection.decode('utf-8'))
 
@@ -92,7 +120,7 @@ class xsettings():
                     check=True
                 ).stdout
             except subprocess.CalledProcessError as proc_err:
-                Misc.print_run_exception_info(proc_err)
+                print_run_exception_info(proc_err)
         if selection:
             self.apply_settings('theme', selection.decode('utf-8'))
 

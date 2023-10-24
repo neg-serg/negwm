@@ -1,10 +1,33 @@
 #!/usr/bin/env python
-
 import subprocess
 import logging
-from negwm.lib.display import Display
-from negwm.lib.menu import menu
+from typing import List
 
+from negwm.lib.display import Display
+
+class menu():
+    @staticmethod
+    def args(P: dict, prompt='❯>', matching='fuzzy') -> List[str]:
+        """ Create run parameters to spawn menu process from dict
+            P(dict): parameters for menu
+            List(str) to do menu subprocessing """
+        return [
+            'rofi', 
+            '-show',
+            '-dmenu',
+            '-disable-history',
+            P.get('auto-select', '-no-auto-select'),
+            P.get('markup_rows', '-no-markup-rows'),
+            P.get('matching', '-no-markup-rows'),
+            '-p', P.get('prompt', prompt),
+            '-i',
+            '-matching', f'{matching}'
+        ]
+
+    @staticmethod
+    def wrap_str(s: str, lfs='⟬', rhs='⟭') -> str:
+        """ String wrapper to make it beautiful """
+        return f'{lfs}{s}{rhs}'
 
 class xrandr():
     def __init__(self) -> None:
