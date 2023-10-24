@@ -13,7 +13,7 @@ from negwm.modules.reflection import reflection
 
 class menu():
     @staticmethod
-    def args(P: dict, prompt='❯>', matching='fuzzy') -> List[str]:
+    def args(P: dict, prompt='❯>') -> List[str]:
         """ Create run parameters to spawn menu process from dict
             P(dict): parameters for menu
             List(str) to do menu subprocessing """
@@ -22,12 +22,11 @@ class menu():
             '-show',
             '-dmenu',
             '-disable-history',
-            P.get('auto-select', '-no-auto-select'),
-            P.get('markup_rows', '-no-markup-rows'),
-            P.get('matching', '-no-markup-rows'),
+            '-auto-select',
+            '-markup-rows',
             '-p', P.get('prompt', prompt),
             '-i',
-            '-matching', f'{matching}'
+            '-matching', 'glob'
         ]
 
     @staticmethod

@@ -10,7 +10,7 @@ from typing import List
 
 class menu():
     @staticmethod
-    def args(P: dict, prompt='❯>', matching='fuzzy') -> List[str]:
+    def args(P: dict, prompt='❯>') -> List[str]:
         """ Create run parameters to spawn menu process from dict
             P(dict): parameters for menu
             List(str) to do menu subprocessing """
@@ -19,12 +19,11 @@ class menu():
             '-show',
             '-dmenu',
             '-disable-history',
-            P.get('auto-select', '-no-auto-select'),
-            P.get('markup_rows', '-no-markup-rows'),
-            P.get('matching', '-no-markup-rows'),
+            '-auto-select',
+            '-markup-rows',
             '-p', P.get('prompt', prompt),
             '-i',
-            '-matching', f'{matching}'
+            '-matching', 'glob'
         ]
 
     @staticmethod
@@ -126,9 +125,8 @@ class xsettings():
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        if sys.argv[1] == 'gtk':
-            xsettings().change_gtk_theme()
-        if sys.argv[1] == 'icon':
-            xsettings().change_icon_theme()
+        match sys.argv[1]:
+            case 'gtk': xsettings().change_gtk_theme()
+            case 'icon': xsettings().change_icon_theme()
     else:
         xsettings().change_gtk_theme()

@@ -6,7 +6,7 @@ from typing import List
 
 class menu():
     @staticmethod
-    def args(P: dict, prompt='❯>', matching='fuzzy') -> List[str]:
+    def args(P: dict, prompt='❯>') -> List[str]:
         """ Create run parameters to spawn menu process from dict
             P(dict): parameters for menu
             List(str) to do menu subprocessing """
@@ -15,12 +15,11 @@ class menu():
             '-show',
             '-dmenu',
             '-disable-history',
-            P.get('auto-select', '-no-auto-select'),
-            P.get('markup_rows', '-no-markup-rows'),
-            P.get('matching', '-no-markup-rows'),
+            '-auto-select',
+            '-markup-rows',
             '-p', P.get('prompt', prompt),
             '-i',
-            '-matching', f'{matching}'
+            '-matching', 'glob'
         ]
 
     @staticmethod
@@ -83,7 +82,6 @@ class pulse_menu():
         if self.pulse is None:
             return 0
         menu_params = {
-            'auto-select': '-auto-select',
             'prompt': f'{menu.wrap_str("pulse app")} {self.prompt}',
         }
         menu_app_sel = subprocess.run(
@@ -132,7 +130,6 @@ class pulse_menu():
         if self.pulse is None:
             return None
         menu_params = {
-            'auto-select': '-auto-select',
             'prompt': f'{menu.wrap_str("pulse output")}{self.prompt}'
         }
         menu_output_sel = subprocess.run(
