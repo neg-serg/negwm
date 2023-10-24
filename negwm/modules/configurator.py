@@ -28,9 +28,9 @@ class configurator(extension, cfg):
             return False
         if not hasattr(module, 'configured_internally'):
             return False
-        if not isinstance(module.configured_internally, bool):
+        if not isinstance(getattr(module, 'configured_internally'), bool):
             return False
-        return bool(module.configured_internally)
+        return bool(getattr(module, 'configured_internally'))
 
 
     def print(self) -> None: print(self.generate_config())
@@ -99,7 +99,7 @@ class configurator(extension, cfg):
 
     @staticmethod
     def generate_bindsym(mode, tag, settings, p, subtag='', module='') -> str:
-        def bind_fmt():
+        def bind_command():
             return f'{pref}bindsym {keybind.strip()} ' + \
                 f' ${module} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
             
@@ -112,19 +112,19 @@ class configurator(extension, cfg):
             cmd = bind_data[1]
             if isinstance(settings[p], str):
                 keybind = settings[p]
-                ret += bind_fmt()
+                ret += bind_command()
             elif isinstance(settings[p], list):
                 for keybind in settings[p]:
-                    ret += bind_fmt()
+                    ret += bind_command()
         else:
             if mode == 'default' and len(bind_data) == 1:
                 cmd = bind_data[0]
                 if isinstance(settings[p], str):
                     keybind = settings[p]
-                    ret += bind_fmt()
+                    ret += bind_command()
                 elif isinstance(settings[p], list):
                     for keybind in settings[p]:
-                        ret += bind_fmt()
+                        ret += bind_command()
         return ret
 
     @staticmethod
@@ -200,28 +200,28 @@ class configurator(extension, cfg):
             Exit = kmap.get('exit', False)
             if not isinstance(Exit, bool):
                 Exit = False
-            Fmt = kmap.get('fmt', '')
+            Command = kmap.get('command', '')
             end = f', {configurator.mode_exit}' if Exit else ''
             for key, val in kmap.items():
-                if key in {'exit', 'fmt'}: continue
+                if key in {'exit', 'command'}: continue
                 if isinstance(val, str) and isinstance(key, str):
                     # key: binding, val: action
-                    if '{cmd}' not in Fmt:
-                        if Fmt:
-                            fmt = f'{Fmt} '
+                    if '{cmd}' not in Command:
+                        if Command:
+                            command = f'{Command} '
                         else:
-                            fmt = Fmt
-                        ret += f'{prefix} {key} {fmt}{val}{end}\n'
+                            command = Command
+                        ret += f'{prefix} {key} {command}{val}{end}\n'
                     else:
-                        format = Fmt
+                        format = Command
                         format = format.replace('{cmd}', val)
                         ret += f'{prefix} {key} {format}{end}\n'
                 if isinstance(val, list) and not isinstance(key, tuple):
                     for b in val:
-                        if '{cmd}' not in Fmt:
-                            ret += f'{prefix} {b} {Fmt} {key}{end}\n'
+                        if '{cmd}' not in Command:
+                            ret += f'{prefix} {b} {Command} {key}{end}\n'
                         else:
-                            format = Fmt
+                            format = Command
                             format = format.replace('{cmd}', key)
                             ret += f'{prefix} {b} {format}{end}\n'
         ret += f'{configurator.module_binds(section)}{self.mode(section, end=True)}'
