@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+rlwrap /usr/bin/env sh -c 'while read -r line;do echo "$(tput setaf 12)$(i3-msg "$line")$(tput sgr0)"; done'
