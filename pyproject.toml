@@ -6,7 +6,6 @@ authors=[ {name="Neg", email="serg.zorg@gmail.com"},
 license="LGPL-3.0"
 readme={file="README-en.md", "content-type"="text/markdown"}
 requires-python=">=3.11"
-version='0.9.7'
 keywords=["negwm", "i3", "i3ipc"]
 dependencies=[
     "asyncinotify",
@@ -22,6 +21,7 @@ dependencies=[
     "systemd",
     "Xlib",
 ]
+dynamic=['version']
 
 [project.scripts]
 negwm="negwm.main:NegWM.main"
@@ -33,7 +33,7 @@ xprop-menu="negwm.menu.xprop_menu:main"
 xsettings-menu="negwm.menu.xsettings_menu:main"
 
 [tool.hatch.version]
-source="vcs"
+path = "negwm/__about__.py"
 
 [tool.hatch.build]
 pure_python=false

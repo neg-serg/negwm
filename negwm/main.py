@@ -43,6 +43,7 @@ import psutil
 from rich.traceback import install
 from rich.console import Console
 
+from negwm.__about__ import __version__
 from negwm.lib.checker import checker
 from negwm.lib.locker import get_lock
 from negwm.lib.misc import Misc
@@ -101,7 +102,7 @@ class NegWM():
         get_lock(os.path.basename(__file__))
         # We need it because of thread_wait on Ctrl-C.
         atexit.register(NegWM.cleanup)
-        arguments=docopt(str(__doc__), version='0.9.7')
+        arguments=docopt(str(__doc__), version=__version__)
         log=logging.getLogger()
         if arguments['--systemd']:
             try:
