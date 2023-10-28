@@ -98,37 +98,7 @@ class configurator(extension, cfg):
         return '\n'.join(filter(None, self.conf_data))
 
     @staticmethod
-    def generate_bindsym(mode, tag, settings, p, subtag='', module='') -> str:
-        def bind_command():
-            return f'{pref}bindsym {keybind.strip()} ' + \
-                f' ${module} {cmd.strip()} {tag}{subtag}{postfix}'.strip() + '\n'
-            
-        ret, pref, postfix = '', '', ''
-        bind_data = p.split('_')[1:]
-        if subtag:
-            subtag = f' {subtag}'
-        if mode != 'default' and bind_data[0] == mode:
-            pref, postfix = '\t', f', {configurator.mode_exit}'
-            cmd = bind_data[1]
-            if isinstance(settings[p], str):
-                keybind = settings[p]
-                ret += bind_command()
-            elif isinstance(settings[p], list):
-                for keybind in settings[p]:
-                    ret += bind_command()
-        else:
-            if mode == 'default' and len(bind_data) == 1:
-                cmd = bind_data[0]
-                if isinstance(settings[p], str):
-                    keybind = settings[p]
-                    ret += bind_command()
-                elif isinstance(settings[p], list):
-                    for keybind in settings[p]:
-                        ret += bind_command()
-        return ret
-
-    @staticmethod
-    def module_binds(mode) -> str:
+    def module_binds(target_mode) -> str:
         ret = ''
         mods = extension.get_mods()
         if mods is None or not mods:
@@ -141,14 +111,40 @@ class configurator(extension, cfg):
                 if not isinstance(settings, dict):
                     continue
                 for param in settings:
-                    if isinstance(settings[param], dict):
-                        for param_name in settings[param]:
-                            if param_name.startswith('keybind_'):
-                                ret += configurator.generate_bindsym(
-                                    mode, tag, settings[param], param_name, subtag=param, module=mod_name
-                                )
-                    elif param.startswith('keybind_'):
-                        ret += configurator.generate_bindsym(mode, tag, settings, param, module=mod_name)
+                    field = settings[param]
+                    if param == 'binds':
+                        ret += configurator.parse_binds(target_mode, tag, field, module=mod_name)
+                    if isinstance(field, dict):
+                        for inner_param in field:
+                            if inner_param == 'binds':
+                                ret += configurator.parse_binds(target_mode, tag, field[inner_param], module=mod_name, subtag=f' {param} ')
+        return ret
+
+    @staticmethod
+    def parse_binds(target_mode, tag, binds, module='', subtag='') -> str:
+        def bind_command():
+            return f'{tab}bindsym {keybind.strip()} ' + \
+                f' ${module} {cmd.strip()} {tag}{subtag}{exit}'.strip() + '\n'
+
+        ret, tab, exit = '', '', ''
+        if not isinstance(binds, dict):
+            return ret
+        for k,v in binds.items():
+            if isinstance(v, list):
+                mode='default'
+                if mode == target_mode:
+                    cmd=k
+                    for keybind in v:
+                        ret += bind_command()
+            elif isinstance(v, dict):
+                mode=k
+                if mode == target_mode:
+                    if mode != 'default':
+                        tab, exit = '\t', f', {configurator.mode_exit}'
+                    for sk, sv in v.items():
+                        cmd=sk
+                        for keybind in sv:
+                            ret += bind_command()
         return ret
 
     def raw_ws(self) -> List:
@@ -162,15 +158,15 @@ class configurator(extension, cfg):
                 ret = f'{ret}set ${ws.split(":")[1]} "{ws}"\n'
         return ret
 
-    def mode(self, name, bind='', end=False) -> str:
+    def mode(self, mode, bind='', end=False) -> str:
         ret = ''
-        name = name.removeprefix('mode_')
-        if name == 'default':
+        mode = mode.removeprefix('mode_')
+        if mode == 'default':
             return ret
         if not end:
             if bind:
-                ret = f'{ret}bindsym {bind} mode "{name}"\n'
-            return f'{ret}mode {name} {{'
+                ret = f'{ret}bindsym {bind} mode "{mode}"\n'
+            return f'{ret}mode {mode} {{'
         else:
             escape_bindings = ['Return', 'Escape', 'space', 'Control+C', 'Control+G']
             for keybind in escape_bindings:
