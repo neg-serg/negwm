@@ -25,12 +25,12 @@ dependencies=[
 
 [project.scripts]
 negwm="negwm.main:NegWM.main"
-# audio-menu="menu:audio-menu"
-# i3-menu="menu:i3-menu"
-# props-menu="menu:props-menu"
-# winact-menu="menu:winact-menu"
-# xprop-menu="menu:xprop-menu"
-# xsettings-menu="menu:xsettings-menu"
+audio-menu="negwm.menu.audio_menu:main"
+i3-menu="negwm.menu.i3_menu:main"
+props-menu="negwm.menu.props_menu:main"
+winact-menu="negwm.menu.winact_menu:main"
+xprop-menu="negwm.menu.xprop_menu:main"
+xsettings-menu="negwm.menu.xsettings_menu:main"
 
 [tool.hatch.version]
 source="vcs"

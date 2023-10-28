@@ -151,10 +151,13 @@ class props():
                         ret.append(f'title={xattr[0]}{self.delim}')
         return "[" + ''.join(sorted(ret)) + "]"
 
-if __name__ == '__main__':
+def main():
     if len(sys.argv) < 2:
         asyncio.run(props().move_window())
     else:
         match sys.argv[1]:
             case 'show': props().show_props()
             case 'del': asyncio.run(props().unmove_window())
+
+if __name__ == '__main__':
+    main()

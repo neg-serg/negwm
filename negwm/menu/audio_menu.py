@@ -156,7 +156,7 @@ class pulse_menu():
                 int(target_idx),
             )
 
-if __name__ == '__main__':
+def main():
     p = pulse_menu()
     if len(sys.argv) > 1:
         match sys.argv[1]:
@@ -165,3 +165,6 @@ if __name__ == '__main__':
             case 'mute': p.pulseaudio_mute(True)
     else:
         p.pulseaudio_output()
+
+if __name__ == '__main__':
+    main()

@@ -135,5 +135,8 @@ class i3menu():
 
         return 0
 
-if __name__ == '__main__':
+def main():
     i3menu().i3menu()
+
+if __name__ == '__main__':
+    main()

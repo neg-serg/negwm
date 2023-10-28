@@ -120,10 +120,13 @@ class winact():
                 f'[con_id=__focused__] move to workspace \"{ws}\"')
             )
 
-if __name__ == '__main__':
+def main():
     if len(sys.argv) > 1:
         match sys.argv[1]:
             case 'ws': asyncio.run(winact().goto_ws())
             case 'win': winact().goto_win()
             case 'attach': winact().attach_win()
             case 'move': asyncio.run(winact().move_to_ws())
+
+if __name__ == '__main__':
+    main()

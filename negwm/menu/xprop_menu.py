@@ -83,5 +83,8 @@ class xprop():
             except subprocess.CalledProcessError as proc_err:
                 print_run_exception_info(proc_err)
 
-if __name__ == '__main__':
+def main():
     xprop().xprop()
+
+if __name__ == '__main__':
+    main()

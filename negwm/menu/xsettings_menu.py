@@ -123,10 +123,13 @@ class xsettings():
         if selection:
             self.apply_settings('theme', selection.decode('utf-8'))
 
-if __name__ == '__main__':
+def main():
     if len(sys.argv) > 1:
         match sys.argv[1]:
             case 'gtk': xsettings().change_gtk_theme()
             case 'icon': xsettings().change_icon_theme()
     else:
         xsettings().change_gtk_theme()
+
+if __name__ == '__main__':
+    main()
