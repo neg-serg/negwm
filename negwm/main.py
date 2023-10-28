@@ -33,6 +33,7 @@ import sys
 from threading import Thread
 import timeit
 import atexit
+import tomllib
 
 from docopt import docopt
 import logging
@@ -50,6 +51,11 @@ from negwm.lib.msgbroker import MsgBroker
 
 install(show_locals=True)
 console=Console(log_time=True)
+
+def extract_version():
+    with open("pyproject.toml", "rb") as f:
+        _META=tomllib.load(f)
+    return _META["tool"]["poetry"]["version"]
 
 class NegWM():
     def __init__(self):
@@ -101,7 +107,7 @@ class NegWM():
         get_lock(os.path.basename(__file__))
         # We need it because of thread_wait on Ctrl-C.
         atexit.register(NegWM.cleanup)
-        arguments=docopt(str(__doc__), version='0.9.7')
+        arguments=docopt(str(__doc__), version=f'{extract_version()}')
         log=logging.getLogger()
         if arguments['--systemd']:
             try:
