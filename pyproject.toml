@@ -34,6 +34,9 @@ dynamic=["version"]
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.build]
+skip-excluded-dirs=true
+
 [project.urls]
 homepage="https://github.com/neg-serg/negwm"
 repository="https://github.com/neg-serg/negwm"
@@ -42,5 +45,5 @@ repository="https://github.com/neg-serg/negwm"
 negwm="negwm.main:NegWM.main"
 
 [build-system]
-requires=["hatchling>=1.17.1", "hatch-vcs>=0.3.0"]
-build-backend="hatchling.build"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
