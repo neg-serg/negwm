@@ -35,14 +35,14 @@ class checker():
             }
         }
 
-        logging.info('Check for executables')
+        logging.info('Checking executables')
         for kind, value in dependencies.items():
             for exe, description in value.items():
                 checker.which(exe, description, kind)
 
     @staticmethod
     def check_i3_config(cfg='config') -> bool:
-        logging.info('Check for i3 config consistency')
+        logging.info('Checking i3 config consistency')
         
         subprocess.check_output(["i3-config-wizard", "-m", "win"])
         current_i3_config = Misc.current_i3_cfg()
@@ -64,7 +64,7 @@ class checker():
 
     @staticmethod
     def check_env():
-        logging.info('Check for environment')
+        logging.info('Checking environment')
         xdg_config_home = os.getenv('XDG_CONFIG_HOME')
         if xdg_config_home:
             logging.info(f'XDG_CONFIG_HOME = {xdg_config_home}')
@@ -77,7 +77,7 @@ class checker():
 
     @staticmethod
     def check():
-        """ Check for various dependencies """
+        """ Checking various dependencies """
         logging.basicConfig(level=logging.ERROR)
         checker.check_env()
         checker.check_for_executable_deps()
