@@ -1,19 +1,12 @@
 [project]
 name="negwm"
 description="negwm - brings a lot of unique UX features inspired by notion/ion3"
-authors=[
-    {name = "Neg", email = "serg.zorg@gmail.com"},
+authors=[ {name="Neg", email="serg.zorg@gmail.com"},
 ]
 license="LGPL-3.0"
-readme={file="README.md", "content-type"="text/markdown"}
+readme={file="README-en.md", "content-type"="text/markdown"}
 requires-python=">=3.11"
-packages=[
-    {include='negwm/__main__.py'},
-    {include='negwm/*.py'},
-    {include='negwm/lib/*.py'},
-    {include='negwm/bin/create_cfg'},
-    {include='negwm/modules/*.py'},
-]
+version='0.9.7'
 keywords=["negwm", "i3", "i3ipc"]
 dependencies=[
     "asyncinotify",
@@ -29,21 +22,32 @@ dependencies=[
     "systemd",
     "Xlib",
 ]
-dynamic=["version"]
-
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.build]
-skip-excluded-dirs=true
-
-[project.urls]
-homepage="https://github.com/neg-serg/negwm"
-repository="https://github.com/neg-serg/negwm"
 
 [project.scripts]
 negwm="negwm.main:NegWM.main"
+# audio-menu="menu:audio-menu"
+# i3-menu="menu:i3-menu"
+# props-menu="menu:props-menu"
+# winact-menu="menu:winact-menu"
+# xprop-menu="menu:xprop-menu"
+# xsettings-menu="menu:xsettings-menu"
+
+[tool.hatch.version]
+source="vcs"
+
+[tool.hatch.build]
+pure_python=false
+include=[
+    'negwm',
+    'negwm/lib',
+    'negwm/modules',
+    'negwm/bin',
+]
+
+[project.urls]
+"Homepage"="https://github.com/neg-serg/negwm"
+"Repository"="https://github.com/neg-serg/negwm"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires=["hatchling"]
+build-backend="hatchling.build"
