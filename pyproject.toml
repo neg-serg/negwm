@@ -1,12 +1,11 @@
-[tool.poetry]
+[project]
 name="negwm"
-version="0.9.7"
 description="negwm - brings a lot of unique UX features inspired by notion/ion3"
-authors=["Neg <serg.zorg@gmail.com>"]
-license="LGPL-3.0 License"
-readme=['README.md', 'README-en.md']
-homepage="https://github.com/neg-serg/negwm"
-repository="https://github.com/neg-serg/negwm"
+authors=[
+    {name = "Neg", email = "serg.zorg@gmail.com"},
+]
+license="LGPL-3.0"
+readme={file="README.md", "content-type"="text/markdown"}
 requires-python=">=3.11"
 packages=[
     {include='negwm/__main__.py'},
@@ -15,29 +14,33 @@ packages=[
     {include='negwm/bin/create_cfg'},
     {include='negwm/modules/*.py'},
 ]
-keywords = ["negwm", "i3", "i3ipc"]
+keywords=["negwm", "i3", "i3ipc"]
+dependencies=[
+    "asyncinotify",
+    "docopt",
+    "ewmh",
+    "i3ipc",
+    "inotipy",
+    "promptx",
+    "psutil",
+    "python3-xlib",
+    "rich",
+    "ruamel-yaml",
+    "systemd",
+    "Xlib",
+]
+dynamic=["version"]
 
-[tool.poetry.dependencies]
-asyncinotify='*'
-docopt='*'
-ewmh='*'
-i3ipc='*'
-inotipy='*'
-promptx='*'
-psutil='*'
-python3-xlib='*'
-python='^3.10'
-rich='*'
-ruamel-yaml='*'
-systemd='*'
+[tool.hatch.version]
+source = "vcs"
 
-Xlib='*'
+[project.urls]
+homepage="https://github.com/neg-serg/negwm"
+repository="https://github.com/neg-serg/negwm"
 
-[tool.poetry.dev-dependencies]
-
-[tool.poetry.scripts]
-negwm = "negwm.main:NegWM.main"
+[project.scripts]
+negwm="negwm.main:NegWM.main"
 
 [build-system]
-requires=["poetry-core>=1.0.0"]
-build-backend="poetry.core.masonry.api"
+requires=["hatchling>=1.17.1", "hatch-vcs>=0.3.0"]
+build-backend="hatchling.build"
