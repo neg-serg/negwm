@@ -66,12 +66,16 @@ class cfg():
     def load_config(self) -> None:
         """ Reload config """
         try:
+            y=yaml.YAML(typ='rt')
+            y.preserve_quotes=True
             with open(self.cfg_path, "r") as mod_cfg:
-                self.cfg=yaml.load(mod_cfg, preserve_quotes=True, Loader=yaml.Loader)
+                self.cfg=y.load(mod_cfg)
         except FileNotFoundError:
             logging.error(f'file {self.cfg_path} not exists')
 
     def dump_config(self) -> None:
         """ Dump current config, can be used for debugging. """
         with open(self.cfg_path, "w+") as mod_cfg:
-            yaml.dump(self.cfg, mod_cfg, allow_unicode=True, Dumper=NewLineDumper, width=140)
+            y=yaml.YAML(typ='rt')
+            y.allow_unicode=True
+            y.dump(self.cfg, mod_cfg, Dumper=NewLineDumper, width=140)
