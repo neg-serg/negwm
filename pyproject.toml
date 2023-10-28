@@ -7,6 +7,7 @@ license="LGPL-3.0 License"
 readme=['README.md', 'README-en.md']
 homepage="https://github.com/neg-serg/negwm"
 repository="https://github.com/neg-serg/negwm"
+requires-python=">=3.11"
 packages=[
     {include='negwm/__main__.py'},
     {include='negwm/*.py'},
