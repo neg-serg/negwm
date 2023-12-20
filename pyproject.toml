@@ -18,7 +18,6 @@ dependencies=[
     "python3-xlib",
     "rich",
     "ruamel-yaml",
-    "systemd",
     "Xlib",
 ]
 dynamic=['version']
