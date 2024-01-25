@@ -58,16 +58,11 @@ asyncinotify='*'
 docopt='*'
 ewmh='*'
 i3ipc='*'
-inotipy='*'
-promptx='*'
 psutil='*'
-python3-xlib='*'
 python='^3.10'
 rich='*'
 ruamel-yaml='*'
-systemd='*'
-
-Xlib='*'
+#python3-xlib='*'
 
 [tool.poetry.dev-dependencies]
 
