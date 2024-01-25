@@ -2,15 +2,11 @@
 name="negwm"
 version="0.9.7"
 description="negwm - brings a lot of unique UX features inspired by notion/ion3"
-# authors=[ {name="Neg", email="serg.zorg@gmail.com"}, ]
 authors=["Neg <serg.zorg@gmail.com>"]
 license="LGPL-3.0"
-# readme={file="README-en.md", "content-type"="text/markdown"}
 keywords=["negwm", "i3", "i3ipc"]
-# requires-python=">=3.11"
-# dynamic=['version']
 
-[project.scripts]
+[tool.poetry.scripts]
 negwm="negwm.main:NegWM.main"
 audio-menu="negwm.menu.audio_menu:main"
 i3-menu="negwm.menu.i3_menu:main"
@@ -24,34 +20,11 @@ path = "negwm/__about__.py"
 
 [tool.hatch.build]
 pure_python=false
-include=[
-    'negwm',
-    'negwm/lib',
-    'negwm/modules',
-    'negwm/bin',
-]
+include=['negwm', 'negwm/lib', 'negwm/modules', 'negwm/bin']
 
 [project.urls]
 "Homepage"="https://github.com/neg-serg/negwm"
 "Repository"="https://github.com/neg-serg/negwm"
-
-# [build-system]
-# requires=["hatchling"]
-# build-backend="hatchling.build"
-# authors=["Neg <serg.zorg@gmail.com>"]
-# license="LGPL-3.0 License"
-# readme=['README.md', 'README-en.md']
-# homepage="https://github.com/neg-serg/negwm"
-# repository="https://github.com/neg-serg/negwm"
-# requires-python=">=3.11"
-# packages=[
-#     {include='negwm/__main__.py'},
-#     {include='negwm/*.py'},
-#     {include='negwm/lib/*.py'},
-#     {include='negwm/bin/create_cfg'},
-#     {include='negwm/modules/*.py'},
-# ]
-# keywords = ["negwm", "i3", "i3ipc"]
 
 [tool.poetry.dependencies]
 asyncinotify='*'
@@ -62,12 +35,8 @@ psutil='*'
 python='^3.10'
 rich='*'
 ruamel-yaml='*'
-#python3-xlib='*'
 
 [tool.poetry.dev-dependencies]
-
-[tool.poetry.scripts]
-negwm = "negwm.main:NegWM.main"
 
 [build-system]
 requires=["poetry-core>=1.0.0"]
