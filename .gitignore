@@ -5,3 +5,4 @@ cache/dtach_sessions
 pyproject.toml
 poetry.lock
 dist
+result
