@@ -2,19 +2,17 @@
 instances via pid-log.
 
 Usage:
-    ./main.py [-diqv] [--systemd]
+    ./main.py [-diqv]
     ./main.py -d, --debug
     ./main.py -i, --info
     ./main.py -q, --quiet
     ./main.py -v, --verbose
-    ./main.py --systemd
 
 Options:
     -d, --debug       Enable debug mode with debug logging
     -i, --info        Info logging
     -q, --quiet       Quiet, no logging
     -v, --verbose     More verbose logging
-    --systemd         Use systemd for logging
 
 Created by :: Neg
 email :: <serg.zorg@gmail.com>
@@ -104,12 +102,6 @@ class NegWM():
         atexit.register(NegWM.cleanup)
         arguments=docopt(str(__doc__), version=__version__)
         log=logging.getLogger()
-        if arguments['--systemd']:
-            try:
-                from systemd import journal
-                log.addHandler(journal.JournaldLogHandler())
-            except:
-                log.error('Cannot setup systemd log')
         loglevel=logging.INFO
         if arguments['--debug'] or arguments['--verbose']:
             loglevel=logging.DEBUG
