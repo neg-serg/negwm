@@ -26,21 +26,15 @@ class geom():
     def parse_geom(self, tag: str) -> str:
         """ Convert geometry from self.cfg format to i3 commands.
             tag (str): target self.cfg tag """
+        rd = {'width': 3440, 'height': 1440} # resolution_default
         cr = self.current_resolution # current resolution
         g = re.split(r'[x+]', self.cfg[tag]["geom"])
         for num, side in enumerate(g):
             g[num] = float(side)
         cg = [] # converted_geom
-        cg_ppt = []
-
-        cg.append(int(g[0]))
-        cg.append(int(g[1]))
-        cg.append(int(g[2]))
-        cg.append(int(g[3]))
+        cg.append(int(int(g[0])*cr['width'] / rd['width']))
+        cg.append(int(int(g[1])*cr['height'] / rd['height']))
+        cg.append(int(int(g[2])*cr['width'] / rd['width']))
+        cg.append(int(int(g[3])*cr['height'] / rd['height']))
         
-        cg_ppt.append(round(g[0]/float(cr['width'])*100.0))
-        cg_ppt.append(round(g[1]/float(cr['height'])*100.0))
-        cg_ppt.append(round(g[2]/float(cr['width'])*100.0))
-        cg_ppt.append(round(g[3]/float(cr['height'])*100.0))
-
         return "move absolute position {2} {3}, resize set {0} {1}".format(*cg)
