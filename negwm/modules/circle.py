@@ -44,8 +44,7 @@ class circle(extension, dynamic_cfg, Matcher):
         self.current_win = i3tree.find_focused()
         # Winlist is used to reduce calling i3.get_tree() too many times.
         self.winlist = i3tree.leaves()
-        self.configured_internally = self.cfg['configured_internally']
-        del self.cfg['configured_internally']
+        self.configured_internally = True
         for tag in self.cfg:
             self.tagged[tag] = []
             self.current_position[tag] = 0
