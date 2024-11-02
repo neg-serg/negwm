@@ -35,7 +35,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
         self.configured_internally = True
         # scratchpad_geom used to respect current screen resolution in the geometry
         # settings and scale it
-        self.scratchpad_geom = geom.geom(self.cfg)
+        self.scratchpad_geom = geom.Geom(self.cfg)
         # marked used to get the list of current tagged windows
         # with the given tag
         self.marked = {l: [] for l in self.cfg.keys()}

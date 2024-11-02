@@ -4,17 +4,16 @@
 import re
 from negwm.lib.display import Display
 
-class geom():
+class Geom():
+    resolution_default = {'width': 3440, 'height': 1440}
+    
     def __init__(self, cfg: dict) -> None:
         """ Init function
         cfg: config bypassed from target module, nsd for example. """
-        self.cmd_list = [] # Generated command list for i3 config
         self.geom = {} # Command to move windows to the desired geometry.
         self.parsed_geom = {} # Geometry after parse
         self.converted_geom = {} # Geometry in the list format for future reuse after conversion
-        self.window_move_cmds = {} # Command to move windows to the desired geometry.
         self.current_resolution = Display.get_screen_resolution()
-        self.resolution_default = {'width': 3440, 'height': 1440}
         self.cfg = cfg # External config
         for tag in self.cfg:
             if isinstance(self.cfg[tag], dict):
@@ -29,7 +28,7 @@ class geom():
     def convert_geom(self, geom) -> list:
         """ Convert geom to desired size """
         cr = self.current_resolution # current resolution
-        rd = self.resolution_default
+        rd = Geom.resolution_default
         ret = [] # converted_geom
         ret.append(int(int(geom[0])*cr['width'] / rd['width']))
         ret.append(int(int(geom[1])*cr['height'] / rd['height']))
