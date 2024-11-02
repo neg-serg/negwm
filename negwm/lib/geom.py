@@ -9,32 +9,41 @@ class geom():
         """ Init function
         cfg: config bypassed from target module, nsd for example. """
         self.cmd_list = [] # Generated command list for i3 config
-        self.parsed_geom = {} # Geometry in the i3-commands format.
-        # Set current screen resolution
+        self.geom = {} # Command to move windows to the desired geometry.
+        self.parsed_geom = {} # Geometry after parse
+        self.converted_geom = {} # Geometry in the list format for future reuse after conversion
+        self.window_move_cmds = {} # Command to move windows to the desired geometry.
         self.current_resolution = Display.get_screen_resolution()
+        self.resolution_default = {'width': 3440, 'height': 1440}
         self.cfg = cfg # External config
-        # Fill self.parsed_geom with self.parse_geom function.
         for tag in self.cfg:
             if isinstance(self.cfg[tag], dict):
-                self.parsed_geom[tag] = self.parse_geom(tag)
+                self.converted_geom[tag] = self.convert_geom(self.parse_geom(tag))
+                self.geom[tag] = self.window_move_cmd(self.converted_geom[tag])
 
     # Scratchpad need this function
     def get_geom(self, tag: str) -> str:
         """ External function used by nsd """
-        return self.parsed_geom[tag]
+        return self.geom[tag]
 
-    def parse_geom(self, tag: str) -> str:
-        """ Convert geometry from self.cfg format to i3 commands.
-            tag (str): target self.cfg tag """
-        rd = {'width': 3440, 'height': 1440} # resolution_default
+    def convert_geom(self, geom) -> list:
+        """ Convert geom to desired size """
         cr = self.current_resolution # current resolution
+        rd = self.resolution_default
+        ret = [] # converted_geom
+        ret.append(int(int(geom[0])*cr['width'] / rd['width']))
+        ret.append(int(int(geom[1])*cr['height'] / rd['height']))
+        ret.append(int(int(geom[2])*cr['width'] / rd['width']))
+        ret.append(int(int(geom[3])*cr['height'] / rd['height']))
+        return ret
+
+    def parse_geom(self, tag: str) -> list:
+        """ Parse geometry from self.cfg format to the list of ints
+            tag (str): target self.cfg tag """
         g = re.split(r'[x+]', self.cfg[tag]["geom"])
         for num, side in enumerate(g):
             g[num] = float(side)
-        cg = [] # converted_geom
-        cg.append(int(int(g[0])*cr['width'] / rd['width']))
-        cg.append(int(int(g[1])*cr['height'] / rd['height']))
-        cg.append(int(int(g[2])*cr['width'] / rd['width']))
-        cg.append(int(int(g[3])*cr['height'] / rd['height']))
+        return g
         
-        return "move absolute position {2} {3}, resize set {0} {1}".format(*cg)
+    def window_move_cmd(self, geom: list):
+        return f"move absolute position {geom[2]} {geom[3]}, resize set {geom[0]} {geom[1]}"
