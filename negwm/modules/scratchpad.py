@@ -56,7 +56,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
         """ Create i3 match rules for all tags. """
         ret: str = ''
         for tag in cmd_dict:
-            geom = self.scratchpad_geom.get_geom(tag)
+            geom = self.scratchpad_geom.get_geom_by_tag(tag)
             ret = f'{ret}for_window $scratchpad-{tag} floating enable, {geom}\n'
         return ret
 
@@ -251,7 +251,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
             del self.marked[tag][idx]
             # then make a new mark and move scratchpad
             win_cmd = f'{scratchpad.mark_uuid_tag(tag)}, \
-                move scratchpad, {self.scratchpad_geom.get_geom(tag)}'
+                move scratchpad, {self.scratchpad_geom.get_geom_by_tag(tag)}'
             win.command(win_cmd)
             self.marked[tag].append(win)
 
@@ -337,7 +337,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
     def scratchpad_move(self, win, tag, show=False, hide=True):
         win.command(
             f'{scratchpad.mark_uuid_tag(tag)}, move scratchpad, \
-            {self.scratchpad_geom.get_geom(tag)}')
+            {self.scratchpad_geom.get_geom_by_tag(tag)}')
         self.marked[tag].append(win)
         if show:
             self.show(tag, hide=hide)
@@ -389,7 +389,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
             self.apply_to_current_tag(self.hide_scratchpad)
 
     def make_transient(self, win, show=True):
-        transient_geom = self.scratchpad_geom.get_geom('transients') or ''
+        transient_geom = self.scratchpad_geom.get_geom_by_tag('transients') or ''
         win_cmd = f"{scratchpad.mark_uuid_tag('transients')}, \
             move scratchpad {transient_geom}"
         win.command(win_cmd)
