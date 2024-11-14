@@ -284,7 +284,7 @@ class scratchpad(extension, dynamic_cfg, Matcher):
                     or win.rect.y != focused.rect.y \
                     or win.rect.width != focused.rect.width \
                         or win.rect.height != focused.rect.height:
-                    self.scratchpad_geom = geom.geom(self.cfg)
+                    self.scratchpad_geom = geom.Geom(self.cfg)
                     win.rect.x = focused.rect.x
                     win.rect.y = focused.rect.y
                     win.rect.width = focused.rect.width
